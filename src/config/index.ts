@@ -1,12 +1,20 @@
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
 
 export const Config: {
+  site: {
+    url: string;
+    title: string;
+    tagline: string;
+    description: string;
+    image: string;
+    locale: string;
+  };
   public: {
     nav: {
       menus: (PathMenu | UrlMenu | NestedMenu)[];
     };
     footer: {
-      menus: (PathMenu | UrlMenu)[];
+      menus: (PathMenu | UrlMenu)[][];
     };
   };
   internal: {
@@ -28,6 +36,14 @@ export const Config: {
     };
   };
 } = {
+  site: {
+    url: 'https://www.infiniteuny.id',
+    title: 'INFINITE UNY',
+    tagline: "Let's Make Infinite Technology!",
+    description: 'INFINITE UNY',
+    image: 'https://www.infiniteuny.id/images/og-image.png',
+    locale: 'id_ID',
+  },
   public: {
     nav: {
       menus: [
@@ -41,20 +57,48 @@ export const Config: {
         },
         {
           name: 'Team',
-          path: '/#team',
+          path: '/teams',
         },
         {
           name: 'Events',
-          path: '/#events',
+          path: '/events',
         },
       ],
     },
     footer: {
       menus: [
-        {
-          name: 'Home',
-          path: '/',
-        },
+        [
+          {
+            name: 'Home',
+            path: '/',
+          },
+          {
+            name: 'About',
+            path: '/#about',
+          },
+          {
+            name: 'Team',
+            path: '/teams',
+          },
+          {
+            name: 'Events',
+            path: '/events',
+          },
+        ],
+        [
+          {
+            name: 'Leaderboard',
+            path: '/leaderboard',
+          },
+          {
+            name: 'Membership Checker',
+            path: '/tools/membership',
+          },
+          {
+            name: 'Link Shortener',
+            url: 'https://unyku.id/',
+          },
+        ],
       ],
     },
   },
