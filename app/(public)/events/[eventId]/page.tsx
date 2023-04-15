@@ -4,4 +4,6 @@ type Props = {
   };
 };
 
-export default function SingleEventPage({ params }: Props) {}
+export default function SingleEventPage({ params }: Props) {
+  return <></>;
+}

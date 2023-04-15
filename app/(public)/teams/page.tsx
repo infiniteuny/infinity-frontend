@@ -1,1 +1,3 @@
-export default function TeamsPage() {}
+export default function TeamsPage() {
+  return <></>;
+}

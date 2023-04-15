@@ -4,4 +4,6 @@ type Props = {
   };
 };
 
-export default function SingleMemberPage({ params }: Props) {}
+export default function SingleMemberPage({ params }: Props) {
+  return <></>;
+}
