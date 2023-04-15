@@ -1,6 +1,8 @@
-import { Poppins } from '@next/font/google';
-import { ReactNode } from 'react';
+import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
+import { AuthFooter } from '@/presentation/components/auth';
+import { Poppins } from 'next/font/google';
+import { ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
@@ -17,7 +19,10 @@ export default function AuthLayout({ children }: Props) {
   return (
     <html lang="id-ID" className={poppins.variable}>
       <head />
-      <body>{children}</body>
+      <body>
+        <main>{children}</main>
+        <AuthFooter />
+      </body>
     </html>
   );
 }
