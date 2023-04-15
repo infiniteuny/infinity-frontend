@@ -5,6 +5,14 @@ module.exports = {
     locales: ['id-ID'],
     defaultLocale: 'id-ID',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.infiniteuny.id',
+      },
+    ],
+  },
   modularizeImports: {
     '@mui/material': {
       transform: '@mui/material/{{member}}',

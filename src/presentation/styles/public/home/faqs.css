@@ -1,0 +1,17 @@
+@tailwind components;
+
+@layer components {
+  .accordion-header {
+    @apply !flex-row-reverse !justify-end !py-0 text-left border border-gray-300 rounded-3xl
+    [&>span]:shrink-0 [&>span]:flex [&>span]:items-center [&>span]:justify-center [&>span]:w-14
+    [&>span]:h-full [&>span]:ml-0;
+  }
+
+  .accordion-title {
+    @apply my-3 text-lg text-gray-700 font-medium leading-6;
+  }
+
+  .accordion-body {
+    @apply pl-14 pr-3;
+  }
+}
