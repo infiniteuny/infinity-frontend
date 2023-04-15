@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDropDownRounded } from '@mui/icons-material';
+import { KeyboardArrowDownRounded } from '@mui/icons-material';
 import { Avatar, Button } from '@material-tailwind/react';
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
 import Link from 'next/link';
@@ -38,7 +38,7 @@ export function InternalNavbar({ menus }: Props) {
           size="sm"
           className="shrink-0"
         />
-        <ArrowDropDownRounded className="ml-1 !text-md" />
+        <KeyboardArrowDownRounded className="ml-1 !text-md" />
       </Button>
     </div>
   );

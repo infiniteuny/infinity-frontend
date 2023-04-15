@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material';
+import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
 import { Icon } from '@/presentation/components/shared';
 import { IconButton } from '@material-tailwind/react';
 import { internalStore, useStore } from '@/presentation/hooks';
@@ -73,9 +73,9 @@ export function SidebarDropdownMenu({ menu }: Props) {
             hover:!bg-[#3c7c60]"
             >
               {expanded ? (
-                <ArrowDropUp className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
+                <KeyboardArrowUpRounded className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
               ) : (
-                <ArrowDropDown className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
+                <KeyboardArrowDownRounded className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
               )}
             </IconButton>
           ) : null}
