@@ -1,1 +1,3 @@
-export default function EventsPage() {}
+export default function EventsPage() {
+  return <></>;
+}
