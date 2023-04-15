@@ -1,1 +1,3 @@
-export default function ResetPasswordPage() {}
+export default function ResetPasswordPage() {
+  return <></>;
+}
