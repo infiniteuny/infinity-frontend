@@ -1,17 +1,27 @@
-import 'reflect-metadata';
-import { container } from 'tsyringe';
+import { Container } from 'inversify';
 import { GetSidebarExtendedState, SetSidebarExtendedState } from '@/application/internal';
+import { InternalRepository } from '@/domain/repositories';
 import { InternalRepositoryImpl } from '@/infrastructure/repositories';
-import { SessionStorageDataSourceImpl } from '@/infrastructure/datasources';
+import {
+  SessionStorageDataSource,
+  SessionStorageDataSourceImpl,
+} from '@/infrastructure/datasources';
+import { Symbols } from '@/config';
 
-export { container };
+export const container = new Container();
 
 // Use cases
-container.register('GetSidebarExtendedState', { useClass: GetSidebarExtendedState });
-container.register('SetSidebarExtendedState', { useClass: SetSidebarExtendedState });
+container
+  .bind<GetSidebarExtendedState>(Symbols.GetSidebarExtendedState)
+  .to(GetSidebarExtendedState);
+container
+  .bind<SetSidebarExtendedState>(Symbols.SetSidebarExtendedState)
+  .to(SetSidebarExtendedState);
 
 // Repositories
-container.register('InternalRepository', { useClass: InternalRepositoryImpl });
+container.bind<InternalRepository>(Symbols.InternalRepository).to(InternalRepositoryImpl);
 
 // Data sources
-container.register('SessionStorageDataSource', { useClass: SessionStorageDataSourceImpl });
+container
+  .bind<SessionStorageDataSource>(Symbols.SessionStorageDataSource)
+  .to(SessionStorageDataSourceImpl);

@@ -28,7 +28,7 @@ export function SidebarMenu({ menu }: Props) {
   return (
     <Link
       href={(menu as PathMenu).path}
-      className={`mr-2 rounded-r-full ${
+      className={`mr-2 rounded-r-full transition-all ${
         sidebarExtended || sidebarHovered ? '' : 'lg:mr-0 lg:pr-0 lg:rounded-r-none'
       }`}
     >

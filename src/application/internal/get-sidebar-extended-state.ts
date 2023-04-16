@@ -1,13 +1,14 @@
-import { inject, singleton } from 'tsyringe';
+import { inject, injectable } from 'inversify';
 import { InternalRepository } from '@/domain/repositories';
+import { Symbols } from '@/config';
 import { UseCase } from '@/application/shared';
 
-@singleton()
+@injectable()
 export class GetSidebarExtendedState implements UseCase<boolean> {
   private readonly internalRepository: InternalRepository;
 
   public constructor(
-    @inject('InternalRepository')
+    @inject(Symbols.InternalRepository)
     internalRepository: InternalRepository,
   ) {
     this.internalRepository = internalRepository;

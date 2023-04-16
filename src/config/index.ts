@@ -1,5 +1,7 @@
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
 
+export * from './symbols';
+
 export const Config: {
   site: {
     url: string;

@@ -1,5 +1,3 @@
-'use client';
-
 import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
 import { Icon } from '@/presentation/components/shared';
 import { IconButton } from '@material-tailwind/react';
@@ -47,7 +45,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
     <li className="flex flex-col">
       <Link
         href={menu.items[0].path}
-        className={`mr-2 rounded-r-full ${
+        className={`mr-2 rounded-r-full transition-all ${
           sidebarExtended || sidebarHovered ? '' : 'lg:mr-0 lg:pr-0 lg:rounded-r-none'
         }`}
       >

@@ -50,7 +50,7 @@ export function InternalSidebar({ title, menus, backButton }: Props) {
       <div className="flex shrink-0 items-center justify-center w-14 text-center">
         {backButton ? (
           <ArrowBackRounded
-            className={`align-text-bottom ${sidebarExtended || sidebarHovered ? '' : 'lg:hidden'}`}
+            className={`align-text-bottom ${sidebarExtended || sidebarHovered ? '' : 'lg:!hidden'}`}
           />
         ) : null}
         {!(sidebarExtended || sidebarHovered) ? (

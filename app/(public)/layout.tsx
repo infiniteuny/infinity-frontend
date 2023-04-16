@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
 import { Config } from '@/config';
 import { Metadata } from 'next';

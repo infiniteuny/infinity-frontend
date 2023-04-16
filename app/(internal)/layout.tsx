@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
 import { InternalFooter, InternalHeader } from '@/presentation/components/internal/shared';
 import { Poppins } from 'next/font/google';

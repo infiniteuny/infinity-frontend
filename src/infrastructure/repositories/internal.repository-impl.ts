@@ -1,13 +1,14 @@
-import { inject, singleton } from 'tsyringe';
+import { inject, injectable } from 'inversify';
 import { InternalRepository } from '@/domain/repositories';
 import { SessionStorageDataSource } from '@/infrastructure/datasources';
+import { Symbols } from '@/config';
 
-@singleton()
+@injectable()
 export class InternalRepositoryImpl implements InternalRepository {
   private readonly sessionStorageDataSource: SessionStorageDataSource;
 
   public constructor(
-    @inject('SessionStorageDataSource')
+    @inject(Symbols.SessionStorageDataSource)
     sessionStorageDataSource: SessionStorageDataSource,
   ) {
     this.sessionStorageDataSource = sessionStorageDataSource;

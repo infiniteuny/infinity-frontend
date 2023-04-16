@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { injectable } from 'inversify';
 
 export abstract class SessionStorageDataSource {
   public abstract get<T>(key: string): T;
@@ -6,7 +6,7 @@ export abstract class SessionStorageDataSource {
   public abstract remove(key: string): void;
 }
 
-@singleton()
+@injectable()
 export class SessionStorageDataSourceImpl implements SessionStorageDataSource {
   public get<T>(key: string): T {
     return JSON.parse(window.sessionStorage.getItem(key) || '{}');

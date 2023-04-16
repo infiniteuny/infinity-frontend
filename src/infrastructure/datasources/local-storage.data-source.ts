@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { injectable } from 'inversify';
 
 export abstract class LocalStorageDataSource {
   public abstract get<T>(key: string): T;
@@ -6,7 +6,7 @@ export abstract class LocalStorageDataSource {
   public abstract remove(key: string): void;
 }
 
-@singleton()
+@injectable()
 export class LocalStorageDataSourceImpl implements LocalStorageDataSource {
   public get<T>(key: string): T {
     return JSON.parse(window.localStorage.getItem(key) || '{}');
