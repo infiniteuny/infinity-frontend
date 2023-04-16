@@ -1,6 +1,6 @@
 import { SVGProps } from 'react';
 
-export function InfiniteLogoText({ ...props }: SVGProps<SVGSVGElement>) {
+export function InfiniteTextLogo({ ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg width={97} height={34} viewBox="0 0 97 34" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path

@@ -2,9 +2,8 @@ import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
 import { Config } from '@/config';
 import { Metadata } from 'next';
-import { PublicFooter } from '@/presentation/components/public';
-import { PublicHeader } from '@/presentation/components/public/shared/Header';
 import { Poppins } from 'next/font/google';
+import { PublicFooter, PublicHeader } from '@/presentation/components/public/shared';
 import { ReactNode } from 'react';
 
 type Props = {

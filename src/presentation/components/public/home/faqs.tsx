@@ -3,7 +3,7 @@
 import '@/presentation/styles/public/home/faqs.css';
 import Image from 'next/image';
 import { Accordion, AccordionHeader, AccordionBody } from '@material-tailwind/react';
-import { AccordionIcon } from '.';
+import { AccordionIcon } from './accordion-icon';
 import { useState } from 'react';
 
 export function Faqs() {

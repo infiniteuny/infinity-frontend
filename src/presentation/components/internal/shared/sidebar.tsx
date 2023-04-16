@@ -5,7 +5,8 @@ import {
   KeyboardDoubleArrowLeftRounded,
   KeyboardDoubleArrowRightRounded,
 } from '@mui/icons-material';
-import { SidebarDropdownMenu, SidebarMenu } from '.';
+import { SidebarDropdownMenu } from './dropdown-menu';
+import { SidebarMenu } from './menu';
 import { internalStore, useStore } from '@/presentation/hooks';
 import { NestedMenu, PathMenu } from '@/domain/entities';
 import { useEffect } from 'react';

@@ -1,7 +1,7 @@
 'use client';
 
 import { Config } from '@/config';
-import { InternalSidebar } from '@/presentation/components/internal/shared/Sidebar';
+import { InternalSidebar } from '@/presentation/components/internal/shared';
 import { internalStore, useStore } from '@/presentation/hooks';
 import { ReactNode } from 'react';
 

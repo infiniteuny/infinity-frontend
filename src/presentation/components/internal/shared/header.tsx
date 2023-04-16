@@ -3,7 +3,7 @@
 import { Config } from '@/config';
 import { IconButton } from '@material-tailwind/react';
 import { InfiniteLogo } from '@/presentation/components/shared';
-import { InternalNavbar } from '.';
+import { InternalNavbar } from './navbar';
 import { MenuRounded } from '@mui/icons-material';
 import { internalStore, useStore } from '@/presentation/hooks';
 

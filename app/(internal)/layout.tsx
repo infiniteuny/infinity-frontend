@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
-import { InternalFooter } from '@/presentation/components/internal/shared/Footer';
-import { InternalHeader } from '@/presentation/components/internal/shared/Header';
+import { InternalFooter, InternalHeader } from '@/presentation/components/internal/shared';
 import { Poppins } from 'next/font/google';
 import { ReactNode } from 'react';
 

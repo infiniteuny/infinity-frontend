@@ -1,5 +1,5 @@
 import { PathMenu, UrlMenu } from '@/domain/entities';
-import { InfiniteLogoText } from '@/presentation/components/shared/InfiniteLogoText';
+import { InfiniteTextLogo } from '@/presentation/components/shared';
 
 type Props = {
   menus?: (PathMenu | UrlMenu)[][];
@@ -11,7 +11,7 @@ export function PublicFooter({ menus }: Props) {
       <section className="px-6 text-gray-700 bg-[#3c7c60] md:px-12 lg:px-18">
         <div className="flex flex-col gap-10 py-10 max-w-6xl mx-auto items-center justify-center md:flex-row md:justify-between">
           <div>
-            <InfiniteLogoText width={180} height={65} />
+            <InfiniteTextLogo width={180} height={65} />
           </div>
           <div className="flex gap-5 w-full max-w-sm justify-between md:max-w-sm">
             {menus

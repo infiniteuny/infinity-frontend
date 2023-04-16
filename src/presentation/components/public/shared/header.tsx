@@ -1,9 +1,9 @@
 'use client';
 
 import { Config } from '@/config';
-import { InfiniteLogoText } from '@/presentation/components/shared';
+import { InfiniteTextLogo } from '@/presentation/components/shared';
 import { useCallback, useEffect } from 'react';
-import { PublicNavbar } from '.';
+import { PublicNavbar } from './navbar';
 import { publicStore, useStore } from '@/presentation/hooks';
 
 export function PublicHeader() {
@@ -33,7 +33,7 @@ export function PublicHeader() {
       }`}
     >
       <div className="flex items-center justify-between w-full max-w-6xl mx-auto transition-all">
-        <InfiniteLogoText
+        <InfiniteTextLogo
           width={headerExpanded ? 180 : 128}
           height={headerExpanded ? 65 : 46}
           className="transition-all duration-300"

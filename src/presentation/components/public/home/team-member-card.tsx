@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { Card, CardBody, CardHeader } from '@material-tailwind/react';
 import { TeamMember } from '@/domain/entities';

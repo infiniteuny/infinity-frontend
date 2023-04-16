@@ -1,7 +1,6 @@
-import { About, Hero, Roles } from '@/presentation/components/public';
-import { Contact } from '@/presentation/components/public/home/Contact';
-import { Faqs } from '@/presentation/components/public/home/Faqs';
-import { Team } from '@/presentation/components/public/home/Team';
+'use client';
+
+import { About, Contact, Faqs, Hero, Roles, Team } from '@/presentation/components/public/home';
 
 export default function HomePage() {
   return (

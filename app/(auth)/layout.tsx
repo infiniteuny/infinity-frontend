@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import '@/presentation/styles/globals.css';
-import { AuthFooter } from '@/presentation/components/auth';
+import { AuthFooter } from '@/presentation/components/auth/shared';
 import { Poppins } from 'next/font/google';
 import { ReactNode } from 'react';
 

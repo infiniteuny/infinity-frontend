@@ -8,9 +8,21 @@ import { IconButton } from '@material-tailwind/react';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@mui/icons-material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { TeamMember } from '@/domain/entities';
-import { TeamMemberCard } from '.';
+import { TeamMemberCard } from './team-member-card';
 
 export function Team() {
+  const team: TeamMember[] = [
+    {
+      priority: 1,
+      name: 'John Doe',
+      major: 'Computer Science',
+      year: 2019,
+      cabinet: 2020,
+      division: 'Web Development',
+      photo: '/assets/images/avatar-placeholder.jpg',
+    },
+  ];
+
   return (
     <section id="team" className="px-6 text-gray-700 md:px-12 lg:px-18">
       <div className="py-20 max-w-6xl mx-auto">

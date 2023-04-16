@@ -1,5 +1,3 @@
-'use client';
-
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
 
 type Props = {

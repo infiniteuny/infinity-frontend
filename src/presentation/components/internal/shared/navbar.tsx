@@ -1,5 +1,3 @@
-'use client';
-
 import { KeyboardArrowDownRounded } from '@mui/icons-material';
 import { Avatar, Button } from '@material-tailwind/react';
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';

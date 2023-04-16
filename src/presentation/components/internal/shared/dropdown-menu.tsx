@@ -6,7 +6,7 @@ import { IconButton } from '@material-tailwind/react';
 import { internalStore, useStore } from '@/presentation/hooks';
 import { MouseEvent, useEffect, useState } from 'react';
 import { NestedMenu, PathMenu } from '@/domain/entities';
-import { SidebarDropdownMenuItem } from '.';
+import { SidebarDropdownMenuItem } from './dropdown-menu-item';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 

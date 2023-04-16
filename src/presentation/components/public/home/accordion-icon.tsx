@@ -1,5 +1,3 @@
-'use client';
-
 import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
 
 type Props = {
