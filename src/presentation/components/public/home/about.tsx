@@ -25,7 +25,7 @@ export function About() {
               Teknologi UNY. Sejak tahun 2014, INFINITE mewadahi mahasiswa dari berbagai jurusan
               yang memiliki minat dan bakat di bidang Teknologi Informasi.
             </p>
-            <ul className="pl-5 list-disc marker:text-[#3c7c60]">
+            <ul className="pl-5 list-disc marker:text-infinite-green">
               <li>
                 Berkolaborasi menciptakan karya dalam bentuk mobile apps, web apps, internet of
                 things, machine learning untuk menjawab permasalahan di masyarakat.

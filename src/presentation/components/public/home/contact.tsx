@@ -18,7 +18,7 @@ export function Contact() {
               <Textarea resize={true} label="Message" />
               <Button
                 size="md"
-                className="ml-auto !normal-case !bg-[#3c7c60] !shadow-[#3c7c60]/20 hover:!shadow-[#3c7c60]/40"
+                className="ml-auto !normal-case !bg-infinite-green !shadow-infinite-green/20 hover:!shadow-infinite-green/40"
               >
                 Send
               </Button>

@@ -33,9 +33,9 @@ export function SidebarMenu({ menu }: Props) {
       }`}
     >
       <li
-        className={`flex items-center pr-4 py-2 text-base text-[#3c7c60] rounded-r-full
+        className={`flex items-center pr-4 py-2 text-base text-infinite-green rounded-r-full
       transition-all ${
-        active ? 'text-white bg-[#3c7c60]' : 'hover:bg-[#3c7c60] hover:bg-opacity-10'
+        active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green hover:bg-opacity-10'
       } ${sidebarExtended || sidebarHovered ? '' : 'lg:pr-0 lg:rounded-r-none'}`}
       >
         {menu.icon ? (

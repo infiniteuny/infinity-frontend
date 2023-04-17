@@ -9,12 +9,12 @@ export function AccordionIcon({ id, open }: Props) {
   if (id === open) {
     return (
       <div className="flex items-center justify-center h-7 w-7 bg-white rounded-full">
-        <KeyboardArrowUpRounded className="align-text-bottom fill-[#3c7c60]" />
+        <KeyboardArrowUpRounded className="align-text-bottom fill-infinite-green" />
       </div>
     );
   } else {
     return (
-      <div className="flex items-center justify-center h-7 w-7 bg-[#3c7c60] rounded-full">
+      <div className="flex items-center justify-center h-7 w-7 bg-infinite-green rounded-full">
         <KeyboardArrowDownRounded className="align-text-bottom fill-white" />
       </div>
     );

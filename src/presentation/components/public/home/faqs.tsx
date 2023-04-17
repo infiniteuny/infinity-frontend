@@ -33,7 +33,9 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(1)}
-                className={`accordion-header ${open === 1 ? '!bg-[#3c7c60] !border-none' : ''}`}
+                className={`accordion-header ${
+                  open === 1 ? '!bg-infinite-green !border-none' : ''
+                }`}
               >
                 <h3 className={`accordion-title ${open === 1 ? '!text-white' : ''}`}>
                   Bagaimana cara menjadi anggota INFINITE?
@@ -54,7 +56,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(2)}
-                className={`accordion-header ${open === 2 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 2 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 2 ? '!text-white' : ''}`}>
                   Apakah anggota lama perlu mengikuti PAB lagi setiap tahun?
@@ -73,7 +75,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(3)}
-                className={`accordion-header ${open === 3 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 3 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 3 ? '!text-white' : ''}`}>
                   Di mana lokasi <i>basecamp</i> INFINITE?
@@ -93,7 +95,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(4)}
-                className={`accordion-header ${open === 4 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 4 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 4 ? '!text-white' : ''}`}>
                   Kapan <i>basecamp</i> buka dan tutup?
@@ -112,7 +114,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(5)}
-                className={`accordion-header ${open === 5 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 5 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 5 ? '!text-white' : ''}`}>
                   Bagaimana cara mengikuti lomba, mencari anggota tim, dan mencari dosen pembimbing?
@@ -139,7 +141,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(6)}
-                className={`accordion-header ${open === 6 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 6 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 6 ? '!text-white' : ''}`}>
                   Apakah saya bisa melakukan konsultasi jika masih kebingungan dalam pengembangan
@@ -161,7 +163,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(7)}
-                className={`accordion-header ${open === 7 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 7 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 7 ? '!text-white' : ''}`}>
                   Bagaimana cara mengajukan pendanaan riset?
@@ -183,7 +185,7 @@ export function Faqs() {
             >
               <AccordionHeader
                 onClick={() => handleOpen(8)}
-                className={`accordion-header ${open === 8 ? '!bg-[#3c7c60]' : ''}`}
+                className={`accordion-header ${open === 8 ? '!bg-infinite-green' : ''}`}
               >
                 <h3 className={`accordion-title ${open === 8 ? '!text-white' : ''}`}>
                   Bagaimana cara berkolaborasi dengan INFINITE jika saya adalah pihak eksternal?

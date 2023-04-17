@@ -46,7 +46,7 @@ export function InternalSidebar({ title, menus, backButton }: Props) {
   }, [getSidebarExtendedState]);
 
   const sidebarHeader = (
-    <header className="flex items-center sticky top-0 h-14 z-[11] pr-4 text-base text-white bg-[#3c7c60]">
+    <header className="flex items-center sticky top-0 h-14 z-[11] pr-4 text-base text-white bg-infinite-green">
       <div className="flex shrink-0 items-center justify-center w-14 text-center">
         {backButton ? (
           <ArrowBackRounded
@@ -95,7 +95,7 @@ export function InternalSidebar({ title, menus, backButton }: Props) {
               : null}
           </ul>
           <footer
-            className="hidden sticky bottom-0 z-[11] mt-auto text-[#3c7c60] bg-white border-t
+            className="hidden sticky bottom-0 z-[11] mt-auto text-infinite-green bg-white border-t
           border-gray-300 lg:flex lg:flex-col"
           >
             <button onClick={handleExtendButton} className="flex items-center h-14 pr-4 text-base ">

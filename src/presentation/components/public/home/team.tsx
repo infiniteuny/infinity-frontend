@@ -63,13 +63,13 @@ export function Team() {
         <div className="flex gap-4 justify-center">
           <IconButton
             size="sm"
-            className="team-button-prev !bg-[#3c7c60] !shadow-[#3c7c60]/20 hover:!shadow-[#3c7c60]/40"
+            className="team-button-prev !bg-infinite-green !shadow-infinite-green/20 hover:!shadow-infinite-green/40"
           >
             <KeyboardArrowLeftRounded />
           </IconButton>
           <IconButton
             size="sm"
-            className="team-button-next !bg-[#3c7c60] !shadow-[#3c7c60]/20 hover:!shadow-[#3c7c60]/40"
+            className="team-button-next !bg-infinite-green !shadow-infinite-green/20 hover:!shadow-infinite-green/40"
           >
             <KeyboardArrowRightRounded />
           </IconButton>

@@ -29,7 +29,7 @@ export function PublicHeader() {
   return (
     <header
       className={`flex items-center justify-between fixed top-0 w-full px-6 py-4 z-10 transition-all duration-300 ${
-        headerExpanded ? 'h-24 bg-transparent' : 'h-[74px] bg-[#3c7c60] shadow-md'
+        headerExpanded ? 'h-24 bg-transparent' : 'h-[74px] bg-infinite-green shadow-md'
       }`}
     >
       <div className="flex items-center justify-between w-full max-w-6xl mx-auto transition-all">

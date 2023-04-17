@@ -8,7 +8,7 @@ type Props = {
 export function PublicFooter({ menus }: Props) {
   return (
     <>
-      <section className="px-6 text-gray-700 bg-[#3c7c60] md:px-12 lg:px-18">
+      <section className="px-6 text-gray-700 bg-infinite-green md:px-12 lg:px-18">
         <div className="flex flex-col gap-10 py-10 max-w-6xl mx-auto items-center justify-center md:flex-row md:justify-between">
           <div>
             <InfiniteTextLogo width={180} height={65} />

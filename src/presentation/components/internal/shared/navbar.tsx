@@ -10,7 +10,7 @@ type Props = {
 export function InternalNavbar({ menus }: Props) {
   return (
     <div className="flex flex-grow items-center justify-end">
-      <ul className="hidden mr-3 text-center text-[#3c7c60] md:flex">
+      <ul className="hidden mr-3 text-center text-infinite-green md:flex">
         {menus &&
           menus.map((menu, i) => {
             if (menu.hasOwnProperty('path')) {
@@ -28,7 +28,10 @@ export function InternalNavbar({ menus }: Props) {
             }
           })}
       </ul>
-      <Button variant="text" className="flex flex-row items-center pl-2 pr-1 py-1 !text-[#3c7c60]">
+      <Button
+        variant="text"
+        className="flex flex-row items-center pl-2 pr-1 py-1 !text-infinite-green"
+      >
         <Avatar
           src="/assets/images/avatar-placeholder.jpg"
           alt="Avatar"

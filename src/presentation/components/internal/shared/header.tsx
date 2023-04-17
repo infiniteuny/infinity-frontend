@@ -20,13 +20,13 @@ export function InternalHeader() {
     >
       <IconButton
         variant="text"
-        className="!w-11 !max-w-[44px] !h-11 !max-h-11 !text-[#3c7c60] lg:hidden"
+        className="!w-11 !max-w-[44px] !h-11 !max-h-11 !text-infinite-green lg:hidden"
         onClick={() => setSidebarOpenedState(!sidebarOpened)}
       >
         <MenuRounded className="!text-3xl" />
       </IconButton>
       <div className="lg:w-[260px]">
-        <InfiniteLogo width={46} height={46} className="ml-8 fill-[#3c7c60] lg:mx-auto" />
+        <InfiniteLogo width={46} height={46} className="ml-8 fill-infinite-green lg:mx-auto" />
       </div>
       <InternalNavbar menus={Config.internal.nav.menus} />
     </header>

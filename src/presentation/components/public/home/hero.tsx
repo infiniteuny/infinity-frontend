@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export function Hero() {
   return (
-    <section className="px-6 bg-[#3c7c60] text-white md:px-12 lg:px-18">
+    <section className="px-6 bg-infinite-green text-white md:px-12 lg:px-18">
       <div
         className="py-28 min-h-screen max-w-6xl mx-auto flex flex-col items-center justify-center
         lg:flex-row-reverse"

@@ -50,11 +50,11 @@ export function SidebarDropdownMenu({ menu }: Props) {
         }`}
       >
         <div
-          className={`flex flex-row items-center pr-2 py-2 text-base text-[#3c7c60] rounded-r-full
+          className={`flex flex-row items-center pr-2 py-2 text-base text-infinite-green rounded-r-full
           transition-all ${
             !(sidebarExtended || sidebarHovered) && active
-              ? 'lg:text-white lg:bg-[#3c7c60]'
-              : 'hover:bg-[#3c7c60] hover:bg-opacity-10'
+              ? 'lg:text-white lg:bg-infinite-green'
+              : 'hover:bg-infinite-green hover:bg-opacity-10'
           } ${sidebarExtended || sidebarHovered ? '' : 'lg:pr-0 lg:rounded-r-none'}`}
         >
           {menu.icon ? (
@@ -68,12 +68,12 @@ export function SidebarDropdownMenu({ menu }: Props) {
               onClick={handleExpandButton}
               disabled={active}
               className="shrink-0 group !w-6 !h-6 ml-auto !bg-transparent !rounded-full !shadow-none
-            hover:!bg-[#3c7c60]"
+            hover:!bg-infinite-green"
             >
               {expanded ? (
-                <KeyboardArrowUpRounded className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
+                <KeyboardArrowUpRounded className="align-text-bottom fill-infinite-green group-hover:fill-white" />
               ) : (
-                <KeyboardArrowDownRounded className="align-text-bottom fill-[#3c7c60] group-hover:fill-white" />
+                <KeyboardArrowDownRounded className="align-text-bottom fill-infinite-green group-hover:fill-white" />
               )}
             </IconButton>
           ) : null}
