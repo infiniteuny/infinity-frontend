@@ -10,7 +10,7 @@
     "format": "next lint --fix"
   },
   "dependencies": {
-    "@emotion/react": "11.11.0",
+    "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@material-tailwind/react": "1.4.2",
     "@mui/icons-material": "5.11.16",
