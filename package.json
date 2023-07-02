@@ -10,36 +10,36 @@
     "format": "next lint --fix"
   },
   "dependencies": {
-    "@emotion/react": "11.10.6",
+    "@emotion/react": "11.11.1",
     "@emotion/server": "11.11.0",
-    "@emotion/styled": "11.10.6",
+    "@emotion/styled": "11.11.0",
     "@material-tailwind/react": "1.4.2",
     "@mui/icons-material": "5.11.16",
-    "@mui/material": "5.12.0",
+    "@mui/material": "5.13.6",
     "immer": "9.0.21",
     "inversify": "6.0.1",
-    "next": "13.3.0",
+    "next": "13.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "reflect-metadata": "0.1.13",
     "sharp": "0.32.1",
-    "swiper": "9.2.0",
-    "tss-react": "4.8.3",
-    "zustand": "4.3.7"
+    "swiper": "9.4.1",
+    "tss-react": "4.8.6",
+    "zustand": "4.3.8"
   },
   "devDependencies": {
-    "@types/node": "18.15.11",
-    "@types/react": "18.0.35",
-    "@types/react-dom": "18.0.11",
-    "@typescript-eslint/eslint-plugin": "5.58.0",
+    "@types/node": "18.16.18",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "18.2.6",
+    "@typescript-eslint/eslint-plugin": "5.60.1",
     "autoprefixer": "10.4.14",
-    "eslint": "8.38.0",
-    "eslint-config-next": "13.3.0",
+    "eslint": "8.43.0",
+    "eslint-config-next": "13.4.7",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
-    "postcss": "8.4.21",
-    "prettier": "2.8.7",
-    "tailwindcss": "3.3.1",
-    "typescript": "5.0.4"
+    "postcss": "8.4.24",
+    "prettier": "2.8.8",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.1.6"
   }
 }
