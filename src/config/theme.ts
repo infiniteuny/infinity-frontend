@@ -18,6 +18,15 @@ export const LightTheme = createM3Theme({
     error: tailwindConfig.theme?.colors?.error as unknown as M3Tone,
   },
   themeOptions: {
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+      },
+    },
     typography: {
       fontFamily: SansFont.style.fontFamily,
     },
@@ -38,6 +47,15 @@ export const DarkTheme = createM3Theme({
     error: tailwindConfig.theme?.colors?.error as unknown as M3Tone,
   },
   themeOptions: {
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+      },
+    },
     typography: {
       fontFamily: SansFont.style.fontFamily,
     },
