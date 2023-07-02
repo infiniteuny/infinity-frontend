@@ -11,18 +11,11 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
   title: {
-    default: Config.site.title + ' - ' + Config.site.tagline,
-    template: '%s - ' + Config.site.title,
+    default: `${Config.site.title} - ${Config.site.tagline}`,
+    template: `%s - ${Config.site.title}`,
   },
   description: Config.site.description,
-  icons: {
-    icon: '/favicon.ico',
-  },
 };
 
 export default function PublicLayout({ children }: Props) {
