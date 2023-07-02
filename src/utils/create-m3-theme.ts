@@ -2,10 +2,17 @@ import { alpha, darken, lighten } from '@mui/system';
 import { deepmerge } from '@mui/utils';
 import { Components, Theme, ThemeOptions, createTheme } from '@mui/material/styles';
 
-interface M3Tone {
+export interface M3Tone {
   0: string;
+  4: string;
+  5: string;
+  6: string;
   10: string;
+  12: string;
+  17: string;
   20: string;
+  22: string;
+  24: string;
   25: string;
   30: string;
   35: string;
@@ -14,14 +21,18 @@ interface M3Tone {
   60: string;
   70: string;
   80: string;
+  87: string;
   90: string;
+  92: string;
+  94: string;
   95: string;
+  96: string;
   98: string;
   99: string;
   100: string;
 }
 
-interface M3ThemeTones {
+export interface M3ColorTones {
   primary: M3Tone;
   secondary: M3Tone;
   tertiary: M3Tone;
@@ -30,9 +41,9 @@ interface M3ThemeTones {
   error: M3Tone;
 }
 
-type M3ThemeMode = 'dark' | 'light';
+export type M3ThemeMode = 'dark' | 'light';
 
-interface M3ColorTokens {
+export interface M3ColorScheme {
   primary: string;
   onPrimary: string;
 
@@ -61,14 +72,22 @@ interface M3ColorTokens {
   onBackground: string;
 
   surface: string;
+  surfaceDim: string;
+  surfaceBright: string;
   onSurface: string;
+
+  surfaceContainerLowest: string;
+  surfaceContainerLow: string;
+  surfaceContainer: string;
+  surfaceContainerHigh: string;
+  surfaceContainerHighest: string;
 
   surfaceVariant: string;
   onSurfaceVariant: string;
 
+  inversePrimary: string;
   inverseSurface: string;
   inverseOnSurface: string;
-  inversePrimary: string;
 
   outline: string;
   outlineVariant: string;
@@ -105,14 +124,22 @@ declare module '@mui/material/styles/createPalette' {
     onBackground?: PaletteColorOptions;
 
     surface?: PaletteColorOptions;
+    surfaceDim?: PaletteColorOptions;
+    surfaceBright?: PaletteColorOptions;
     onSurface?: PaletteColorOptions;
+
+    surfaceContainerLowest?: PaletteColorOptions;
+    surfaceContainerLow?: PaletteColorOptions;
+    surfaceContainer?: PaletteColorOptions;
+    surfaceContainerHigh?: PaletteColorOptions;
+    surfaceContainerHighest?: PaletteColorOptions;
 
     surfaceVariant?: PaletteColorOptions;
     onSurfaceVariant?: PaletteColorOptions;
 
+    inversePrimary?: PaletteColorOptions;
     inverseSurface?: PaletteColorOptions;
     inverseOnSurface?: PaletteColorOptions;
-    inversePrimary?: PaletteColorOptions;
 
     outline?: string;
     outlineVariant?: string;
@@ -148,14 +175,22 @@ declare module '@mui/material/styles/createPalette' {
     onBackground: PaletteColor;
 
     surface: PaletteColor;
+    surfaceDim: PaletteColor;
+    surfaceBright: PaletteColor;
     onSurface: PaletteColor;
+
+    surfaceContainerLowest: PaletteColor;
+    surfaceContainerLow: PaletteColor;
+    surfaceContainer: PaletteColor;
+    surfaceContainerHigh: PaletteColor;
+    surfaceContainerHighest: PaletteColor;
 
     surfaceVariant: PaletteColor;
     onSurfaceVariant: PaletteColor;
 
+    inversePrimary: PaletteColor;
     inverseSurface: PaletteColor;
     inverseOnSurface: PaletteColor;
-    inversePrimary: PaletteColor;
 
     outline: string;
     outlineVariant: string;
@@ -165,10 +200,10 @@ declare module '@mui/material/styles/createPalette' {
 
 declare module '@mui/material/styles/createTheme' {
   interface ThemeOptions {
-    tones?: M3ThemeTones;
+    tones?: M3ColorTones;
   }
   interface Theme {
-    tones?: M3ThemeTones;
+    tones?: M3ColorTones;
   }
 }
 
@@ -206,12 +241,82 @@ declare module '@mui/material/Fab' {
   }
 }
 
-export function createM3Theme(
-  mode: M3ThemeMode,
-  scheme: M3ColorTokens,
-  tones: M3ThemeTones,
-  themeOptions?: ThemeOptions,
-): Theme {
+export function createM3Theme({
+  mode,
+  tones,
+  scheme,
+  themeOptions,
+}: {
+  mode: M3ThemeMode;
+  tones: M3ColorTones;
+  scheme?: M3ColorScheme;
+  themeOptions?: ThemeOptions;
+}): Theme {
+  scheme = {
+    primary: scheme?.primary || (mode === 'light' ? tones.primary[40] : tones.primary[80]),
+    onPrimary: scheme?.onPrimary || (mode === 'light' ? tones.primary[100] : tones.primary[20]),
+    primaryContainer:
+      scheme?.primaryContainer || (mode === 'light' ? tones.primary[90] : tones.primary[30]),
+    onPrimaryContainer:
+      scheme?.onPrimaryContainer || (mode === 'light' ? tones.primary[10] : tones.primary[90]),
+    secondary: scheme?.secondary || (mode === 'light' ? tones.secondary[40] : tones.secondary[80]),
+    onSecondary:
+      scheme?.onSecondary || (mode === 'light' ? tones.secondary[100] : tones.secondary[20]),
+    secondaryContainer:
+      scheme?.secondaryContainer || (mode === 'light' ? tones.secondary[90] : tones.secondary[30]),
+    onSecondaryContainer:
+      scheme?.onSecondaryContainer ||
+      (mode === 'light' ? tones.secondary[10] : tones.secondary[90]),
+    tertiary: scheme?.tertiary || (mode === 'light' ? tones.tertiary[40] : tones.tertiary[80]),
+    onTertiary: scheme?.onTertiary || (mode === 'light' ? tones.tertiary[100] : tones.tertiary[20]),
+    tertiaryContainer:
+      scheme?.tertiaryContainer || (mode === 'light' ? tones.tertiary[90] : tones.tertiary[30]),
+    onTertiaryContainer:
+      scheme?.onTertiaryContainer || (mode === 'light' ? tones.tertiary[10] : tones.tertiary[90]),
+    error: scheme?.error || (mode === 'light' ? tones.error[40] : tones.error[80]),
+    onError: scheme?.onError || (mode === 'light' ? tones.error[100] : tones.error[20]),
+    errorContainer:
+      scheme?.errorContainer || (mode === 'light' ? tones.error[90] : tones.error[30]),
+    onErrorContainer:
+      scheme?.onErrorContainer || (mode === 'light' ? tones.error[10] : tones.error[90]),
+    background: scheme?.background || (mode === 'light' ? tones.neutral[98] : tones.neutral[6]),
+    onBackground:
+      scheme?.onBackground || (mode === 'light' ? tones.neutral[10] : tones.neutral[90]),
+    surface: scheme?.surface || (mode === 'light' ? tones.neutral[98] : tones.neutral[6]),
+    surfaceDim: scheme?.surfaceDim || (mode === 'light' ? tones.neutral[87] : tones.neutral[6]),
+    surfaceBright:
+      scheme?.surfaceBright || (mode === 'light' ? tones.neutral[98] : tones.neutral[24]),
+    onSurface: scheme?.onSurface || (mode === 'light' ? tones.neutral[10] : tones.neutral[90]),
+    surfaceContainerLowest:
+      scheme?.surfaceContainerLowest || (mode === 'light' ? tones.neutral[100] : tones.neutral[4]),
+    surfaceContainerLow:
+      scheme?.surfaceContainerLow || (mode === 'light' ? tones.neutral[96] : tones.neutral[10]),
+    surfaceContainer:
+      scheme?.surfaceContainer || (mode === 'light' ? tones.neutral[94] : tones.neutral[12]),
+    surfaceContainerHigh:
+      scheme?.surfaceContainerHigh || (mode === 'light' ? tones.neutral[92] : tones.neutral[17]),
+    surfaceContainerHighest:
+      scheme?.surfaceContainerHighest || (mode === 'light' ? tones.neutral[90] : tones.neutral[22]),
+    surfaceVariant:
+      scheme?.surfaceVariant ||
+      (mode === 'light' ? tones.neutralVariant[90] : tones.neutralVariant[30]),
+    onSurfaceVariant:
+      scheme?.onSurfaceVariant ||
+      (mode === 'light' ? tones.neutralVariant[30] : tones.neutralVariant[80]),
+    inversePrimary:
+      scheme?.inversePrimary || (mode === 'light' ? tones.primary[80] : tones.primary[40]),
+    inverseSurface:
+      scheme?.inverseSurface || (mode === 'light' ? tones.neutral[20] : tones.neutral[90]),
+    inverseOnSurface:
+      scheme?.inverseOnSurface || (mode === 'light' ? tones.neutral[95] : tones.neutral[20]),
+    outline:
+      scheme?.outline || (mode === 'light' ? tones.neutralVariant[50] : tones.neutralVariant[60]),
+    outlineVariant:
+      scheme?.outlineVariant ||
+      (mode === 'light' ? tones.neutralVariant[80] : tones.neutralVariant[30]),
+    shadow: scheme?.shadow || tones.neutral[0],
+  } as M3ColorScheme;
+
   const theme = createTheme(
     deepmerge(
       {
@@ -293,9 +398,37 @@ export function createM3Theme(
             main: scheme.surface,
             contrastText: scheme.onSurface,
           },
+          surfaceDim: {
+            main: scheme.surfaceDim,
+            contrastText: scheme.onSurface,
+          },
+          surfaceBright: {
+            main: scheme.surfaceBright,
+            contrastText: scheme.onSurface,
+          },
           onSurface: {
             main: scheme.onSurface,
             contrastText: scheme.surface,
+          },
+          surfaceContainerLowest: {
+            main: scheme.surfaceContainerLowest,
+            contrastText: scheme.onSurface,
+          },
+          surfaceContainerLow: {
+            main: scheme.surfaceContainerLow,
+            contrastText: scheme.onSurface,
+          },
+          surfaceContainer: {
+            main: scheme.surfaceContainer,
+            contrastText: scheme.onSurface,
+          },
+          surfaceContainerHigh: {
+            main: scheme.surfaceContainerHigh,
+            contrastText: scheme.onSurface,
+          },
+          surfaceContainerHighest: {
+            main: scheme.surfaceContainerHighest,
+            contrastText: scheme.onSurface,
           },
           surfaceVariant: {
             main: scheme.surfaceVariant,
@@ -306,22 +439,15 @@ export function createM3Theme(
             contrastText: scheme.surfaceVariant,
           },
           inverseSurface: {
-            main:
-              scheme.inverseSurface || (mode === 'light' ? tones?.neutral[20] : tones?.neutral[90]),
-            contrastText:
-              scheme.inverseOnSurface ||
-              (mode === 'light' ? tones?.neutral[95] : tones?.neutral[20]),
+            main: scheme.inverseSurface,
+            contrastText: scheme.inverseOnSurface,
           },
           inverseOnSurface: {
-            main:
-              scheme.inverseOnSurface ||
-              (mode === 'light' ? tones?.neutral[95] : tones?.neutral[20]),
-            contrastText:
-              scheme.inverseSurface || (mode === 'light' ? tones?.neutral[20] : tones?.neutral[90]),
+            main: scheme.inverseOnSurface,
+            contrastText: scheme.inverseSurface,
           },
           inversePrimary: {
-            main:
-              scheme.inversePrimary || (mode === 'light' ? tones?.neutral[80] : tones?.neutral[40]),
+            main: scheme.inversePrimary,
             contrastText: scheme.primary,
           },
           outline: scheme.outline,
