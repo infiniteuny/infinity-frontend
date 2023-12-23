@@ -14,15 +14,15 @@
     "@emotion/server": "11.11.0",
     "@emotion/styled": "11.11.0",
     "@material-tailwind/react": "2.1.7",
-    "@mui/icons-material": "5.15.0",
-    "@mui/material": "5.15.0",
+    "@mui/icons-material": "5.15.1",
+    "@mui/material": "5.15.1",
     "immer": "10.0.3",
     "inversify": "6.0.2",
     "next": "13.5.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "reflect-metadata": "0.2.1",
-    "sharp": "0.33.0",
+    "sharp": "0.33.1",
     "swiper": "9.4.1",
     "tss-react": "4.9.3",
     "zustand": "4.4.7"
@@ -30,16 +30,16 @@
   "devDependencies": {
     "@types/node": "18.19.3",
     "@types/react": "18.2.45",
-    "@types/react-dom": "18.2.17",
+    "@types/react-dom": "18.2.18",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "autoprefixer": "10.4.16",
-    "eslint": "8.55.0",
+    "eslint": "8.56.0",
     "eslint-config-next": "13.5.6",
     "eslint-config-prettier": "8.10.0",
     "eslint-plugin-prettier": "4.2.1",
     "postcss": "8.4.32",
     "prettier": "2.8.8",
-    "tailwindcss": "3.3.6",
+    "tailwindcss": "3.4.0",
     "typescript": "5.3.3"
   }
 }
