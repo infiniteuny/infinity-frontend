@@ -15,7 +15,7 @@
     "@emotion/styled": "11.11.0",
     "@material-tailwind/react": "2.1.8",
     "@mui/icons-material": "5.15.4",
-    "@mui/material": "5.15.4",
+    "@mui/material": "5.15.5",
     "immer": "10.0.3",
     "inversify": "6.0.2",
     "next": "13.5.6",
