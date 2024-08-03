@@ -14,8 +14,8 @@
     "@emotion/server": "11.11.0",
     "@emotion/styled": "11.13.0",
     "@material-tailwind/react": "2.1.9",
-    "@mui/icons-material": "5.16.5",
-    "@mui/material": "5.16.5",
+    "@mui/icons-material": "5.16.6",
+    "@mui/material": "5.16.6",
     "immer": "10.1.1",
     "inversify": "6.0.2",
     "next": "13.4.7",
@@ -24,7 +24,7 @@
     "reflect-metadata": "0.2.2",
     "sharp": "0.33.4",
     "swiper": "9.4.1",
-    "tss-react": "4.9.10",
+    "tss-react": "4.9.11",
     "zustand": "4.5.4"
   },
   "devDependencies": {
