@@ -10,9 +10,9 @@
     "format": "next lint --fix"
   },
   "dependencies": {
-    "@emotion/react": "11.13.3",
+    "@emotion/react": "11.13.5",
     "@emotion/server": "11.11.0",
-    "@emotion/styled": "11.13.0",
+    "@emotion/styled": "11.13.5",
     "@material-tailwind/react": "2.1.10",
     "@mui/icons-material": "5.16.7",
     "@mui/material": "5.16.7",
