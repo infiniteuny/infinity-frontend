@@ -24,7 +24,7 @@
     "reflect-metadata": "0.2.2",
     "sharp": "0.33.5",
     "swiper": "9.4.1",
-    "tss-react": "4.9.14",
+    "tss-react": "4.9.15",
     "zustand": "4.5.6"
   },
   "devDependencies": {
