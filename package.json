@@ -17,7 +17,7 @@
     "@mui/icons-material": "5.16.14",
     "@mui/material": "5.16.14",
     "immer": "10.1.1",
-    "inversify": "6.2.1",
+    "inversify": "6.2.2",
     "next": "13.4.7",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -28,7 +28,7 @@
     "zustand": "4.5.6"
   },
   "devDependencies": {
-    "@types/node": "18.19.74",
+    "@types/node": "18.19.75",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@typescript-eslint/eslint-plugin": "5.62.0",
