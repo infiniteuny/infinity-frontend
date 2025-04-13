@@ -355,7 +355,7 @@ export function createM3Theme({
               divider: tones.neutralVariant[30],
             },
           },
-        },  
+        },
       } as ThemeOptions,
       themeOptions,
     ),

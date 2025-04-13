@@ -42,7 +42,7 @@ const colors: M3ColorTones = {
     95: '#def7e6',
     98: '#e8fff0',
     99: '#f4fff6',
-    100: '#ffffff',  
+    100: '#ffffff',
   },
   tertiary: {
     0: '#000000',
@@ -62,7 +62,7 @@ const colors: M3ColorTones = {
     95: '#def4ff',
     98: '#f3faff',
     99: '#fafdff',
-    100: '#ffffff',  
+    100: '#ffffff',
   },
   neutral: {
     0: '#000000',
@@ -134,7 +134,7 @@ const colors: M3ColorTones = {
     99: '#fffbff',
     100: '#ffffff',
   },
-}
+};
 
 export const Theme = createM3Theme({
   tones: colors,
