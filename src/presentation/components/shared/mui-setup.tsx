@@ -2,7 +2,7 @@
 
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { CssBaseline } from '@mui/material';
-import { LightTheme } from '@/config';
+import { Theme } from '@/config';
 import { ReactNode } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -13,7 +13,7 @@ type Props = {
 export function MuiSetup({ children }: Props) {
   return (
     <AppRouterCacheProvider options={{ key: 'css', enableCssLayer: true }}>
-      <ThemeProvider theme={LightTheme}>
+      <ThemeProvider theme={Theme}>
         <CssBaseline />
         {children}
       </ThemeProvider>

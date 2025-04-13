@@ -4,15 +4,10 @@ import { Components, Theme, ThemeOptions, createTheme } from '@mui/material/styl
 
 export interface M3Tone {
   0: string;
-  4: string;
   5: string;
-  6: string;
   10: string;
-  12: string;
-  17: string;
+  15: string;
   20: string;
-  22: string;
-  24: string;
   25: string;
   30: string;
   35: string;
@@ -21,12 +16,8 @@ export interface M3Tone {
   60: string;
   70: string;
   80: string;
-  87: string;
   90: string;
-  92: string;
-  94: string;
   95: string;
-  96: string;
   98: string;
   99: string;
   100: string;
@@ -36,438 +27,335 @@ export interface M3ColorTones {
   primary: M3Tone;
   secondary: M3Tone;
   tertiary: M3Tone;
-  neutral: M3Tone;
+  neutral: M3Tone & {
+    4: string;
+    6: string;
+    12: string;
+    17: string;
+    22: string;
+    24: string;
+    87: string;
+    92: string;
+    94: string;
+    96: string;
+  };
   neutralVariant: M3Tone;
   error: M3Tone;
 }
 
-export type M3ThemeMode = 'dark' | 'light';
-
-export interface M3ColorScheme {
-  primary: string;
-  onPrimary: string;
-
-  primaryContainer: string;
-  onPrimaryContainer: string;
-
-  secondary: string;
-  onSecondary: string;
-
-  secondaryContainer: string;
-  onSecondaryContainer: string;
-
-  tertiary: string;
-  onTertiary: string;
-
-  tertiaryContainer: string;
-  onTertiaryContainer: string;
-
-  error: string;
-  onError: string;
-
-  errorContainer: string;
-  onErrorContainer: string;
-
-  background: string;
-  onBackground: string;
-
-  surface: string;
-  surfaceDim: string;
-  surfaceBright: string;
-  onSurface: string;
-
-  surfaceContainerLowest: string;
-  surfaceContainerLow: string;
-  surfaceContainer: string;
-  surfaceContainerHigh: string;
-  surfaceContainerHighest: string;
-
-  surfaceVariant: string;
-  onSurfaceVariant: string;
-
-  inversePrimary: string;
-  inverseSurface: string;
-  inverseOnSurface: string;
-
-  outline: string;
-  outlineVariant: string;
-  shadow: string;
-}
-
-declare module '@mui/material/styles/createPalette' {
-  interface PaletteOptions {
-    primary?: PaletteColorOptions;
-    onPrimary?: PaletteColorOptions;
-
-    primaryContainer?: PaletteColorOptions;
-    onPrimaryContainer?: PaletteColorOptions;
-
-    secondary?: PaletteColorOptions;
-    onSecondary?: PaletteColorOptions;
-
-    secondaryContainer?: PaletteColorOptions;
-    onSecondaryContainer?: PaletteColorOptions;
-
-    tertiary?: PaletteColorOptions;
-    onTertiary?: PaletteColorOptions;
-
-    tertiaryContainer?: PaletteColorOptions;
-    onTertiaryContainer?: PaletteColorOptions;
-
-    error?: PaletteColorOptions;
-    onError?: PaletteColorOptions;
-
-    errorContainer?: PaletteColorOptions;
-    onErrorContainer?: PaletteColorOptions;
-
-    background2?: PaletteColorOptions;
-    onBackground?: PaletteColorOptions;
-
-    surface?: PaletteColorOptions;
-    surfaceDim?: PaletteColorOptions;
-    surfaceBright?: PaletteColorOptions;
-    onSurface?: PaletteColorOptions;
-
-    surfaceContainerLowest?: PaletteColorOptions;
-    surfaceContainerLow?: PaletteColorOptions;
-    surfaceContainer?: PaletteColorOptions;
-    surfaceContainerHigh?: PaletteColorOptions;
-    surfaceContainerHighest?: PaletteColorOptions;
-
-    surfaceVariant?: PaletteColorOptions;
-    onSurfaceVariant?: PaletteColorOptions;
-
-    inversePrimary?: PaletteColorOptions;
-    inverseSurface?: PaletteColorOptions;
-    inverseOnSurface?: PaletteColorOptions;
-
-    outline?: string;
-    outlineVariant?: string;
-    shadow?: string;
-  }
-
-  interface Palette {
-    primary: PaletteColor;
-    onPrimary: PaletteColor;
-
-    primaryContainer: PaletteColor;
-    onPrimaryContainer: PaletteColor;
-
-    secondary: PaletteColor;
-    onSecondary: PaletteColor;
-
-    secondaryContainer: PaletteColor;
-    onSecondaryContainer: PaletteColor;
-
-    tertiary: PaletteColor;
-    onTertiary: PaletteColor;
-
-    tertiaryContainer: PaletteColor;
-    onTertiaryContainer: PaletteColor;
-
-    error: PaletteColor;
-    onError: PaletteColor;
-
-    errorContainer: PaletteColor;
-    onErrorContainer: PaletteColor;
-
-    background2: PaletteColor;
-    onBackground: PaletteColor;
-
-    surface: PaletteColor;
-    surfaceDim: PaletteColor;
-    surfaceBright: PaletteColor;
-    onSurface: PaletteColor;
-
-    surfaceContainerLowest: PaletteColor;
-    surfaceContainerLow: PaletteColor;
-    surfaceContainer: PaletteColor;
-    surfaceContainerHigh: PaletteColor;
-    surfaceContainerHighest: PaletteColor;
-
-    surfaceVariant: PaletteColor;
-    onSurfaceVariant: PaletteColor;
-
-    inversePrimary: PaletteColor;
-    inverseSurface: PaletteColor;
-    inverseOnSurface: PaletteColor;
-
-    outline: string;
-    outlineVariant: string;
-    shadow: string;
-  }
-}
-
-declare module '@mui/material/styles/createTheme' {
-  interface ThemeOptions {
-    tones?: M3ColorTones;
-  }
-  interface Theme {
-    tones?: M3ColorTones;
-  }
-}
-
-declare module '@mui/material/Button' {
-  interface ButtonPropsVariantOverrides {
-    elevated: true;
-    filled: true;
-    tonal: true;
-    contained: false;
-  }
-
-  interface ButtonPropsColorOverrides {
-    tertiary: true;
-    surface: true;
-  }
-}
-
-declare module '@mui/material/Paper' {
-  interface PaperPropsVariantOverrides {
-    filled: true;
-  }
-}
-
-declare module '@mui/material/Fab' {
-  interface FabPropsVariantOverrides {
-    primary: true;
-    secondary: true;
-    tertiary: true;
-    surface: true;
-  }
-
-  interface FabPropsColorOverrides {
-    tertiary: true;
-    surface: true;
-  }
-}
-
 export function createM3Theme({
-  mode,
   tones,
-  scheme,
   themeOptions,
 }: {
-  mode: M3ThemeMode;
   tones: M3ColorTones;
-  scheme?: M3ColorScheme;
   themeOptions?: ThemeOptions;
 }): Theme {
-  scheme = {
-    primary: scheme?.primary || (mode === 'light' ? tones.primary[40] : tones.primary[80]),
-    onPrimary: scheme?.onPrimary || (mode === 'light' ? tones.primary[100] : tones.primary[20]),
-    primaryContainer:
-      scheme?.primaryContainer || (mode === 'light' ? tones.primary[90] : tones.primary[30]),
-    onPrimaryContainer:
-      scheme?.onPrimaryContainer || (mode === 'light' ? tones.primary[10] : tones.primary[90]),
-    secondary: scheme?.secondary || (mode === 'light' ? tones.secondary[40] : tones.secondary[80]),
-    onSecondary:
-      scheme?.onSecondary || (mode === 'light' ? tones.secondary[100] : tones.secondary[20]),
-    secondaryContainer:
-      scheme?.secondaryContainer || (mode === 'light' ? tones.secondary[90] : tones.secondary[30]),
-    onSecondaryContainer:
-      scheme?.onSecondaryContainer ||
-      (mode === 'light' ? tones.secondary[10] : tones.secondary[90]),
-    tertiary: scheme?.tertiary || (mode === 'light' ? tones.tertiary[40] : tones.tertiary[80]),
-    onTertiary: scheme?.onTertiary || (mode === 'light' ? tones.tertiary[100] : tones.tertiary[20]),
-    tertiaryContainer:
-      scheme?.tertiaryContainer || (mode === 'light' ? tones.tertiary[90] : tones.tertiary[30]),
-    onTertiaryContainer:
-      scheme?.onTertiaryContainer || (mode === 'light' ? tones.tertiary[10] : tones.tertiary[90]),
-    error: scheme?.error || (mode === 'light' ? tones.error[40] : tones.error[80]),
-    onError: scheme?.onError || (mode === 'light' ? tones.error[100] : tones.error[20]),
-    errorContainer:
-      scheme?.errorContainer || (mode === 'light' ? tones.error[90] : tones.error[30]),
-    onErrorContainer:
-      scheme?.onErrorContainer || (mode === 'light' ? tones.error[10] : tones.error[90]),
-    background: scheme?.background || (mode === 'light' ? tones.neutral[98] : tones.neutral[6]),
-    onBackground:
-      scheme?.onBackground || (mode === 'light' ? tones.neutral[10] : tones.neutral[90]),
-    surface: scheme?.surface || (mode === 'light' ? tones.neutral[98] : tones.neutral[6]),
-    surfaceDim: scheme?.surfaceDim || (mode === 'light' ? tones.neutral[87] : tones.neutral[6]),
-    surfaceBright:
-      scheme?.surfaceBright || (mode === 'light' ? tones.neutral[98] : tones.neutral[24]),
-    onSurface: scheme?.onSurface || (mode === 'light' ? tones.neutral[10] : tones.neutral[90]),
-    surfaceContainerLowest:
-      scheme?.surfaceContainerLowest || (mode === 'light' ? tones.neutral[100] : tones.neutral[4]),
-    surfaceContainerLow:
-      scheme?.surfaceContainerLow || (mode === 'light' ? tones.neutral[96] : tones.neutral[10]),
-    surfaceContainer:
-      scheme?.surfaceContainer || (mode === 'light' ? tones.neutral[94] : tones.neutral[12]),
-    surfaceContainerHigh:
-      scheme?.surfaceContainerHigh || (mode === 'light' ? tones.neutral[92] : tones.neutral[17]),
-    surfaceContainerHighest:
-      scheme?.surfaceContainerHighest || (mode === 'light' ? tones.neutral[90] : tones.neutral[22]),
-    surfaceVariant:
-      scheme?.surfaceVariant ||
-      (mode === 'light' ? tones.neutralVariant[90] : tones.neutralVariant[30]),
-    onSurfaceVariant:
-      scheme?.onSurfaceVariant ||
-      (mode === 'light' ? tones.neutralVariant[30] : tones.neutralVariant[80]),
-    inversePrimary:
-      scheme?.inversePrimary || (mode === 'light' ? tones.primary[80] : tones.primary[40]),
-    inverseSurface:
-      scheme?.inverseSurface || (mode === 'light' ? tones.neutral[20] : tones.neutral[90]),
-    inverseOnSurface:
-      scheme?.inverseOnSurface || (mode === 'light' ? tones.neutral[95] : tones.neutral[20]),
-    outline:
-      scheme?.outline || (mode === 'light' ? tones.neutralVariant[50] : tones.neutralVariant[60]),
-    outlineVariant:
-      scheme?.outlineVariant ||
-      (mode === 'light' ? tones.neutralVariant[80] : tones.neutralVariant[30]),
-    shadow: scheme?.shadow || tones.neutral[0],
-  } as M3ColorScheme;
-
   const theme = createTheme(
     deepmerge(
       {
-        palette: {
-          mode,
-          primary: {
-            main: scheme.primary,
-            contrastText: scheme.onPrimary,
-          },
-          onPrimary: {
-            main: scheme.onPrimary,
-            contrastText: scheme.primary,
-          },
-          primaryContainer: {
-            main: scheme.primaryContainer,
-            contrastText: scheme.onPrimaryContainer,
-          },
-          onPrimaryContainer: {
-            main: scheme.onPrimaryContainer,
-            contrastText: scheme.primaryContainer,
-          },
-          secondary: {
-            main: scheme.secondary,
-            contrastText: scheme.onSecondary,
-          },
-          onSecondary: {
-            main: scheme.onSecondary,
-            contrastText: scheme.secondary,
-          },
-          secondaryContainer: {
-            main: scheme.secondaryContainer,
-            contrastText: scheme.onSecondaryContainer,
-          },
-          onSecondaryContainer: {
-            main: scheme.onSecondaryContainer,
-            contrastText: scheme.secondaryContainer,
-          },
-          tertiary: {
-            main: scheme.tertiary,
-            contrastText: scheme.onTertiary,
-          },
-          onTertiary: {
-            main: scheme.onTertiary,
-            contrastText: scheme.tertiary,
-          },
-          tertiaryContainer: {
-            main: scheme.tertiaryContainer,
-            contrastText: scheme.onTertiaryContainer,
-          },
-          onTertiaryContainer: {
-            main: scheme.onTertiaryContainer,
-            contrastText: scheme.tertiaryContainer,
-          },
-          error: {
-            main: scheme.error,
-            contrastText: scheme.onError,
-          },
-          onError: {
-            main: scheme.onError,
-            contrastText: scheme.error,
-          },
-          errorContainer: {
-            main: scheme.errorContainer,
-            contrastText: scheme.onErrorContainer,
-          },
-          onErrorContainer: {
-            main: scheme.onErrorContainer,
-            contrastText: scheme.errorContainer,
-          },
-          background2: {
-            main: scheme.background,
-            contrastText: scheme.onBackground,
-          },
-          onBackground: {
-            main: scheme.onBackground,
-            contrastText: scheme.background,
-          },
-          surface: {
-            main: scheme.surface,
-            contrastText: scheme.onSurface,
-          },
-          surfaceDim: {
-            main: scheme.surfaceDim,
-            contrastText: scheme.onSurface,
-          },
-          surfaceBright: {
-            main: scheme.surfaceBright,
-            contrastText: scheme.onSurface,
-          },
-          onSurface: {
-            main: scheme.onSurface,
-            contrastText: scheme.surface,
-          },
-          surfaceContainerLowest: {
-            main: scheme.surfaceContainerLowest,
-            contrastText: scheme.onSurface,
-          },
-          surfaceContainerLow: {
-            main: scheme.surfaceContainerLow,
-            contrastText: scheme.onSurface,
-          },
-          surfaceContainer: {
-            main: scheme.surfaceContainer,
-            contrastText: scheme.onSurface,
-          },
-          surfaceContainerHigh: {
-            main: scheme.surfaceContainerHigh,
-            contrastText: scheme.onSurface,
-          },
-          surfaceContainerHighest: {
-            main: scheme.surfaceContainerHighest,
-            contrastText: scheme.onSurface,
-          },
-          surfaceVariant: {
-            main: scheme.surfaceVariant,
-            contrastText: scheme.onSurfaceVariant,
-          },
-          onSurfaceVariant: {
-            main: scheme.onSurfaceVariant,
-            contrastText: scheme.surfaceVariant,
-          },
-          inverseSurface: {
-            main: scheme.inverseSurface,
-            contrastText: scheme.inverseOnSurface,
-          },
-          inverseOnSurface: {
-            main: scheme.inverseOnSurface,
-            contrastText: scheme.inverseSurface,
-          },
-          inversePrimary: {
-            main: scheme.inversePrimary,
-            contrastText: scheme.primary,
-          },
-          outline: scheme.outline,
-          outlineVariant: scheme.outlineVariant,
-          shadow: scheme.shadow,
-          background: {
-            default: scheme.background,
-            paper: scheme.surface,
-          },
-          common: {
-            white: scheme.background,
-            black: scheme.onBackground,
-          },
-          text: {
-            primary: scheme.onSurface,
-            secondary: scheme.onSecondaryContainer,
-          },
-          divider: scheme.outlineVariant,
+        cssVariables: {
+          colorSchemeSelector: 'class',
         },
-        tones,
+        colorSchemes: {
+          light: {
+            palette: {
+              mode: 'light',
+              primary: {
+                main: tones.primary[40],
+                contrastText: tones.primary[100],
+              },
+              onPrimary: {
+                main: tones.primary[100],
+                contrastText: tones.primary[40],
+              },
+              primaryContainer: {
+                main: tones.primary[90],
+                contrastText: tones.primary[30],
+              },
+              onPrimaryContainer: {
+                main: tones.primary[30],
+                contrastText: tones.primary[90],
+              },
+              secondary: {
+                main: tones.secondary[40],
+                contrastText: tones.secondary[100],
+              },
+              onSecondary: {
+                main: tones.secondary[100],
+                contrastText: tones.secondary[40],
+              },
+              secondaryContainer: {
+                main: tones.secondary[90],
+                contrastText: tones.secondary[30],
+              },
+              onSecondaryContainer: {
+                main: tones.secondary[30],
+                contrastText: tones.secondary[90],
+              },
+              tertiary: {
+                main: tones.tertiary[40],
+                contrastText: tones.tertiary[100],
+              },
+              onTertiary: {
+                main: tones.tertiary[100],
+                contrastText: tones.tertiary[40],
+              },
+              tertiaryContainer: {
+                main: tones.tertiary[90],
+                contrastText: tones.tertiary[30],
+              },
+              onTertiaryContainer: {
+                main: tones.tertiary[30],
+                contrastText: tones.tertiary[90],
+              },
+              error: {
+                main: tones.error[40],
+                contrastText: tones.error[100],
+              },
+              onError: {
+                main: tones.error[100],
+                contrastText: tones.error[40],
+              },
+              errorContainer: {
+                main: tones.error[90],
+                contrastText: tones.error[30],
+              },
+              onErrorContainer: {
+                main: tones.error[30],
+                contrastText: tones.error[90],
+              },
+              background2: {
+                main: tones.neutral[98],
+                contrastText: tones.neutral[10],
+              },
+              onBackground: {
+                main: tones.neutral[10],
+                contrastText: tones.neutral[98],
+              },
+              surface: {
+                main: tones.neutral[98],
+                contrastText: tones.neutral[10],
+              },
+              surfaceDim: {
+                main: tones.neutral[87],
+                contrastText: tones.neutral[10],
+              },
+              surfaceBright: {
+                main: tones.neutral[98],
+                contrastText: tones.neutral[10],
+              },
+              onSurface: {
+                main: tones.neutral[10],
+                contrastText: tones.neutral[98],
+              },
+              surfaceContainerLowest: {
+                main: tones.neutral[100],
+                contrastText: tones.neutral[10],
+              },
+              surfaceContainerLow: {
+                main: tones.neutral[96],
+                contrastText: tones.neutral[10],
+              },
+              surfaceContainer: {
+                main: tones.neutral[94],
+                contrastText: tones.neutral[10],
+              },
+              surfaceContainerHigh: {
+                main: tones.neutral[92],
+                contrastText: tones.neutral[10],
+              },
+              surfaceContainerHighest: {
+                main: tones.neutral[90],
+                contrastText: tones.neutral[10],
+              },
+              surfaceVariant: {
+                main: tones.neutralVariant[90],
+                contrastText: tones.neutralVariant[30],
+              },
+              onSurfaceVariant: {
+                main: tones.neutralVariant[30],
+                contrastText: tones.neutralVariant[90],
+              },
+              inverseSurface: {
+                main: tones.neutral[20],
+                contrastText: tones.neutral[95],
+              },
+              inverseOnSurface: {
+                main: tones.neutral[95],
+                contrastText: tones.neutral[20],
+              },
+              inversePrimary: {
+                main: tones.primary[80],
+                contrastText: tones.primary[40],
+              },
+              outline: tones.neutralVariant[50],
+              outlineVariant: tones.neutralVariant[80],
+              shadow: tones.neutral[0],
+              background: {
+                default: tones.neutral[98],
+                paper: tones.neutral[98],
+              },
+              common: {
+                white: tones.neutral[98],
+                black: tones.neutral[10],
+              },
+              text: {
+                primary: tones.neutral[10],
+                secondary: tones.secondary[30],
+              },
+              divider: tones.neutralVariant[80],
+            },
+          },
+          dark: {
+            mode: 'dark',
+            palette: {
+              primary: {
+                main: tones.primary[80],
+                contrastText: tones.primary[20],
+              },
+              onPrimary: {
+                main: tones.primary[20],
+                contrastText: tones.primary[80],
+              },
+              primaryContainer: {
+                main: tones.primary[30],
+                contrastText: tones.primary[90],
+              },
+              onPrimaryContainer: {
+                main: tones.primary[90],
+                contrastText: tones.primary[30],
+              },
+              secondary: {
+                main: tones.secondary[80],
+                contrastText: tones.secondary[20],
+              },
+              onSecondary: {
+                main: tones.secondary[20],
+                contrastText: tones.secondary[80],
+              },
+              secondaryContainer: {
+                main: tones.secondary[30],
+                contrastText: tones.secondary[90],
+              },
+              onSecondaryContainer: {
+                main: tones.secondary[90],
+                contrastText: tones.secondary[30],
+              },
+              tertiary: {
+                main: tones.tertiary[80],
+                contrastText: tones.tertiary[20],
+              },
+              onTertiary: {
+                main: tones.tertiary[20],
+                contrastText: tones.tertiary[80],
+              },
+              tertiaryContainer: {
+                main: tones.tertiary[30],
+                contrastText: tones.tertiary[90],
+              },
+              onTertiaryContainer: {
+                main: tones.tertiary[90],
+                contrastText: tones.tertiary[30],
+              },
+              error: {
+                main: tones.error[80],
+                contrastText: tones.error[20],
+              },
+              onError: {
+                main: tones.error[20],
+                contrastText: tones.error[80],
+              },
+              errorContainer: {
+                main: tones.error[30],
+                contrastText: tones.error[90],
+              },
+              onErrorContainer: {
+                main: tones.error[90],
+                contrastText: tones.error[30],
+              },
+              background2: {
+                main: tones.neutral[6],
+                contrastText: tones.neutral[90],
+              },
+              onBackground: {
+                main: tones.neutral[90],
+                contrastText: tones.neutral[6],
+              },
+              surface: {
+                main: tones.neutral[6],
+                contrastText: tones.neutral[90],
+              },
+              surfaceDim: {
+                main: tones.neutral[6],
+                contrastText: tones.neutral[90],
+              },
+              surfaceBright: {
+                main: tones.neutral[24],
+                contrastText: tones.neutral[90],
+              },
+              onSurface: {
+                main: tones.neutral[90],
+                contrastText: tones.neutral[98],
+              },
+              surfaceContainerLowest: {
+                main: tones.neutral[4],
+                contrastText: tones.neutral[90],
+              },
+              surfaceContainerLow: {
+                main: tones.neutral[10],
+                contrastText: tones.neutral[90],
+              },
+              surfaceContainer: {
+                main: tones.neutral[12],
+                contrastText: tones.neutral[90],
+              },
+              surfaceContainerHigh: {
+                main: tones.neutral[17],
+                contrastText: tones.neutral[90],
+              },
+              surfaceContainerHighest: {
+                main: tones.neutral[22],
+                contrastText: tones.neutral[90],
+              },
+              surfaceVariant: {
+                main: tones.neutralVariant[30],
+                contrastText: tones.neutralVariant[80],
+              },
+              onSurfaceVariant: {
+                main: tones.neutralVariant[80],
+                contrastText: tones.neutralVariant[30],
+              },
+              inverseSurface: {
+                main: tones.neutral[90],
+                contrastText: tones.neutral[20],
+              },
+              inverseOnSurface: {
+                main: tones.neutral[20],
+                contrastText: tones.neutral[90],
+              },
+              inversePrimary: {
+                main: tones.primary[40],
+                contrastText: tones.primary[80],
+              },
+              outline: tones.neutralVariant[60],
+              outlineVariant: tones.neutralVariant[30],
+              shadow: tones.neutral[0],
+              background: {
+                default: tones.neutral[98],
+                paper: tones.neutral[98],
+              },
+              common: {
+                white: tones.neutral[6],
+                black: tones.neutral[90],
+              },
+              text: {
+                primary: tones.neutral[90],
+                secondary: tones.secondary[90],
+              },
+              divider: tones.neutralVariant[30],
+            },
+          },
+        },  
       } as ThemeOptions,
       themeOptions,
     ),
