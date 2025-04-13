@@ -18,7 +18,4 @@ module.exports = {
       transform: '@mui/icons-material/{{member}}',
     },
   },
-  experimental: {
-    appDir: true,
-  },
 };
