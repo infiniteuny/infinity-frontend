@@ -1,7 +1,5 @@
 'use client';
 
-import { Button, Card, Input, Textarea } from '@material-tailwind/react';
-
 export function Contact() {
   return (
     <section id="contact" className="px-6 text-gray-700 bg-white md:px-12 lg:px-18">
@@ -9,7 +7,7 @@ export function Contact() {
         <h2 className="mb-10 text-3xl text-center font-semibold">Contact Us</h2>
         <div className="flex flex-col gap-10 items-center justify-center lg:flex-row">
           <div className="flex-1">
-            <Card color="transparent" shadow={false} className="flex flex-col gap-4">
+            {/* <Card color="transparent" shadow={false} className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <Input size="lg" label="Name" />
                 <Input size="lg" label="Email" />
@@ -22,7 +20,7 @@ export function Contact() {
               >
                 Send
               </Button>
-            </Card>
+            </Card> */}
           </div>
           <div className="flex-1">
             <div className="aspect-[4/3]">

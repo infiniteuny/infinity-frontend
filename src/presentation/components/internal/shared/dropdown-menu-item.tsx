@@ -23,7 +23,7 @@ export function SidebarDropdownMenuItem({ menu }: Props) {
     <Link href={menu.path}>
       <li
         className={`flex items-center pl-14 pr-4 py-1 mr-10 text-base text-infinite-green rounded-r-full ${
-          active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green hover:bg-opacity-10'
+          active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green/10'
         }`}
       >
         <span className="overflow-hidden text-ellipsis">{menu.name}</span>

@@ -1,5 +1,5 @@
 import { Icon } from '@/presentation/components/shared';
-import { internalStore, useStore } from '@/presentation/hooks';
+import { internalStore, useShallow, useStore } from '@/presentation/hooks';
 import { PathMenu } from '@/domain/entities';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -12,10 +12,10 @@ type Props = {
 export function SidebarMenu({ menu }: Props) {
   const path = usePathname();
   const [active, setActive] = useState(false);
-  const [sidebarExtended, sidebarHovered] = useStore(internalStore, (s) => [
+  const [sidebarExtended, sidebarHovered] = useStore(internalStore, useShallow((s) => [
     s.sidebarExtended,
     s.sidebarHovered,
-  ]);
+  ]));
 
   useEffect(() => {
     if (menu.path === path) {
@@ -35,7 +35,7 @@ export function SidebarMenu({ menu }: Props) {
       <li
         className={`flex items-center pr-4 py-2 text-base text-infinite-green rounded-r-full
       transition-all ${
-        active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green hover:bg-opacity-10'
+        active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green/10'
       } ${sidebarExtended || sidebarHovered ? '' : 'lg:pr-0 lg:rounded-r-none'}`}
       >
         {menu.icon ? (

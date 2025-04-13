@@ -4,7 +4,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import { Autoplay, Navigation } from 'swiper';
-import { IconButton } from '@material-tailwind/react';
+import { IconButton } from '@mui/material';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@mui/icons-material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { TeamMember } from '@/domain/entities';

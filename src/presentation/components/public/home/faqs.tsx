@@ -2,7 +2,6 @@
 
 import '@/presentation/styles/public/home/faqs.css';
 import Image from 'next/image';
-import { Accordion, AccordionHeader, AccordionBody } from '@material-tailwind/react';
 import { AccordionIcon } from './accordion-icon';
 import { useState } from 'react';
 
@@ -26,7 +25,7 @@ export function Faqs() {
             />
           </div>
           <div className="lg:flex-[3]">
-            <Accordion
+            {/* <Accordion
               open={open === 1}
               icon={<AccordionIcon id={1} open={open} />}
               className="mb-2"
@@ -198,7 +197,7 @@ export function Faqs() {
                   hati siap berkolaborasi.
                 </p>
               </AccordionBody>
-            </Accordion>
+            </Accordion> */}
           </div>
         </div>
       </div>

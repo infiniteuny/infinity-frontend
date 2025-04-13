@@ -1,5 +1,4 @@
 import { KeyboardArrowDownRounded } from '@mui/icons-material';
-import { Avatar, Button } from '@material-tailwind/react';
 import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
 import Link from 'next/link';
 
@@ -28,7 +27,7 @@ export function InternalNavbar({ menus }: Props) {
             }
           })}
       </ul>
-      <Button
+      {/* <Button
         variant="text"
         className="flex flex-row items-center pl-2 pr-1 py-1 !text-infinite-green"
       >
@@ -40,7 +39,7 @@ export function InternalNavbar({ menus }: Props) {
           className="shrink-0"
         />
         <KeyboardArrowDownRounded className="ml-1 !text-md" />
-      </Button>
+      </Button> */}
     </div>
   );
 }

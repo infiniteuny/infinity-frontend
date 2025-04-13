@@ -1,8 +1,8 @@
 'use client';
 
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { CssBaseline } from '@mui/material';
 import { LightTheme } from '@/config';
-import { NextAppDirEmotionCacheProvider } from 'tss-react/next/appDir';
 import { ReactNode } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -12,11 +12,11 @@ type Props = {
 
 export function MuiSetup({ children }: Props) {
   return (
-    <NextAppDirEmotionCacheProvider options={{ key: 'css' }}>
+    <AppRouterCacheProvider options={{ key: 'css', enableCssLayer: true }}>
       <ThemeProvider theme={LightTheme}>
         <CssBaseline />
         {children}
       </ThemeProvider>
-    </NextAppDirEmotionCacheProvider>
+    </AppRouterCacheProvider>
   );
 }

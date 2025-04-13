@@ -1,17 +1,17 @@
 'use client';
 
 import { Config } from '@/config';
-import { IconButton } from '@material-tailwind/react';
+import { IconButton } from '@mui/material';
 import { InfiniteLogo } from '@/presentation/components/shared';
 import { InternalNavbar } from './navbar';
 import { MenuRounded } from '@mui/icons-material';
-import { internalStore, useStore } from '@/presentation/hooks';
+import { internalStore, useShallow, useStore } from '@/presentation/hooks';
 
 export function InternalHeader() {
-  const [sidebarOpened, setSidebarOpenedState] = useStore(internalStore, (s) => [
+  const [sidebarOpened, setSidebarOpenedState] = useStore(internalStore, useShallow((s) => [
     s.sidebarOpened,
     s.setSidebarOpenedState,
-  ]);
+  ]));
 
   return (
     <header

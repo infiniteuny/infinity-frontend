@@ -1,7 +1,7 @@
 import { KeyboardArrowDownRounded, KeyboardArrowUpRounded } from '@mui/icons-material';
 import { Icon } from '@/presentation/components/shared';
-import { IconButton } from '@material-tailwind/react';
-import { internalStore, useStore } from '@/presentation/hooks';
+import { IconButton } from '@mui/material';
+import { internalStore, useShallow, useStore } from '@/presentation/hooks';
 import { MouseEvent, useEffect, useState } from 'react';
 import { NestedMenu, PathMenu } from '@/domain/entities';
 import { SidebarDropdownMenuItem } from './dropdown-menu-item';
@@ -16,11 +16,15 @@ export function SidebarDropdownMenu({ menu }: Props) {
   const path = usePathname();
   const [active, setActive] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [sidebarOpened, sidebarExtended, sidebarHovered] = useStore(internalStore, (s) => [
+  const [
+    sidebarOpened,
+    sidebarExtended,
+    sidebarHovered
+  ] = useStore(internalStore, useShallow((s) => [
     s.sidebarOpened,
     s.sidebarExtended,
     s.sidebarHovered,
-  ]);
+  ]));
 
   const handleExpandButton = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -54,7 +58,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
           transition-all ${
             !(sidebarExtended || sidebarHovered) && active
               ? 'lg:text-white lg:bg-infinite-green'
-              : 'hover:bg-infinite-green hover:bg-opacity-10'
+              : 'hover:bg-infinite-green/10'
           } ${sidebarExtended || sidebarHovered ? '' : 'lg:pr-0 lg:rounded-r-none'}`}
         >
           {menu.icon ? (

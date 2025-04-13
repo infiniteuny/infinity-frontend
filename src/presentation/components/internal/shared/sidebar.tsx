@@ -7,7 +7,7 @@ import {
 } from '@mui/icons-material';
 import { SidebarDropdownMenu } from './dropdown-menu';
 import { SidebarMenu } from './menu';
-import { internalStore, useStore } from '@/presentation/hooks';
+import { internalStore, useShallow, useStore } from '@/presentation/hooks';
 import { NestedMenu, PathMenu } from '@/domain/entities';
 import { useEffect } from 'react';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function InternalSidebar({ title, menus, backButton }: Props) {
-  const sidebarOpened = useStore(internalStore, (s) => s.sidebarOpened);
+  const sidebarOpened = useStore(internalStore, useShallow((s) => s.sidebarOpened));
   const [
     sidebarExtended,
     sidebarHovered,
@@ -27,14 +27,14 @@ export function InternalSidebar({ title, menus, backButton }: Props) {
     getSidebarExtendedState,
     setSidebarExtendedState,
     setSidebarHoveredState,
-  ] = useStore(internalStore, (s) => [
+  ] = useStore(internalStore, useShallow((s) => [
     s.sidebarExtended,
     s.sidebarHovered,
     s.setSidebarOpenedState,
     s.getSidebarExtendedState,
     s.setSidebarExtendedState,
     s.setSidebarHoveredState,
-  ]);
+  ]));
 
   const hadleCoverClick = () => setSidebarOpenedState(false);
   const handleExtendButton = () => setSidebarExtendedState(!sidebarExtended);
