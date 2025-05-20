@@ -1,4 +1,4 @@
-export const Symbols = {
+export const SYMBOLS = {
   // Use cases
   GetSidebarExtendedState: Symbol.for('GetSidebarExtendedState'),
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),

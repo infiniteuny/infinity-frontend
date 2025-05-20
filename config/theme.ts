@@ -1,7 +1,5 @@
-'use client';
-
-import { createM3Theme, M3ColorTones } from '@/utils';
-import { SansFont } from './font';
+import { createM3Theme, M3ColorTones } from '@app/utils';
+import { FONTS } from './font';
 
 const colors: M3ColorTones = {
   primary: {
@@ -136,7 +134,7 @@ const colors: M3ColorTones = {
   },
 };
 
-export const Theme = createM3Theme({
+export const THEME = createM3Theme({
   tones: colors,
   themeOptions: {
     breakpoints: {
@@ -149,7 +147,7 @@ export const Theme = createM3Theme({
       },
     },
     typography: {
-      fontFamily: SansFont.style.fontFamily,
+      fontFamily: FONTS.sans.style.fontFamily,
     },
     shape: {
       borderRadius: 8,
