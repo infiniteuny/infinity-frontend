@@ -30,9 +30,15 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
+      "@app/*": [
         "./src/*"
-      ]
+      ],
+      "@config": [
+        "./config/index.ts"
+      ],
+      "@config/*": [
+        "./config/*"
+      ],
     }
   },
   "include": [
