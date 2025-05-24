@@ -1,6 +1,6 @@
-import { Icon } from '@/presentation/components/shared';
-import { internalStore, useShallow, useStore } from '@/presentation/hooks';
-import { PathMenu } from '@/domain/entities';
+import { Icon } from '@app/presentation/components/shared';
+import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
+import { PathMenu } from '@app/domain/entities';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -12,10 +12,10 @@ type Props = {
 export function SidebarMenu({ menu }: Props) {
   const path = usePathname();
   const [active, setActive] = useState(false);
-  const [sidebarExtended, sidebarHovered] = useStore(internalStore, useShallow((s) => [
-    s.sidebarExtended,
-    s.sidebarHovered,
-  ]));
+  const [sidebarExtended, sidebarHovered] = useStore(
+    internalStore,
+    useShallow((s) => [s.sidebarExtended, s.sidebarHovered]),
+  );
 
   useEffect(() => {
     if (menu.path === path) {
