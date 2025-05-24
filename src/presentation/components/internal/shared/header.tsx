@@ -18,9 +18,9 @@ export function InternalHeader() {
       component="header"
       sx={[
         (theme) => ({
-          background: theme.vars.palette.surfaceContainer.main,
+          background: theme.vars?.palette.surfaceContainer.main,
           ...theme.applyStyles('dark', {
-            background: theme.vars.palette.surfaceContainer.main,
+            background: theme.vars?.palette.surfaceContainer.main,
           }),
         }),
       ]}
