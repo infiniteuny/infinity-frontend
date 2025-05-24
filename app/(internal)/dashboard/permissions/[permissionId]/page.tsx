@@ -1,3 +1,5 @@
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+
 type Props = {
   params: Promise<{
     permissionId: string;
@@ -5,5 +7,9 @@ type Props = {
 };
 
 export default function SinglePermissionPage({ params }: Props) {
-  return <section></section>;
+  return (
+    <>
+      <SectionHeader title="Permission" />
+    </>
+  );
 }

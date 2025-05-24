@@ -1,3 +1,5 @@
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+
 type Props = {
   params: Promise<{
     coreTeamId: string;
@@ -5,5 +7,9 @@ type Props = {
 };
 
 export default function SingleCoreTeamPage({ params }: Props) {
-  return <section></section>;
+  return (
+    <>
+      <SectionHeader title="Overview" />
+    </>
+  );
 }

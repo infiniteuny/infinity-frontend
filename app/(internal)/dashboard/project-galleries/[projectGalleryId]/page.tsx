@@ -1,3 +1,5 @@
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+
 type Props = {
   params: Promise<{
     projectGalleryId: string;
@@ -5,5 +7,9 @@ type Props = {
 };
 
 export default function SingleProjectGalleryPage({ params }: Props) {
-  return <section></section>;
+  return (
+    <>
+      <SectionHeader title="Project Gallery" />
+    </>
+  );
 }

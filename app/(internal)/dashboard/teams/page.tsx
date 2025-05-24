@@ -1,3 +1,9 @@
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+
 export default function TeamsPage() {
-  return <section></section>;
+  return (
+    <>
+      <SectionHeader title="Teams" />
+    </>
+  );
 }
