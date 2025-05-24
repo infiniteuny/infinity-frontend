@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     permissionId: string;
-  };
+  }>;
 };
 
 export default function SinglePermissionPage({ params }: Props) {

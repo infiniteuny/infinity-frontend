@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     coreTeamId: string;
-  };
+  }>;
 };
 
 export default function SingleCoreTeamPage({ params }: Props) {

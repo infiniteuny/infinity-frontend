@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     fundApplicationId: string;
-  };
+  }>;
 };
 
 export default function SingleFundApplicationPage({ params }: Props) {

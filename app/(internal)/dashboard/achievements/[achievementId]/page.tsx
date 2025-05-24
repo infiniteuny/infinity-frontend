@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     achievementId: string;
-  };
+  }>;
 };
 
 export default function SingleAchievementPage({ params }: Props) {

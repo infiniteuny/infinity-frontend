@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     memberId: string;
-  };
+  }>;
 };
 
 export default function SingleMemberPage({ params }: Props) {

@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     projectGalleryId: string;
-  };
+  }>;
 };
 
 export default function SingleProjectGalleryPage({ params }: Props) {

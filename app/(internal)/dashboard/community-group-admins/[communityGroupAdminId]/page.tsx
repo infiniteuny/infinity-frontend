@@ -1,7 +1,7 @@
 type Props = {
-  params: {
+  params: Promise<{
     communityGroupAdminId: string;
-  };
+  }>;
 };
 
 export default function SingleCommunityGroupAdminPage({ params }: Props) {
