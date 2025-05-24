@@ -1,19 +1,38 @@
-import '@/presentation/styles/globals.css';
-import { AuthFooter } from '@/presentation/components/auth/shared';
-import { MonoFont, SansFont } from '@/config';
-import { MuiSetup } from '@/presentation/components/shared';
+import '@app/presentation/styles/globals.css';
+import { APP, FONTS } from '@config';
+import { InitColorSchemeScript } from '@mui/material';
+import { AuthFooter } from '@app/presentation/components/auth/shared';
+import { Metadata } from 'next';
+import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
 import { ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
 };
 
+export const metadata: Metadata = {
+  title: {
+    default: `${APP.site.title} - ${APP.site.tagline}`,
+    template: `%s - ${APP.site.title}`,
+  },
+  description: APP.site.description,
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
+
 export default function AuthLayout({ children }: Props) {
   return (
-    <html lang="id-ID" className={`${SansFont.variable} ${MonoFont.variable}`}>
+    <html
+      lang="id-ID"
+      className={`${FONTS.sans.variable} ${FONTS.mono.variable}`}
+      suppressHydrationWarning
+    >
       <body id="__next">
         <MuiSetup>
-          <main>{children}</main>
+          <InitColorSchemeScript attribute="class" />
+          <SkipToContentButton />
+          <main id="content">{children}</main>
           <AuthFooter />
         </MuiSetup>
       </body>

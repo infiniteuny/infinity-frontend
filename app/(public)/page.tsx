@@ -1,6 +1,4 @@
-'use client';
-
-import { About, Contact, Faqs, Hero, Roles, Team } from '@/presentation/components/public/home';
+import { About, Contact, Faqs, Hero, Roles, Team } from '@app/presentation/components/public/home';
 
 export default function HomePage() {
   return (

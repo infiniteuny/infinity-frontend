@@ -134,29 +134,82 @@ export const APP: {
           path: '/dashboard',
         },
         {
-          name: 'Achivements',
+          name: 'Competitions',
           icon: 'emoji-events',
-          path: '/dashboard/achievements',
+          items: [
+            {
+              name: 'Teams',
+              icon: 'groups',
+              path: '/dashboard/teams',
+            },
+            {
+              name: 'Fund Applications',
+              icon: 'request-quote',
+              path: '/dashboard/fund-applications',
+            },
+            {
+              name: 'Achievements',
+              icon: 'military-tech',
+              path: '/dashboard/achievements',
+            },
+          ],
         },
         {
-          name: 'Fundraisings',
-          icon: 'monetization-on',
-          path: '/dashboard/fundraisings',
+          name: 'Communities',
+          icon: 'hub',
+          items: [
+            {
+              name: 'Community Groups',
+              icon: 'groups-3',
+              path: '/dashboard/community-groups',
+            },
+            {
+              name: 'Community Group Administrators',
+              icon: 'manage-account',
+              path: '/dashboard/community-group-admins',
+            },
+            {
+              name: 'Core Teams',
+              icon: 'diversity-2',
+              path: '/dashboard/core-teams',
+            },
+            {
+              name: 'Project Galleries',
+              icon: 'business-center',
+              path: '/dashboard/project-galleries',
+            },
+            {
+              name: 'Testimonials',
+              icon: 'reviews',
+              path: '/dashboard/testimonials',
+            },
+          ],
         },
         {
-          name: 'Inventories',
-          icon: 'inventory-2',
-          path: '/dashboard/inventories',
+          name: 'Directories',
+          icon: 'workspaces',
+          items: [
+            {
+              name: 'Users',
+              icon: 'person',
+              path: '/dashboard/users',
+            },
+            {
+              name: 'Groups',
+              icon: 'people-alt',
+              path: '/dashboard/groups',
+            },
+            {
+              name: 'Permissions',
+              icon: 'lock',
+              path: '/dashboard/permissions',
+            },
+          ],
         },
         {
-          name: 'Members',
-          icon: 'people-alt',
-          path: '/dashboard/members',
-        },
-        {
-          name: 'Tools',
-          icon: 'handyman',
-          path: '/tools',
+          name: 'Settings',
+          icon: 'settings',
+          path: '/dashboard/settings',
         },
       ],
     },

@@ -1,9 +1,9 @@
-import '@/presentation/styles/globals.css';
-import { Config } from '@/config';
+import '@app/presentation/styles/globals.css';
+import { APP, FONTS } from '@config';
+import { InitColorSchemeScript } from '@mui/material';
 import { Metadata } from 'next';
-import { MonoFont, SansFont } from '@/config';
-import { MuiSetup, SkipToContentButton } from '@/presentation/components/shared';
-import { PublicFooter, PublicHeader } from '@/presentation/components/public/shared';
+import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
+import { PublicFooter, PublicHeader } from '@app/presentation/components/public/shared';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -12,21 +12,29 @@ type Props = {
 
 export const metadata: Metadata = {
   title: {
-    default: `${Config.site.title} - ${Config.site.tagline}`,
-    template: `%s - ${Config.site.title}`,
+    default: `${APP.site.title} - ${APP.site.tagline}`,
+    template: `%s - ${APP.site.title}`,
   },
-  description: Config.site.description,
+  description: APP.site.description,
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function PublicLayout({ children }: Props) {
   return (
-    <html lang="id-ID" className={`${SansFont.variable} ${MonoFont.variable}`}>
+    <html
+      lang="id-ID"
+      className={`${FONTS.sans.variable} ${FONTS.mono.variable}`}
+      suppressHydrationWarning
+    >
       <body id="__next">
         <MuiSetup>
+          <InitColorSchemeScript attribute="class" />
           <SkipToContentButton />
           <PublicHeader />
           <main id="content">{children}</main>
-          <PublicFooter menus={Config.public.footer.menus} />
+          <PublicFooter menus={APP.public.footer.menus} />
         </MuiSetup>
       </body>
     </html>
