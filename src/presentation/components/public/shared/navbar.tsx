@@ -1,4 +1,4 @@
-import { NestedMenu, PathMenu, UrlMenu } from '@/domain/entities';
+import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 
 type Props = {
   menus?: (PathMenu | UrlMenu | NestedMenu)[];

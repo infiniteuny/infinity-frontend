@@ -1,5 +1,5 @@
-import { PathMenu, UrlMenu } from '@/domain/entities';
-import { InfiniteTextLogo } from '@/presentation/components/shared';
+import { PathMenu, UrlMenu } from '@app/domain/entities';
+import { InfiniteTextLogo } from '@app/presentation/components/shared';
 
 type Props = {
   menus?: (PathMenu | UrlMenu)[][];

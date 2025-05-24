@@ -1,3 +1,3 @@
-import { PublicRepository } from '@/domain/repositories';
+import { PublicRepository } from '@app/domain/repositories';
 
 export class PublicRepositoryImpl implements PublicRepository {}

@@ -1,6 +1,6 @@
 'use client';
 
-import '@/presentation/styles/public/home/faqs.css';
+import '@app/presentation/styles/public/home/faqs.css';
 import Image from 'next/image';
 import { AccordionIcon } from './accordion-icon';
 import { useState } from 'react';

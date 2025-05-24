@@ -1,3 +1,3 @@
-import { AuthRepository } from '@/domain/repositories';
+import { AuthRepository } from '@app/domain/repositories';
 
 export class AuthRepositoryImpl implements AuthRepository {}

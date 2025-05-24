@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { InternalRepository } from '@/domain/repositories';
-import { Symbols } from '@/config';
-import { UseCase } from '@/application/shared';
+import { InternalRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
+import { UseCase } from '@app/application/shared';
 
 @injectable()
 export class GetSidebarExtendedState implements UseCase<boolean> {
   private readonly internalRepository: InternalRepository;
 
   public constructor(
-    @inject(Symbols.InternalRepository)
+    @inject(SYMBOLS.InternalRepository)
     internalRepository: InternalRepository,
   ) {
     this.internalRepository = internalRepository;

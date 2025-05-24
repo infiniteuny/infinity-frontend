@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { InternalRepository } from '@/domain/repositories';
-import { SessionStorageDataSource } from '@/infrastructure/datasources';
-import { Symbols } from '@/config';
+import { InternalRepository } from '@app/domain/repositories';
+import { SessionStorageDataSource } from '@app/infrastructure/datasources';
+import { SYMBOLS } from '@config';
 
 @injectable()
 export class InternalRepositoryImpl implements InternalRepository {
   private readonly sessionStorageDataSource: SessionStorageDataSource;
 
   public constructor(
-    @inject(Symbols.SessionStorageDataSource)
+    @inject(SYMBOLS.SessionStorageDataSource)
     sessionStorageDataSource: SessionStorageDataSource,
   ) {
     this.sessionStorageDataSource = sessionStorageDataSource;

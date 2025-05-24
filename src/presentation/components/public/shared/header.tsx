@@ -1,10 +1,10 @@
 'use client';
 
-import { Config } from '@/config';
-import { InfiniteTextLogo } from '@/presentation/components/shared';
+import { APP } from '@config';
+import { InfiniteTextLogo } from '@app/presentation/components/shared';
 import { useCallback, useEffect } from 'react';
 import { PublicNavbar } from './navbar';
-import { publicStore, useStore } from '@/presentation/hooks';
+import { publicStore, useStore } from '@app/presentation/hooks';
 
 export function PublicHeader() {
   const [headerExpanded, setHeaderExpandedState] = useStore(publicStore, (s) => [
@@ -38,7 +38,7 @@ export function PublicHeader() {
           height={headerExpanded ? 65 : 46}
           className="transition-all duration-300"
         />
-        <PublicNavbar menus={Config.public.nav.menus} />
+        <PublicNavbar menus={APP.public.nav.menus} />
       </div>
     </header>
   );

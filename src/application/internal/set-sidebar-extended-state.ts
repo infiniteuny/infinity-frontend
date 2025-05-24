@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { InternalRepository } from '@/domain/repositories';
-import { Symbols } from '@/config';
-import { UseCase } from '@/application/shared';
+import { InternalRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
+import { UseCase } from '@app/application/shared';
 
 export type SetSidebarExtendedStateParams = [state: boolean];
 
@@ -10,7 +10,7 @@ export class SetSidebarExtendedState implements UseCase<void, SetSidebarExtended
   private readonly internalRepository: InternalRepository;
 
   public constructor(
-    @inject(Symbols.InternalRepository)
+    @inject(SYMBOLS.InternalRepository)
     internalRepository: InternalRepository,
   ) {
     this.internalRepository = internalRepository;

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { TeamMember } from '@/domain/entities';
+import { TeamMember } from '@app/domain/entities';
 
 type Props = {
   teamMember: TeamMember;

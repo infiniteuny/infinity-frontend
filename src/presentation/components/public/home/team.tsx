@@ -3,11 +3,9 @@
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
-import { Autoplay, Navigation } from 'swiper';
 import { IconButton } from '@mui/material';
 import { KeyboardArrowLeftRounded, KeyboardArrowRightRounded } from '@mui/icons-material';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { TeamMember } from '@/domain/entities';
+import { TeamMember } from '@app/domain/entities';
 import { TeamMemberCard } from './team-member-card';
 
 export function Team() {
@@ -27,7 +25,7 @@ export function Team() {
     <section id="team" className="px-6 text-gray-700 md:px-12 lg:px-18">
       <div className="py-20 max-w-6xl mx-auto">
         <h2 className="mb-8 text-3xl text-center font-semibold">Team</h2>
-        <Swiper
+        {/* <Swiper
           className="mb-8"
           spaceBetween={50}
           slidesPerView={1}
@@ -59,9 +57,9 @@ export function Team() {
               <TeamMemberCard teamMember={member} />
             </SwiperSlide>
           ))}
-        </Swiper>
+        </Swiper> */}
         <div className="flex gap-4 justify-center">
-          <IconButton
+          {/* <IconButton
             size="sm"
             className="team-button-prev !bg-infinite-green !shadow-infinite-green/20 hover:!shadow-infinite-green/40"
           >
@@ -72,7 +70,7 @@ export function Team() {
             className="team-button-next !bg-infinite-green !shadow-infinite-green/20 hover:!shadow-infinite-green/40"
           >
             <KeyboardArrowRightRounded />
-          </IconButton>
+          </IconButton> */}
         </div>
       </div>
     </section>
