@@ -4,13 +4,13 @@ import { APP } from '@config';
 import { InfiniteTextLogo } from '@app/presentation/components/shared';
 import { useCallback, useEffect } from 'react';
 import { PublicNavbar } from './navbar';
-import { publicStore, useStore } from '@app/presentation/hooks';
+import { publicStore, useShallow, useStore } from '@app/presentation/hooks';
 
 export function PublicHeader() {
-  const [headerExpanded, setHeaderExpandedState] = useStore(publicStore, (s) => [
-    s.headerExpanded,
-    s.setHeaderExpandedState,
-  ]);
+  const [headerExpanded, setHeaderExpandedState] = useStore(
+    publicStore,
+    useShallow((s) => [s.headerExpanded, s.setHeaderExpandedState]),
+  );
 
   const handleScroll = useCallback(
     () => setHeaderExpandedState(window.pageYOffset < 20),
