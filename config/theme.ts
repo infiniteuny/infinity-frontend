@@ -148,6 +148,7 @@ export const THEME = createM3Theme({
     },
     typography: {
       fontFamily: FONTS.sans.style.fontFamily,
+      fontSize: 12,
     },
     shape: {
       borderRadius: 8,
