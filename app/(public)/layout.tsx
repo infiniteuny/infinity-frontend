@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function PublicLayout({ children }: Props) {
   return (
     <html
-      lang="id-ID"
+      lang={APP.site.locale}
       className={`${FONTS.sans.variable} ${FONTS.mono.variable}`}
       suppressHydrationWarning
     >
