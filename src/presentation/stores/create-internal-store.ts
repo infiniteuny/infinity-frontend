@@ -3,7 +3,7 @@ import {
   createInternalSidebarSlice,
   InternalSidebarActions,
   InternalSidebarStates,
-} from '@/presentation/stores/internal';
+} from '@app/presentation/stores/internal';
 import { immer } from 'zustand/middleware/immer';
 
 export type InternalStates = InternalSidebarStates;

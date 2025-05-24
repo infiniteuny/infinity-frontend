@@ -1,6 +1,4 @@
-'use client';
-
-import { createInternalStore, createPublicStore } from '@/presentation/stores';
+import { createInternalStore, createPublicStore } from '@app/presentation/stores';
 import { useShallow } from 'zustand/shallow';
 import { useStore } from 'zustand';
 

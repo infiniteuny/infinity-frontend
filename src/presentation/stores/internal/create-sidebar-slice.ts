@@ -1,8 +1,8 @@
-import { container } from '@/injection';
-import { GetSidebarExtendedState, SetSidebarExtendedState } from '@/application/internal';
-import { InternalActions, InternalStates } from '@/presentation/stores';
+import { clientContainer } from '@app/client-injection';
+import { GetSidebarExtendedState, SetSidebarExtendedState } from '@app/application/internal';
+import { InternalActions, InternalStates } from '@app/presentation/stores';
 import { StateCreator } from 'zustand';
-import { Symbols } from '@/config';
+import { SYMBOLS } from '@config';
 
 export interface InternalSidebarStates {
   sidebarOpened: boolean;
@@ -34,15 +34,15 @@ export function createInternalSidebarSlice(
 
     setSidebarOpenedState: (state: boolean) => set(() => ({ sidebarOpened: state })),
     getSidebarExtendedState: () => {
-      const getSidebarExtendedState = container.get<GetSidebarExtendedState>(
-        Symbols.GetSidebarExtendedState,
+      const getSidebarExtendedState = clientContainer.get<GetSidebarExtendedState>(
+        SYMBOLS.GetSidebarExtendedState,
       );
 
       set(() => ({ sidebarExtended: getSidebarExtendedState.execute() }));
     },
     setSidebarExtendedState: (state: boolean) => {
-      const setSidebarExtendedState = container.get<SetSidebarExtendedState>(
-        Symbols.SetSidebarExtendedState,
+      const setSidebarExtendedState = clientContainer.get<SetSidebarExtendedState>(
+        SYMBOLS.SetSidebarExtendedState,
       );
 
       setSidebarExtendedState.execute(state);

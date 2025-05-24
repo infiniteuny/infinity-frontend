@@ -3,7 +3,7 @@ import {
   createPublicHeaderSlice,
   PublicHeaderActions,
   PublicHeaderStates,
-} from '@/presentation/stores/public';
+} from '@app/presentation/stores/public';
 import { immer } from 'zustand/middleware/immer';
 
 export type PublicStates = PublicHeaderStates;

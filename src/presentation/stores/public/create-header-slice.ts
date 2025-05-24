@@ -1,4 +1,4 @@
-import { PublicActions, PublicStates } from '@/presentation/stores';
+import { PublicActions, PublicStates } from '@app/presentation/stores';
 import { StateCreator } from 'zustand';
 
 export interface PublicHeaderStates {
