@@ -1,8 +1,8 @@
 import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 
-export * from './font';
+export * from './fonts';
 export * from './symbols';
-export * from './theme';
+export * from './themes';
 
 export const APP: {
   site: {

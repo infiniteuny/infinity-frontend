@@ -1,5 +1,5 @@
 import { createM3Theme, M3ColorTones } from '@app/utils';
-import { FONTS } from './font';
+import { FONTS } from './fonts';
 
 const colors: M3ColorTones = {
   primary: {
@@ -134,7 +134,7 @@ const colors: M3ColorTones = {
   },
 };
 
-export const THEME = createM3Theme({
+export const THEMES = createM3Theme({
   tones: colors,
   themeOptions: {
     breakpoints: {
