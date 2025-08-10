@@ -13,16 +13,6 @@ export const APP: {
     image: string;
     locale: string;
   };
-  public: {
-    nav: {
-      menus: Required<
-        PathMenu | UrlMenu | NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>
-      >[];
-    };
-    footer: {
-      menus: Required<Omit<PathMenu, 'matcher'> | UrlMenu>[][];
-    };
-  };
   internal: {
     nav: {
       menus: Required<
@@ -35,85 +25,13 @@ export const APP: {
   };
 } = {
   site: {
-    url: 'https://www.infiniteuny.id',
-    title: 'INFINITE UNY',
+    url: 'https:/www.infiniteuny.id',
+    title: 'INFINITE Dashboard',
     tagline: "Let's Make Infinite Technology!",
-    description: 'INFINITE UNY',
-    image: 'https://www.infiniteuny.id/assets/images/og-image.png',
+    description:
+      'INFINITE Dashboard is a platform for our members to manage their day-to-day activities.',
+    image: 'https:/www.infiniteuny.id/assets/images/og-image.png',
     locale: 'id_ID',
-  },
-  public: {
-    nav: {
-      menus: [
-        {
-          name: 'Home',
-          icon: 'home',
-          path: '/',
-          matcher: '/',
-        },
-        {
-          name: 'About',
-          icon: 'info',
-          path: '/#about',
-          matcher: '/#about',
-        },
-        {
-          name: 'Team',
-          icon: 'groups',
-          path: '/teams',
-          matcher: '/teams',
-        },
-        {
-          name: 'Events',
-          icon: 'event',
-          path: '/events',
-          matcher: '/events',
-        },
-      ],
-    },
-    footer: {
-      menus: [
-        [
-          {
-            name: 'Home',
-            icon: 'home',
-            path: '/',
-          },
-          {
-            name: 'About',
-            icon: 'info',
-            path: '/#about',
-          },
-          {
-            name: 'Team',
-            icon: 'groups',
-            path: '/teams',
-          },
-          {
-            name: 'Events',
-            icon: 'event',
-            path: '/events',
-          },
-        ],
-        [
-          {
-            name: 'Leaderboard',
-            icon: 'leaderboard',
-            path: '/leaderboard',
-          },
-          {
-            name: 'Membership Checker',
-            icon: 'verified_user',
-            path: '/tools/membership',
-          },
-          {
-            name: 'Link Shortener',
-            icon: 'link',
-            url: 'https://unyku.id/',
-          },
-        ],
-      ],
-    },
   },
   internal: {
     nav: {
@@ -131,7 +49,7 @@ export const APP: {
         {
           name: 'Overview',
           icon: 'home',
-          path: '/dashboard',
+          path: '/',
         },
         {
           name: 'Competitions',
@@ -140,17 +58,17 @@ export const APP: {
             {
               name: 'Teams',
               icon: 'groups',
-              path: '/dashboard/teams',
+              path: '/teams',
             },
             {
               name: 'Fund Applications',
               icon: 'request-quote',
-              path: '/dashboard/fund-applications',
+              path: '/fund-applications',
             },
             {
               name: 'Achievements',
               icon: 'military-tech',
-              path: '/dashboard/achievements',
+              path: '/achievements',
             },
           ],
         },
@@ -161,27 +79,27 @@ export const APP: {
             {
               name: 'Community Groups',
               icon: 'groups-3',
-              path: '/dashboard/community-groups',
+              path: '/community-groups',
             },
             {
               name: 'Community Group Administrators',
               icon: 'manage-account',
-              path: '/dashboard/community-group-admins',
+              path: '/community-group-admins',
             },
             {
               name: 'Core Teams',
               icon: 'diversity-2',
-              path: '/dashboard/core-teams',
+              path: '/core-teams',
             },
             {
               name: 'Project Galleries',
               icon: 'business-center',
-              path: '/dashboard/project-galleries',
+              path: '/project-galleries',
             },
             {
               name: 'Testimonials',
               icon: 'reviews',
-              path: '/dashboard/testimonials',
+              path: '/testimonials',
             },
           ],
         },
@@ -192,24 +110,24 @@ export const APP: {
             {
               name: 'Users',
               icon: 'person',
-              path: '/dashboard/users',
+              path: '/users',
             },
             {
               name: 'Groups',
               icon: 'people-alt',
-              path: '/dashboard/groups',
+              path: '/groups',
             },
             {
               name: 'Permissions',
               icon: 'lock',
-              path: '/dashboard/permissions',
+              path: '/permissions',
             },
           ],
         },
         {
           name: 'Settings',
           icon: 'settings',
-          path: '/dashboard/settings',
+          path: '/settings',
         },
       ],
     },
