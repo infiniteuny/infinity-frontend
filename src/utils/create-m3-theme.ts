@@ -668,7 +668,6 @@ export function createM3Theme({
       MuiPaper: {
         styleOverrides: {
           root: {
-            color: theme.palette.onSurface.main,
             background: lighten(theme.palette.primary.main, 0.9),
             ...theme.applyStyles('dark', {
               background: darken(theme.palette.primary.main, 0.9),

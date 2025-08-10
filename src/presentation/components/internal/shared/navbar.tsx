@@ -80,7 +80,6 @@ export function InternalNavbar({ menus }: Props) {
               'max-w-[300px] mt-3 overflow-visible drop-shadow-md before:content-[""] before:block before:absolute before:top-0 before:right-3.5 before:w-2.5 before:h-2.5 before:-translate-y-1/2 before:rotate-45 before:z-0',
             sx: [
               (theme) => ({
-                color: theme.vars?.palette.text.primary,
                 bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
                 '&::before': {
                   bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
@@ -88,7 +87,6 @@ export function InternalNavbar({ menus }: Props) {
               }),
               (theme) =>
                 theme.applyStyles('dark', {
-                  color: theme.vars?.palette.text.primary,
                   bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
                   '&::before': {
                     bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
