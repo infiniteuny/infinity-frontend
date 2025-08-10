@@ -1,7 +1,7 @@
 import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { InitColorSchemeScript } from '@mui/material';
-import { AuthFooter } from '@app/presentation/components/auth/shared';
+import { AuthFooter, AuthMain } from '@app/presentation/components/auth/shared';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
 import { ReactNode } from 'react';
@@ -32,7 +32,7 @@ export default function AuthLayout({ children }: Props) {
         <MuiSetup>
           <InitColorSchemeScript attribute="class" />
           <SkipToContentButton />
-          <main id="content">{children}</main>
+          <AuthMain>{children}</AuthMain>
           <AuthFooter />
         </MuiSetup>
       </body>
