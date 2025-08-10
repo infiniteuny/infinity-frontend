@@ -3,6 +3,9 @@ export const SYMBOLS = {
   GetSidebarExtendedState: Symbol.for('GetSidebarExtendedState'),
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),
 
+  // Controllers
+  AuthController: Symbol.for('AuthController'),
+
   // Repositories
   InternalRepository: Symbol.for('InternalRepository'),
 

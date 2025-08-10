@@ -19,6 +19,7 @@
     "immer": "10.1.1",
     "inversify": "7.7.0",
     "next": "15.3.3",
+    "next-auth": "5.0.0-beta.29",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "reflect-metadata": "0.2.2",
