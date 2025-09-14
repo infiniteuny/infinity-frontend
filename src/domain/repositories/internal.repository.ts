@@ -1,4 +1,4 @@
-export abstract class InternalRepository {
-  public abstract getSidebarExtendedState(): boolean;
-  public abstract setSidebarExtendedState(state: boolean): void;
+export interface InternalRepository {
+  getSidebarExtendedState(): boolean;
+  setSidebarExtendedState(state: boolean): void;
 }

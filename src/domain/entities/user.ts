@@ -1,0 +1,72 @@
+import { FilterOperator } from '.';
+
+export interface UserFilterOptions {
+  ssoId?: string;
+  name?: string;
+  emailAddress?: string;
+  phoneNumber?: string;
+  studentId?: string;
+  majorId?: string;
+  startDateOperator?: FilterOperator;
+  startDate?: Date;
+  endDateOperator?: FilterOperator;
+  endDate?: Date;
+  isMember?: boolean;
+  isExtraordinary?: boolean;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
+}
+
+export class User {
+  public id: string;
+  public name: string;
+  public username: string;
+  public emailAddress: string;
+  public phoneNumber: string;
+  public studentId: string;
+  public majorId: string;
+  public links: Record<string, string>;
+  public startDate: Date | null;
+  public endDate: Date | null;
+  public isMember: boolean;
+  public isExtraordinary: boolean;
+  public isActive: boolean;
+  public createdAt: Date;
+  public updatedAt: Date;
+
+  public constructor(
+    id: string,
+    name: string,
+    username: string,
+    emailAddress: string,
+    phoneNumber: string,
+    studentId: string,
+    majorId: string,
+    links: Record<string, string>,
+    startDate: Date | null,
+    endDate: Date | null,
+    isMember: boolean,
+    isExtraordinary: boolean,
+    isActive: boolean,
+    createdAt: Date,
+    updatedAt: Date,
+  ) {
+    this.id = id;
+    this.name = name;
+    this.username = username;
+    this.emailAddress = emailAddress;
+    this.phoneNumber = phoneNumber;
+    this.studentId = studentId;
+    this.majorId = majorId;
+    this.links = links;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.isMember = isMember;
+    this.isExtraordinary = isExtraordinary;
+    this.isActive = isActive;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button, Paper, Typography } from '@mui/material';
-import { login } from '@app/presentation/actions';
+import { login } from '@app/application/server';
 
 type Props = {
   callbackUrl?: string;

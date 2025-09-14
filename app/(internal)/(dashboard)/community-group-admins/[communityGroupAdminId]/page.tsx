@@ -1,4 +1,4 @@
-import { SectionHeader } from "@app/presentation/components/internal/shared";
+import { SectionHeader } from '@app/presentation/components/internal/shared';
 
 type Props = {
   params: Promise<{

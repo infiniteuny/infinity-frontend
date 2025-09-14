@@ -1,6 +1,6 @@
+import type { SessionStorageDataSource } from '@app/infrastructure/datasources/client';
 import { inject, injectable } from 'inversify';
 import { InternalRepository } from '@app/domain/repositories';
-import { SessionStorageDataSource } from '@app/infrastructure/datasources';
 import { SYMBOLS } from '@config';
 
 @injectable()

@@ -1,9 +1,9 @@
 import { injectable } from 'inversify';
 
-export abstract class LocalStorageDataSource {
-  public abstract get<T>(key: string): T;
-  public abstract set<T>(key: string, value: T): void;
-  public abstract remove(key: string): void;
+export interface LocalStorageDataSource {
+  get<T>(key: string): T;
+  set<T>(key: string, value: T): void;
+  remove(key: string): void;
 }
 
 @injectable()
