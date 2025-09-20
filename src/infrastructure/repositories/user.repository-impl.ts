@@ -1,4 +1,4 @@
-import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import type { AuthDataSource, InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, right } from 'effect/Either';
 import { inject } from 'inversify';
 import { PaginationOptions, User, UserFilterOptions } from '@app/domain/entities';
@@ -8,15 +8,27 @@ import { UserMapper } from '../dtos/user.dto';
 
 export class UserRepositoryImpl implements UserRepository {
   public constructor(
+    @inject(SYMBOLS.AuthDataSource)
+    private authDataSource: AuthDataSource,
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
   ) {}
 
+  private async getAccessToken(): Promise<string> {
+    const session = await this.authDataSource.auth();
+
+    return session?.accessToken ?? '';
+  }
+
   public async getUsers(
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
+    authenticate = true,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
     const response = await this.infinityApiDataSource.get('/users', {
+      headers: {
+        ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+      },
       params: {
         'filters[sso_id]': filterOptions?.ssoId,
         'filters[name]': filterOptions?.name,

@@ -9,8 +9,9 @@ import { SYMBOLS } from '@config';
 export async function getUsers(
   filterOptions?: UserFilterOptions,
   paginationOptions?: PaginationOptions,
+  authenticate?: boolean,
 ): Promise<Either<[User[], PaginationOptions], Error>> {
   const userRepository = serverContainer.get<UserRepository>(SYMBOLS.UserRepository);
 
-  return await userRepository.getUsers(filterOptions, paginationOptions);
+  return await userRepository.getUsers(filterOptions, paginationOptions, authenticate);
 }

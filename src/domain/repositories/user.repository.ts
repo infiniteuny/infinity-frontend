@@ -5,5 +5,6 @@ export interface UserRepository {
   getUsers(
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
+    authenticate?: boolean,
   ): Promise<Either<[User[], PaginationOptions], Error>>;
 }
