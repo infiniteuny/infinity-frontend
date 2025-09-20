@@ -1,13 +1,17 @@
-import NextAuth from 'next-auth';
 import Authentik from 'next-auth/providers/authentik';
+import NextAuth from 'next-auth';
 import { getUsers } from '@app/application/server';
 import { match } from 'effect/Either';
+import { NextAuthResult } from 'next-auth';
 
-export const AUTH = NextAuth({
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface AuthDataSource extends NextAuthResult {}
+
+export const authDataSourceImpl: AuthDataSource = NextAuth({
   providers: [Authentik],
   callbacks: {
     signIn: async function signIn({ user }) {
-      const users = await getUsers({ emailAddress: user.email! });
+      const users = await getUsers({ emailAddress: user.email! }, undefined, false);
 
       return match(users, {
         onLeft: () => false,

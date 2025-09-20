@@ -1,7 +1,11 @@
-import { AUTH } from '@config/auth';
+import { AuthDataSource } from '@app/infrastructure/datasources/server';
 import { NextResponse } from 'next/server';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
 
-export default AUTH.auth((req) => {
+const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
+
+export default authDataSource.auth((req) => {
   if (!req.auth && req.nextUrl.pathname !== '/login') {
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
 

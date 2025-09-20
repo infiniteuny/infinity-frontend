@@ -1,1 +1,3 @@
-export interface AuthRepository {}
+export interface AuthRepository {
+  signIn(callbacksUrl?: string): Promise<void>;
+}
