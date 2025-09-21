@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "format": "next lint --fix"
+    "lint": "eslint .",
+    "format": "eslint . --fix"
   },
   "dependencies": {
     "@emotion/cache": "11.14.0",
