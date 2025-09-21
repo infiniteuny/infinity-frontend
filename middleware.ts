@@ -14,5 +14,6 @@ export default authDataSource.auth((req) => {
 });
 
 export const config = {
+  runtime: 'nodejs',
   matcher: ['/((?!auth|login|logout|_next/static|_next/image|favicon.ico).*)'],
 };
