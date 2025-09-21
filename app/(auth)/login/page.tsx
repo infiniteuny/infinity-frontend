@@ -1,4 +1,4 @@
-import { AUTH } from '@config/auth';
+import { getSession } from '@app/application/server';
 import { LoginForm } from '@app/presentation/components/auth/login';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default async function LoginPage({ searchParams }: Props) {
-  const session = await AUTH.auth();
+  const session = await getSession();
   const callbackUrl = (await searchParams).callback_url;
 
   if (session) {

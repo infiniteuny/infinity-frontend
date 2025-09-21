@@ -27,7 +27,7 @@ export const authDataSourceImpl: AuthDataSource = NextAuth({
       });
     },
     jwt: async function jwt({ token, user, account }) {
-      if (account) token.accessToken = account.access_token;
+      if (account) token.accessToken = account.access_token!;
       if (user) token.username = user.username;
 
       return token;

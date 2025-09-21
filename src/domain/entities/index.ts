@@ -1,5 +1,6 @@
 export * from './menu';
 export * from './pagination-options';
+export * from './session';
 export * from './team-member';
 export * from './user';
 
