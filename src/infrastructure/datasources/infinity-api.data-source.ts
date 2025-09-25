@@ -5,4 +5,6 @@ export interface InfinityApiDataSource extends AxiosInstance {}
 
 export const infinityApiDataSourceImpl: InfinityApiDataSource = axios.create({
   baseURL: process.env.INFINITY_API_URL,
+  timeout:
+    process.env.INFINITY_API_TIMEOUT != null ? Number(process.env.INFINITY_API_TIMEOUT) : 10000,
 });
