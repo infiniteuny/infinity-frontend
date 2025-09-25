@@ -79,4 +79,105 @@ export class UserRepositoryImpl implements UserRepository {
       return left(response);
     }
   }
+
+  public async getUser(
+    id: string,
+    abortSignal?: AbortSignal,
+    authenticate: boolean = true,
+  ): Promise<Either<User, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.get(`/users/${id}`, {
+        signal: abortSignal,
+        headers: {
+          ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+        },
+      });
+
+      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+
+      return right(userResponse);
+    } catch (error) {
+      const response = handleAxiosError(error);
+
+      return left(response);
+    }
+  }
+
+  public async createUser(
+    user: PartialBy<Omit<User, 'id' | 'createdAt' | 'updatedAt'>, 'startDate' | 'endDate'>,
+    abortSignal?: AbortSignal,
+    authenticate: boolean = true,
+  ): Promise<Either<User, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.post(
+        '/users',
+        UserMapper.fromDomainToApi(user),
+        {
+          signal: abortSignal,
+          headers: {
+            ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+          },
+        },
+      );
+
+      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+
+      return right(userResponse);
+    } catch (error) {
+      const response = handleAxiosError(error);
+
+      return left(response);
+    }
+  }
+
+  public async updateUser(
+    id: string,
+    user: Partial<User>,
+    abortSignal?: AbortSignal,
+    authenticate: boolean = true,
+  ): Promise<Either<User, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.patch(
+        `/users/${id}`,
+        UserMapper.fromDomainToApi(user),
+        {
+          signal: abortSignal,
+          headers: {
+            ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+          },
+        },
+      );
+
+      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+
+      return right(userResponse);
+    } catch (error) {
+      const response = handleAxiosError(error);
+
+      return left(response);
+    }
+  }
+
+  public async deleteUser(
+    id: string,
+    abortSignal?: AbortSignal,
+    authenticate: boolean = true,
+  ): Promise<Either<User, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.delete(`/users/${id}`, {
+        signal: abortSignal,
+        headers: {
+          ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+        },
+      });
+
+      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+
+      return right(userResponse);
+    } catch (error) {
+      const response = handleAxiosError(error);
+
+      return left(response);
+    }
+  }
 }

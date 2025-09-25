@@ -20,7 +20,7 @@ export interface UserApiDto {
 }
 
 export class UserMapper {
-  public static fromDomainToApi(user: User): UserApiDto {
+  public static fromDomainToApi(user: Partial<User>): Partial<UserApiDto> {
     return {
       id: user.id,
       name: user.name,
@@ -35,8 +35,8 @@ export class UserMapper {
       is_member: user.isMember,
       is_extraordinary: user.isExtraordinary,
       is_active: user.isActive,
-      created_at: user.createdAt.toISOString(),
-      updated_at: user.updatedAt.toISOString(),
+      created_at: user.createdAt?.toISOString(),
+      updated_at: user.updatedAt?.toISOString(),
     };
   }
 
