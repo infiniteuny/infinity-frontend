@@ -20,7 +20,7 @@ export const APP: {
       >[];
     };
     sidebar: {
-      menus: RequiredProperty<PathMenu | NestedMenu<RequiredProperty<PathMenu, 'icon'>>, 'icon'>[];
+      menus: RequiredBy<PathMenu | NestedMenu<RequiredBy<PathMenu, 'icon'>>, 'icon'>[];
     };
   };
 } = {
