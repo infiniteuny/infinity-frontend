@@ -10,14 +10,47 @@ export class HttpError extends Error {
   }
 }
 
-export class ValidationError extends Error {}
+export class BadRequestError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(400, message, data, options);
+  }
+}
 
-export class BadRequestError extends Error {}
+export class UnauthorizedError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(401, message, data, options);
+  }
+}
 
-export class UnauthorizedError extends Error {}
+export class ForbiddenError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(403, message, data, options);
+  }
+}
 
-export class ForbiddenError extends Error {}
+export class NotFoundError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(404, message, data, options);
+  }
+}
 
-export class NotFoundError extends Error {}
+export class UnprocessableContentError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(422, message, data, options);
+  }
+}
 
-export class InternalServerError extends Error {}
+export class ValidationError extends UnprocessableContentError {
+  public data: Record<string, string[]>;
+
+  public constructor(message: string, data: Record<string, string[]>, options?: ErrorOptions) {
+    super(message, data, options);
+    this.data = data;
+  }
+}
+
+export class InternalServerError extends HttpError {
+  public constructor(message: string, data?: unknown, options?: ErrorOptions) {
+    super(500, message, data, options);
+  }
+}

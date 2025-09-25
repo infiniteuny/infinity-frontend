@@ -1,5 +1,6 @@
 import type { AuthDataSource, InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
+import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import { PaginationOptions, User, UserFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
@@ -73,7 +74,9 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right([usersResponse, paginationOptionsResponse]);
     } catch (error) {
-      return left(error as Error);
+      const response = handleAxiosError(error);
+
+      return left(response);
     }
   }
 }
