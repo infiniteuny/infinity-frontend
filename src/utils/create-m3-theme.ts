@@ -1,6 +1,7 @@
 import { alpha, darken, lighten } from '@mui/system';
-import { deepmerge } from '@mui/utils';
 import { Components, Theme, ThemeOptions, createTheme } from '@mui/material/styles';
+import { DataGridComponents } from '@mui/x-data-grid/themeAugmentation';
+import { deepmerge } from '@mui/utils';
 
 export interface M3Tone {
   0: string;
@@ -204,6 +205,11 @@ export function createM3Theme({
                 secondary: tones.secondary[30],
               },
               divider: tones.neutralVariant[80],
+              DataGrid: {
+                bg: tones.neutral[98],
+                headerBg: tones.neutral[98],
+                pinnedBg: tones.neutral[98],
+              },
             },
           },
           dark: {
@@ -353,6 +359,11 @@ export function createM3Theme({
                 secondary: tones.secondary[90],
               },
               divider: tones.neutralVariant[30],
+              DataGrid: {
+                bg: tones.neutral[6],
+                headerBg: tones.neutral[6],
+                pinnedBg: tones.neutral[6],
+              },
             },
           },
         },
@@ -831,6 +842,18 @@ export function createM3Theme({
           },
         },
       },
-    } as Components,
+      MuiDataGrid: {
+        styleOverrides: {
+          overlay: {
+            backgroundColor: 'transparent',
+          },
+          columnHeader: {
+            '& .MuiDataGrid-columnSeparator': {
+              color: theme.palette.outlineVariant,
+            },
+          },
+        },
+      },
+    } satisfies Components & DataGridComponents,
   });
 }
