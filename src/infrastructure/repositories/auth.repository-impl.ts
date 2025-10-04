@@ -31,6 +31,7 @@ export class AuthRepositoryImpl implements AuthRepository {
           },
           session?.accessToken || '',
           DateTime.unsafeMake(session!.expires!).pipe(DateTime.toDate),
+          session?.error,
         )
       : null;
   }

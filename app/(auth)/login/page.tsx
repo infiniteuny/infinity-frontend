@@ -17,7 +17,7 @@ export default async function LoginPage({ searchParams }: Props) {
   const session = await getSession();
   const callbackUrl = (await searchParams).callback_url;
 
-  if (session) {
+  if (session && !session.error) {
     if (callbackUrl) {
       redirect(callbackUrl);
     }

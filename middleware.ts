@@ -6,7 +6,7 @@ import { SYMBOLS } from '@config';
 const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
 
 export default authDataSource.auth((req) => {
-  if (!req.auth && req.nextUrl.pathname !== '/login') {
+  if ((!req.auth && req.nextUrl.pathname !== '/login') || req.auth?.error) {
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
 
     return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, req.nextUrl.origin));

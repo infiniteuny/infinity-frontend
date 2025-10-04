@@ -11,7 +11,7 @@ export const authDataSourceImpl: AuthDataSource = NextAuth({
   providers: [Authentik],
   callbacks: {
     signIn: async function signIn({ user }) {
-      const users = await getUsers({ emailAddress: user.email! }, undefined, false);
+      const users = await getUsers({ emailAddress: user.email! }, undefined, undefined, false);
 
       return match(users, {
         onLeft: () => false,
@@ -27,21 +27,37 @@ export const authDataSourceImpl: AuthDataSource = NextAuth({
       });
     },
     jwt: async function jwt({ token, user, account }) {
-      if (account) token.accessToken = account.access_token!;
-      if (user) token.username = user.username;
+      if (account) {
+        if (user) token.username = user.username;
 
-      return token;
+        return {
+          ...token,
+          expiresAt: account.expires_at! - 120,
+          accessToken: account.access_token!,
+        };
+      } else if (Date.now() < token.expiresAt * 1000) {
+        return token;
+      } else {
+        token.error = 'AccessTokenExpiredError';
+        return token;
+      }
     },
     session: async function session({ session, token }) {
-      session.user = {
-        ...session.user,
-        id: token.sub!,
-        username: token.username,
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub!,
+          username: token.username,
+        },
+        accessToken: token.accessToken,
+        error: token.error,
       };
-      session.accessToken = token.accessToken;
-
-      return session;
     },
+  },
+  session: {
+    maxAge: 1 * 60 * 60, // 1 hours
+    updateAge: 10 * 60, // 10 minutes
   },
   pages: {
     signIn: '/login',

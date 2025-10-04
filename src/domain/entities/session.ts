@@ -8,6 +8,7 @@ export class Session {
   };
   public accessToken: string;
   public expiresAt: Date;
+  public error?: string;
 
   public constructor(
     user: {
@@ -19,9 +20,11 @@ export class Session {
     },
     accessToken: string,
     expiresAt: Date,
+    error?: string,
   ) {
     this.user = user;
     this.accessToken = accessToken;
     this.expiresAt = expiresAt;
+    this.error = error;
   }
 }
