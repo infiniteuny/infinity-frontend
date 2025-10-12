@@ -1,9 +1,14 @@
 import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { UsersList } from '@app/presentation/components/internal/users';
+import { SessionProvider } from 'next-auth/react';
 
-export default function UsersPage() {
+export default async function UsersPage() {
   return (
     <>
-      <SectionHeader title="Users" />
+      <SessionProvider basePath="/auth">
+        <SectionHeader title="Users" />
+        <UsersList />
+      </SessionProvider>
     </>
   );
 }

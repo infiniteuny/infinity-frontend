@@ -1,7 +1,7 @@
 import { User } from '@app/domain/entities';
 import { DateTime } from 'effect';
 
-export interface UserApiDto {
+export interface UserDto {
   id: string;
   name: string;
   username: string;
@@ -20,7 +20,7 @@ export interface UserApiDto {
 }
 
 export class UserMapper {
-  public static fromDomainToApi(user: Partial<User>): Partial<UserApiDto> {
+  public static fromDomaintoDto(user: Partial<User>): Partial<UserDto> {
     return {
       id: user.id,
       name: user.name,
@@ -40,7 +40,7 @@ export class UserMapper {
     };
   }
 
-  public static fromApiToDomain(dto: UserApiDto): User {
+  public static fromDtoToDomain(dto: UserDto): User {
     return new User(
       dto.id,
       dto.name,

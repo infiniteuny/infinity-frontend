@@ -1,22 +1,44 @@
 import 'reflect-metadata';
-import { AuthControllerImpl } from '@app/presentation/controllers';
-import {
-  authDataSourceImpl,
-  infinityApiDataSourceImpl,
-} from '@app/infrastructure/datasources/server';
+import type { AuthDataSource } from '@app/infrastructure/datasources/auth.data-source';
+import { AuthController, AuthControllerImpl } from '@app/presentation/controllers';
+import { AuthRepository, UserRepository } from '@app/domain/repositories';
 import { AuthRepositoryImpl, UserRepositoryImpl } from '@app/infrastructure/repositories';
 import { Container } from 'inversify';
+import {
+  createAuthDataSourceImpl,
+  InfinityApiDataSource,
+  infinityApiDataSourceImpl,
+} from '@app/infrastructure/datasources/server';
+import { GetSession, GetUsers, Login } from '@app/application';
 import { SYMBOLS } from '@config';
 
 export const serverContainer = new Container();
 
+// Use Cases
+serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
+serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
+serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+
 // Controllers
-serverContainer.bind(SYMBOLS.AuthController).to(AuthControllerImpl);
+serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerImpl);
 
 // Repositories
-serverContainer.bind(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
-serverContainer.bind(SYMBOLS.UserRepository).to(UserRepositoryImpl);
+serverContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
+serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
-serverContainer.bind(SYMBOLS.AuthDataSource).toConstantValue(authDataSourceImpl);
-serverContainer.bind(SYMBOLS.InfinityApiDataSource).toConstantValue(infinityApiDataSourceImpl);
+serverContainer.bind<AuthDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
+  const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
+  return createAuthDataSourceImpl(getUsers);
+});
+
+serverContainer
+  .bind<() => Promise<string>>(SYMBOLS.AccessTokenDataSource)
+  .toDynamicValue(() => async () => {
+    const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
+    const session = await authDataSource.auth();
+    return session?.accessToken || '';
+  });
+serverContainer
+  .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
+  .toConstantValue(infinityApiDataSourceImpl);

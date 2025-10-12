@@ -1,7 +1,9 @@
-import { getSession } from '@app/application/server';
+import { GetSession } from '@app/application';
 import { LoginForm } from '@app/presentation/components/auth/login';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -14,7 +16,8 @@ type Props = {
 };
 
 export default async function LoginPage({ searchParams }: Props) {
-  const session = await getSession();
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const session = await getSession.execute();
   const callbackUrl = (await searchParams).callback_url;
 
   if (session && !session.error) {
