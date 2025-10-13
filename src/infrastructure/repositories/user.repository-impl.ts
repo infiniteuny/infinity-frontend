@@ -1,4 +1,4 @@
-import type { AuthDataSource, InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
@@ -9,17 +9,11 @@ import { UserMapper } from '@app/infrastructure/dtos';
 
 export class UserRepositoryImpl implements UserRepository {
   public constructor(
-    @inject(SYMBOLS.AuthDataSource)
-    private authDataSource: AuthDataSource,
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
+    @inject(SYMBOLS.AccessTokenDataSource)
+    private accessTokenDataSource: () => Promise<string>,
   ) {}
-
-  private async getAccessToken(): Promise<string> {
-    const session = await this.authDataSource.auth();
-
-    return session?.accessToken ?? '';
-  }
 
   public async getUsers(
     filterOptions?: UserFilterOptions,
@@ -31,7 +25,9 @@ export class UserRepositoryImpl implements UserRepository {
       const response = await this.infinityApiDataSource.get('/users', {
         signal: abortSignal,
         headers: {
-          ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+          ...(authenticate
+            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
+            : {}),
         },
         params: {
           'filters[sso_id]': filterOptions?.ssoId,
@@ -64,7 +60,9 @@ export class UserRepositoryImpl implements UserRepository {
         },
       });
 
-      const usersResponse = response.data.data.users.map(UserMapper.fromApiToDomain);
+      console.log(response);
+
+      const usersResponse = response.data.data.users.map(UserMapper.fromDtoToDomain);
 
       const paginationOptionsResponse = new PaginationOptions(
         response.data.data.meta.per_page,
@@ -89,11 +87,13 @@ export class UserRepositoryImpl implements UserRepository {
       const response = await this.infinityApiDataSource.get(`/users/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+          ...(authenticate
+            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
+            : {}),
         },
       });
 
-      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
 
       return right(userResponse);
     } catch (error) {
@@ -111,16 +111,18 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/users',
-        UserMapper.fromDomainToApi(user),
+        UserMapper.fromDomaintoDto(user),
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+            ...(authenticate
+              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
+              : {}),
           },
         },
       );
 
-      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
 
       return right(userResponse);
     } catch (error) {
@@ -139,16 +141,18 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const response = await this.infinityApiDataSource.patch(
         `/users/${id}`,
-        UserMapper.fromDomainToApi(user),
+        UserMapper.fromDomaintoDto(user),
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+            ...(authenticate
+              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
+              : {}),
           },
         },
       );
 
-      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
 
       return right(userResponse);
     } catch (error) {
@@ -167,11 +171,13 @@ export class UserRepositoryImpl implements UserRepository {
       const response = await this.infinityApiDataSource.delete(`/users/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate ? { Authorization: `Bearer ${await this.getAccessToken()}` } : {}),
+          ...(authenticate
+            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
+            : {}),
         },
       });
 
-      const userResponse = UserMapper.fromApiToDomain(response.data.data.user);
+      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
 
       return right(userResponse);
     } catch (error) {
