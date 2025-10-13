@@ -60,8 +60,6 @@ export class UserRepositoryImpl implements UserRepository {
         },
       });
 
-      console.log(response);
-
       const usersResponse = response.data.data.users.map(UserMapper.fromDtoToDomain);
 
       const paginationOptionsResponse = new PaginationOptions(
