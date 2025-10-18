@@ -852,6 +852,12 @@ export function createM3Theme({
               color: theme.palette.outlineVariant,
             },
           },
+          panelContent: {
+            background: tones.neutral[98],
+            ...theme.applyStyles('dark', {
+              background: tones.neutral[6],
+            }),
+          },
         },
       },
     } satisfies Components & DataGridComponents,
