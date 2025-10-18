@@ -60,8 +60,8 @@ export function handleAxiosError(error: unknown): Error {
         break;
       default:
         return new HttpError(
-          error.response?.status ?? 500,
           error.response?.data.message ?? error.message,
+          error.response?.status ?? 500,
           error.response?.data.data,
         );
     }
