@@ -30,6 +30,8 @@ export class UserRepositoryImpl implements UserRepository {
             : {}),
         },
         params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
           'filters[sso_id]': filterOptions?.ssoId,
           'filters[name]': filterOptions?.name,
           'filters[email_address]': filterOptions?.emailAddress,
@@ -54,9 +56,6 @@ export class UserRepositoryImpl implements UserRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
-          per_page: paginationOptions?.perPage,
-          next_cursor: paginationOptions?.nextCursor,
-          previous_cursor: paginationOptions?.previousCursor,
         },
       });
 
@@ -64,8 +63,9 @@ export class UserRepositoryImpl implements UserRepository {
 
       const paginationOptionsResponse = new PaginationOptions(
         response.data.data.meta.per_page,
-        response.data.data.meta.next_cursor,
-        response.data.data.meta.prev_cursor,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
       );
 
       return right([usersResponse, paginationOptionsResponse]);
