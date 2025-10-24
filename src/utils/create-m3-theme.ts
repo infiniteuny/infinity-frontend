@@ -1,5 +1,5 @@
-import { alpha, darken, lighten } from '@mui/system';
-import { Components, Theme, ThemeOptions, createTheme } from '@mui/material/styles';
+import { Theme, ThemeOptions, createTheme } from '@mui/material/styles';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DataGridComponents } from '@mui/x-data-grid/themeAugmentation';
 import { deepmerge } from '@mui/utils';
 
@@ -51,11 +51,13 @@ export function createM3Theme({
   tones: M3ColorTones;
   themeOptions?: ThemeOptions;
 }): Theme {
-  const theme = createTheme(
+  return createTheme(
     deepmerge(
       {
         cssVariables: {
+          nativeColor: true,
           colorSchemeSelector: 'class',
+          cssVarPrefix: 'm3',
         },
         colorSchemes: {
           light: {
@@ -367,499 +369,512 @@ export function createM3Theme({
             },
           },
         },
-      } as ThemeOptions,
-      themeOptions,
-    ),
-  );
-
-  return deepmerge(theme, {
-    components: {
-      MuiDivider: {
-        styleOverrides: {
-          root: {
-            borderColor: theme.palette.outlineVariant,
-          },
-        },
-      },
-      MuiIconButton: {
-        styleOverrides: {
-          root: {
-            padding: theme.spacing(1),
-          },
-        },
-      },
-      MuiTabs: {
-        styleOverrides: {
-          root: {
-            marginLeft: theme.spacing(1),
-          },
-          indicator: {
-            height: 3,
-            borderTopLeftRadius: 3,
-            borderTopRightRadius: 3,
-          },
-        },
-      },
-      MuiTab: {
-        styleOverrides: {
-          root: {
-            textTransform: 'none',
-            margin: '0 16px',
-            minWidth: 0,
-            padding: 0,
-            [theme.breakpoints.up('md')]: {
-              padding: 0,
-              minWidth: 0,
+        components: {
+          MuiDivider: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderColor: theme.vars.palette.outlineVariant,
+              }),
             },
           },
-        },
-      },
-      MuiAppBar: {
-        styleOverrides: {
-          root: {
-            background: theme.palette.surface.main,
-            color: theme.palette.onSurface.main,
-            transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
-              duration: theme.transitions.duration.short,
-            }),
-          },
-          colorDefault: {
-            background: theme.palette.surface.main,
-            color: theme.palette.onSurface.main,
-            transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
-              duration: theme.transitions.duration.short,
-            }),
-          },
-          colorPrimary: {
-            color: theme.palette.surface.contrastText,
-            transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
-              duration: theme.transitions.duration.short,
-            }),
-            background: lighten(theme.palette.primary.main, 0.85),
-            ...theme.applyStyles('dark', {
-              background: darken(theme.palette.primary.main, 0.8),
-            }),
-          },
-        },
-      },
-      MuiButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: '50px',
-            textTransform: 'none',
-            fontWeight: 'bold',
-            variants: [
-              {
-                props: { variant: 'elevated' },
-                style: {
-                  boxShadow: theme.shadows[1],
-                  background: alpha(theme.palette.primary.main, 0.05),
-                  color: theme.palette.primary.main,
-                  '&:hover': {
-                    background: alpha(theme.palette.primary.main, 0.15),
-                  },
-                },
-              },
-              {
-                props: { variant: 'filled' },
-                style: {
-                  background: theme.palette.primary.main,
-                  color: theme.palette.onPrimary.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[1],
-                    background: alpha(theme.palette.primary.main, 0.85),
-                  },
-                },
-              },
-              {
-                props: { variant: 'tonal' },
-                style: {
-                  background: theme.palette.secondaryContainer.main,
-                  color: theme.palette.onSecondaryContainer.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[1],
-                    background: alpha(theme.palette.secondaryContainer.main, 0.8),
-                  },
-                },
-              },
-            ],
-          },
-          outlined: {
-            borderColor: theme.palette.outline,
-          },
-        },
-      },
-      MuiFab: {
-        styleOverrides: {
-          root: {
-            borderRadius: '18px',
-            variants: [
-              {
-                props: { variant: 'primary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.primaryContainer.main,
-                  color: theme.palette.onPrimaryContainer.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.primaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.primaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'extended', color: 'primary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.primaryContainer.main,
-                  color: theme.palette.onPrimaryContainer.main,
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.primaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.primaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'secondary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.secondaryContainer.main,
-                  color: theme.palette.onSecondaryContainer.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.secondaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.secondaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'extended', color: 'secondary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.secondaryContainer.main,
-                  color: theme.palette.onSecondaryContainer.main,
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.secondaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.secondaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'tertiary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.tertiaryContainer.main,
-                  color: theme.palette.onTertiaryContainer.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.tertiaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.tertiaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'extended', color: 'tertiary' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: theme.palette.tertiaryContainer.main,
-                  color: theme.palette.onTertiaryContainer.main,
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: darken(theme.palette.tertiaryContainer.main, 0.08),
-                    ...theme.applyStyles('dark', {
-                      background: lighten(theme.palette.tertiaryContainer.main, 0.08),
-                    }),
-                  },
-                },
-              },
-              {
-                props: { variant: 'surface' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: alpha(theme.palette.primary.main, 0.05),
-                  color: theme.palette.primary.main,
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: alpha(theme.palette.primary.main, 0.08),
-                  },
-                },
-              },
-              {
-                props: { variant: 'extended', color: 'surface' },
-                style: {
-                  boxShadow: theme.shadows[3],
-                  background: alpha(theme.palette.primary.main, 0.05),
-                  color: theme.palette.primary.main,
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    boxShadow: theme.shadows[4],
-                    background: alpha(theme.palette.primary.main, 0.08),
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: '20px',
-            padding: '10px 8px',
-            variants: [
-              {
-                props: { variant: 'elevation' },
-                style: {
-                  boxShadow: theme.shadows[1],
-                  backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                  transition: theme.transitions.create(
-                    ['background-color', 'box-shadow', 'border-color', 'color'],
-                    {
-                      duration: theme.transitions.duration.short,
-                    },
-                  ),
-                  '&:hover': {
-                    boxShadow: theme.shadows[2],
-                    background: alpha(theme.palette.primary.main, 0.08),
-                  },
-                },
-              },
-              {
-                props: { variant: 'filled' },
-                style: {
-                  backgroundColor: theme.palette.surfaceVariant.main,
-                  transition: theme.transitions.create(
-                    ['background-color', 'box-shadow', 'border-color', 'color'],
-                    {
-                      duration: theme.transitions.duration.short,
-                    },
-                  ),
-                  '&:hover': {
-                    boxShadow: theme.shadows[1],
-                    background: alpha(theme.palette.surfaceVariant.main, 0.8),
-                  },
-                },
-              },
-              {
-                props: { variant: 'outlined' },
-                style: {
-                  backgroundColor: theme.palette.surface.main,
-                  borderColor: theme.palette.outline,
-                  transition: theme.transitions.create(
-                    ['background-color', 'box-shadow', 'border-color', 'color'],
-                    {
-                      duration: theme.transitions.duration.short,
-                    },
-                  ),
-                  '&:hover': {
-                    boxShadow: theme.shadows[1],
-                    background: alpha(theme.palette.onSurface.main, 0.05),
-                  },
-                },
-              },
-            ],
-          },
-        },
-      },
-      MuiPaper: {
-        styleOverrides: {
-          root: {
-            background: lighten(theme.palette.primary.main, 0.9),
-            ...theme.applyStyles('dark', {
-              background: darken(theme.palette.primary.main, 0.9),
-            }),
-          },
-          outlined: {
-            borderColor: theme.palette.outline,
-            background: theme.palette.surface.main,
-          },
-        },
-      },
-      MuiDrawer: {
-        styleOverrides: {
-          paper: {
-            border: '0px',
-            background: theme.palette.surface.main,
-            color: theme.palette.onSurface.main,
-          },
-        },
-      },
-      MuiListItem: {
-        styleOverrides: {
-          root: {
-            paddingTop: 1,
-            paddingBottom: 1,
-            '& .MuiListItemButton-root': {
-              paddingTop: 8,
-              paddingBottom: 8,
+          MuiIconButton: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                padding: theme.spacing(1),
+              }),
             },
           },
-        },
-      },
-      MuiListItemButton: {
-        styleOverrides: {
-          root: {
-            borderRadius: 50,
-            '&.Mui-selected': {
-              color: theme.palette.onSecondaryContainer.main,
-              background: theme.palette.secondaryContainer.main,
-              '&:hover': {
-                boxShadow: theme.shadows[1],
-                background: alpha(theme.palette.secondaryContainer.main, 0.8),
+          MuiTabs: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                marginLeft: theme.spacing(1),
+              }),
+              indicator: {
+                height: 3,
+                borderTopLeftRadius: 3,
+                borderTopRightRadius: 3,
               },
-              '& > .MuiListItemText-root > .MuiTypography-root': {
+            },
+          },
+          MuiTab: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                textTransform: 'none',
+                margin: '0 16px',
+                minWidth: 0,
+                padding: 0,
+                [theme.breakpoints.up('md')]: {
+                  padding: 0,
+                  minWidth: 0,
+                },
+              }),
+            },
+          },
+          MuiAppBar: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                background: theme.vars.palette.surface.main,
+                color: theme.vars.palette.onSurface.main,
+                transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
+                  duration: theme.transitions.duration.short,
+                }),
+              }),
+              colorDefault: ({ theme }) => ({
+                background: theme.vars.palette.surface.main,
+                color: theme.vars.palette.onSurface.main,
+                transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
+                  duration: theme.transitions.duration.short,
+                }),
+              }),
+              colorPrimary: ({ theme }) => ({
+                color: theme.vars.palette.surface.contrastText,
+                transition: theme.transitions.create(['background-color', 'box-shadow', 'color'], {
+                  duration: theme.transitions.duration.short,
+                }),
+                background: theme.lighten(theme.vars.palette.primary.main, 0.85),
+                ...theme.applyStyles('dark', {
+                  background: theme.darken(theme.vars.palette.primary.main, 0.8),
+                }),
+              }),
+            },
+          },
+          MuiButton: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderRadius: '50px',
+                textTransform: 'none',
                 fontWeight: 'bold',
+                variants: [
+                  {
+                    props: { variant: 'elevated' },
+                    style: {
+                      boxShadow: theme.shadows[1],
+                      background: theme.alpha(theme.vars.palette.primary.main, 0.05),
+                      color: theme.vars.palette.primary.main,
+                      '&:hover': {
+                        background: theme.alpha(theme.vars.palette.primary.main, 0.15),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'filled' },
+                    style: {
+                      background: theme.vars.palette.primary.main,
+                      color: theme.vars.palette.onPrimary.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[1],
+                        background: theme.alpha(theme.vars.palette.primary.main, 0.85),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'tonal' },
+                    style: {
+                      background: theme.vars.palette.secondaryContainer.main,
+                      color: theme.vars.palette.onSecondaryContainer.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[1],
+                        background: theme.alpha(theme.vars.palette.secondaryContainer.main, 0.8),
+                      },
+                    },
+                  },
+                ],
+              }),
+              outlined: ({ theme }) => ({
+                borderColor: theme.vars.palette.outline,
+              }),
+            },
+          },
+          MuiFab: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderRadius: '18px',
+                variants: [
+                  {
+                    props: { variant: 'primary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.primaryContainer.main,
+                      color: theme.vars.palette.onPrimaryContainer.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.primaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(theme.vars.palette.primaryContainer.main, 0.08),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'extended', color: 'primary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.primaryContainer.main,
+                      color: theme.vars.palette.onPrimaryContainer.main,
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.primaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(theme.vars.palette.primaryContainer.main, 0.08),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'secondary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.secondaryContainer.main,
+                      color: theme.vars.palette.onSecondaryContainer.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.secondaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(
+                            theme.vars.palette.secondaryContainer.main,
+                            0.08,
+                          ),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'extended', color: 'secondary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.secondaryContainer.main,
+                      color: theme.vars.palette.onSecondaryContainer.main,
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.secondaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(
+                            theme.vars.palette.secondaryContainer.main,
+                            0.08,
+                          ),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'tertiary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.tertiaryContainer.main,
+                      color: theme.vars.palette.onTertiaryContainer.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.tertiaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(
+                            theme.vars.palette.tertiaryContainer.main,
+                            0.08,
+                          ),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'extended', color: 'tertiary' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.vars.palette.tertiaryContainer.main,
+                      color: theme.vars.palette.onTertiaryContainer.main,
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.darken(theme.vars.palette.tertiaryContainer.main, 0.08),
+                        ...theme.applyStyles('dark', {
+                          background: theme.lighten(
+                            theme.vars.palette.tertiaryContainer.main,
+                            0.08,
+                          ),
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'surface' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.alpha(theme.vars.palette.primary.main, 0.05),
+                      color: theme.vars.palette.primary.main,
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.alpha(theme.vars.palette.primary.main, 0.08),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'extended', color: 'surface' },
+                    style: {
+                      boxShadow: theme.shadows[3],
+                      background: theme.alpha(theme.vars.palette.primary.main, 0.05),
+                      color: theme.vars.palette.primary.main,
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        boxShadow: theme.shadows[4],
+                        background: theme.alpha(theme.vars.palette.primary.main, 0.08),
+                      },
+                    },
+                  },
+                ],
+              }),
+            },
+          },
+          MuiCard: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderRadius: '20px',
+                padding: '10px 8px',
+                variants: [
+                  {
+                    props: { variant: 'elevation' },
+                    style: {
+                      boxShadow: theme.shadows[1],
+                      backgroundColor: theme.alpha(theme.vars.palette.primary.main, 0.05),
+                      transition: theme.transitions.create(
+                        ['background-color', 'box-shadow', 'border-color', 'color'],
+                        {
+                          duration: theme.transitions.duration.short,
+                        },
+                      ),
+                      '&:hover': {
+                        boxShadow: theme.shadows[2],
+                        background: theme.alpha(theme.vars.palette.primary.main, 0.08),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'filled' },
+                    style: {
+                      backgroundColor: theme.vars.palette.surfaceVariant.main,
+                      transition: theme.transitions.create(
+                        ['background-color', 'box-shadow', 'border-color', 'color'],
+                        {
+                          duration: theme.transitions.duration.short,
+                        },
+                      ),
+                      '&:hover': {
+                        boxShadow: theme.shadows[1],
+                        background: theme.alpha(theme.vars.palette.surfaceVariant.main, 0.8),
+                      },
+                    },
+                  },
+                  {
+                    props: { variant: 'outlined' },
+                    style: {
+                      backgroundColor: theme.vars.palette.surface.main,
+                      borderColor: theme.vars.palette.outline,
+                      transition: theme.transitions.create(
+                        ['background-color', 'box-shadow', 'border-color', 'color'],
+                        {
+                          duration: theme.transitions.duration.short,
+                        },
+                      ),
+                      '&:hover': {
+                        boxShadow: theme.shadows[1],
+                        background: theme.alpha(theme.vars.palette.onSurface.main, 0.05),
+                      },
+                    },
+                  },
+                ],
+              }),
+            },
+          },
+          MuiPaper: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                background: theme.lighten(theme.vars.palette.primary.main, 0.9),
+                ...theme.applyStyles('dark', {
+                  background: theme.darken(theme.vars.palette.primary.main, 0.9),
+                }),
+              }),
+              outlined: ({ theme }) => ({
+                borderColor: theme.vars.palette.outline,
+                background: theme.vars.palette.surface.main,
+              }),
+            },
+          },
+          MuiDrawer: {
+            styleOverrides: {
+              paper: ({ theme }) => ({
+                border: '0px',
+                background: theme.vars.palette.surface.main,
+                color: theme.vars.palette.onSurface.main,
+              }),
+            },
+          },
+          MuiListItem: {
+            styleOverrides: {
+              root: {
+                paddingTop: 1,
+                paddingBottom: 1,
+                '& .MuiListItemButton-root': {
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                },
               },
             },
           },
-        },
-      },
-      MuiListItemIcon: {
-        styleOverrides: {
-          root: {
-            color: 'inherit',
-            minWidth: 32,
-            '&.Mui-selected': {
-              fontWeight: 'bold',
+          MuiListItemButton: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderRadius: 50,
+                '&.Mui-selected': {
+                  color: theme.vars.palette.onSecondaryContainer.main,
+                  background: theme.vars.palette.secondaryContainer.main,
+                  '&:hover': {
+                    boxShadow: theme.shadows[1],
+                    background: theme.alpha(theme.vars.palette.secondaryContainer.main, 0.8),
+                  },
+                  '& > .MuiListItemText-root > .MuiTypography-root': {
+                    fontWeight: 'bold',
+                  },
+                },
+              }),
             },
           },
-        },
-      },
-      MuiTooltip: {
-        styleOverrides: {
-          tooltip: {
-            background: theme.palette.secondaryContainer.main,
-            color: theme.palette.secondaryContainer.contrastText,
-          },
-        },
-      },
-      MuiAccordion: {
-        styleOverrides: {
-          root: {
-            '&:before': {
-              backgroundColor: theme.palette.surfaceVariant.main,
-            },
-            '&.Mui-disabled': {
-              backgroundColor: theme.palette.inverseOnSurface.main,
-              color: theme.palette.inverseSurface.main,
+          MuiListItemIcon: {
+            styleOverrides: {
+              root: {
+                color: 'inherit',
+                minWidth: 32,
+                '&.Mui-selected': {
+                  fontWeight: 'bold',
+                },
+              },
             },
           },
-        },
-      },
-      MuiSnackbarContent: {
-        styleOverrides: {
-          root: {
-            backgroundColor: theme.palette.inverseSurface.main,
+          MuiTooltip: {
+            styleOverrides: {
+              tooltip: ({ theme }) => ({
+                background: theme.vars.palette.secondaryContainer.main,
+                color: theme.vars.palette.secondaryContainer.contrastText,
+              }),
+            },
           },
-          message: {
-            color: theme.palette.inverseOnSurface.main,
+          MuiAccordion: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                '&:before': {
+                  backgroundColor: theme.vars.palette.surfaceVariant.main,
+                },
+                '&.Mui-disabled': {
+                  backgroundColor: theme.vars.palette.inverseOnSurface.main,
+                  color: theme.vars.palette.inverseSurface.main,
+                },
+              }),
+            },
           },
-          action: {
-            color: theme.palette.inversePrimary.main,
+          MuiSnackbarContent: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                backgroundColor: theme.vars.palette.inverseSurface.main,
+              }),
+              message: ({ theme }) => ({
+                color: theme.vars.palette.inverseOnSurface.main,
+              }),
+              action: ({ theme }) => ({
+                color: theme.vars.palette.inversePrimary.main,
+              }),
+            },
           },
-        },
-      },
-      MuiSwitch: {
-        styleOverrides: {
-          root: {
-            width: 42,
-            height: 26,
-            padding: 0,
-            marginLeft: 12,
-            marginRight: 8,
-            '& .MuiSwitch-switchBase': {
-              padding: 0,
-              margin: 7,
-              transitionDuration: '100ms',
-              '&.Mui-checked': {
-                transform: 'translateX(16px)',
-                margin: 4,
-                '& + .MuiSwitch-track': {
-                  backgroundColor: theme.palette.primary.main,
-                  opacity: 1,
-                  border: 0,
+          MuiSwitch: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                width: 42,
+                height: 26,
+                padding: 0,
+                marginLeft: 12,
+                marginRight: 8,
+                '& .MuiSwitch-switchBase': {
+                  padding: 0,
+                  margin: 7,
+                  transitionDuration: '100ms',
+                  '&.Mui-checked': {
+                    transform: 'translateX(16px)',
+                    margin: 4,
+                    '& + .MuiSwitch-track': {
+                      backgroundColor: theme.vars.palette.primary.main,
+                      opacity: 1,
+                      border: 0,
+                    },
+                    '& .MuiSwitch-thumb': {
+                      color: theme.vars.palette.onPrimary.main,
+                      width: 18,
+                      height: 18,
+                    },
+                    '&.Mui-disabled + .MuiSwitch-track': {
+                      backgroundColor: theme.alpha(theme.vars.palette.onSurface.main, 0.1),
+                    },
+                    '&.Mui-disabled .MuiSwitch-thumb': {
+                      color: theme.alpha(theme.vars.palette.surface.main, 0.8),
+                    },
+                  },
+                  '&.Mui-focusVisible .MuiSwitch-thumb': {
+                    color: theme.vars.palette.primary.main,
+                    border: `6px solid ${theme.vars.palette.primary.contrastText}`,
+                  },
+                  '&.Mui-disabled .MuiSwitch-thumb': {
+                    color: theme.alpha(theme.vars.palette.onSurface.main, 0.3),
+                  },
                 },
                 '& .MuiSwitch-thumb': {
-                  color: theme.palette.onPrimary.main,
-                  width: 18,
-                  height: 18,
+                  boxSizing: 'border-box',
+                  color: theme.vars.palette.outline,
+                  width: 12,
+                  height: 12,
+                  '&:before': {
+                    content: "''",
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    left: 0,
+                    top: 0,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center',
+                  },
                 },
-                '&.Mui-disabled + .MuiSwitch-track': {
-                  backgroundColor: alpha(theme.palette.onSurface.main, 0.1),
+                '& .MuiSwitch-track': {
+                  borderRadius: 26 / 2,
+                  border: `1px solid ${theme.vars.palette.outline}`,
+                  backgroundColor: theme.vars.palette.surfaceVariant.main,
+                  opacity: 1,
+                  transition: theme.transitions.create(['background-color'], {
+                    duration: 500,
+                  }),
                 },
-                '&.Mui-disabled .MuiSwitch-thumb': {
-                  color: alpha(theme.palette.surface.main, 0.8),
-                },
-              },
-              '&.Mui-focusVisible .MuiSwitch-thumb': {
-                color: theme.palette.primary.main,
-                border: `6px solid ${theme.palette.primary.contrastText}`,
-              },
-              '&.Mui-disabled .MuiSwitch-thumb': {
-                color: alpha(theme.palette.onSurface.main, 0.3),
-              },
+              }),
             },
-            '& .MuiSwitch-thumb': {
-              boxSizing: 'border-box',
-              color: theme.palette.outline,
-              width: 12,
-              height: 12,
-              '&:before': {
-                content: "''",
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                left: 0,
-                top: 0,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
+          },
+          MuiDataGrid: {
+            styleOverrides: {
+              root: ({ theme }) => ({
+                borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.1),
+                '& .MuiDataGrid-withBorderColor': {
+                  borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.1),
+                },
+              }),
+              overlay: {
+                background: 'transparent',
               },
-            },
-            '& .MuiSwitch-track': {
-              borderRadius: 26 / 2,
-              border: `1px solid ${theme.palette.outline}`,
-              backgroundColor: theme.palette.surfaceVariant.main,
-              opacity: 1,
-              transition: theme.transitions.create(['background-color'], {
-                duration: 500,
+              columnHeader: ({ theme }) => ({
+                borderBottom: `1px solid ${theme.alpha(theme.vars.palette.outlineVariant, 0.1)} !important`,
+                '& .MuiDataGrid-columnSeparator': {
+                  color: theme.vars.palette.outlineVariant,
+                },
+              }),
+              panelContent: ({ theme }) => ({
+                background: theme.vars.palette.surfaceContainer.main,
               }),
             },
           },
         },
-      },
-      MuiDataGrid: {
-        styleOverrides: {
-          overlay: {
-            backgroundColor: 'transparent',
-          },
-          columnHeader: {
-            '& .MuiDataGrid-columnSeparator': {
-              color: theme.palette.outlineVariant,
-            },
-          },
-          panelContent: {
-            background: tones.neutral[98],
-            ...theme.applyStyles('dark', {
-              background: tones.neutral[6],
-            }),
-          },
-        },
-      },
-    } satisfies Components & DataGridComponents,
-  });
+      } as ThemeOptions,
+      themeOptions,
+    ),
+  );
 }
