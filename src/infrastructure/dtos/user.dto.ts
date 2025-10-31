@@ -1,5 +1,6 @@
-import { User } from '@app/domain/entities';
 import { DateTime } from 'effect';
+import { MajorDto, MajorMapper } from './major.dto';
+import { User } from '@app/domain/entities';
 
 export interface UserDto {
   id: string;
@@ -17,6 +18,7 @@ export interface UserDto {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  major?: MajorDto;
 }
 
 export class UserMapper {
@@ -37,6 +39,7 @@ export class UserMapper {
       is_active: user.isActive,
       created_at: user.createdAt?.toISOString(),
       updated_at: user.updatedAt?.toISOString(),
+      major: user.major ? (MajorMapper.fromDomaintoDto(user.major) as MajorDto) : undefined,
     };
   }
 
@@ -57,6 +60,7 @@ export class UserMapper {
       dto.is_active,
       DateTime.unsafeMake(dto.created_at).pipe(DateTime.toDate),
       DateTime.unsafeMake(dto.updated_at).pipe(DateTime.toDate),
+      dto.major ? MajorMapper.fromDtoToDomain(dto.major) : undefined,
     );
   }
 }
