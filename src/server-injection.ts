@@ -9,7 +9,7 @@ import {
   InfinityApiDataSource,
   infinityApiDataSourceImpl,
 } from '@app/infrastructure/datasources/server';
-import { GetSession, GetUsers, Login } from '@app/application';
+import { GetSession, GetUser, GetUsers, Login } from '@app/application';
 import { SYMBOLS } from '@config';
 
 export const serverContainer = new Container();
@@ -18,6 +18,7 @@ export const serverContainer = new Container();
 serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
 serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
 
 // Controllers
 serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerImpl);

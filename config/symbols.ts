@@ -4,6 +4,7 @@ export const SYMBOLS = {
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),
   Login: Symbol.for('Login'),
   GetSession: Symbol.for('GetSession'),
+  GetUser: Symbol.for('GetUser'),
   GetUsers: Symbol.for('GetUsers'),
 
   // Controllers

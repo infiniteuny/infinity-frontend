@@ -1,23 +1,34 @@
-'use server';
-
 import type { UserRepository } from '@app/domain/repositories';
-import type { Either as EitherType } from 'effect/Either';
-import { Either } from 'effect/index';
-import { serverContainer } from '@app/server-injection';
+import { Either } from 'effect/Either';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
-import { UserDto, UserMapper } from '@app/infrastructure/dtos';
+import { UseCase } from '@app/application';
+import { User } from '@app/domain/entities';
 
-export async function getUser(
+export type GetUserParams = [
   id: string,
+  includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
   abortSignal?: AbortSignal,
   authenticate?: boolean,
-): Promise<EitherType<UserDto, Error>> {
-  const userRepository = serverContainer.get<UserRepository>(SYMBOLS.UserRepository);
+];
 
-  const result = await userRepository.getUser(id, abortSignal, authenticate);
+@injectable()
+export class GetUser implements UseCase<Promise<Either<User, Error>>, GetUserParams> {
+  private readonly userRepository: UserRepository;
 
-  return Either.mapBoth(result, {
-    onRight: (user) => UserMapper.fromDomaintoDto(user) as UserDto,
-    onLeft: (error) => error,
-  });
+  public constructor(
+    @inject(SYMBOLS.UserRepository)
+    userRepository: UserRepository,
+  ) {
+    this.userRepository = userRepository;
+  }
+
+  public async execute(
+    id: string,
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    abortSignal?: AbortSignal,
+    authenticate?: boolean,
+  ): Promise<Either<User, Error>> {
+    return await this.userRepository.getUser(id, includeOptions, abortSignal, authenticate);
+  }
 }

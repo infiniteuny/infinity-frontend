@@ -1,5 +1,6 @@
 export * from './get-session';
 export * from './get-sidebar-extended-state';
+export * from './get-user';
 export * from './get-users';
 export * from './set-sidebar-extended-state';
 export * from './login';
