@@ -1,3 +1,6 @@
+export * from './degree';
+export * from './faculty';
+export * from './major';
 export * from './menu';
 export * from './pagination-options';
 export * from './session';

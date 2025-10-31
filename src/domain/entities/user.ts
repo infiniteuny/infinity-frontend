@@ -1,4 +1,5 @@
 import { FilterOperator } from '.';
+import { Major } from './major';
 
 export interface UserFilterOptions {
   ssoId?: string;
@@ -35,6 +36,7 @@ export class User {
   public isActive: boolean;
   public createdAt: Date;
   public updatedAt: Date;
+  public major?: Major;
 
   public constructor(
     id: string,
@@ -52,6 +54,7 @@ export class User {
     isActive: boolean,
     createdAt: Date,
     updatedAt: Date,
+    major?: Major,
   ) {
     this.id = id;
     this.name = name;
@@ -68,5 +71,6 @@ export class User {
     this.isActive = isActive;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.major = major;
   }
 }
