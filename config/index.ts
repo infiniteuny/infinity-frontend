@@ -40,7 +40,7 @@ export const APP: {
           name: 'Home',
           icon: 'home',
           path: '/',
-          matcher: '/',
+          matcher: '\\/',
         },
       ],
     },
@@ -111,6 +111,7 @@ export const APP: {
               name: 'Users',
               icon: 'person',
               path: '/users',
+              matcher: '^\\/users',
             },
             {
               name: 'Groups',
