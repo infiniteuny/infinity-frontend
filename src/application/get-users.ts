@@ -6,6 +6,7 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetUsersParams = [
+  includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
   filterOptions?: UserFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
@@ -26,12 +27,14 @@ export class GetUsers
   }
 
   public async execute(
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
     return await this.userRepository.getUsers(
+      includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,

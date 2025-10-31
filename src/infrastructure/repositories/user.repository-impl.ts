@@ -16,6 +16,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   public async getUsers(
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -30,6 +31,9 @@ export class UserRepositoryImpl implements UserRepository {
             : {}),
         },
         params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
           'filters[sso_id]': filterOptions?.ssoId,
@@ -78,6 +82,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   public async getUser(
     id: string,
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<User, Error>> {
@@ -88,6 +93,11 @@ export class UserRepositoryImpl implements UserRepository {
           ...(authenticate
             ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
             : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

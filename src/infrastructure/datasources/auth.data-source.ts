@@ -13,6 +13,7 @@ export function createAuthDataSourceImpl(getUsers: GetUsers): AuthDataSource {
     callbacks: {
       signIn: async function signIn({ user }) {
         const users = await getUsers.execute(
+          undefined,
           { emailAddress: user.email! },
           undefined,
           undefined,

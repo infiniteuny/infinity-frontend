@@ -3,6 +3,7 @@ import { Either } from 'effect/Either';
 
 export interface UserRepository {
   getUsers(
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -11,6 +12,7 @@ export interface UserRepository {
 
   getUser(
     id: string,
+    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<User, Error>>;
