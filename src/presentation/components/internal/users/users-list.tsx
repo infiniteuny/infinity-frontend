@@ -2,19 +2,26 @@
 
 import { Box, Container, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import { DataGrid, GridSlots, GridPaginationModel, GridPaginationMeta } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridSlots,
+  GridPaginationModel,
+  GridPaginationMeta,
+  GridRowParams,
+} from '@mui/x-data-grid';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetUsers } from '@app/application';
-import { SYMBOLS } from '@config';
-import { User, PaginationOptions } from '@app/domain/entities';
-import { useState } from 'react';
+import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
   UserDto,
   UserMapper,
 } from '@app/infrastructure/dtos';
-import { match } from 'effect/Either';
+import { SYMBOLS } from '@config';
+import { User, PaginationOptions, Major } from '@app/domain/entities';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type Props = {
   initialUsers: UserDto[];
@@ -25,6 +32,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const getUsers = clientContainer.get<GetUsers>(SYMBOLS.GetUsers);
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<User[]>(initUsers);
@@ -70,7 +78,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     paginationOptions: PaginationOptions,
     newPaginationModel?: GridPaginationModel,
   ): Promise<void> => {
-    const result = await getUsers.execute(undefined, paginationOptions);
+    const result = await getUsers.execute(['major'], undefined, paginationOptions);
 
     return match(result, {
       onRight: ([users, newPaginationOptions]) => {
@@ -102,6 +110,12 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     });
   };
 
+  const handleRowClick = (params: GridRowParams) => {
+    const userId = params.row.id;
+
+    router.push(`/users/${userId}`);
+  };
+
   return (
     <Box component="section" className="w-full px-6">
       <Container
@@ -115,8 +129,18 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               '.MuiTablePagination-displayedRows': {
                 display: 'none',
               },
+              '.MuiDataGrid-row': {
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              },
             }}
             columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
               {
                 field: 'name',
                 headerName: 'Name',
@@ -157,7 +181,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 headerName: 'Start Date',
                 flex: 1,
                 valueFormatter: (value) => {
-                  if (!value) return '';
+                  if (!value) return 'N/A';
                   return new Date(value).toLocaleDateString();
                 },
               },
@@ -166,7 +190,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 headerName: 'End Date',
                 flex: 1,
                 valueFormatter: (value) => {
-                  if (!value) return '';
+                  if (!value) return 'N/A';
                   return new Date(value).toLocaleDateString();
                 },
               },
@@ -189,7 +213,21 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 type: 'boolean',
               },
             ]}
-            rows={rows}
+            rows={rows.map((user) => ({
+              id: user.id,
+              name: user.name,
+              username: user.username,
+              emailAddress: user.emailAddress,
+              phoneNumber: user.phoneNumber,
+              studentId: user.studentId,
+              major: (user.major as Major)?.name || 'N/A',
+              faculty: (user.major as Major)?.faculty?.name || 'N/A',
+              startDate: user.startDate,
+              endDate: user.endDate,
+              isMember: user.isMember,
+              isExtraordinary: user.isExtraordinary,
+              isActive: user.isActive,
+            }))}
             slots={{
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
             }}
@@ -201,6 +239,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             initialState={{
               columns: {
                 columnVisibilityModel: {
+                  id: false,
                   username: false,
                   emailAddress: false,
                   phoneNumber: false,
@@ -214,6 +253,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             paginationModel={paginationModel}
             onRowCountChange={setRowCount}
             onPaginationModelChange={handlePaginationModelChange}
+            onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />
         </NoSsr>
