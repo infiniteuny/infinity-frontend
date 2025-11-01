@@ -1,4 +1,5 @@
 import { GetUsers } from '@app/application';
+import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -6,15 +7,14 @@ import {
   UserMapper,
 } from '@app/infrastructure/dtos';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
-import { UsersList } from '@app/presentation/components/internal/users';
 import { serverContainer } from '@app/server-injection';
-import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
 import { SessionProvider } from 'next-auth/react';
+import { SYMBOLS } from '@config';
+import { UsersList, UsersToolbar } from '@app/presentation/components/internal/users';
 
 export default async function UsersPage() {
   const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
-  const result = await getUsers.execute(undefined, { perPage: 25 }, undefined);
+  const result = await getUsers.execute(['major'], undefined, { perPage: 25 }, undefined);
   const [users, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;
@@ -25,7 +25,9 @@ export default async function UsersPage() {
   return (
     <>
       <SessionProvider basePath="/auth">
-        <SectionHeader title="Users" />
+        <SectionHeader title="Users">
+          <UsersToolbar />
+        </SectionHeader>
         <UsersList
           initialUsers={users.map(UserMapper.fromDomaintoDto) as UserDto[]}
           initialPaginationOptions={
