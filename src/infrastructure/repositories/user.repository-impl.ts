@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, User, UserFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  User,
+  UserFilterOptions,
+  UserIncludeOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UserRepository } from '@app/domain/repositories';
 import { UserMapper } from '@app/infrastructure/dtos';
@@ -16,7 +21,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   public async getUsers(
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -82,7 +87,7 @@ export class UserRepositoryImpl implements UserRepository {
 
   public async getUser(
     id: string,
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<User, Error>> {

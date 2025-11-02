@@ -1,9 +1,14 @@
-import { PaginationOptions, User, UserFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  User,
+  UserFilterOptions,
+  UserIncludeOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserRepository {
   getUsers(
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -12,7 +17,7 @@ export interface UserRepository {
 
   getUser(
     id: string,
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<User, Error>>;

@@ -3,11 +3,11 @@ import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
-import { User } from '@app/domain/entities';
+import { User, UserIncludeOptions } from '@app/domain/entities';
 
 export type GetUserParams = [
   id: string,
-  includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+  includeOptions?: UserIncludeOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
@@ -25,7 +25,7 @@ export class GetUser implements UseCase<Promise<Either<User, Error>>, GetUserPar
 
   public async execute(
     id: string,
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<User, Error>> {

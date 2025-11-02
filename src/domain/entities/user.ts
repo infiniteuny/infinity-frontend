@@ -1,6 +1,15 @@
 import { FilterOperator } from '.';
 import { Major } from './major';
 
+export type UserIncludeOptions = (
+  | 'major'
+  | 'major.degree'
+  | 'major.faculty'
+  | 'personas'
+  | 'groups'
+  | 'permissions'
+)[];
+
 export interface UserFilterOptions {
   ssoId?: string;
   name?: string;

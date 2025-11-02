@@ -1,12 +1,17 @@
 import type { UserRepository } from '@app/domain/repositories';
 import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, User, UserFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  User,
+  UserFilterOptions,
+  UserIncludeOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetUsersParams = [
-  includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+  includeOptions?: UserIncludeOptions,
   filterOptions?: UserFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
@@ -27,7 +32,7 @@ export class GetUsers
   }
 
   public async execute(
-    includeOptions?: ('major' | 'personas' | 'groups' | 'permissions')[],
+    includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
