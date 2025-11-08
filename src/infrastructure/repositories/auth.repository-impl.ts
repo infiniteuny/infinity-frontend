@@ -1,9 +1,9 @@
 import type { AuthDataSource } from '@app/infrastructure/datasources/server';
 import { AuthRepository } from '@app/domain/repositories';
+import { DateTime } from 'luxon';
 import { inject } from 'inversify';
 import { Session } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { DateTime } from 'effect/index';
 
 export class AuthRepositoryImpl implements AuthRepository {
   public constructor(
@@ -30,7 +30,7 @@ export class AuthRepositoryImpl implements AuthRepository {
             picture: session?.user.image || undefined,
           },
           session?.accessToken || '',
-          DateTime.unsafeMake(session!.expires!).pipe(DateTime.toDate),
+          DateTime.fromISO(session!.expires!).toJSDate(),
           session?.error,
         )
       : null;

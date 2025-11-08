@@ -4,15 +4,15 @@ import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import {
   PaginationOptions,
-  User,
-  UserFilterOptions,
-  UserIncludeOptions,
+  Major,
+  MajorFilterOptions,
+  MajorIncludeOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { UserRepository } from '@app/domain/repositories';
-import { UserMapper } from '@app/infrastructure/dtos';
+import { MajorRepository } from '@app/domain/repositories';
+import { MajorMapper } from '@app/infrastructure/dtos';
 
-export class UserRepositoryImpl implements UserRepository {
+export class MajorRepositoryImpl implements MajorRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
@@ -20,15 +20,15 @@ export class UserRepositoryImpl implements UserRepository {
     private accessTokenDataSource: () => Promise<string>,
   ) {}
 
-  public async getUsers(
-    includeOptions?: UserIncludeOptions,
-    filterOptions?: UserFilterOptions,
+  public async getMajors(
+    includeOptions?: MajorIncludeOptions,
+    filterOptions?: MajorFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
-  ): Promise<Either<[User[], PaginationOptions], Error>> {
+  ): Promise<Either<[Major[], PaginationOptions], Error>> {
     try {
-      const response = await this.infinityApiDataSource.get('/users', {
+      const response = await this.infinityApiDataSource.get('/majors', {
         signal: abortSignal,
         headers: {
           ...(authenticate
@@ -41,22 +41,10 @@ export class UserRepositoryImpl implements UserRepository {
             .join(','),
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
-          'filters[sso_id]': filterOptions?.ssoId,
+          'filters[degree_id]': filterOptions?.degreeId,
+          'filters[faculty_id]': filterOptions?.facultyId,
+          'filters[code]': filterOptions?.code,
           'filters[name]': filterOptions?.name,
-          'filters[email_address]': filterOptions?.emailAddress,
-          'filters[phone_number]': filterOptions?.phoneNumber,
-          'filters[student_id]': filterOptions?.studentId,
-          'filters[major_id]': filterOptions?.majorId,
-          'filters[start_date]':
-            filterOptions?.startDate != null
-              ? (filterOptions.startDateOperator ?? '') + filterOptions.startDate.toISOString()
-              : undefined,
-          'filters[end_date]':
-            filterOptions?.endDate != null
-              ? (filterOptions.endDateOperator ?? '') + filterOptions?.endDate?.toISOString()
-              : undefined,
-          'filters[is_member]': filterOptions?.isMember,
-          'filters[is_extraordinary]': filterOptions?.isExtraordinary,
           'filters[created_at]':
             filterOptions?.createdAt != null
               ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
@@ -68,7 +56,7 @@ export class UserRepositoryImpl implements UserRepository {
         },
       });
 
-      const usersResponse = response.data.data.users.map(UserMapper.fromDtoToDomain);
+      const majorsResponse = response.data.data.majors.map(MajorMapper.fromDtoToDomain);
 
       const paginationOptionsResponse = new PaginationOptions(
         response.data.data.meta.per_page,
@@ -77,7 +65,7 @@ export class UserRepositoryImpl implements UserRepository {
         response.data.data.meta.prev_cursor ?? undefined,
       );
 
-      return right([usersResponse, paginationOptionsResponse]);
+      return right([majorsResponse, paginationOptionsResponse]);
     } catch (error) {
       const response = handleAxiosError(error);
 
@@ -85,14 +73,14 @@ export class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  public async getUser(
+  public async getMajor(
     id: string,
-    includeOptions?: UserIncludeOptions,
+    includeOptions?: MajorIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
-  ): Promise<Either<User, Error>> {
+  ): Promise<Either<Major, Error>> {
     try {
-      const response = await this.infinityApiDataSource.get(`/users/${id}`, {
+      const response = await this.infinityApiDataSource.get(`/majors/${id}`, {
         signal: abortSignal,
         headers: {
           ...(authenticate
@@ -106,9 +94,9 @@ export class UserRepositoryImpl implements UserRepository {
         },
       });
 
-      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
+      const majorResponse = MajorMapper.fromDtoToDomain(response.data.data.major);
 
-      return right(userResponse);
+      return right(majorResponse);
     } catch (error) {
       const response = handleAxiosError(error);
 
@@ -116,18 +104,15 @@ export class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  public async createUser(
-    user: PartialBy<
-      Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>,
-      'startDate' | 'endDate'
-    >,
+  public async createMajor(
+    major: Omit<Major, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
-  ): Promise<Either<User, Error>> {
+  ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
-        '/users',
-        UserMapper.fromDomaintoDto(user),
+        '/majors',
+        MajorMapper.fromDomaintoDto(major),
         {
           signal: abortSignal,
           headers: {
@@ -138,9 +123,9 @@ export class UserRepositoryImpl implements UserRepository {
         },
       );
 
-      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
+      const majorResponse = MajorMapper.fromDtoToDomain(response.data.data.major);
 
-      return right(userResponse);
+      return right(majorResponse);
     } catch (error) {
       const response = handleAxiosError(error);
 
@@ -148,16 +133,16 @@ export class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  public async updateUser(
+  public async updateMajor(
     id: string,
-    user: Partial<Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>>,
+    major: Partial<Major>,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
-  ): Promise<Either<User, Error>> {
+  ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.patch(
-        `/users/${id}`,
-        UserMapper.fromDomaintoDto(user),
+        `/majors/${id}`,
+        MajorMapper.fromDomaintoDto(major),
         {
           signal: abortSignal,
           headers: {
@@ -168,9 +153,9 @@ export class UserRepositoryImpl implements UserRepository {
         },
       );
 
-      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
+      const majorResponse = MajorMapper.fromDtoToDomain(response.data.data.major);
 
-      return right(userResponse);
+      return right(majorResponse);
     } catch (error) {
       const response = handleAxiosError(error);
 
@@ -178,13 +163,13 @@ export class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  public async deleteUser(
+  public async deleteMajor(
     id: string,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
-  ): Promise<Either<User, Error>> {
+  ): Promise<Either<Major, Error>> {
     try {
-      const response = await this.infinityApiDataSource.delete(`/users/${id}`, {
+      const response = await this.infinityApiDataSource.delete(`/majors/${id}`, {
         signal: abortSignal,
         headers: {
           ...(authenticate
@@ -193,9 +178,9 @@ export class UserRepositoryImpl implements UserRepository {
         },
       });
 
-      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
+      const majorResponse = MajorMapper.fromDtoToDomain(response.data.data.major);
 
-      return right(userResponse);
+      return right(majorResponse);
     } catch (error) {
       const response = handleAxiosError(error);
 

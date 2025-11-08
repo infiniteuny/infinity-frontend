@@ -23,14 +23,17 @@ export interface UserRepository {
   ): Promise<Either<User, Error>>;
 
   createUser(
-    user: PartialBy<Omit<User, 'id' | 'createdAt' | 'updatedAt'>, 'startDate' | 'endDate'>,
+    user: PartialBy<
+      Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>,
+      'startDate' | 'endDate'
+    >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<User, Error>>;
 
   updateUser(
     id: string,
-    user: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>,
+    user: Partial<Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<User, Error>>;
