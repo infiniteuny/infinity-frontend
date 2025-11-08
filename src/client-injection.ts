@@ -1,11 +1,30 @@
 import { Container } from 'inversify';
-import { GetSidebarExtendedState, GetUsers, SetSidebarExtendedState } from '@app/application';
+import {
+  FacultyRepository,
+  InternalRepository,
+  MajorRepository,
+  UserRepository,
+} from '@app/domain/repositories';
+import {
+  FacultyRepositoryImpl,
+  InternalRepositoryImpl,
+  MajorRepositoryImpl,
+  UserRepositoryImpl,
+} from '@app/infrastructure/repositories';
+import {
+  CreateUser,
+  DeleteUser,
+  GetFaculties,
+  GetMajors,
+  GetSidebarExtendedState,
+  GetUsers,
+  SetSidebarExtendedState,
+  UpdateUser,
+} from '@app/application';
 import {
   InfinityApiDataSource,
   infinityApiDataSourceImpl,
 } from '@app/infrastructure/datasources/server';
-import { InternalRepository } from '@app/domain/repositories';
-import { InternalRepositoryImpl, UserRepositoryImpl } from '@app/infrastructure/repositories';
 import {
   SessionStorageDataSource,
   SessionStorageDataSourceImpl,
@@ -22,11 +41,18 @@ clientContainer
 clientContainer
   .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
   .to(SetSidebarExtendedState);
+clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
+clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
+clientContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
+clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 
 // Repositories
 clientContainer.bind<InternalRepository>(SYMBOLS.InternalRepository).to(InternalRepositoryImpl);
-clientContainer.bind(SYMBOLS.UserRepository).to(UserRepositoryImpl);
+clientContainer.bind<FacultyRepository>(SYMBOLS.FacultyRepository).to(FacultyRepositoryImpl);
+clientContainer.bind<MajorRepository>(SYMBOLS.MajorRepository).to(MajorRepositoryImpl);
+clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
 clientContainer
