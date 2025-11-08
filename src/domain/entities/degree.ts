@@ -1,3 +1,14 @@
+import { FilterOperator } from '.';
+
+export interface DegreeFilterOptions {
+  code?: string;
+  name?: string;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
+}
+
 export class Degree {
   public id: string;
   public code: string;

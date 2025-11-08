@@ -1,5 +1,19 @@
+import { FilterOperator } from '.';
 import { Degree } from './degree';
 import { Faculty } from './faculty';
+
+export type MajorIncludeOptions = ('degree' | 'faculty')[];
+
+export interface MajorFilterOptions {
+  degreeId?: string;
+  facultyId?: string;
+  code?: string;
+  name?: string;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
+}
 
 export class Major {
   public id: string;

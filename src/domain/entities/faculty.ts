@@ -1,3 +1,14 @@
+import { FilterOperator } from '.';
+
+export interface FacultyFilterOptions {
+  code?: string;
+  name?: string;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
+}
+
 export class Faculty {
   public id: string;
   public code: string;
