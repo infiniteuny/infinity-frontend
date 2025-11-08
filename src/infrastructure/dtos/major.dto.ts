@@ -1,4 +1,4 @@
-import { DateTime } from 'effect';
+import { DateTime } from 'luxon';
 import { DegreeDto, DegreeMapper } from './degree.dto';
 import { FacultyDto, FacultyMapper } from './faculty.dto';
 import { Major } from '@app/domain/entities';
@@ -39,8 +39,8 @@ export class MajorMapper {
       dto.faculty_id,
       dto.code,
       dto.name,
-      DateTime.unsafeMake(dto.created_at).pipe(DateTime.toDate),
-      DateTime.unsafeMake(dto.updated_at).pipe(DateTime.toDate),
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.degree ? DegreeMapper.fromDtoToDomain(dto.degree) : undefined,
       dto.faculty ? FacultyMapper.fromDtoToDomain(dto.faculty) : undefined,
     );

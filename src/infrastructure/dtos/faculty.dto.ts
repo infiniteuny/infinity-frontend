@@ -1,4 +1,4 @@
-import { DateTime } from 'effect';
+import { DateTime } from 'luxon';
 import { Faculty } from '@app/domain/entities';
 
 export interface FacultyDto {
@@ -25,8 +25,8 @@ export class FacultyMapper {
       dto.id,
       dto.code,
       dto.name,
-      DateTime.unsafeMake(dto.created_at).pipe(DateTime.toDate),
-      DateTime.unsafeMake(dto.updated_at).pipe(DateTime.toDate),
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

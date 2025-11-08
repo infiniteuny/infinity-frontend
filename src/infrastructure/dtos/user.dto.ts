@@ -1,4 +1,4 @@
-import { DateTime } from 'effect';
+import { DateTime } from 'luxon';
 import { MajorDto, MajorMapper } from './major.dto';
 import { User } from '@app/domain/entities';
 
@@ -53,13 +53,13 @@ export class UserMapper {
       dto.student_id,
       dto.major_id,
       dto.links,
-      dto.start_date ? DateTime.unsafeMake(dto.start_date).pipe(DateTime.toDate) : null,
-      dto.end_date ? DateTime.unsafeMake(dto.end_date).pipe(DateTime.toDate) : null,
+      dto.start_date ? DateTime.fromISO(dto.start_date).toJSDate() : null,
+      dto.end_date ? DateTime.fromISO(dto.end_date).toJSDate() : null,
       dto.is_member,
       dto.is_extraordinary,
       dto.is_active,
-      DateTime.unsafeMake(dto.created_at).pipe(DateTime.toDate),
-      DateTime.unsafeMake(dto.updated_at).pipe(DateTime.toDate),
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.major ? MajorMapper.fromDtoToDomain(dto.major) : undefined,
     );
   }
