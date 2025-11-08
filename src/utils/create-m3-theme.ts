@@ -465,6 +465,10 @@ export function createM3Theme({
                         boxShadow: theme.shadows[1],
                         background: theme.alpha(theme.vars.palette.primary.main, 0.85),
                       },
+                      '&.Mui-disabled': {
+                        background: theme.alpha(theme.vars.palette.onSurface.main, 0.1),
+                        color: theme.alpha(theme.vars.palette.onSurface.main, 0.38),
+                      },
                     },
                   },
                   {
