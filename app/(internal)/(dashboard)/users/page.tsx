@@ -13,7 +13,12 @@ import { UsersList, UsersToolbar } from '@app/presentation/components/internal/u
 
 export default async function UsersPage() {
   const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
-  const result = await getUsers.execute(['major'], undefined, { perPage: 25 }, undefined);
+  const result = await getUsers.execute(
+    ['major', 'major.faculty'],
+    undefined,
+    { perPage: 25 },
+    undefined,
+  );
   const [users, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;
