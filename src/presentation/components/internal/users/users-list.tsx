@@ -20,8 +20,8 @@ import {
 } from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { User, PaginationOptions, Major } from '@app/domain/entities';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 type Props = {
   initialUsers: UserDto[];
@@ -31,7 +31,7 @@ type Props = {
 export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const getUsers = clientContainer.get<GetUsers>(SYMBOLS.GetUsers);
+  const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -78,7 +78,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     paginationOptions: PaginationOptions,
     newPaginationModel?: GridPaginationModel,
   ): Promise<void> => {
-    const result = await getUsers.execute(['major'], undefined, paginationOptions);
+    const result = await getUsers.execute(['major', 'major.faculty'], undefined, paginationOptions);
 
     return match(result, {
       onRight: ([users, newPaginationOptions]) => {
