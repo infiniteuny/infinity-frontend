@@ -8,7 +8,6 @@ import {
 } from '@app/infrastructure/dtos';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
-import { SessionProvider } from 'next-auth/react';
 import { SYMBOLS } from '@config';
 import { UsersList, UsersToolbar } from '@app/presentation/components/internal/users';
 
@@ -24,17 +23,15 @@ export default async function UsersPage() {
 
   return (
     <>
-      <SessionProvider basePath="/auth">
-        <SectionHeader title="Users">
-          <UsersToolbar />
-        </SectionHeader>
-        <UsersList
-          initialUsers={users.map(UserMapper.fromDomaintoDto) as UserDto[]}
-          initialPaginationOptions={
-            PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
-          }
-        />
-      </SessionProvider>
+      <SectionHeader title="Users">
+        <UsersToolbar />
+      </SectionHeader>
+      <UsersList
+        initialUsers={users.map(UserMapper.fromDomaintoDto) as UserDto[]}
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
     </>
   );
 }
