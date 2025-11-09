@@ -17,7 +17,7 @@ export function NavbarMenu({ menu }: Props) {
       >
         {menu.icon ? (
           <ListItemIcon>
-            <Icon name={menu.icon} className="align-text-bottom " />
+            <Icon name={menu.icon} className="align-text-bottom" />
           </ListItemIcon>
         ) : null}
         <ListItemText>{menu.name}</ListItemText>

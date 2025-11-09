@@ -19,7 +19,7 @@ export function LoginForm({ callbackUrl }: Props) {
           }),
         }),
       ]}
-      className="mx-auto p-0 max-w-sm rounded-xl sm:p-8"
+      className="mx-auto max-w-sm rounded-xl p-0 sm:p-8"
     >
       <Typography component="h1" variant="h5" className="text-center font-medium">
         Login

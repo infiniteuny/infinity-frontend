@@ -25,7 +25,7 @@ export default function InternalLayout({ children }: Props) {
   return (
     <html
       lang={APP.site.locale}
-      className={`${FONTS.sans.variable} ${FONTS.mono.variable} bg-[var(--m3-palette-surfaceContainer-main)]`}
+      className={`${FONTS.sans.variable} ${FONTS.mono.variable} bg-(--m3-palette-surfaceContainer-main)`}
       suppressHydrationWarning
     >
       <body id="__next">

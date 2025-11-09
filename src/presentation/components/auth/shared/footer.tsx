@@ -11,12 +11,12 @@ export function AuthFooter() {
           sm: 'surfaceContainer.main',
         },
       }}
-      className="flex items-center h-16 w-auto px-6 py-2 md:px-12 lg:px-18"
+      className="flex h-16 w-auto items-center px-6 py-2 md:px-12 lg:px-18"
     >
       <Typography
         component="p"
         sx={{ color: 'outline' }}
-        className="max-w-2xl mx-auto my-0 text-sm text-center"
+        className="mx-auto my-0 max-w-2xl text-center text-sm"
       >
         &copy; {new Date().getFullYear()}. Made with &#128154; by INFINITE UNY.
       </Typography>

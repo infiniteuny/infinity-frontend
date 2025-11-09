@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: Props) {
   }
 
   return (
-    <section className="flex items-center px-6 py-20 min-h-screen md:px-12 lg:px-18">
+    <section className="flex min-h-screen items-center px-6 py-20 md:px-12 lg:px-18">
       <LoginForm callbackUrl={callbackUrl} />
     </section>
   );

@@ -12,9 +12,9 @@ export function MetadataView({ user }: Props) {
       <Container
         maxWidth={false}
         sx={{ bgcolor: 'surface.main' }}
-        className="w-full p-4 rounded-2xl"
+        className="w-full rounded-2xl p-4"
       >
-        <Toolbar component="header" className="min-h-10 h-auto p-0 mb-4">
+        <Toolbar component="header" className="mb-4 h-auto min-h-10 p-0">
           <Typography component="h2" variant="h6" className="font-medium">
             Metadata
           </Typography>

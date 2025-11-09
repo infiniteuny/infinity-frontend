@@ -40,7 +40,7 @@ export function InternalNavbar({ menus }: Props) {
   };
 
   return (
-    <nav className="flex flex-grow items-center justify-end md:ml-4">
+    <nav className="flex grow items-center justify-end md:ml-4">
       <List dense={true} disablePadding={true} className="hidden text-center md:flex">
         {menus &&
           menus.map((menu, i) => {
@@ -64,7 +64,7 @@ export function InternalNavbar({ menus }: Props) {
           sizes="32px"
           // src={session?.user?.image || '/assets/img/profile.png'}
           alt="User"
-          className="w-8 h-8"
+          className="h-8 w-8"
         />
       </IconButton>
       <Menu

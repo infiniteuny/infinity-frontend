@@ -29,18 +29,17 @@ export function SidebarMenu({ menu }: Props) {
     <Link
       href={(menu as PathMenu).path}
       className={`mr-2 rounded-r-full transition-all ${
-        sidebarExtended || sidebarHovered ? '' : 'lg:mr-0 lg:pr-0 lg:rounded-r-none'
+        sidebarExtended || sidebarHovered ? '' : 'lg:mr-0 lg:rounded-r-none lg:pr-0'
       }`}
     >
       <li
-        className={`flex items-center pr-4 py-2 text-base text-infinite-green rounded-r-full
-      transition-all ${
-        active ? 'text-white bg-infinite-green' : 'hover:bg-infinite-green/10'
-      } ${sidebarExtended || sidebarHovered ? '' : 'lg:pr-0 lg:rounded-r-none'}`}
+        className={`text-infinite-green flex items-center rounded-r-full py-2 pr-4 text-base transition-all ${
+          active ? 'bg-infinite-green text-white' : 'hover:bg-infinite-green/10'
+        } ${sidebarExtended || sidebarHovered ? '' : 'lg:rounded-r-none lg:pr-0'}`}
       >
         {menu.icon ? (
-          <div className="shrink-0 w-14 text-center">
-            <Icon name={menu.icon} className="align-text-bottom " />
+          <div className="w-14 shrink-0 text-center">
+            <Icon name={menu.icon} className="align-text-bottom" />
           </div>
         ) : null}
         <span className="overflow-hidden text-ellipsis">{menu.name}</span>

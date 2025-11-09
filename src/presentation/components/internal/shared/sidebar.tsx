@@ -57,7 +57,7 @@ export function InternalSidebar({ menus }: Props) {
 
   return (
     <>
-      <Backdrop open={sidebarOpened} onClick={handleBackdrop} className="z-[500] lg:hidden" />
+      <Backdrop open={sidebarOpened} onClick={handleBackdrop} className="z-500 lg:hidden" />
       <Container
         component="aside"
         onMouseEnter={handleMouseEnter}
@@ -65,12 +65,11 @@ export function InternalSidebar({ menus }: Props) {
         sx={{
           bgcolor: 'surfaceContainer.main',
         }}
-        className={`flex flex-col fixed left-0 top-0 bottom-0 w-[260px] max-w-full z-[550] px-0
-        pt-[74px] overflow-x-auto no-scrollbar transition-all lg:translate-x-0 ${
+        className={`no-scrollbar fixed top-0 bottom-0 left-0 z-550 flex w-[260px] max-w-full flex-col overflow-x-auto px-0 pt-[74px] transition-all lg:translate-x-0 ${
           sidebarOpened ? 'translate-x-0' : '-translate-x-full'
-        } ${sidebarExtended || sidebarHovered ? '' : 'lg:!w-20 lg:overflow-y-hidden'}`}
+        } ${sidebarExtended || sidebarHovered ? '' : 'lg:w-20! lg:overflow-y-hidden'}`}
       >
-        <div className="flex flex-col justify-between min-h-full">
+        <div className="flex min-h-full flex-col justify-between">
           <List>
             {menus
               ? menus.map((menu, i) => {
@@ -88,7 +87,7 @@ export function InternalSidebar({ menus }: Props) {
             sx={{
               bgcolor: 'surfaceContainer.main',
             }}
-            className="hidden sticky bottom-0 z-[11] px-0 mt-auto lg:block"
+            className="sticky bottom-0 z-11 mt-auto hidden px-0 lg:block"
           >
             <List>
               <ListItem>

@@ -24,7 +24,7 @@ export function InternalHeader() {
           }),
         }),
       ]}
-      className="flex flex-row items-center w-full h-[74px] p-4 shadow-none lg:pl-0"
+      className="flex h-[74px] w-full flex-row items-center p-4 shadow-none lg:pl-0"
     >
       <IconButton className="lg:hidden" onClick={() => setSidebarOpenedState(!sidebarOpened)}>
         <MenuRounded />
@@ -33,7 +33,7 @@ export function InternalHeader() {
         <InfiniteLogo
           width={46}
           height={46}
-          className="block mx-auto fill-infinite-light-green dark:fill-infinite-dark-green lg:mx-auto"
+          className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto block lg:mx-auto"
         />
       </div>
       <InternalNavbar menus={APP.internal.nav.menus} />

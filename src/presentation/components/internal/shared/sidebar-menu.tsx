@@ -33,7 +33,7 @@ export function SidebarMenu({ menu }: Props) {
           <ListItemIcon>
             <Icon
               name={selected ? menu.icon : `${menu.icon}-outlined`}
-              className="align-text-bottom "
+              className="align-text-bottom"
             />
           </ListItemIcon>
         ) : null}

@@ -121,7 +121,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
       <Container
         maxWidth={false}
         sx={{ bgcolor: 'surface.main' }}
-        className="w-full p-4 rounded-2xl"
+        className="w-full rounded-2xl p-4"
       >
         <NoSsr>
           <DataGrid
