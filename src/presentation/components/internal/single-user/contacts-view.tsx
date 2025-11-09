@@ -1,5 +1,5 @@
-import { User } from '@app/domain/entities';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;

@@ -1,5 +1,6 @@
-import { User } from '@app/domain/entities';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
@@ -32,7 +33,7 @@ export function MetadataView({ user }: Props) {
               Created At
             </Typography>
             <Typography variant="body2" component="p">
-              {user.createdAt?.toLocaleString()}
+              {DateTime.fromJSDate(user.createdAt).toFormat('cccc, d LLLL yyyy, HH:mm:ss ZZZZ')}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -40,7 +41,7 @@ export function MetadataView({ user }: Props) {
               Updated At
             </Typography>
             <Typography variant="body2" component="p">
-              {user.updatedAt?.toLocaleString()}
+              {DateTime.fromJSDate(user.updatedAt).toFormat('cccc, d LLLL yyyy, HH:mm:ss ZZZZ')}
             </Typography>
           </Grid>
         </Grid>

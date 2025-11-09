@@ -1,5 +1,5 @@
-import { User } from '@app/domain/entities';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
@@ -56,7 +56,9 @@ export function GeneralView({ user }: Props) {
               Major
             </Typography>
             <Typography variant="body2" component="p">
-              {user.major?.name ?? 'N/A'}
+              {user.major
+                ? `${user.major.degree ? `${user.major.degree.name} - ` : ''}${user.major.name}`
+                : 'N/A'}
             </Typography>
           </Grid>
         </Grid>

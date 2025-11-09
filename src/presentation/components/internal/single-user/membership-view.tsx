@@ -1,5 +1,6 @@
-import { User } from '@app/domain/entities';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
@@ -34,7 +35,9 @@ export function MembershipView({ user }: Props) {
                   Start Date
                 </Typography>
                 <Typography variant="body2" component="p">
-                  {user.startDate?.toLocaleDateString()}
+                  {user.startDate
+                    ? DateTime.fromJSDate(user.startDate).toFormat('dd/LL/yyyy')
+                    : 'N/A'}
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -42,7 +45,7 @@ export function MembershipView({ user }: Props) {
                   End Date
                 </Typography>
                 <Typography variant="body2" component="p">
-                  {user.endDate ? user.endDate.toLocaleDateString() : 'N/A'}
+                  {user.endDate ? DateTime.fromJSDate(user.endDate).toFormat('dd/LL/yyyy') : 'N/A'}
                 </Typography>
               </Grid>
             </>
