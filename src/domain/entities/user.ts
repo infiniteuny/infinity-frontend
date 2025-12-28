@@ -29,6 +29,21 @@ export interface UserFilterOptions {
   updatedAt?: Date;
 }
 
+export interface UserSortOptions {
+  id?: 'ASC' | 'DESC';
+  name?: 'ASC' | 'DESC';
+  emailAddress?: 'ASC' | 'DESC';
+  phoneNumber?: 'ASC' | 'DESC';
+  studentId?: 'ASC' | 'DESC';
+  majorId?: 'ASC' | 'DESC';
+  startDate?: 'ASC' | 'DESC';
+  endDate?: 'ASC' | 'DESC';
+  isMember?: 'ASC' | 'DESC';
+  isExtraordinary?: 'ASC' | 'DESC';
+  createdAt?: 'ASC' | 'DESC';
+  updatedAt?: 'ASC' | 'DESC';
+}
+
 export class User {
   public id: string;
   public name: string;

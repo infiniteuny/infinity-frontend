@@ -15,6 +15,16 @@ export interface MajorFilterOptions {
   updatedAt?: Date;
 }
 
+export interface MajorSortOptions {
+  id?: 'ASC' | 'DESC';
+  degreeId?: 'ASC' | 'DESC';
+  facultyId?: 'ASC' | 'DESC';
+  code?: 'ASC' | 'DESC';
+  name?: 'ASC' | 'DESC';
+  createdAt?: 'ASC' | 'DESC';
+  updatedAt?: 'ASC' | 'DESC';
+}
+
 export class Major {
   public id: string;
   public degreeId: string;

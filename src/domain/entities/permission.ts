@@ -1,33 +1,39 @@
 import { FilterOperator } from '.';
 
-export interface DegreeFilterOptions {
-  code?: string;
+export interface PermissionFilterOptions {
   name?: string;
+  guardName?: string;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
   updatedAtOperator?: FilterOperator;
   updatedAt?: Date;
 }
 
-export interface DegreeSortOptions {
+export interface PermissionSortOptions {
   id?: 'ASC' | 'DESC';
-  code?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
+  guardName?: 'ASC' | 'DESC';
   createdAt?: 'ASC' | 'DESC';
   updatedAt?: 'ASC' | 'DESC';
 }
 
-export class Degree {
+export class Permission {
   public id: string;
-  public code: string;
   public name: string;
+  public guardName: string;
   public createdAt: Date;
   public updatedAt: Date;
 
-  public constructor(id: string, code: string, name: string, createdAt: Date, updatedAt: Date) {
+  public constructor(
+    id: string,
+    name: string,
+    guardName: string,
+    createdAt: Date,
+    updatedAt: Date,
+  ) {
     this.id = id;
-    this.code = code;
     this.name = name;
+    this.guardName = guardName;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

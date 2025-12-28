@@ -9,6 +9,14 @@ export interface FacultyFilterOptions {
   updatedAt?: Date;
 }
 
+export interface FacultySortOptions {
+  id?: 'ASC' | 'DESC';
+  code?: 'ASC' | 'DESC';
+  name?: 'ASC' | 'DESC';
+  createdAt?: 'ASC' | 'DESC';
+  updatedAt?: 'ASC' | 'DESC';
+}
+
 export class Faculty {
   public id: string;
   public code: string;

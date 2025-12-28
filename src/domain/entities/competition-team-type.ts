@@ -1,33 +1,33 @@
 import { FilterOperator } from '.';
 
-export interface DegreeFilterOptions {
-  code?: string;
+export interface CompetitionTeamTypeFilterOptions {
   name?: string;
+  weight?: number;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
   updatedAtOperator?: FilterOperator;
   updatedAt?: Date;
 }
 
-export interface DegreeSortOptions {
+export interface CompetitionTeamTypeSortOptions {
   id?: 'ASC' | 'DESC';
-  code?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
+  weight?: 'ASC' | 'DESC';
   createdAt?: 'ASC' | 'DESC';
   updatedAt?: 'ASC' | 'DESC';
 }
 
-export class Degree {
+export class CompetitionTeamType {
   public id: string;
-  public code: string;
   public name: string;
+  public weight: number;
   public createdAt: Date;
   public updatedAt: Date;
 
-  public constructor(id: string, code: string, name: string, createdAt: Date, updatedAt: Date) {
+  public constructor(id: string, name: string, weight: number, createdAt: Date, updatedAt: Date) {
     this.id = id;
-    this.code = code;
     this.name = name;
+    this.weight = weight;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

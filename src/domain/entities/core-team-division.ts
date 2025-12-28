@@ -1,33 +1,33 @@
 import { FilterOperator } from '.';
 
-export interface DegreeFilterOptions {
-  code?: string;
+export interface CoreTeamDivisionFilterOptions {
   name?: string;
+  priority?: number;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
   updatedAtOperator?: FilterOperator;
   updatedAt?: Date;
 }
 
-export interface DegreeSortOptions {
+export interface CoreTeamDivisionSortOptions {
   id?: 'ASC' | 'DESC';
-  code?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
+  priority?: 'ASC' | 'DESC';
   createdAt?: 'ASC' | 'DESC';
   updatedAt?: 'ASC' | 'DESC';
 }
 
-export class Degree {
+export class CoreTeamDivision {
   public id: string;
-  public code: string;
   public name: string;
+  public priority: number;
   public createdAt: Date;
   public updatedAt: Date;
 
-  public constructor(id: string, code: string, name: string, createdAt: Date, updatedAt: Date) {
+  public constructor(id: string, name: string, priority: number, createdAt: Date, updatedAt: Date) {
     this.id = id;
-    this.code = code;
     this.name = name;
+    this.priority = priority;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
