@@ -1,0 +1,57 @@
+# Project Context
+
+## Purpose
+
+This is the front-end for Infinity project, INFINITE's management system. It serves authenticated internal users (Core Teams, Community Group Admins, and Members) with dashboards for people, groups, teams, projects, permissions, and related operational data. The app is built for the App Router in Next.js and uses dependency injection to keep UI, business logic, and data layers separate.
+
+## Tech Stack
+
+- Next.js 15 (App Router) with TypeScript 5.9 and React 19
+- Styling/UI: MUI v7 (core, icons, data-grid, date pickers) plus Tailwind CSS 4 for utilities
+- Forms/validation: react-hook-form + zod; next-auth 5 beta for auth/session
+- State/logic: Zustand for client state, Effect for functional utilities, Immer for immutable updates
+- Data/HTTP: Axios with custom data sources; Luxon for dates
+- DI: inversify with reflect-metadata for server/client containers
+
+## Project Conventions
+
+### Code Style
+
+- ESLint flat config extends eslint:recommended, next/core-web-vitals, next/typescript, plugin:prettier/recommended; key rule: @typescript-eslint/explicit-member-accessibility is enforced.
+- Prettier (with prettier-plugin-tailwindcss) formats code; `npm run format` or `npm run lint` apply fixes.
+- TypeScript strict mode is on; decorators/emitDecoratorMetadata enabled; path aliases: @app/_ → src/_ and @config/_ → config/_.
+
+### Architecture Patterns
+
+- Layered/clean architecture: `domain` (entities, repository contracts), `application` (use cases), `infrastructure` (data sources/repository implementations), `presentation` (controllers, components, actions, stores), `config` (DI symbols/themes), `app` (Next.js routes/layouts).
+- Clean architecture dependency rules: `domain` has no dependencies; `application` depends only on `domain`; `infrastructure` implements repository/data-source contracts and depends inward; `presentation` depends on `application` for use cases; `app` layer wires pages/layouts to `presentation`. Composition roots (`src/server-injection.ts`, `src/client-injection.ts`) are the only places that assemble concrete implementations.
+- Dependency injection via inversify containers split for server and client (`src/server-injection.ts`, `src/client-injection.ts`); bindings wire use cases → repositories → data sources.
+- Data access is abstracted behind repositories and data sources; `InfinityApiDataSource` centralizes API client config; auth/session obtained via next-auth.
+
+### Testing Strategy
+
+- No automated test setup is present yet (no jest/vitest config). Add appropriate test tooling for new features; prefer use-case-level tests where possible.
+
+### Git Workflow
+
+- Default branch: develop. Use feature branches into develop via PRs and keep commits scoped/atomic.
+- Commit style: follow Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, `ci:`); scope is recommended (e.g., `feat(auth): add session refresh`).
+
+## Domain Context
+
+- Infinity manages internal operations for INFINITE: users, groups, teams, permissions, achievements, testimonials, fund applications, project galleries, and related settings. Routes under `app/(internal)/(dashboard)/…` map to these modules; `app/(auth)/…` handles authentication flows.
+- Domain models live in `src/domain/entities/*` (e.g., user, group, team, permission, session). Repositories in `src/domain/repositories/*` define contracts for auth, user, internal, faculty/major data, etc.
+
+## Important Constraints
+
+- Built for Next.js App Router; server/client boundaries respected via separate DI containers.
+- Auth relies on next-auth 5 beta; access tokens provided via data sources and must be available for API calls.
+- TypeScript strictness and decorator metadata are required (reflect-metadata must be imported before inversify bindings).
+- Uses MUI v7 components; ensure theming aligns with config/themes and fonts in `config/`.
+
+## External Dependencies
+
+- Infinity backend API consumed via `InfinityApiDataSource` (server/client variants) over Axios.
+- NextAuth for authentication/session management.
+- MUI services (emotion cache for SSR), react-toastify for notifications.
+- External validation/util packages: validator, zod, Effect, Luxon.
