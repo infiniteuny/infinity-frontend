@@ -91,7 +91,9 @@ export function UserForm({ initialUser, faculties, majors }: Props) {
         },
   });
 
-  const { handleSubmit: submit, reset, formState } = methods;
+  const { handleSubmit: submit, watch, formState } = methods;
+
+  const name = watch('name');
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {
@@ -137,7 +139,7 @@ export function UserForm({ initialUser, faculties, majors }: Props) {
 
   return (
     <>
-      <SectionHeader title="Create User">
+      <SectionHeader title={user ? name : 'Create User'}>
         <UserToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
