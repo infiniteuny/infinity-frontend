@@ -1,14 +1,52 @@
 import { Container } from 'inversify';
 import {
+  AchievementRepository,
+  CommunityGroupAdminRepository,
+  CommunityGroupRepository,
+  CompetitionOrganizerTypeRepository,
+  CompetitionOutputRepository,
+  CompetitionRankRepository,
+  CompetitionScaleRepository,
+  CompetitionTeamTypeRepository,
+  CompetitionTimeRangeRepository,
+  CompetitionRepository,
+  CoreTeamDivisionRepository,
+  CoreTeamRepository,
   FacultyRepository,
+  FundApplicationRepository,
+  GroupRepository,
   InternalRepository,
   MajorRepository,
+  PermissionRepository,
+  PersonaRepository,
+  ProjectGalleryRepository,
+  TeamRepository,
+  TestimonialRepository,
   UserRepository,
 } from '@app/domain/repositories';
 import {
+  AchievementRepositoryImpl,
+  CommunityGroupAdminRepositoryImpl,
+  CommunityGroupRepositoryImpl,
+  CompetitionOrganizerTypeRepositoryImpl,
+  CompetitionOutputRepositoryImpl,
+  CompetitionRankRepositoryImpl,
+  CompetitionScaleRepositoryImpl,
+  CompetitionTeamTypeRepositoryImpl,
+  CompetitionTimeRangeRepositoryImpl,
+  CompetitionRepositoryImpl,
+  CoreTeamDivisionRepositoryImpl,
+  CoreTeamRepositoryImpl,
   FacultyRepositoryImpl,
+  FundApplicationRepositoryImpl,
+  GroupRepositoryImpl,
   InternalRepositoryImpl,
   MajorRepositoryImpl,
+  PermissionRepositoryImpl,
+  PersonaRepositoryImpl,
+  ProjectGalleryRepositoryImpl,
+  TeamRepositoryImpl,
+  TestimonialRepositoryImpl,
   UserRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import {
@@ -49,9 +87,58 @@ clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 
 // Repositories
+clientContainer
+  .bind<AchievementRepository>(SYMBOLS.AchievementRepository)
+  .to(AchievementRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupAdminRepository>(SYMBOLS.CommunityGroupAdminRepository)
+  .to(CommunityGroupAdminRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupRepository>(SYMBOLS.CommunityGroupRepository)
+  .to(CommunityGroupRepositoryImpl);
+clientContainer
+  .bind<CompetitionOrganizerTypeRepository>(SYMBOLS.CompetitionOrganizerTypeRepository)
+  .to(CompetitionOrganizerTypeRepositoryImpl);
+clientContainer
+  .bind<CompetitionOutputRepository>(SYMBOLS.CompetitionOutputRepository)
+  .to(CompetitionOutputRepositoryImpl);
+clientContainer
+  .bind<CompetitionRankRepository>(SYMBOLS.CompetitionRankRepository)
+  .to(CompetitionRankRepositoryImpl);
+clientContainer
+  .bind<CompetitionScaleRepository>(SYMBOLS.CompetitionScaleRepository)
+  .to(CompetitionScaleRepositoryImpl);
+clientContainer
+  .bind<CompetitionTeamTypeRepository>(SYMBOLS.CompetitionTeamTypeRepository)
+  .to(CompetitionTeamTypeRepositoryImpl);
+clientContainer
+  .bind<CompetitionTimeRangeRepository>(SYMBOLS.CompetitionTimeRangeRepository)
+  .to(CompetitionTimeRangeRepositoryImpl);
+clientContainer
+  .bind<CompetitionRepository>(SYMBOLS.CompetitionRepository)
+  .to(CompetitionRepositoryImpl);
+clientContainer
+  .bind<CoreTeamDivisionRepository>(SYMBOLS.CoreTeamDivisionRepository)
+  .to(CoreTeamDivisionRepositoryImpl);
+clientContainer.bind<CoreTeamRepository>(SYMBOLS.CoreTeamRepository).to(CoreTeamRepositoryImpl);
 clientContainer.bind<InternalRepository>(SYMBOLS.InternalRepository).to(InternalRepositoryImpl);
 clientContainer.bind<FacultyRepository>(SYMBOLS.FacultyRepository).to(FacultyRepositoryImpl);
+clientContainer
+  .bind<FundApplicationRepository>(SYMBOLS.FundApplicationRepository)
+  .to(FundApplicationRepositoryImpl);
+clientContainer.bind<GroupRepository>(SYMBOLS.GroupRepository).to(GroupRepositoryImpl);
 clientContainer.bind<MajorRepository>(SYMBOLS.MajorRepository).to(MajorRepositoryImpl);
+clientContainer
+  .bind<PermissionRepository>(SYMBOLS.PermissionRepository)
+  .to(PermissionRepositoryImpl);
+clientContainer.bind<PersonaRepository>(SYMBOLS.PersonaRepository).to(PersonaRepositoryImpl);
+clientContainer
+  .bind<ProjectGalleryRepository>(SYMBOLS.ProjectGalleryRepository)
+  .to(ProjectGalleryRepositoryImpl);
+clientContainer.bind<TeamRepository>(SYMBOLS.TeamRepository).to(TeamRepositoryImpl);
+clientContainer
+  .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
+  .to(TestimonialRepositoryImpl);
 clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
