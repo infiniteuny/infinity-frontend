@@ -77,11 +77,6 @@ export const APP: {
           icon: 'hub',
           items: [
             {
-              name: 'Community Groups',
-              icon: 'groups-3',
-              path: '/community-groups',
-            },
-            {
               name: 'Community Group Administrators',
               icon: 'manage-account',
               path: '/community-group-admins',

@@ -1,9 +1,37 @@
+import { GetTeams } from '@app/application';
+import { match } from 'effect/Either';
+import {
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+  TeamDto,
+  TeamMapper,
+} from '@app/infrastructure/dtos';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+import { TeamsList, TeamsToolbar } from '@app/presentation/components/internal/teams';
 
-export default function TeamsPage() {
+export default async function TeamsPage() {
+  const getTeams = serverContainer.get<GetTeams>(SYMBOLS.GetTeams);
+  const result = await getTeams.execute(undefined, { perPage: 25 });
+  const [teams, paginationOptions] = match(result, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (data) => data,
+  });
+
   return (
     <>
-      <SectionHeader title="Teams" />
+      <SectionHeader title="Teams">
+        <TeamsToolbar />
+      </SectionHeader>
+      <TeamsList
+        initialTeams={teams.map(TeamMapper.fromDomaintoDto) as TeamDto[]}
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
     </>
   );
 }

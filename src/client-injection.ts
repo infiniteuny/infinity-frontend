@@ -50,11 +50,21 @@ import {
   UserRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import {
+  GetAchievements,
+  GetCommunityGroupAdmins,
+  GetCommunityGroups,
   CreateUser,
   DeleteUser,
+  GetCoreTeams,
   GetFaculties,
+  GetFundApplications,
+  GetGroups,
   GetMajors,
+  GetPermissions,
+  GetProjectGalleries,
   GetSidebarExtendedState,
+  GetTeams,
+  GetTestimonials,
   GetUsers,
   SetSidebarExtendedState,
   UpdateUser,
@@ -81,8 +91,20 @@ clientContainer
   .to(SetSidebarExtendedState);
 clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
+clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
+clientContainer
+  .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
+  .to(GetCommunityGroupAdmins);
+clientContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+clientContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 clientContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
+clientContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
+clientContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
 clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
+clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
+clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
+clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 

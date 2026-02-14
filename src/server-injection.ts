@@ -57,7 +57,24 @@ import {
   InfinityApiDataSource,
   infinityApiDataSourceImpl,
 } from '@app/infrastructure/datasources/server';
-import { GetFaculties, GetMajors, GetSession, GetUser, GetUsers, Login } from '@app/application';
+import {
+  GetAchievements,
+  GetCommunityGroupAdmins,
+  GetCommunityGroups,
+  GetCoreTeams,
+  GetFaculties,
+  GetFundApplications,
+  GetGroups,
+  GetMajors,
+  GetPermissions,
+  GetProjectGalleries,
+  GetSession,
+  GetTeams,
+  GetTestimonials,
+  GetUser,
+  GetUsers,
+  Login,
+} from '@app/application';
 import { SYMBOLS } from '@config';
 
 export const serverContainer = new Container();
@@ -65,8 +82,20 @@ export const serverContainer = new Container();
 // Use Cases
 serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
 serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
+serverContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
+serverContainer
+  .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
+  .to(GetCommunityGroupAdmins);
+serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 serverContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
+serverContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
+serverContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
 serverContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
+serverContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
+serverContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
+serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
 
