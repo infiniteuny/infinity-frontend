@@ -2,7 +2,11 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, CommunityGroupAdmin } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  CommunityGroupAdmin,
+  CommunityGroupAdminFilterOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { CommunityGroupAdminRepository } from '@app/domain/repositories';
 import { CommunityGroupAdminMapper } from '@app/infrastructure/dtos';
@@ -16,6 +20,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   ) {}
 
   public async getCommunityGroupAdmins(
+    filterOptions?: CommunityGroupAdminFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -31,16 +36,31 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
+          'filters[year]': filterOptions?.year,
+          'filters[is_active]': filterOptions?.isActive,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CommunityGroupAdminMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const communityGroupAdminsResponse = response.data.data.community_group_admins.map(
+        CommunityGroupAdminMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([communityGroupAdminsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -61,7 +81,11 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         },
       });
 
-      return right(CommunityGroupAdminMapper.fromDtoToDomain(response.data.data));
+      const communityGroupAdminResponse = CommunityGroupAdminMapper.fromDtoToDomain(
+        response.data.data.community_group_admin,
+      );
+
+      return right(communityGroupAdminResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -86,7 +110,11 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         },
       );
 
-      return right(CommunityGroupAdminMapper.fromDtoToDomain(response.data.data));
+      const communityGroupAdminResponse = CommunityGroupAdminMapper.fromDtoToDomain(
+        response.data.data.community_group_admin,
+      );
+
+      return right(communityGroupAdminResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -112,7 +140,11 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         },
       );
 
-      return right(CommunityGroupAdminMapper.fromDtoToDomain(response.data.data));
+      const communityGroupAdminResponse = CommunityGroupAdminMapper.fromDtoToDomain(
+        response.data.data.community_group_admin,
+      );
+
+      return right(communityGroupAdminResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

@@ -1,40 +1,32 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
+import { CommunityGroup, PaginationOptions } from '@app/domain/entities';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetCommunityGroups } from '@app/application';
-import { clientContainer } from '@app/client-injection';
-import { CommunityGroup, PaginationOptions } from '@app/domain/entities';
 import {
   CommunityGroupDto,
   CommunityGroupMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialCommunityGroups: CommunityGroupDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1.5 },
-  { field: 'priority', headerName: 'Priority', flex: 1 },
-  { field: 'isActive', headerName: 'Active', type: 'boolean', flex: 0.75 },
-];
 
 export function CommunityGroupsList({ initialCommunityGroups, initialPaginationOptions }: Props) {
   const getCommunityGroups = useMemo(
@@ -120,15 +112,41 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 1.5,
+              },
+              {
+                field: 'priority',
+                headerName: 'Priority',
+                flex: 1,
+              },
+              {
+                field: 'isActive',
+                headerName: 'Active',
+                type: 'boolean',
+                flex: 0.75,
+              },
+            ]}
             rows={rows.map((communityGroup) => ({
               id: communityGroup.id,
               name: communityGroup.name,
               priority: communityGroup.priority,
               isActive: communityGroup.isActive,
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No community groups found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No community groups found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
             loading={isLoading}

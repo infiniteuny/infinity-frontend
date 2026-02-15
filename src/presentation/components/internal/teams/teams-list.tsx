@@ -1,16 +1,16 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetTeams } from '@app/application';
-import { clientContainer } from '@app/client-injection';
 import { Team, PaginationOptions } from '@app/domain/entities';
 import {
   PaginationOptionsDto,
@@ -18,24 +18,15 @@ import {
   TeamDto,
   TeamMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialTeams: TeamDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1.5 },
-  { field: 'leader', headerName: 'Leader', flex: 1.5 },
-  { field: 'isPersonal', headerName: 'Personal', type: 'boolean', flex: 0.75 },
-  { field: 'createdAt', headerName: 'Created At', flex: 1 },
-];
 
 export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
@@ -118,18 +109,51 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 2,
+              },
+              {
+                field: 'leader',
+                headerName: 'Leader',
+                flex: 2,
+              },
+              {
+                field: 'isPersonal',
+                headerName: 'Personal',
+                type: 'boolean',
+                flex: 0.5,
+              },
+            ]}
             rows={rows.map((team) => ({
               id: team.id,
               name: team.name,
               leader: team.leader?.name || 'N/A',
               isPersonal: team.isPersonal,
-              createdAt: team.createdAt.toLocaleDateString(),
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No teams found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No teams found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  isPersonal: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

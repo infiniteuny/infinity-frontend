@@ -6,7 +6,6 @@ import { PaginationOptions, Achievement, AchievementFilterOptions } from '@app/d
 import { SYMBOLS } from '@config';
 import { AchievementRepository } from '@app/domain/repositories';
 import { AchievementMapper } from '@app/infrastructure/dtos';
-import { DateTime } from 'luxon';
 
 export class AchievementRepositoryImpl implements AchievementRepository {
   public constructor(
@@ -41,30 +40,41 @@ export class AchievementRepositoryImpl implements AchievementRepository {
           'filters[competition_output_id]': filterOptions?.competitionOutputId,
           'filters[competition_rank_id]': filterOptions?.competitionRankId,
           'filters[competition_branch]': filterOptions?.competitionBranch,
-          'filters[competition_start_date][operator]': filterOptions?.competitionStartDateOperator,
-          'filters[competition_start_date][value]': filterOptions?.competitionStartDate
-            ? DateTime.fromJSDate(filterOptions.competitionStartDate).toISODate()
-            : undefined,
-          'filters[competition_end_date][operator]': filterOptions?.competitionEndDateOperator,
-          'filters[competition_end_date][value]': filterOptions?.competitionEndDate
-            ? DateTime.fromJSDate(filterOptions.competitionEndDate).toISODate()
-            : undefined,
+          'filters[competition_start_date]':
+            filterOptions?.competitionStartDate != null
+              ? (filterOptions.competitionStartDateOperator ?? '') +
+                filterOptions.competitionStartDate.toISOString()
+              : undefined,
+          'filters[competition_end_date]':
+            filterOptions?.competitionEndDate != null
+              ? (filterOptions.competitionEndDateOperator ?? '') +
+                filterOptions.competitionEndDate.toISOString()
+              : undefined,
           'filters[description]': filterOptions?.description,
           'filters[status]': filterOptions?.status,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(AchievementMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const achievementsResponse = response.data.data.achievements.map(
+        AchievementMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([achievementsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -85,7 +95,9 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         },
       });
 
-      return right(AchievementMapper.fromDtoToDomain(response.data.data));
+      const achievementResponse = AchievementMapper.fromDtoToDomain(response.data.data.achievement);
+
+      return right(achievementResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -122,7 +134,9 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         },
       );
 
-      return right(AchievementMapper.fromDtoToDomain(response.data.data));
+      const achievementResponse = AchievementMapper.fromDtoToDomain(response.data.data.achievement);
+
+      return right(achievementResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -162,7 +176,9 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         },
       );
 
-      return right(AchievementMapper.fromDtoToDomain(response.data.data));
+      const achievementResponse = AchievementMapper.fromDtoToDomain(response.data.data.achievement);
+
+      return right(achievementResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -183,7 +199,9 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         },
       });
 
-      return right(AchievementMapper.fromDtoToDomain(response.data.data));
+      const achievementResponse = AchievementMapper.fromDtoToDomain(response.data.data.achievement);
+
+      return right(achievementResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

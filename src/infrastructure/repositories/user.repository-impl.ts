@@ -79,9 +79,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right([usersResponse, paginationOptionsResponse]);
     } catch (error) {
-      const response = handleAxiosError(error);
-
-      return left(response);
+      return left(handleAxiosError(error));
     }
   }
 
@@ -110,9 +108,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right(userResponse);
     } catch (error) {
-      const response = handleAxiosError(error);
-
-      return left(response);
+      return left(handleAxiosError(error));
     }
   }
 
@@ -142,9 +138,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right(userResponse);
     } catch (error) {
-      const response = handleAxiosError(error);
-
-      return left(response);
+      return left(handleAxiosError(error));
     }
   }
 
@@ -172,9 +166,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right(userResponse);
     } catch (error) {
-      const response = handleAxiosError(error);
-
-      return left(response);
+      return left(handleAxiosError(error));
     }
   }
 
@@ -197,9 +189,7 @@ export class UserRepositoryImpl implements UserRepository {
 
       return right(userResponse);
     } catch (error) {
-      const response = handleAxiosError(error);
-
-      return left(response);
+      return left(handleAxiosError(error));
     }
   }
 }

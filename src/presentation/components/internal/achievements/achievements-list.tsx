@@ -1,41 +1,32 @@
 'use client';
 
+import { Achievement, PaginationOptions } from '@app/domain/entities';
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetAchievements } from '@app/application';
-import { clientContainer } from '@app/client-injection';
-import { Achievement, PaginationOptions } from '@app/domain/entities';
 import {
   AchievementDto,
   AchievementMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialAchievements: AchievementDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'competitionBranch', headerName: 'Competition Branch', flex: 1.5 },
-  { field: 'status', headerName: 'Status', flex: 1 },
-  { field: 'startDate', headerName: 'Start Date', flex: 1 },
-  { field: 'endDate', headerName: 'End Date', flex: 1 },
-];
 
 export function AchievementsList({ initialAchievements, initialPaginationOptions }: Props) {
   const getAchievements = useMemo(
@@ -121,18 +112,102 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'team',
+                headerName: 'Team',
+                flex: 1,
+              },
+              {
+                field: 'competitionTeamType',
+                headerName: 'Team Type',
+                flex: 1,
+              },
+              {
+                field: 'competition',
+                headerName: 'Competition',
+                flex: 2,
+              },
+              {
+                field: 'competitionScale',
+                headerName: 'Scale',
+                flex: 1,
+              },
+              {
+                field: 'competitionTimeRange',
+                headerName: 'Time Range',
+                flex: 1,
+              },
+              {
+                field: 'competitionOutput',
+                headerName: 'Output',
+                flex: 1,
+              },
+              {
+                field: 'competitionRank',
+                headerName: 'Rank',
+                flex: 1,
+              },
+              {
+                field: 'competitionBranch',
+                headerName: 'Branch',
+                flex: 2,
+              },
+              {
+                field: 'competitionStartDate',
+                headerName: 'Start Date',
+                flex: 1,
+              },
+              {
+                field: 'competitionEndDate',
+                headerName: 'End Date',
+                flex: 1,
+              },
+              {
+                field: 'image',
+                headerName: 'Image',
+                flex: 0.5,
+              },
+              {
+                field: 'status',
+                headerName: 'Status',
+                flex: 1,
+              },
+            ]}
             rows={rows.map((achievement) => ({
               id: achievement.id,
+              team: achievement.team?.name || 'N/A',
+              competitionTeamType: achievement.competitionTeamType?.name || 'N/A',
+              competition: achievement.competition?.name || 'N/A',
+              competitionScale: achievement.competitionScale?.name || 'N/A',
+              competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
+              competitionOutput: achievement.competitionOutput?.name || 'N/A',
+              competitionRank: achievement.competitionRank?.name || 'N/A',
               competitionBranch: achievement.competitionBranch,
+              competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
+              competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
               status: achievement.status,
-              startDate: achievement.competitionStartDate.toLocaleDateString(),
-              endDate: achievement.competitionEndDate.toLocaleDateString(),
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No achievements found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No achievements found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

@@ -1,11 +1,16 @@
 import type { CommunityGroupAdminRepository } from '@app/domain/repositories';
 import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, CommunityGroupAdmin } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  CommunityGroupAdmin,
+  CommunityGroupAdminFilterOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetCommunityGroupAdminsParams = [
+  filterOptions?: CommunityGroupAdminFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -29,11 +34,13 @@ export class GetCommunityGroupAdmins
   }
 
   public async execute(
+    filterOptions?: CommunityGroupAdminFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>> {
     return await this.communityGroupAdminRepository.getCommunityGroupAdmins(
+      filterOptions,
       paginationOptions,
       abortSignal,
       authenticate,

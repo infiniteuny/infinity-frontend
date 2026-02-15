@@ -1,4 +1,22 @@
+import { FilterOperator } from '.';
 import { Group } from './group';
+
+export interface CommunityGroupAdminFilterOptions {
+  year?: number;
+  isActive?: boolean;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
+}
+
+export interface CommunityGroupAdminSortOptions {
+  id?: 'ASC' | 'DESC';
+  year?: 'ASC' | 'DESC';
+  isActive?: 'ASC' | 'DESC';
+  createdAt?: 'ASC' | 'DESC';
+  updatedAt?: 'ASC' | 'DESC';
+}
 
 export class CommunityGroupAdmin {
   public id: string;

@@ -1,16 +1,16 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetProjectGalleries } from '@app/application';
-import { clientContainer } from '@app/client-injection';
 import { PaginationOptions, ProjectGallery } from '@app/domain/entities';
 import {
   PaginationOptionsDto,
@@ -18,23 +18,15 @@ import {
   ProjectGalleryDto,
   ProjectGalleryMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialProjectGalleries: ProjectGalleryDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'title', headerName: 'Title', flex: 1.5 },
-  { field: 'url', headerName: 'URL', flex: 1.5 },
-  { field: 'createdAt', headerName: 'Created At', flex: 1 },
-];
 
 export function ProjectGalleriesList({ initialProjectGalleries, initialPaginationOptions }: Props) {
   const getProjectGalleries = useMemo(
@@ -120,17 +112,49 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'title',
+                headerName: 'Title',
+                flex: 2,
+              },
+              {
+                field: 'url',
+                headerName: 'URL',
+                flex: 2,
+              },
+              {
+                field: 'image',
+                headerName: 'Image',
+                flex: 0.5,
+              },
+            ]}
             rows={rows.map((projectGallery) => ({
               id: projectGallery.id,
               title: projectGallery.title,
               url: projectGallery.url,
-              createdAt: projectGallery.createdAt.toLocaleDateString(),
+              image: projectGallery.image,
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No project galleries found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No project galleries found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

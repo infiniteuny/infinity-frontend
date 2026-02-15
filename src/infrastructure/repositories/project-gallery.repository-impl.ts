@@ -39,16 +39,29 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
           'filters[title]': filterOptions?.title,
           'filters[description]': filterOptions?.description,
           'filters[url]': filterOptions?.url,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(ProjectGalleryMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const projectGalleriesResponse = response.data.data.project_galleries.map(
+        ProjectGalleryMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([projectGalleriesResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -69,7 +82,11 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         },
       });
 
-      return right(ProjectGalleryMapper.fromDtoToDomain(response.data.data));
+      const projectGalleryResponse = ProjectGalleryMapper.fromDtoToDomain(
+        response.data.data.project_gallery,
+      );
+
+      return right(projectGalleryResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -94,7 +111,11 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         },
       );
 
-      return right(ProjectGalleryMapper.fromDtoToDomain(response.data.data));
+      const projectGalleryResponse = ProjectGalleryMapper.fromDtoToDomain(
+        response.data.data.project_gallery,
+      );
+
+      return right(projectGalleryResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -120,7 +141,11 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         },
       );
 
-      return right(ProjectGalleryMapper.fromDtoToDomain(response.data.data));
+      const projectGalleryResponse = ProjectGalleryMapper.fromDtoToDomain(
+        response.data.data.project_gallery,
+      );
+
+      return right(projectGalleryResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -141,7 +166,11 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         },
       });
 
-      return right(ProjectGalleryMapper.fromDtoToDomain(response.data.data));
+      const projectGalleryResponse = ProjectGalleryMapper.fromDtoToDomain(
+        response.data.data.project_gallery,
+      );
+
+      return right(projectGalleryResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

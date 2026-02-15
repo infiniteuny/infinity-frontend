@@ -34,20 +34,27 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
           cursor: paginationOptions?.cursor,
           'filters[year]': filterOptions?.year,
           'filters[is_active]': filterOptions?.isActive,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CoreTeamMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const coreTeamsResponse = response.data.data.core_teams.map(CoreTeamMapper.fromDtoToDomain);
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([coreTeamsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -68,7 +75,9 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         },
       });
 
-      return right(CoreTeamMapper.fromDtoToDomain(response.data.data));
+      const coreTeamResponse = CoreTeamMapper.fromDtoToDomain(response.data.data.core_team);
+
+      return right(coreTeamResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -93,7 +102,9 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         },
       );
 
-      return right(CoreTeamMapper.fromDtoToDomain(response.data.data));
+      const coreTeamResponse = CoreTeamMapper.fromDtoToDomain(response.data.data.core_team);
+
+      return right(coreTeamResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -119,7 +130,9 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         },
       );
 
-      return right(CoreTeamMapper.fromDtoToDomain(response.data.data));
+      const coreTeamResponse = CoreTeamMapper.fromDtoToDomain(response.data.data.core_team);
+
+      return right(coreTeamResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -140,7 +153,9 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         },
       });
 
-      return right(CoreTeamMapper.fromDtoToDomain(response.data.data));
+      const coreTeamResponse = CoreTeamMapper.fromDtoToDomain(response.data.data.core_team);
+
+      return right(coreTeamResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

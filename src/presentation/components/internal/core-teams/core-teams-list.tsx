@@ -1,40 +1,32 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { GetCoreTeams } from '@app/application';
-import { clientContainer } from '@app/client-injection';
 import { CoreTeam, PaginationOptions } from '@app/domain/entities';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import { GetCoreTeams } from '@app/application';
 import {
   CoreTeamDto,
   CoreTeamMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialCoreTeams: CoreTeamDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'year', headerName: 'Year', flex: 1 },
-  { field: 'group', headerName: 'Group', flex: 1.5 },
-  { field: 'isActive', headerName: 'Active', type: 'boolean', flex: 0.75 },
-];
 
 export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Props) {
   const getCoreTeams = useMemo(() => clientContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams), []);
@@ -117,17 +109,51 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'year',
+                headerName: 'Year',
+                flex: 1,
+              },
+              {
+                field: 'group',
+                headerName: 'Group',
+                flex: 1,
+              },
+              {
+                field: 'isActive',
+                headerName: 'Active',
+                type: 'boolean',
+                flex: 0.5,
+              },
+            ]}
             rows={rows.map((coreTeam) => ({
               id: coreTeam.id,
               year: coreTeam.year,
               group: coreTeam.group?.name || 'N/A',
               isActive: coreTeam.isActive,
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No core teams found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No core teams found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  group: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

@@ -1,41 +1,32 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { GetFundApplications } from '@app/application';
-import { clientContainer } from '@app/client-injection';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { FundApplication, PaginationOptions } from '@app/domain/entities';
+import { GetFundApplications } from '@app/application';
 import {
   FundApplicationDto,
   FundApplicationMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialFundApplications: FundApplicationDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'competitionBranch', headerName: 'Competition Branch', flex: 1.5 },
-  { field: 'status', headerName: 'Status', flex: 1 },
-  { field: 'startDate', headerName: 'Start Date', flex: 1 },
-  { field: 'endDate', headerName: 'End Date', flex: 1 },
-];
 
 export function FundApplicationsList({ initialFundApplications, initialPaginationOptions }: Props) {
   const getFundApplications = useMemo(
@@ -121,18 +112,91 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'team',
+                headerName: 'Team',
+                flex: 1,
+              },
+              {
+                field: 'competitionTeamType',
+                headerName: 'Team Type',
+                flex: 1,
+              },
+              {
+                field: 'competition',
+                headerName: 'Competition',
+                flex: 2,
+              },
+              {
+                field: 'competitionScale',
+                headerName: 'Scale',
+                flex: 1,
+              },
+              {
+                field: 'competitionBranch',
+                headerName: 'Branch',
+                flex: 2,
+              },
+              {
+                field: 'competitionStartDate',
+                headerName: 'Start Date',
+                flex: 1,
+              },
+              {
+                field: 'competitionEndDate',
+                headerName: 'End Date',
+                flex: 1,
+              },
+              {
+                field: 'letterOfAcceptance',
+                headerName: 'LoA',
+                flex: 0.5,
+              },
+              {
+                field: 'proposal',
+                headerName: 'Proposal',
+                flex: 0.5,
+              },
+              {
+                field: 'status',
+                headerName: 'Status',
+                flex: 1,
+              },
+            ]}
             rows={rows.map((fundApplication) => ({
               id: fundApplication.id,
+              team: fundApplication.team?.name || 'N/A',
+              competitionTeamType: fundApplication.competitionTeamType?.name || 'N/A',
+              competition: fundApplication.competition?.name || 'N/A',
+              competitionScale: fundApplication.competitionScale?.name || 'N/A',
               competitionBranch: fundApplication.competitionBranch,
+              competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),
+              competitionEndDate: fundApplication.competitionEndDate.toLocaleDateString(),
+              letterOfAcceptance: fundApplication.letterOfAcceptance,
+              proposal: fundApplication.proposal,
               status: fundApplication.status,
-              startDate: fundApplication.competitionStartDate.toLocaleDateString(),
-              endDate: fundApplication.competitionEndDate.toLocaleDateString(),
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No fund applications found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No fund applications found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

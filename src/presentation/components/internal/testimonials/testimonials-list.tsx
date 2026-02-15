@@ -1,16 +1,16 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { GetTestimonials } from '@app/application';
-import { clientContainer } from '@app/client-injection';
 import { PaginationOptions, Testimonial } from '@app/domain/entities';
 import {
   PaginationOptionsDto,
@@ -18,23 +18,15 @@ import {
   TestimonialDto,
   TestimonialMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialTestimonials: TestimonialDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'name', headerName: 'Name', flex: 1.5 },
-  { field: 'position', headerName: 'Position', flex: 1.5 },
-  { field: 'createdAt', headerName: 'Created At', flex: 1 },
-];
 
 export function TestimonialsList({ initialTestimonials, initialPaginationOptions }: Props) {
   const getTestimonials = useMemo(
@@ -120,17 +112,55 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 2,
+              },
+              {
+                field: 'position',
+                headerName: 'Position',
+                flex: 1,
+              },
+              {
+                field: 'photo',
+                headerName: 'Photo',
+                flex: 0.5,
+              },
+              {
+                field: 'content',
+                headerName: 'Content',
+                flex: 2.5,
+              },
+            ]}
             rows={rows.map((testimonial) => ({
               id: testimonial.id,
               name: testimonial.name,
               position: testimonial.position,
-              createdAt: testimonial.createdAt.toLocaleDateString(),
+              photo: testimonial.photo,
+              content: testimonial.content,
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No testimonials found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No testimonials found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

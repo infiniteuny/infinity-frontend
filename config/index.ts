@@ -78,12 +78,12 @@ export const APP: {
           items: [
             {
               name: 'Community Group Administrators',
-              icon: 'manage-account',
+              icon: 'diversity-2',
               path: '/community-group-admins',
             },
             {
               name: 'Core Teams',
-              icon: 'diversity-2',
+              icon: 'groups-3',
               path: '/core-teams',
             },
             {

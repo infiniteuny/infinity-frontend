@@ -34,20 +34,27 @@ export class GroupRepositoryImpl implements GroupRepository {
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[guard_name]': filterOptions?.guardName,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(GroupMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const groupsResponse = response.data.data.groups.map(GroupMapper.fromDtoToDomain);
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([groupsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -68,7 +75,9 @@ export class GroupRepositoryImpl implements GroupRepository {
         },
       });
 
-      return right(GroupMapper.fromDtoToDomain(response.data.data));
+      const groupResponse = GroupMapper.fromDtoToDomain(response.data.data.group);
+
+      return right(groupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -93,7 +102,9 @@ export class GroupRepositoryImpl implements GroupRepository {
         },
       );
 
-      return right(GroupMapper.fromDtoToDomain(response.data.data));
+      const groupResponse = GroupMapper.fromDtoToDomain(response.data.data.group);
+
+      return right(groupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -119,7 +130,9 @@ export class GroupRepositoryImpl implements GroupRepository {
         },
       );
 
-      return right(GroupMapper.fromDtoToDomain(response.data.data));
+      const groupResponse = GroupMapper.fromDtoToDomain(response.data.data.group);
+
+      return right(groupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -140,7 +153,9 @@ export class GroupRepositoryImpl implements GroupRepository {
         },
       });
 
-      return right(GroupMapper.fromDtoToDomain(response.data.data));
+      const groupResponse = GroupMapper.fromDtoToDomain(response.data.data.group);
+
+      return right(groupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

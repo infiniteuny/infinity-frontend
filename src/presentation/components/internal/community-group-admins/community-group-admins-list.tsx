@@ -1,40 +1,32 @@
 'use client';
 
 import { Box, Container, NoSsr } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridColDef,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { GetCommunityGroupAdmins } from '@app/application';
-import { clientContainer } from '@app/client-injection';
 import { CommunityGroupAdmin, PaginationOptions } from '@app/domain/entities';
+import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import { GetCommunityGroupAdmins } from '@app/application';
 import {
   CommunityGroupAdminDto,
   CommunityGroupAdminMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   initialCommunityGroupAdmins: CommunityGroupAdminDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
-
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1 },
-  { field: 'year', headerName: 'Year', flex: 1 },
-  { field: 'group', headerName: 'Group', flex: 1.5 },
-  { field: 'isActive', headerName: 'Active', type: 'boolean', flex: 0.75 },
-];
 
 export function CommunityGroupAdminsList({
   initialCommunityGroupAdmins,
@@ -82,7 +74,7 @@ export function CommunityGroupAdminsList({
     const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
 
     try {
-      const result = await getCommunityGroupAdmins.execute(newPaginationOptions);
+      const result = await getCommunityGroupAdmins.execute(undefined, newPaginationOptions);
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -125,17 +117,51 @@ export function CommunityGroupAdminsList({
               '.MuiTablePagination-displayedRows': { display: 'none' },
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
-            columns={columns}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+              },
+              {
+                field: 'year',
+                headerName: 'Year',
+                flex: 1,
+              },
+              {
+                field: 'group',
+                headerName: 'Group',
+                flex: 1,
+              },
+              {
+                field: 'isActive',
+                headerName: 'Active',
+                type: 'boolean',
+                flex: 0.5,
+              },
+            ]}
             rows={rows.map((communityGroupAdmin) => ({
               id: communityGroupAdmin.id,
               year: communityGroupAdmin.year,
               group: communityGroupAdmin.group?.name || 'N/A',
               isActive: communityGroupAdmin.isActive,
             }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{ noRowsOverlay: { text: 'No community group administrators found.' } }}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No community group administrators found.' },
+            }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  group: false,
+                },
+              },
+            }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}

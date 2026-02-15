@@ -34,20 +34,29 @@ export class PermissionRepositoryImpl implements PermissionRepository {
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[guard_name]': filterOptions?.guardName,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(PermissionMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const permissionsResponse = response.data.data.permissions.map(
+        PermissionMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([permissionsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -68,7 +77,9 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         },
       });
 
-      return right(PermissionMapper.fromDtoToDomain(response.data.data));
+      const permissionResponse = PermissionMapper.fromDtoToDomain(response.data.data.permission);
+
+      return right(permissionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -93,7 +104,9 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         },
       );
 
-      return right(PermissionMapper.fromDtoToDomain(response.data.data));
+      const permissionResponse = PermissionMapper.fromDtoToDomain(response.data.data.permission);
+
+      return right(permissionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -119,7 +132,9 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         },
       );
 
-      return right(PermissionMapper.fromDtoToDomain(response.data.data));
+      const permissionResponse = PermissionMapper.fromDtoToDomain(response.data.data.permission);
+
+      return right(permissionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -140,7 +155,9 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         },
       });
 
-      return right(PermissionMapper.fromDtoToDomain(response.data.data));
+      const permissionResponse = PermissionMapper.fromDtoToDomain(response.data.data.permission);
+
+      return right(permissionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

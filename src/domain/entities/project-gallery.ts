@@ -1,13 +1,13 @@
-// import { FilterOperator } from '.';
+import { FilterOperator } from '.';
 
 export interface ProjectGalleryFilterOptions {
   title?: string;
   description?: string;
   url?: string;
-  // createdAtOperator?: FilterOperator;
-  // createdAt?: Date;
-  // updatedAtOperator?: FilterOperator;
-  // updatedAt?: Date;
+  createdAtOperator?: FilterOperator;
+  createdAt?: Date;
+  updatedAtOperator?: FilterOperator;
+  updatedAt?: Date;
 }
 
 export interface ProjectGallerySortOptions {
