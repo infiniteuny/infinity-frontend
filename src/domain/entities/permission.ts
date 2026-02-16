@@ -2,7 +2,7 @@ import { FilterOperator } from '.';
 
 export interface PermissionFilterOptions {
   name?: string;
-  guardName?: string;
+  guardName?: 'api';
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
   updatedAtOperator?: FilterOperator;
@@ -20,17 +20,11 @@ export interface PermissionSortOptions {
 export class Permission {
   public id: string;
   public name: string;
-  public guardName: string;
+  public guardName: 'api';
   public createdAt: Date;
   public updatedAt: Date;
 
-  public constructor(
-    id: string,
-    name: string,
-    guardName: string,
-    createdAt: Date,
-    updatedAt: Date,
-  ) {
+  public constructor(id: string, name: string, guardName: 'api', createdAt: Date, updatedAt: Date) {
     this.id = id;
     this.name = name;
     this.guardName = guardName;

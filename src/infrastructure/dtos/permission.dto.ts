@@ -4,7 +4,7 @@ import { Permission } from '@app/domain/entities';
 export interface PermissionDto {
   id: string;
   name: string;
-  guard_name: string;
+  guard_name: 'api';
   created_at: string;
   updated_at: string;
 }
