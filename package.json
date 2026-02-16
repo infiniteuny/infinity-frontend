@@ -19,7 +19,7 @@
     "@mui/material-nextjs": "7.3.5",
     "@mui/x-data-grid": "8.20.0",
     "@mui/x-date-pickers": "8.19.0",
-    "axios": "1.13.2",
+    "axios": "1.13.5",
     "effect": "3.19.6",
     "immer": "10.2.0",
     "inversify": "7.10.4",
