@@ -22,15 +22,13 @@ export class CompetitionTimeRangeMapper {
     };
   }
 
-  public static fromDtoToDomain(
-    competitionTimeRangeDto: CompetitionTimeRangeDto,
-  ): CompetitionTimeRange {
+  public static fromDtoToDomain(dto: CompetitionTimeRangeDto): CompetitionTimeRange {
     return new CompetitionTimeRange(
-      competitionTimeRangeDto.id,
-      competitionTimeRangeDto.name,
-      competitionTimeRangeDto.weight,
-      DateTime.fromISO(competitionTimeRangeDto.created_at).toJSDate(),
-      DateTime.fromISO(competitionTimeRangeDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.weight,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

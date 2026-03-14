@@ -22,15 +22,13 @@ export class CompetitionOrganizerTypeMapper {
     };
   }
 
-  public static fromDtoToDomain(
-    competitionOrganizerTypeDto: CompetitionOrganizerTypeDto,
-  ): CompetitionOrganizerType {
+  public static fromDtoToDomain(dto: CompetitionOrganizerTypeDto): CompetitionOrganizerType {
     return new CompetitionOrganizerType(
-      competitionOrganizerTypeDto.id,
-      competitionOrganizerTypeDto.name,
-      competitionOrganizerTypeDto.weight,
-      DateTime.fromISO(competitionOrganizerTypeDto.created_at).toJSDate(),
-      DateTime.fromISO(competitionOrganizerTypeDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.weight,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

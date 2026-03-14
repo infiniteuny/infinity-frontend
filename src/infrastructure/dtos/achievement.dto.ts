@@ -85,42 +85,40 @@ export class AchievementMapper {
     };
   }
 
-  public static fromDtoToDomain(achievementDto: AchievementDto): Achievement {
+  public static fromDtoToDomain(dto: AchievementDto): Achievement {
     return new Achievement(
-      achievementDto.id,
-      achievementDto.team_id,
-      achievementDto.competition_id,
-      achievementDto.competition_team_type_id,
-      achievementDto.competition_scale_id,
-      achievementDto.competition_time_range_id,
-      achievementDto.competition_output_id,
-      achievementDto.competition_rank_id,
-      achievementDto.competition_branch,
-      DateTime.fromISO(achievementDto.competition_start_date).toJSDate(),
-      DateTime.fromISO(achievementDto.competition_end_date).toJSDate(),
-      achievementDto.description,
-      achievementDto.image,
-      achievementDto.status,
-      DateTime.fromISO(achievementDto.created_at).toJSDate(),
-      DateTime.fromISO(achievementDto.updated_at).toJSDate(),
-      achievementDto.team ? TeamMapper.fromDtoToDomain(achievementDto.team) : undefined,
-      achievementDto.competition
-        ? CompetitionMapper.fromDtoToDomain(achievementDto.competition)
+      dto.id,
+      dto.team_id,
+      dto.competition_id,
+      dto.competition_team_type_id,
+      dto.competition_scale_id,
+      dto.competition_time_range_id,
+      dto.competition_output_id,
+      dto.competition_rank_id,
+      dto.competition_branch,
+      DateTime.fromISO(dto.competition_start_date).toJSDate(),
+      DateTime.fromISO(dto.competition_end_date).toJSDate(),
+      dto.description,
+      dto.image,
+      dto.status,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
+      dto.team ? TeamMapper.fromDtoToDomain(dto.team) : undefined,
+      dto.competition ? CompetitionMapper.fromDtoToDomain(dto.competition) : undefined,
+      dto.competition_team_type
+        ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.competition_team_type)
         : undefined,
-      achievementDto.competition_team_type
-        ? CompetitionTeamTypeMapper.fromDtoToDomain(achievementDto.competition_team_type)
+      dto.competition_scale
+        ? CompetitionScaleMapper.fromDtoToDomain(dto.competition_scale)
         : undefined,
-      achievementDto.competition_scale
-        ? CompetitionScaleMapper.fromDtoToDomain(achievementDto.competition_scale)
+      dto.competition_time_range
+        ? CompetitionTimeRangeMapper.fromDtoToDomain(dto.competition_time_range)
         : undefined,
-      achievementDto.competition_time_range
-        ? CompetitionTimeRangeMapper.fromDtoToDomain(achievementDto.competition_time_range)
+      dto.competition_output
+        ? CompetitionOutputMapper.fromDtoToDomain(dto.competition_output)
         : undefined,
-      achievementDto.competition_output
-        ? CompetitionOutputMapper.fromDtoToDomain(achievementDto.competition_output)
-        : undefined,
-      achievementDto.competition_rank
-        ? CompetitionRankMapper.fromDtoToDomain(achievementDto.competition_rank)
+      dto.competition_rank
+        ? CompetitionRankMapper.fromDtoToDomain(dto.competition_rank)
         : undefined,
     );
   }

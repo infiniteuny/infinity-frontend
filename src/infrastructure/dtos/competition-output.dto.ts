@@ -22,13 +22,13 @@ export class CompetitionOutputMapper {
     };
   }
 
-  public static fromDtoToDomain(competitionOutputDto: CompetitionOutputDto): CompetitionOutput {
+  public static fromDtoToDomain(dto: CompetitionOutputDto): CompetitionOutput {
     return new CompetitionOutput(
-      competitionOutputDto.id,
-      competitionOutputDto.name,
-      competitionOutputDto.weight,
-      DateTime.fromISO(competitionOutputDto.created_at).toJSDate(),
-      DateTime.fromISO(competitionOutputDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.weight,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

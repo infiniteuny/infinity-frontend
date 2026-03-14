@@ -26,15 +26,15 @@ export class ProjectGalleryMapper {
     };
   }
 
-  public static fromDtoToDomain(projectGalleryDto: ProjectGalleryDto): ProjectGallery {
+  public static fromDtoToDomain(dto: ProjectGalleryDto): ProjectGallery {
     return new ProjectGallery(
-      projectGalleryDto.id,
-      projectGalleryDto.title,
-      projectGalleryDto.description,
-      projectGalleryDto.url,
-      projectGalleryDto.image,
-      DateTime.fromISO(projectGalleryDto.created_at).toJSDate(),
-      DateTime.fromISO(projectGalleryDto.updated_at).toJSDate(),
+      dto.id,
+      dto.title,
+      dto.description,
+      dto.url,
+      dto.image,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

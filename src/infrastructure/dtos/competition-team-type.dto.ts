@@ -22,15 +22,13 @@ export class CompetitionTeamTypeMapper {
     };
   }
 
-  public static fromDtoToDomain(
-    competitionTeamTypeDto: CompetitionTeamTypeDto,
-  ): CompetitionTeamType {
+  public static fromDtoToDomain(dto: CompetitionTeamTypeDto): CompetitionTeamType {
     return new CompetitionTeamType(
-      competitionTeamTypeDto.id,
-      competitionTeamTypeDto.name,
-      competitionTeamTypeDto.weight,
-      DateTime.fromISO(competitionTeamTypeDto.created_at).toJSDate(),
-      DateTime.fromISO(competitionTeamTypeDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.weight,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

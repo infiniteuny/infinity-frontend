@@ -24,15 +24,15 @@ export class TestimonialMapper {
     };
   }
 
-  public static fromDtoToDomain(testimonialDto: TestimonialDto): Testimonial {
+  public static fromDtoToDomain(dto: TestimonialDto): Testimonial {
     return new Testimonial(
-      testimonialDto.id,
-      testimonialDto.name,
-      testimonialDto.position,
-      testimonialDto.photo,
-      testimonialDto.content,
-      DateTime.fromISO(testimonialDto.created_at).toJSDate(),
-      DateTime.fromISO(testimonialDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.position,
+      dto.photo,
+      dto.content,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }

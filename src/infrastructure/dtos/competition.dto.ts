@@ -38,19 +38,19 @@ export class CompetitionMapper {
     };
   }
 
-  public static fromDtoToDomain(competitionDto: CompetitionDto): Competition {
+  public static fromDtoToDomain(dto: CompetitionDto): Competition {
     return new Competition(
-      competitionDto.id,
-      competitionDto.name,
-      competitionDto.description,
-      competitionDto.url,
-      competitionDto.organizer,
-      competitionDto.organizer_type_id,
-      competitionDto.logo,
-      DateTime.fromISO(competitionDto.created_at).toJSDate(),
-      DateTime.fromISO(competitionDto.updated_at).toJSDate(),
-      competitionDto.organizer_type
-        ? CompetitionOrganizerTypeMapper.fromDtoToDomain(competitionDto.organizer_type)
+      dto.id,
+      dto.name,
+      dto.description,
+      dto.url,
+      dto.organizer,
+      dto.organizer_type_id,
+      dto.logo,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
+      dto.organizer_type
+        ? CompetitionOrganizerTypeMapper.fromDtoToDomain(dto.organizer_type)
         : undefined,
     );
   }

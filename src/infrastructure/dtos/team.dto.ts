@@ -9,7 +9,7 @@ export interface TeamDto {
   is_personal: boolean;
   created_at: string;
   updated_at: string;
-  leader: UserDto;
+  leader?: UserDto;
 }
 
 export class TeamMapper {
@@ -25,15 +25,15 @@ export class TeamMapper {
     };
   }
 
-  public static fromDtoToDomain(teamDto: TeamDto): Team {
+  public static fromDtoToDomain(dto: TeamDto): Team {
     return new Team(
-      teamDto.id,
-      teamDto.leader_id,
-      teamDto.name,
-      teamDto.is_personal,
-      DateTime.fromISO(teamDto.created_at).toJSDate(),
-      DateTime.fromISO(teamDto.updated_at).toJSDate(),
-      UserMapper.fromDtoToDomain(teamDto.leader),
+      dto.id,
+      dto.leader_id,
+      dto.name,
+      dto.is_personal,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
+      dto.leader ? UserMapper.fromDtoToDomain(dto.leader) : undefined,
     );
   }
 }

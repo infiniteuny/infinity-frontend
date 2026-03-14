@@ -14,8 +14,8 @@ export interface FundApplicationDto {
   competition_branch: string;
   competition_start_date: string;
   competition_end_date: string;
-  letter_of_acceptance: string;
-  proposal: string;
+  letter_of_acceptance: string | Blob;
+  proposal: string | Blob;
   status: 'PENDING' | 'REJECTED' | 'ACCEPTED';
   created_at: string;
   updated_at: string;
@@ -62,30 +62,28 @@ export class FundApplicationMapper {
     };
   }
 
-  public static fromDtoToDomain(fundApplicationDto: FundApplicationDto): FundApplication {
+  public static fromDtoToDomain(dto: FundApplicationDto): FundApplication {
     return new FundApplication(
-      fundApplicationDto.id,
-      fundApplicationDto.team_id,
-      fundApplicationDto.competition_id,
-      fundApplicationDto.competition_team_type_id,
-      fundApplicationDto.competition_scale_id,
-      fundApplicationDto.competition_branch,
-      DateTime.fromISO(fundApplicationDto.competition_start_date).toJSDate(),
-      DateTime.fromISO(fundApplicationDto.competition_end_date).toJSDate(),
-      fundApplicationDto.letter_of_acceptance,
-      fundApplicationDto.proposal,
-      fundApplicationDto.status,
-      DateTime.fromISO(fundApplicationDto.created_at).toJSDate(),
-      DateTime.fromISO(fundApplicationDto.updated_at).toJSDate(),
-      fundApplicationDto.team ? TeamMapper.fromDtoToDomain(fundApplicationDto.team) : undefined,
-      fundApplicationDto.competition
-        ? CompetitionMapper.fromDtoToDomain(fundApplicationDto.competition)
+      dto.id,
+      dto.team_id,
+      dto.competition_id,
+      dto.competition_team_type_id,
+      dto.competition_scale_id,
+      dto.competition_branch,
+      DateTime.fromISO(dto.competition_start_date).toJSDate(),
+      DateTime.fromISO(dto.competition_end_date).toJSDate(),
+      dto.letter_of_acceptance,
+      dto.proposal,
+      dto.status,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
+      dto.team ? TeamMapper.fromDtoToDomain(dto.team) : undefined,
+      dto.competition ? CompetitionMapper.fromDtoToDomain(dto.competition) : undefined,
+      dto.competition_team_type
+        ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.competition_team_type)
         : undefined,
-      fundApplicationDto.competition_team_type
-        ? CompetitionTeamTypeMapper.fromDtoToDomain(fundApplicationDto.competition_team_type)
-        : undefined,
-      fundApplicationDto.competition_scale
-        ? CompetitionScaleMapper.fromDtoToDomain(fundApplicationDto.competition_scale)
+      dto.competition_scale
+        ? CompetitionScaleMapper.fromDtoToDomain(dto.competition_scale)
         : undefined,
     );
   }

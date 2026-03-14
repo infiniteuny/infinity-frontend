@@ -24,15 +24,15 @@ export class PersonaMapper {
     };
   }
 
-  public static fromDtoToDomain(personaDto: PersonaDto): Persona {
+  public static fromDtoToDomain(dto: PersonaDto): Persona {
     return new Persona(
-      personaDto.id,
-      personaDto.name,
-      personaDto.priority,
-      personaDto.description,
-      personaDto.logo,
-      DateTime.fromISO(personaDto.created_at).toJSDate(),
-      DateTime.fromISO(personaDto.updated_at).toJSDate(),
+      dto.id,
+      dto.name,
+      dto.priority,
+      dto.description,
+      dto.logo,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
     );
   }
 }
