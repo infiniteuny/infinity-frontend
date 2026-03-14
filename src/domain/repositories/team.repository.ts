@@ -1,8 +1,14 @@
 import { Either } from 'effect/Either';
-import { PaginationOptions, Team, TeamFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Team,
+  TeamFilterOptions,
+  TeamIncludeOptions,
+} from '@app/domain/entities';
 
 export interface TeamRepository {
   getTeams(
+    includeOptions?: TeamIncludeOptions,
     filterOptions?: TeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -11,6 +17,7 @@ export interface TeamRepository {
 
   getTeam(
     id: string,
+    includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Team, Error>>;

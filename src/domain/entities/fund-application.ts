@@ -4,6 +4,13 @@ import { CompetitionScale } from './competition-scale';
 import { CompetitionTeamType } from './competition-team-type';
 import { Team } from './team';
 
+export type FundApplicationIncludeOptions = (
+  | 'team'
+  | 'competition'
+  | 'competition_team_type'
+  | 'competition_scale'
+)[];
+
 export interface FundApplicationFilterOptions {
   teamId?: string;
   competitionId?: string;

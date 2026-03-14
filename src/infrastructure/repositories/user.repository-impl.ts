@@ -36,11 +36,11 @@ export class UserRepositoryImpl implements UserRepository {
             : {}),
         },
         params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
           includes: includeOptions
             ?.filter((value, index, self) => self.indexOf(value) === index)
             .join(','),
-          per_page: paginationOptions?.perPage,
-          cursor: paginationOptions?.cursor,
           'filters[sso_id]': filterOptions?.ssoId,
           'filters[name]': filterOptions?.name,
           'filters[email_address]': filterOptions?.emailAddress,

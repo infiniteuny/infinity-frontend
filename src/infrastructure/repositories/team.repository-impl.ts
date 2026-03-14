@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, Team, TeamFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Team,
+  TeamFilterOptions,
+  TeamIncludeOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { TeamRepository } from '@app/domain/repositories';
 import { TeamMapper } from '@app/infrastructure/dtos';
@@ -16,6 +21,7 @@ export class TeamRepositoryImpl implements TeamRepository {
   ) {}
 
   public async getTeams(
+    includeOptions?: TeamIncludeOptions,
     filterOptions?: TeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -32,6 +38,9 @@ export class TeamRepositoryImpl implements TeamRepository {
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
           'filters[leader_id]': filterOptions?.leaderId,
           'filters[name]': filterOptions?.name,
           'filters[is_personal]': filterOptions?.isPersonal,
@@ -63,6 +72,7 @@ export class TeamRepositoryImpl implements TeamRepository {
 
   public async getTeam(
     id: string,
+    includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
@@ -73,6 +83,11 @@ export class TeamRepositoryImpl implements TeamRepository {
           ...(authenticate
             ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
             : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

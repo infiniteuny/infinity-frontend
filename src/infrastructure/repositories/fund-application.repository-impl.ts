@@ -6,6 +6,7 @@ import {
   PaginationOptions,
   FundApplication,
   FundApplicationFilterOptions,
+  FundApplicationIncludeOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { FundApplicationRepository } from '@app/domain/repositories';
@@ -20,6 +21,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
   ) {}
 
   public async getFundApplications(
+    includeOptions?: FundApplicationIncludeOptions,
     filterOptions?: FundApplicationFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -36,6 +38,9 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
           'filters[team_id]': filterOptions?.teamId,
           'filters[competition_id]': filterOptions?.competitionId,
           'filters[competition_team_type_id]': filterOptions?.competitionTeamTypeId,
@@ -82,6 +87,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
 
   public async getFundApplication(
     id: string,
+    includeOptions?: FundApplicationIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
@@ -92,6 +98,11 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
           ...(authenticate
             ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
             : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

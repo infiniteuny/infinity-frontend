@@ -1,6 +1,8 @@
 import { FilterOperator } from '.';
 import { User } from './user';
 
+export type TeamIncludeOptions = ('leader' | 'members' | 'fund_applications' | 'achievements')[];
+
 export interface TeamFilterOptions {
   leaderId?: string;
   name?: string;
@@ -27,7 +29,7 @@ export class Team {
   public isPersonal: boolean;
   public createdAt: Date;
   public updatedAt: Date;
-  public leader: User;
+  public leader?: User;
 
   public constructor(
     id: string,
