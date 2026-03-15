@@ -1,0 +1,68 @@
+'use client';
+
+import Link from 'next/link';
+import { Box, Button } from '@mui/material';
+import { GroupInput } from './group-form';
+import { EditRounded, SaveRounded } from '@mui/icons-material';
+import { RefObject } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+
+type ViewProps = {
+  groupId: string;
+};
+
+type FormProps = {
+  ref: RefObject<HTMLFormElement | null>;
+  methods: UseFormReturn<GroupInput>;
+};
+
+export function GroupToolbar({ groupId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+  const router = useRouter();
+
+  if (groupId) {
+    return (
+      <Box className="ml-auto">
+        <Button
+          variant="filled"
+          className="ml-4"
+          aria-label="Edit group"
+          LinkComponent={Link}
+          href={`/groups/${groupId}/edit`}
+          startIcon={<EditRounded />}
+        >
+          Edit group
+        </Button>
+      </Box>
+    );
+  } else if (ref && methods) {
+    const {
+      formState: { isDirty, isSubmitting },
+    } = methods;
+    return (
+      <Box className="ml-auto">
+        <Button
+          variant="text"
+          className="ml-4"
+          aria-label="Cancel"
+          disabled={isSubmitting}
+          onClick={() => router.back()}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="filled"
+          className="ml-4"
+          aria-label="Save group"
+          startIcon={<SaveRounded />}
+          disabled={!isDirty || isSubmitting}
+          onClick={() => ref.current?.requestSubmit()}
+        >
+          Save group
+        </Button>
+      </Box>
+    );
+  } else {
+    return null;
+  }
+}
