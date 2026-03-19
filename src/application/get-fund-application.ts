@@ -1,30 +1,20 @@
 import type { FundApplicationRepository } from '@app/domain/repositories';
 import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import {
-  PaginationOptions,
-  FundApplication,
-  FundApplicationFilterOptions,
-  FundApplicationIncludeOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
+import { FundApplication, FundApplicationIncludeOptions } from '@app/domain/entities';
 
-export type GetFundApplicationsParams = [
+export type GetFundApplicationParams = [
+  id: string,
   includeOptions?: FundApplicationIncludeOptions,
-  filterOptions?: FundApplicationFilterOptions,
-  paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
 
 @injectable()
-export class GetFundApplications
-  implements
-    UseCase<
-      Promise<Either<[FundApplication[], PaginationOptions], Error>>,
-      GetFundApplicationsParams
-    >
+export class GetFundApplication
+  implements UseCase<Promise<Either<FundApplication, Error>>, GetFundApplicationParams>
 {
   private readonly fundApplicationRepository: FundApplicationRepository;
 
@@ -36,16 +26,14 @@ export class GetFundApplications
   }
 
   public async execute(
+    id: string,
     includeOptions?: FundApplicationIncludeOptions,
-    filterOptions?: FundApplicationFilterOptions,
-    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
-  ): Promise<Either<[FundApplication[], PaginationOptions], Error>> {
-    return await this.fundApplicationRepository.getFundApplications(
+  ): Promise<Either<FundApplication, Error>> {
+    return await this.fundApplicationRepository.getFundApplication(
+      id,
       includeOptions,
-      filterOptions,
-      paginationOptions,
       abortSignal,
       authenticate,
     );

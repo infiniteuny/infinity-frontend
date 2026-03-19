@@ -1,27 +1,19 @@
 import type { TeamRepository } from '@app/domain/repositories';
 import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import {
-  PaginationOptions,
-  Team,
-  TeamFilterOptions,
-  TeamIncludeOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
+import { Team, TeamIncludeOptions } from '@app/domain/entities';
 import { UseCase } from '@app/application';
 
-export type GetTeamsParams = [
+export type GetTeamParams = [
+  id: string,
   includeOptions?: TeamIncludeOptions,
-  filterOptions?: TeamFilterOptions,
-  paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
 
 @injectable()
-export class GetTeams
-  implements UseCase<Promise<Either<[Team[], PaginationOptions], Error>>, GetTeamsParams>
-{
+export class GetTeam implements UseCase<Promise<Either<Team, Error>>, GetTeamParams> {
   private readonly teamRepository: TeamRepository;
 
   public constructor(
@@ -32,18 +24,11 @@ export class GetTeams
   }
 
   public async execute(
+    id: string,
     includeOptions?: TeamIncludeOptions,
-    filterOptions?: TeamFilterOptions,
-    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
-  ): Promise<Either<[Team[], PaginationOptions], Error>> {
-    return await this.teamRepository.getTeams(
-      includeOptions,
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      authenticate,
-    );
+  ): Promise<Either<Team, Error>> {
+    return await this.teamRepository.getTeam(id, includeOptions, abortSignal, authenticate);
   }
 }

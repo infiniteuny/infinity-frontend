@@ -1,27 +1,20 @@
 import type { AchievementRepository } from '@app/domain/repositories';
 import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import {
-  PaginationOptions,
-  Achievement,
-  AchievementFilterOptions,
-  AchievementIncludeOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
+import { Achievement, AchievementIncludeOptions } from '@app/domain/entities';
 
-export type GetAchievementsParams = [
+export type GetAchievementParams = [
+  id: string,
   includeOptions?: AchievementIncludeOptions,
-  filterOptions?: AchievementFilterOptions,
-  paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
 
 @injectable()
-export class GetAchievements
-  implements
-    UseCase<Promise<Either<[Achievement[], PaginationOptions], Error>>, GetAchievementsParams>
+export class GetAchievement
+  implements UseCase<Promise<Either<Achievement, Error>>, GetAchievementParams>
 {
   private readonly achievementRepository: AchievementRepository;
 
@@ -33,16 +26,14 @@ export class GetAchievements
   }
 
   public async execute(
+    id: string,
     includeOptions?: AchievementIncludeOptions,
-    filterOptions?: AchievementFilterOptions,
-    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
-  ): Promise<Either<[Achievement[], PaginationOptions], Error>> {
-    return await this.achievementRepository.getAchievements(
+  ): Promise<Either<Achievement, Error>> {
+    return await this.achievementRepository.getAchievement(
+      id,
       includeOptions,
-      filterOptions,
-      paginationOptions,
       abortSignal,
       authenticate,
     );
