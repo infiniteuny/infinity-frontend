@@ -69,7 +69,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
 
     try {
-      const result = await getAchievements.execute(undefined, newPaginationOptions);
+      const result = await getAchievements.execute(undefined, undefined, newPaginationOptions);
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -121,11 +121,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
               {
                 field: 'team',
                 headerName: 'Team',
-                flex: 1,
-              },
-              {
-                field: 'competitionTeamType',
-                headerName: 'Team Type',
                 flex: 1,
               },
               {
@@ -182,7 +177,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
             rows={rows.map((achievement) => ({
               id: achievement.id,
               team: achievement.team?.name || 'N/A',
-              competitionTeamType: achievement.competitionTeamType?.name || 'N/A',
               competition: achievement.competition?.name || 'N/A',
               competitionScale: achievement.competitionScale?.name || 'N/A',
               competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',

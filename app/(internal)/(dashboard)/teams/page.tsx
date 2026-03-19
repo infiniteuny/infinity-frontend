@@ -13,7 +13,7 @@ import { TeamsList, TeamsToolbar } from '@app/presentation/components/internal/t
 
 export default async function TeamsPage() {
   const getTeams = serverContainer.get<GetTeams>(SYMBOLS.GetTeams);
-  const result = await getTeams.execute(undefined, { perPage: 25 });
+  const result = await getTeams.execute(['leader', 'team_type'], undefined, { perPage: 25 });
   const [teams, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

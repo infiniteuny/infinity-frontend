@@ -29,12 +29,12 @@ type Props = {
 };
 
 export function ProjectGalleriesList({ initialProjectGalleries, initialPaginationOptions }: Props) {
+  const initProjectGalleries = initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain);
+  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const getProjectGalleries = useMemo(
     () => clientContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries),
     [],
   );
-  const initProjectGalleries = initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);

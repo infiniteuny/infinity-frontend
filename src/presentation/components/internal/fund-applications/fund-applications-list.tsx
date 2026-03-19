@@ -69,7 +69,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
 
     try {
-      const result = await getFundApplications.execute(undefined, newPaginationOptions);
+      const result = await getFundApplications.execute(undefined, undefined, newPaginationOptions);
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -124,11 +124,6 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
                 flex: 1,
               },
               {
-                field: 'competitionTeamType',
-                headerName: 'Team Type',
-                flex: 1,
-              },
-              {
                 field: 'competition',
                 headerName: 'Competition',
                 flex: 2,
@@ -172,7 +167,6 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
             rows={rows.map((fundApplication) => ({
               id: fundApplication.id,
               team: fundApplication.team?.name || 'N/A',
-              competitionTeamType: fundApplication.competitionTeamType?.name || 'N/A',
               competition: fundApplication.competition?.name || 'N/A',
               competitionScale: fundApplication.competitionScale?.name || 'N/A',
               competitionBranch: fundApplication.competitionBranch,

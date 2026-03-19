@@ -29,12 +29,12 @@ type Props = {
 };
 
 export function TestimonialsList({ initialTestimonials, initialPaginationOptions }: Props) {
+  const initTestimonials = initialTestimonials.map(TestimonialMapper.fromDtoToDomain);
+  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const getTestimonials = useMemo(
     () => clientContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials),
     [],
   );
-  const initTestimonials = initialTestimonials.map(TestimonialMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);

@@ -66,7 +66,11 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
 
     try {
-      const result = await getTeams.execute(undefined, newPaginationOptions);
+      const result = await getTeams.execute(
+        ['leader', 'team_type'],
+        undefined,
+        newPaginationOptions,
+      );
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -126,6 +130,11 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
                 flex: 2,
               },
               {
+                field: 'team_type',
+                headerName: 'Team Type',
+                flex: 1,
+              },
+              {
                 field: 'isPersonal',
                 headerName: 'Personal',
                 type: 'boolean',
@@ -136,6 +145,7 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
               id: team.id,
               name: team.name,
               leader: team.leader?.name || 'N/A',
+              team_type: team.teamType?.name || 'N/A',
               isPersonal: team.isPersonal,
             }))}
             slots={{
