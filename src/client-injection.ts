@@ -50,11 +50,20 @@ import {
   UserRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import {
+  CreateAchievement,
+  CreateCommunityGroupAdmin,
+  CreateCoreTeam,
+  CreateFundApplication,
+  CreateGroup,
+  CreatePermission,
+  CreateProjectGallery,
+  CreateTeam,
+  CreateTestimonial,
+  CreateUser,
+  DeleteUser,
   GetAchievements,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
-  CreateUser,
-  DeleteUser,
   GetCoreTeams,
   GetFaculties,
   GetFundApplications,
@@ -67,6 +76,15 @@ import {
   GetTestimonials,
   GetUsers,
   SetSidebarExtendedState,
+  UpdateAchievement,
+  UpdateCommunityGroupAdmin,
+  UpdateCoreTeam,
+  UpdateFundApplication,
+  UpdateGroup,
+  UpdatePermission,
+  UpdateProjectGallery,
+  UpdateTeam,
+  UpdateTestimonial,
   UpdateUser,
 } from '@app/application';
 import {
@@ -83,12 +101,19 @@ import { getSession } from 'next-auth/react';
 export const clientContainer = new Container();
 
 // Use cases
+clientContainer.bind<CreateAchievement>(SYMBOLS.CreateAchievement).to(CreateAchievement);
 clientContainer
-  .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
-  .to(GetSidebarExtendedState);
+  .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
+  .to(CreateCommunityGroupAdmin);
+clientContainer.bind<CreateCoreTeam>(SYMBOLS.CreateCoreTeam).to(CreateCoreTeam);
 clientContainer
-  .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
-  .to(SetSidebarExtendedState);
+  .bind<CreateFundApplication>(SYMBOLS.CreateFundApplication)
+  .to(CreateFundApplication);
+clientContainer.bind<CreateGroup>(SYMBOLS.CreateGroup).to(CreateGroup);
+clientContainer.bind<CreatePermission>(SYMBOLS.CreatePermission).to(CreatePermission);
+clientContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(CreateProjectGallery);
+clientContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
+clientContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
 clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
 clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
@@ -103,9 +128,28 @@ clientContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
 clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
 clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+clientContainer
+  .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
+  .to(GetSidebarExtendedState);
 clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+clientContainer
+  .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
+  .to(SetSidebarExtendedState);
+clientContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
+clientContainer
+  .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
+  .to(UpdateCommunityGroupAdmin);
+clientContainer.bind<UpdateCoreTeam>(SYMBOLS.UpdateCoreTeam).to(UpdateCoreTeam);
+clientContainer
+  .bind<UpdateFundApplication>(SYMBOLS.UpdateFundApplication)
+  .to(UpdateFundApplication);
+clientContainer.bind<UpdateGroup>(SYMBOLS.UpdateGroup).to(UpdateGroup);
+clientContainer.bind<UpdatePermission>(SYMBOLS.UpdatePermission).to(UpdatePermission);
+clientContainer.bind<UpdateProjectGallery>(SYMBOLS.UpdateProjectGallery).to(UpdateProjectGallery);
+clientContainer.bind<UpdateTeam>(SYMBOLS.UpdateTeam).to(UpdateTeam);
+clientContainer.bind<UpdateTestimonial>(SYMBOLS.UpdateTestimonial).to(UpdateTestimonial);
 clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 
 // Repositories
@@ -164,12 +208,12 @@ clientContainer
 clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
-clientContainer
-  .bind<SessionStorageDataSource>(SYMBOLS.SessionStorageDataSource)
-  .to(SessionStorageDataSourceImpl);
 clientContainer.bind<() => Promise<string>>(SYMBOLS.AccessTokenDataSource).toDynamicValue(() => {
   return async () => (await getSession())?.accessToken || '';
 });
 clientContainer
   .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
   .toConstantValue(infinityApiDataSourceImpl);
+clientContainer
+  .bind<SessionStorageDataSource>(SYMBOLS.SessionStorageDataSource)
+  .to(SessionStorageDataSourceImpl);

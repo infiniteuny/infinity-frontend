@@ -58,46 +58,110 @@ import {
   infinityApiDataSourceImpl,
 } from '@app/infrastructure/datasources/server';
 import {
+  CreateAchievement,
+  CreateCommunityGroupAdmin,
+  CreateCoreTeam,
+  CreateFundApplication,
+  CreateGroup,
+  CreatePermission,
+  CreateProjectGallery,
+  CreateTeam,
+  CreateTestimonial,
+  GetAchievement,
   GetAchievements,
+  GetCommunityGroupAdmin,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
+  GetCoreTeam,
   GetCoreTeams,
   GetFaculties,
+  GetFundApplication,
   GetFundApplications,
+  GetGroup,
   GetGroups,
   GetMajors,
+  GetPermission,
   GetPermissions,
+  GetProjectGallery,
   GetProjectGalleries,
   GetSession,
+  GetTeam,
   GetTeams,
+  GetTestimonial,
   GetTestimonials,
   GetUser,
   GetUsers,
   Login,
+  UpdateAchievement,
+  UpdateCommunityGroupAdmin,
+  UpdateCoreTeam,
+  UpdateFundApplication,
+  UpdateGroup,
+  UpdatePermission,
+  UpdateProjectGallery,
+  UpdateTeam,
+  UpdateTestimonial,
 } from '@app/application';
 import { SYMBOLS } from '@config';
 
 export const serverContainer = new Container();
 
 // Use Cases
-serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
-serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
+serverContainer.bind<CreateAchievement>(SYMBOLS.CreateAchievement).to(CreateAchievement);
+serverContainer
+  .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
+  .to(CreateCommunityGroupAdmin);
+serverContainer.bind<CreateCoreTeam>(SYMBOLS.CreateCoreTeam).to(CreateCoreTeam);
+serverContainer
+  .bind<CreateFundApplication>(SYMBOLS.CreateFundApplication)
+  .to(CreateFundApplication);
+serverContainer.bind<CreateGroup>(SYMBOLS.CreateGroup).to(CreateGroup);
+serverContainer.bind<CreatePermission>(SYMBOLS.CreatePermission).to(CreatePermission);
+serverContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(CreateProjectGallery);
+serverContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
+serverContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
+serverContainer.bind<GetAchievement>(SYMBOLS.GetAchievement).to(GetAchievement);
 serverContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
+serverContainer
+  .bind<GetCommunityGroupAdmin>(SYMBOLS.GetCommunityGroupAdmin)
+  .to(GetCommunityGroupAdmin);
 serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer.bind<GetCoreTeam>(SYMBOLS.GetCoreTeam).to(GetCoreTeam);
 serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 serverContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
+serverContainer.bind<GetFundApplication>(SYMBOLS.GetFundApplication).to(GetFundApplication);
 serverContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
+serverContainer.bind<GetGroup>(SYMBOLS.GetGroup).to(GetGroup);
 serverContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
 serverContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
+serverContainer.bind<GetPermission>(SYMBOLS.GetPermission).to(GetPermission);
 serverContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
+serverContainer.bind<GetProjectGallery>(SYMBOLS.GetProjectGallery).to(GetProjectGallery);
 serverContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
+serverContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
 serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
+serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
-serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
+serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
+serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
+serverContainer
+  .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
+  .to(UpdateCommunityGroupAdmin);
+serverContainer.bind<UpdateCoreTeam>(SYMBOLS.UpdateCoreTeam).to(UpdateCoreTeam);
+serverContainer
+  .bind<UpdateFundApplication>(SYMBOLS.UpdateFundApplication)
+  .to(UpdateFundApplication);
+serverContainer.bind<UpdateGroup>(SYMBOLS.UpdateGroup).to(UpdateGroup);
+serverContainer.bind<UpdatePermission>(SYMBOLS.UpdatePermission).to(UpdatePermission);
+serverContainer.bind<UpdateProjectGallery>(SYMBOLS.UpdateProjectGallery).to(UpdateProjectGallery);
+serverContainer.bind<UpdateTeam>(SYMBOLS.UpdateTeam).to(UpdateTeam);
+serverContainer.bind<UpdateTestimonial>(SYMBOLS.UpdateTestimonial).to(UpdateTestimonial);
 
 // Controllers
 serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerImpl);
