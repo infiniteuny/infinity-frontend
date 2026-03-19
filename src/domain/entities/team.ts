@@ -1,10 +1,17 @@
-import { FilterOperator } from '.';
+import { CompetitionTeamType, FilterOperator } from '.';
 import { User } from './user';
 
-export type TeamIncludeOptions = ('leader' | 'members' | 'fund_applications' | 'achievements')[];
+export type TeamIncludeOptions = (
+  | 'leader'
+  | 'members'
+  | 'team_type'
+  | 'fund_applications'
+  | 'achievements'
+)[];
 
 export interface TeamFilterOptions {
   leaderId?: string;
+  teamTypeId?: string;
   name?: string;
   isPersonal?: boolean;
   createdAtOperator?: FilterOperator;
@@ -16,6 +23,7 @@ export interface TeamFilterOptions {
 export interface TeamSortOptions {
   id?: 'ASC' | 'DESC';
   leaderId?: 'ASC' | 'DESC';
+  teamTypeId?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
   isPersonal?: 'ASC' | 'DESC';
   createdAt?: 'ASC' | 'DESC';
@@ -25,27 +33,33 @@ export interface TeamSortOptions {
 export class Team {
   public id: string;
   public leaderId: string;
+  public teamTypeId: string;
   public name: string;
   public isPersonal: boolean;
   public createdAt: Date;
   public updatedAt: Date;
   public leader?: User;
+  public teamType?: CompetitionTeamType;
 
   public constructor(
     id: string,
     leaderId: string,
+    teamTypeId: string,
     name: string,
     isPersonal: boolean,
     createdAt: Date,
     updatedAt: Date,
-    leader: User,
+    leader?: User,
+    teamType?: CompetitionTeamType,
   ) {
     this.id = id;
     this.leaderId = leaderId;
+    this.teamTypeId = teamTypeId;
     this.name = name;
     this.isPersonal = isPersonal;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.leader = leader;
+    this.teamType = teamType;
   }
 }

@@ -25,13 +25,7 @@ export interface FundApplicationRepository {
   createFundApplication(
     fundApplication: Omit<
       FundApplication,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'team'
-      | 'competition'
-      | 'competitionTeamType'
-      | 'competitionScale'
+      'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
@@ -42,13 +36,7 @@ export interface FundApplicationRepository {
     fundApplication: Partial<
       Omit<
         FundApplication,
-        | 'id'
-        | 'createdAt'
-        | 'updatedAt'
-        | 'team'
-        | 'competition'
-        | 'competitionTeamType'
-        | 'competitionScale'
+        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
       >
     >,
     abortSignal?: AbortSignal,

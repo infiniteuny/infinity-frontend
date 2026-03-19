@@ -34,7 +34,7 @@ export class CoreTeam {
     isActive: boolean,
     createdAt: Date,
     updatedAt: Date,
-    group: Group | undefined,
+    group?: Group,
   ) {
     this.id = id;
     this.year = year;

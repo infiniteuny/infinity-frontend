@@ -42,6 +42,7 @@ export class TeamRepositoryImpl implements TeamRepository {
             ?.filter((value, index, self) => self.indexOf(value) === index)
             .join(','),
           'filters[leader_id]': filterOptions?.leaderId,
+          'filters[team_type_id]': filterOptions?.teamTypeId,
           'filters[name]': filterOptions?.name,
           'filters[is_personal]': filterOptions?.isPersonal,
           'filters[created_at]':

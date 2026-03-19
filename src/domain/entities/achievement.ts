@@ -1,32 +1,14 @@
-// $table->uuid('id')->primary();
-// $table->foreignUuid('team_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_team_type_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_scale_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_time_range_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_output_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->foreignUuid('competition_rank_id')->constrained()->restrictOnUpdate()->restrictOnDelete();
-// $table->string('competition_branch');
-// $table->date('competition_start_date');
-// $table->date('competition_end_date');
-// $table->text('description');
-// $table->string('image');
-// $table->enum('status', ['PENDING', 'REJECTED', 'ACCEPTED'])->default('PENDING');
-// $table->timestamps();
-
 import { FilterOperator } from '.';
 import { Competition } from './competition';
 import { CompetitionOutput } from './competition-output';
 import { CompetitionRank } from './competition-rank';
 import { CompetitionScale } from './competition-scale';
-import { CompetitionTeamType } from './competition-team-type';
 import { CompetitionTimeRange } from './competition-time-range';
 import { Team } from './team';
 
 export interface AchievementFilterOptions {
   teamId?: string;
   competitionId?: string;
-  competitionTeamTypeId?: string;
   competitionScaleId?: string;
   competitionTimeRangeId?: string;
   competitionOutputId?: string;
@@ -48,7 +30,6 @@ export interface AchievementSortOptions {
   id?: 'ASC' | 'DESC';
   teamId?: 'ASC' | 'DESC';
   competitionId?: 'ASC' | 'DESC';
-  competitionTeamTypeId?: 'ASC' | 'DESC';
   competitionScaleId?: 'ASC' | 'DESC';
   competitionTimeRangeId?: 'ASC' | 'DESC';
   competitionOutputId?: 'ASC' | 'DESC';
@@ -66,7 +47,6 @@ export class Achievement {
   public id: string;
   public teamId: string;
   public competitionId: string;
-  public competitionTeamTypeId: string;
   public competitionScaleId: string;
   public competitionTimeRangeId: string;
   public competitionOutputId: string;
@@ -81,7 +61,6 @@ export class Achievement {
   public updatedAt: Date;
   public team?: Team;
   public competition?: Competition;
-  public competitionTeamType?: CompetitionTeamType;
   public competitionScale?: CompetitionScale;
   public competitionTimeRange?: CompetitionTimeRange;
   public competitionOutput?: CompetitionOutput;
@@ -91,7 +70,6 @@ export class Achievement {
     id: string,
     teamId: string,
     competitionId: string,
-    competitionTeamTypeId: string,
     competitionScaleId: string,
     competitionTimeRangeId: string,
     competitionOutputId: string,
@@ -104,18 +82,16 @@ export class Achievement {
     status: 'PENDING' | 'REJECTED' | 'ACCEPTED',
     createdAt: Date,
     updatedAt: Date,
-    team: Team | undefined,
-    competition: Competition | undefined,
-    competitionTeamType: CompetitionTeamType | undefined,
-    competitionScale: CompetitionScale | undefined,
-    competitionTimeRange: CompetitionTimeRange | undefined,
-    competitionOutput: CompetitionOutput | undefined,
-    competitionRank: CompetitionRank | undefined,
+    team?: Team,
+    competition?: Competition,
+    competitionScale?: CompetitionScale,
+    competitionTimeRange?: CompetitionTimeRange,
+    competitionOutput?: CompetitionOutput,
+    competitionRank?: CompetitionRank,
   ) {
     this.id = id;
     this.teamId = teamId;
     this.competitionId = competitionId;
-    this.competitionTeamTypeId = competitionTeamTypeId;
     this.competitionScaleId = competitionScaleId;
     this.competitionTimeRangeId = competitionTimeRangeId;
     this.competitionOutputId = competitionOutputId;
@@ -130,7 +106,6 @@ export class Achievement {
     this.updatedAt = updatedAt;
     this.team = team;
     this.competition = competition;
-    this.competitionTeamType = competitionTeamType;
     this.competitionScale = competitionScale;
     this.competitionTimeRange = competitionTimeRange;
     this.competitionOutput = competitionOutput;

@@ -44,8 +44,8 @@ export class Major {
     name: string,
     createdAt: Date,
     updatedAt: Date,
-    degree: Degree | undefined,
-    faculty: Faculty | undefined,
+    degree?: Degree,
+    faculty?: Faculty,
   ) {
     this.id = id;
     this.degreeId = degreeId;

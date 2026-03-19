@@ -34,7 +34,6 @@ export class AchievementRepositoryImpl implements AchievementRepository {
           cursor: paginationOptions?.cursor,
           'filters[team_id]': filterOptions?.teamId,
           'filters[competition_id]': filterOptions?.competitionId,
-          'filters[competition_team_type_id]': filterOptions?.competitionTeamTypeId,
           'filters[competition_scale_id]': filterOptions?.competitionScaleId,
           'filters[competition_time_range_id]': filterOptions?.competitionTimeRangeId,
           'filters[competition_output_id]': filterOptions?.competitionOutputId,
@@ -111,7 +110,6 @@ export class AchievementRepositoryImpl implements AchievementRepository {
       | 'updatedAt'
       | 'team'
       | 'competition'
-      | 'competitionTeamType'
       | 'competitionScale'
       | 'competitionTimeRange'
       | 'competitionOutput'
@@ -152,7 +150,6 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         | 'updatedAt'
         | 'team'
         | 'competition'
-        | 'competitionTeamType'
         | 'competitionScale'
         | 'competitionTimeRange'
         | 'competitionOutput'

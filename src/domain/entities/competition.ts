@@ -26,7 +26,7 @@ export class Competition {
   public id: string;
   public name: string;
   public description: string;
-  public url?: string;
+  public url: string | null;
   public organizer: string;
   public organizerTypeId: string;
   public logo: string;
@@ -38,13 +38,13 @@ export class Competition {
     id: string,
     name: string,
     description: string,
-    url: string | undefined,
+    url: string | null,
     organizer: string,
     organizerTypeId: string,
     logo: string,
     createdAt: Date,
     updatedAt: Date,
-    organizerType: CompetitionOrganizerType | undefined,
+    organizerType?: CompetitionOrganizerType,
   ) {
     this.id = id;
     this.name = name;

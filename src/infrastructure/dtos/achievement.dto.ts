@@ -2,7 +2,6 @@ import { DateTime } from 'luxon';
 import { Achievement } from '@app/domain/entities';
 import { TeamDto, TeamMapper } from './team.dto';
 import { CompetitionDto, CompetitionMapper } from './competition.dto';
-import { CompetitionTeamTypeDto, CompetitionTeamTypeMapper } from './competition-team-type.dto';
 import { CompetitionScaleDto, CompetitionScaleMapper } from './competition-scale.dto';
 import { CompetitionTimeRangeDto, CompetitionTimeRangeMapper } from './competition-time-range.dto';
 import { CompetitionOutputDto, CompetitionOutputMapper } from './competition-output.dto';
@@ -27,7 +26,6 @@ export interface AchievementDto {
   updated_at: string;
   team?: TeamDto;
   competition?: CompetitionDto;
-  competition_team_type?: CompetitionTeamTypeDto;
   competition_scale?: CompetitionScaleDto;
   competition_time_range?: CompetitionTimeRangeDto;
   competition_output?: CompetitionOutputDto;
@@ -40,7 +38,6 @@ export class AchievementMapper {
       id: achievement.id,
       team_id: achievement.teamId,
       competition_id: achievement.competitionId,
-      competition_team_type_id: achievement.competitionTeamTypeId,
       competition_scale_id: achievement.competitionScaleId,
       competition_time_range_id: achievement.competitionTimeRangeId,
       competition_output_id: achievement.competitionOutputId,
@@ -58,11 +55,6 @@ export class AchievementMapper {
         : undefined,
       competition: achievement.competition
         ? (CompetitionMapper.fromDomaintoDto(achievement.competition) as CompetitionDto)
-        : undefined,
-      competition_team_type: achievement.competitionTeamType
-        ? (CompetitionTeamTypeMapper.fromDomaintoDto(
-            achievement.competitionTeamType,
-          ) as CompetitionTeamTypeDto)
         : undefined,
       competition_scale: achievement.competitionScale
         ? (CompetitionScaleMapper.fromDomaintoDto(
@@ -90,7 +82,6 @@ export class AchievementMapper {
       dto.id,
       dto.team_id,
       dto.competition_id,
-      dto.competition_team_type_id,
       dto.competition_scale_id,
       dto.competition_time_range_id,
       dto.competition_output_id,
@@ -105,9 +96,6 @@ export class AchievementMapper {
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.team ? TeamMapper.fromDtoToDomain(dto.team) : undefined,
       dto.competition ? CompetitionMapper.fromDtoToDomain(dto.competition) : undefined,
-      dto.competition_team_type
-        ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.competition_team_type)
-        : undefined,
       dto.competition_scale
         ? CompetitionScaleMapper.fromDtoToDomain(dto.competition_scale)
         : undefined,

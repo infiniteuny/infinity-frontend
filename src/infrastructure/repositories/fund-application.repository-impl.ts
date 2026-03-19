@@ -43,7 +43,6 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
             .join(','),
           'filters[team_id]': filterOptions?.teamId,
           'filters[competition_id]': filterOptions?.competitionId,
-          'filters[competition_team_type_id]': filterOptions?.competitionTeamTypeId,
           'filters[competition_scale_id]': filterOptions?.competitionScaleId,
           'filters[competition_branch]': filterOptions?.competitionBranch,
           'filters[competition_start_date]':
@@ -119,13 +118,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
   public async createFundApplication(
     fundApplication: Omit<
       FundApplication,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'team'
-      | 'competition'
-      | 'competitionTeamType'
-      | 'competitionScale'
+      'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -159,13 +152,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     fundApplication: Partial<
       Omit<
         FundApplication,
-        | 'id'
-        | 'createdAt'
-        | 'updatedAt'
-        | 'team'
-        | 'competition'
-        | 'competitionTeamType'
-        | 'competitionScale'
+        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
       >
     >,
     abortSignal?: AbortSignal,

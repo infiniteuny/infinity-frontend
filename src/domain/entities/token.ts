@@ -41,7 +41,7 @@ export class Token {
     createdAt: Date,
     expiresAt: Date,
     deletedAt: Date | null,
-    user: User | undefined,
+    user?: User,
   ) {
     this.id = id;
     this.ssoId = ssoId;
