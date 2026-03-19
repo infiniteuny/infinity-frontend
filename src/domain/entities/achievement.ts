@@ -6,6 +6,15 @@ import { CompetitionScale } from './competition-scale';
 import { CompetitionTimeRange } from './competition-time-range';
 import { Team } from './team';
 
+export type AchievementIncludeOptions = (
+  | 'team'
+  | 'competition'
+  | 'competition_scale'
+  | 'competition_time_range'
+  | 'competition_output'
+  | 'competition_rank'
+)[];
+
 export interface AchievementFilterOptions {
   teamId?: string;
   competitionId?: string;

@@ -1,6 +1,8 @@
 import { FilterOperator } from '.';
 import { CompetitionOrganizerType } from './competition-organizer-type';
 
+export type CompetitionIncludeOptions = 'organizer_type'[];
+
 export interface CompetitionFilterOptions {
   name?: string;
   description?: string;

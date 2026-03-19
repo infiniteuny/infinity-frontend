@@ -16,14 +16,14 @@ export interface CoreTeamRepository {
   ): Promise<Either<CoreTeam, Error>>;
 
   createCoreTeam(
-    coreTeam: Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt'>,
+    coreTeam: Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CoreTeam, Error>>;
 
   updateCoreTeam(
     id: string,
-    coreTeam: Partial<Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt'>>,
+    coreTeam: Partial<Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CoreTeam, Error>>;

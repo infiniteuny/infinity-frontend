@@ -23,14 +23,14 @@ export interface TeamRepository {
   ): Promise<Either<Team, Error>>;
 
   createTeam(
-    team: Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader'>,
+    team: Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Team, Error>>;
 
   updateTeam(
     id: string,
-    team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader'>>,
+    team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Team, Error>>;

@@ -1,8 +1,14 @@
 import { Either } from 'effect/Either';
-import { PaginationOptions, Competition, CompetitionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Competition,
+  CompetitionFilterOptions,
+  CompetitionIncludeOptions,
+} from '@app/domain/entities';
 
 export interface CompetitionRepository {
   getCompetitions(
+    includeOptions?: CompetitionIncludeOptions,
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -11,6 +17,7 @@ export interface CompetitionRepository {
 
   getCompetition(
     id: string,
+    includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Competition, Error>>;

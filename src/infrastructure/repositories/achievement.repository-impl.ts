@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, Achievement, AchievementFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Achievement,
+  AchievementFilterOptions,
+  AchievementIncludeOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { AchievementRepository } from '@app/domain/repositories';
 import { AchievementMapper } from '@app/infrastructure/dtos';
@@ -16,6 +21,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
   ) {}
 
   public async getAchievements(
+    includeOptions?: AchievementIncludeOptions,
     filterOptions?: AchievementFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -32,6 +38,9 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
           'filters[team_id]': filterOptions?.teamId,
           'filters[competition_id]': filterOptions?.competitionId,
           'filters[competition_scale_id]': filterOptions?.competitionScaleId,
@@ -81,6 +90,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
 
   public async getAchievement(
     id: string,
+    includeOptions?: AchievementIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
@@ -91,6 +101,11 @@ export class AchievementRepositoryImpl implements AchievementRepository {
           ...(authenticate
             ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
             : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

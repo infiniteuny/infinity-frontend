@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, Competition, CompetitionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Competition,
+  CompetitionFilterOptions,
+  CompetitionIncludeOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { CompetitionRepository } from '@app/domain/repositories';
 import { CompetitionMapper } from '@app/infrastructure/dtos';
@@ -16,6 +21,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   ) {}
 
   public async getCompetitions(
+    includeOptions?: CompetitionIncludeOptions,
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -32,6 +38,9 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
           'filters[name]': filterOptions?.name,
           'filters[description]': filterOptions?.description,
           'filters[url]': filterOptions?.url,
@@ -58,6 +67,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
 
   public async getCompetition(
     id: string,
+    includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<Competition, Error>> {
@@ -68,6 +78,11 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
           ...(authenticate
             ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
             : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

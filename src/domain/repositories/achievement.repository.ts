@@ -1,8 +1,14 @@
 import { Either } from 'effect/Either';
-import { PaginationOptions, Achievement, AchievementFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Achievement,
+  AchievementFilterOptions,
+  AchievementIncludeOptions,
+} from '@app/domain/entities';
 
 export interface AchievementRepository {
   getAchievements(
+    includeOptions?: AchievementIncludeOptions,
     filterOptions?: AchievementFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -11,6 +17,7 @@ export interface AchievementRepository {
 
   getAchievement(
     id: string,
+    includeOptions?: AchievementIncludeOptions,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Achievement, Error>>;
