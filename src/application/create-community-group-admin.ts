@@ -6,7 +6,10 @@ import { UseCase } from '@app/application';
 import { CommunityGroupAdmin } from '@app/domain/entities';
 
 export type CreateCommunityGroupAdminParams = [
-  communityGroupAdmin: Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+  communityGroupAdmin: Omit<
+    CommunityGroupAdmin,
+    'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
+  >,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
@@ -25,7 +28,10 @@ export class CreateCommunityGroupAdmin
   }
 
   public async execute(
-    communityGroupAdmin: Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+    communityGroupAdmin: Omit<
+      CommunityGroupAdmin,
+      'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
+    >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CommunityGroupAdmin, Error>> {

@@ -20,7 +20,10 @@ export interface CommunityGroupAdminRepository {
   ): Promise<Either<CommunityGroupAdmin, Error>>;
 
   createCommunityGroupAdmin(
-    communityGroupAdmin: Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+    communityGroupAdmin: Omit<
+      CommunityGroupAdmin,
+      'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
+    >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CommunityGroupAdmin, Error>>;
@@ -28,7 +31,7 @@ export interface CommunityGroupAdminRepository {
   updateCommunityGroupAdmin(
     id: string,
     communityGroupAdmin: Partial<
-      Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>
+      Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,

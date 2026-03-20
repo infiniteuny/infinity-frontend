@@ -8,7 +8,7 @@ import { CommunityGroupAdmin } from '@app/domain/entities';
 export type UpdateCommunityGroupAdminParams = [
   id: string,
   communityGroupAdmin: Partial<
-    Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>
+    Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
   >,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -30,7 +30,7 @@ export class UpdateCommunityGroupAdmin
   public async execute(
     id: string,
     communityGroupAdmin: Partial<
-      Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>
+      Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
     authenticate?: boolean,

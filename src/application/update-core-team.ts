@@ -7,7 +7,7 @@ import { CoreTeam } from '@app/domain/entities';
 
 export type UpdateCoreTeamParams = [
   id: string,
-  coreTeam: Partial<Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>>,
+  coreTeam: Partial<Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>>,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
@@ -27,7 +27,7 @@ export class UpdateCoreTeam
 
   public async execute(
     id: string,
-    coreTeam: Partial<Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>>,
+    coreTeam: Partial<Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CoreTeam, Error>> {

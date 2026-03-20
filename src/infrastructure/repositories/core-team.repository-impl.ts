@@ -84,7 +84,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
   }
 
   public async createCoreTeam(
-    coreTeam: Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt'>,
+    coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<CoreTeam, Error>> {
@@ -112,7 +112,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
 
   public async updateCoreTeam(
     id: string,
-    coreTeam: Partial<Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt'>>,
+    coreTeam: Partial<Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>>,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<CoreTeam, Error>> {

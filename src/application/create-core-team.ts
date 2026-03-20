@@ -6,7 +6,7 @@ import { UseCase } from '@app/application';
 import { CoreTeam } from '@app/domain/entities';
 
 export type CreateCoreTeamParams = [
-  coreTeam: Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+  coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
 ];
@@ -25,7 +25,7 @@ export class CreateCoreTeam
   }
 
   public async execute(
-    coreTeam: Omit<CoreTeam, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+    coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CoreTeam, Error>> {

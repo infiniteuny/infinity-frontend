@@ -92,7 +92,10 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   }
 
   public async createCommunityGroupAdmin(
-    communityGroupAdmin: Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>,
+    communityGroupAdmin: Omit<
+      CommunityGroupAdmin,
+      'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
+    >,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
@@ -123,7 +126,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   public async updateCommunityGroupAdmin(
     id: string,
     communityGroupAdmin: Partial<
-      Omit<CommunityGroupAdmin, 'id' | 'createdAt' | 'updatedAt' | 'group'>
+      Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
