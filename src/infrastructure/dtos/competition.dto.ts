@@ -9,7 +9,7 @@ export interface CompetitionDto {
   id: string;
   name: string;
   description: string;
-  url?: string;
+  url: string | null;
   organizer: string;
   organizer_type_id: string;
   logo: string;
