@@ -98,7 +98,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
     authenticate: boolean = true,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const response = await this.infinityApiDataSource.postForm(
         '/project-galleries',
         ProjectGalleryMapper.fromDomaintoDto(projectGallery),
         {
@@ -128,9 +128,14 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
     authenticate: boolean = true,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const projectGalleryDto = ProjectGalleryMapper.fromDomaintoDto(projectGallery);
+
+      const response = await this.infinityApiDataSource.putForm(
         `/project-galleries/${id}`,
-        ProjectGalleryMapper.fromDomaintoDto(projectGallery),
+        {
+          ...projectGalleryDto,
+          image: projectGalleryDto.image ?? undefined,
+        },
         {
           signal: abortSignal,
           headers: {
