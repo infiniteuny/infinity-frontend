@@ -5,7 +5,7 @@ export interface TestimonialDto {
   id: string;
   name: string;
   position: string;
-  photo: string;
+  photo: string | File;
   content: string;
   created_at: string;
   updated_at: string;

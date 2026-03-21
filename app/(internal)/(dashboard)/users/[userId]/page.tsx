@@ -1,12 +1,12 @@
+import { FacultyDto, FacultyMapper, UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { GetFaculties, GetUser } from '@app/application';
 import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { FacultyDto, FacultyMapper, UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { UserForm, UserToolbar, UserView } from '@app/presentation/components/internal/single-user';
-import { NotFoundError } from '@app/domain/errors';
-import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{

@@ -42,8 +42,8 @@ export class FundApplication {
   public competitionBranch: string;
   public competitionStartDate: Date;
   public competitionEndDate: Date;
-  public letterOfAcceptance: string | Blob;
-  public proposal: string | Blob;
+  public letterOfAcceptance: string | File;
+  public proposal: string | File;
   public status: 'PENDING' | 'REJECTED' | 'ACCEPTED';
   public createdAt: Date;
   public updatedAt: Date;
@@ -59,8 +59,8 @@ export class FundApplication {
     competitionBranch: string,
     competitionStartDate: Date,
     competitionEndDate: Date,
-    letterOfAcceptance: string | Blob,
-    proposal: string | Blob,
+    letterOfAcceptance: string | File,
+    proposal: string | File,
     status: 'PENDING' | 'REJECTED' | 'ACCEPTED',
     createdAt: Date,
     updatedAt: Date,

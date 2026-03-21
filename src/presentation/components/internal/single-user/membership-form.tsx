@@ -2,9 +2,12 @@ import {
   Box,
   Container,
   FormControl,
+  FormControlLabel,
+  FormHelperText,
   FormLabel,
   Grid,
-  Switch,
+  Radio,
+  RadioGroup,
   Toolbar,
   Typography,
 } from '@mui/material';
@@ -98,16 +101,23 @@ export function MembershipForm({
           </Grid>
           <Grid size={12}>
             <FormControl fullWidth margin="none" disabled={isSubmitting}>
-              <FormLabel component="label" htmlFor="isExtraordinary" className="mb-1">
+              <FormLabel component="legend" className="mb-1">
                 Extraordinary Member
               </FormLabel>
               <Controller
                 name="isExtraordinary"
                 control={control}
-                render={({ field }) => (
-                  <Switch id="isExtraordinary" className="mx-0" checked={field.value} {...field} />
+                defaultValue={false}
+                render={({ field: { onChange, ...field } }) => (
+                  <RadioGroup row onChange={(e) => onChange(e.target.value === 'true')} {...field}>
+                    <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                    <FormControlLabel value={false} control={<Radio />} label="No" />
+                  </RadioGroup>
                 )}
               />
+              <FormHelperText error={!!errors.isExtraordinary}>
+                {errors.isExtraordinary?.message}
+              </FormHelperText>
             </FormControl>
           </Grid>
         </Grid>

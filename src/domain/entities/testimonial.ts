@@ -21,7 +21,7 @@ export class Testimonial {
   public id: string;
   public name: string;
   public position: string;
-  public photo: string;
+  public photo: string | File;
   public content: string;
   public createdAt: Date;
   public updatedAt: Date;
@@ -30,7 +30,7 @@ export class Testimonial {
     id: string,
     name: string,
     position: string,
-    photo: string,
+    photo: string | File,
     content: string,
     createdAt: Date,
     updatedAt: Date,

@@ -129,14 +129,14 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
                 flex: 1,
               },
               {
-                field: 'photo',
-                headerName: 'Photo',
-                flex: 0.5,
-              },
-              {
                 field: 'content',
                 headerName: 'Content',
                 flex: 2.5,
+              },
+              {
+                field: 'photo',
+                headerName: 'Photo',
+                flex: 0.5,
               },
             ]}
             rows={rows.map((testimonial) => ({
@@ -158,6 +158,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
               columns: {
                 columnVisibilityModel: {
                   id: false,
+                  content: false,
                 },
               },
             }}

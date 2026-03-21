@@ -22,7 +22,7 @@ export class ProjectGallery {
   public title: string;
   public description: string;
   public url: string;
-  public image: string;
+  public image: string | File;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -31,7 +31,7 @@ export class ProjectGallery {
     title: string,
     description: string,
     url: string,
-    image: string,
+    image: string | File,
     createdAt: Date,
     updatedAt: Date,
   ) {

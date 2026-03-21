@@ -124,6 +124,11 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
                 flex: 2,
               },
               {
+                field: 'description',
+                headerName: 'Description',
+                flex: 2,
+              },
+              {
                 field: 'url',
                 headerName: 'URL',
                 flex: 2,
@@ -137,6 +142,7 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
             rows={rows.map((projectGallery) => ({
               id: projectGallery.id,
               title: projectGallery.title,
+              description: projectGallery.description,
               url: projectGallery.url,
               image: projectGallery.image,
             }))}
@@ -152,6 +158,7 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
               columns: {
                 columnVisibilityModel: {
                   id: false,
+                  description: false,
                 },
               },
             }}

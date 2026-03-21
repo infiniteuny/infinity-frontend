@@ -6,7 +6,7 @@ export interface ProjectGalleryDto {
   title: string;
   description: string;
   url: string;
-  image: string;
+  image: string | File;
   created_at: string;
   updated_at: string;
 }

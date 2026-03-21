@@ -13,8 +13,8 @@ export interface FundApplicationDto {
   competition_branch: string;
   competition_start_date: string;
   competition_end_date: string;
-  letter_of_acceptance: string | Blob;
-  proposal: string | Blob;
+  letter_of_acceptance: string | File;
+  proposal: string | File;
   status: 'PENDING' | 'REJECTED' | 'ACCEPTED';
   created_at: string;
   updated_at: string;
