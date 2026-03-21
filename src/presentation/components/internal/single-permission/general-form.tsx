@@ -12,10 +12,10 @@ import {
   Typography,
 } from '@mui/material';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { GroupInput } from './group-form';
+import { PermissionInput } from './permission-form';
 
 type Props = {
-  methods: UseFormReturn<GroupInput>;
+  methods: UseFormReturn<PermissionInput>;
 };
 
 export function GeneralForm({
