@@ -1,16 +1,16 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import { CompetitionMapper } from '@app/infrastructure/dtos';
+import { CompetitionRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import {
-  PaginationOptions,
   Competition,
   CompetitionFilterOptions,
   CompetitionIncludeOptions,
+  PaginationOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CompetitionRepository } from '@app/domain/repositories';
-import { CompetitionMapper } from '@app/infrastructure/dtos';
 
 export class CompetitionRepositoryImpl implements CompetitionRepository {
   public constructor(
@@ -46,20 +46,29 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
           'filters[url]': filterOptions?.url,
           'filters[organizer]': filterOptions?.organizer,
           'filters[organizer_type_id]': filterOptions?.organizerTypeId,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CompetitionMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const competitionsResponse = response.data.data.competitions.map(
+        CompetitionMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([competitionsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -86,7 +95,9 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         },
       });
 
-      return right(CompetitionMapper.fromDtoToDomain(response.data.data));
+      const competitionResponse = CompetitionMapper.fromDtoToDomain(response.data.data.competition);
+
+      return right(competitionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -111,7 +122,9 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         },
       );
 
-      return right(CompetitionMapper.fromDtoToDomain(response.data.data));
+      const competitionResponse = CompetitionMapper.fromDtoToDomain(response.data.data.competition);
+
+      return right(competitionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -137,7 +150,9 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         },
       );
 
-      return right(CompetitionMapper.fromDtoToDomain(response.data.data));
+      const competitionResponse = CompetitionMapper.fromDtoToDomain(response.data.data.competition);
+
+      return right(competitionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -158,7 +173,9 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         },
       });
 
-      return right(CompetitionMapper.fromDtoToDomain(response.data.data));
+      const competitionResponse = CompetitionMapper.fromDtoToDomain(response.data.data.competition);
+
+      return right(competitionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

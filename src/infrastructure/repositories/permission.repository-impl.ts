@@ -3,9 +3,9 @@ import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import { PaginationOptions, Permission, PermissionFilterOptions } from '@app/domain/entities';
-import { SYMBOLS } from '@config';
-import { PermissionRepository } from '@app/domain/repositories';
 import { PermissionMapper } from '@app/infrastructure/dtos';
+import { PermissionRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
 
 export class PermissionRepositoryImpl implements PermissionRepository {
   public constructor(

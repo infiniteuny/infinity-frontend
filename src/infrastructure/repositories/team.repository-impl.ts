@@ -9,8 +9,8 @@ import {
   TeamIncludeOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { TeamRepository } from '@app/domain/repositories';
 import { TeamMapper } from '@app/infrastructure/dtos';
+import { TeamRepository } from '@app/domain/repositories';
 
 export class TeamRepositoryImpl implements TeamRepository {
   public constructor(

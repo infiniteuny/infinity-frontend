@@ -1,15 +1,15 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import {
+  CompetitionRank,
+  CompetitionRankFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import { CompetitionRankMapper } from '@app/infrastructure/dtos';
+import { CompetitionRankRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  PaginationOptions,
-  CompetitionRank,
-  CompetitionRankFilterOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CompetitionRankRepository } from '@app/domain/repositories';
-import { CompetitionRankMapper } from '@app/infrastructure/dtos';
 
 export class CompetitionRankRepositoryImpl implements CompetitionRankRepository {
   public constructor(
@@ -38,20 +38,29 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[weight]': filterOptions?.weight,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CompetitionRankMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const competitionRanksResponse = response.data.data.competition_ranks.map(
+        CompetitionRankMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([competitionRanksResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -72,7 +81,11 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         },
       });
 
-      return right(CompetitionRankMapper.fromDtoToDomain(response.data.data));
+      const competitionRankResponse = CompetitionRankMapper.fromDtoToDomain(
+        response.data.data.competition_rank,
+      );
+
+      return right(competitionRankResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -97,7 +110,11 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         },
       );
 
-      return right(CompetitionRankMapper.fromDtoToDomain(response.data.data));
+      const competitionRankResponse = CompetitionRankMapper.fromDtoToDomain(
+        response.data.data.competition_rank,
+      );
+
+      return right(competitionRankResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -123,7 +140,11 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         },
       );
 
-      return right(CompetitionRankMapper.fromDtoToDomain(response.data.data));
+      const competitionRankResponse = CompetitionRankMapper.fromDtoToDomain(
+        response.data.data.competition_rank,
+      );
+
+      return right(competitionRankResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -144,7 +165,11 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         },
       });
 
-      return right(CompetitionRankMapper.fromDtoToDomain(response.data.data));
+      const competitionRankResponse = CompetitionRankMapper.fromDtoToDomain(
+        response.data.data.competition_rank,
+      );
+
+      return right(competitionRankResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

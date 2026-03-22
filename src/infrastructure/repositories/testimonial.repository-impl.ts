@@ -4,8 +4,8 @@ import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { TestimonialRepository } from '@app/domain/repositories';
 import { TestimonialMapper } from '@app/infrastructure/dtos';
+import { TestimonialRepository } from '@app/domain/repositories';
 
 export class TestimonialRepositoryImpl implements TestimonialRepository {
   public constructor(

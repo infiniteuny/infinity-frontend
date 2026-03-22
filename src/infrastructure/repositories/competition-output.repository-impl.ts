@@ -1,15 +1,15 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import {
+  CompetitionOutput,
+  CompetitionOutputFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import { CompetitionOutputMapper } from '@app/infrastructure/dtos';
+import { CompetitionOutputRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  PaginationOptions,
-  CompetitionOutput,
-  CompetitionOutputFilterOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CompetitionOutputRepository } from '@app/domain/repositories';
-import { CompetitionOutputMapper } from '@app/infrastructure/dtos';
 
 export class CompetitionOutputRepositoryImpl implements CompetitionOutputRepository {
   public constructor(
@@ -38,20 +38,29 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[weight]': filterOptions?.weight,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CompetitionOutputMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const competitionOutputsResponse = response.data.data.competition_outputs.map(
+        CompetitionOutputMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([competitionOutputsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -72,7 +81,11 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         },
       });
 
-      return right(CompetitionOutputMapper.fromDtoToDomain(response.data.data));
+      const competitionOutputResponse = CompetitionOutputMapper.fromDtoToDomain(
+        response.data.data.competition_output,
+      );
+
+      return right(competitionOutputResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -97,7 +110,11 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         },
       );
 
-      return right(CompetitionOutputMapper.fromDtoToDomain(response.data.data));
+      const competitionOutputResponse = CompetitionOutputMapper.fromDtoToDomain(
+        response.data.data.competition_output,
+      );
+
+      return right(competitionOutputResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -123,7 +140,11 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         },
       );
 
-      return right(CompetitionOutputMapper.fromDtoToDomain(response.data.data));
+      const competitionOutputResponse = CompetitionOutputMapper.fromDtoToDomain(
+        response.data.data.competition_output,
+      );
+
+      return right(competitionOutputResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -144,7 +165,11 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         },
       });
 
-      return right(CompetitionOutputMapper.fromDtoToDomain(response.data.data));
+      const competitionOutputResponse = CompetitionOutputMapper.fromDtoToDomain(
+        response.data.data.competition_output,
+      );
+
+      return right(competitionOutputResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

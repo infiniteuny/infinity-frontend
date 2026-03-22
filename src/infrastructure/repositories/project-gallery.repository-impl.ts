@@ -7,9 +7,9 @@ import {
   ProjectGallery,
   ProjectGalleryFilterOptions,
 } from '@app/domain/entities';
-import { SYMBOLS } from '@config';
-import { ProjectGalleryRepository } from '@app/domain/repositories';
 import { ProjectGalleryMapper } from '@app/infrastructure/dtos';
+import { ProjectGalleryRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
 
 export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
   public constructor(

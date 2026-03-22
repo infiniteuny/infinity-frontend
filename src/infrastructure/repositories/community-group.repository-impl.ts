@@ -1,15 +1,15 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import {
+  CommunityGroup,
+  CommunityGroupFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import { CommunityGroupMapper } from '@app/infrastructure/dtos';
+import { CommunityGroupRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  PaginationOptions,
-  CommunityGroup,
-  CommunityGroupFilterOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CommunityGroupRepository } from '@app/domain/repositories';
-import { CommunityGroupMapper } from '@app/infrastructure/dtos';
 
 export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
   public constructor(
@@ -40,20 +40,29 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
           'filters[priority]': filterOptions?.priority,
           'filters[description]': filterOptions?.description,
           'filters[is_active]': filterOptions?.isActive,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CommunityGroupMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const communityGroupsResponse = response.data.data.community_groups.map(
+        CommunityGroupMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([communityGroupsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -74,7 +83,11 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         },
       });
 
-      return right(CommunityGroupMapper.fromDtoToDomain(response.data.data));
+      const communityGroupResponse = CommunityGroupMapper.fromDtoToDomain(
+        response.data.data.community_group,
+      );
+
+      return right(communityGroupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -99,7 +112,11 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         },
       );
 
-      return right(CommunityGroupMapper.fromDtoToDomain(response.data.data));
+      const communityGroupResponse = CommunityGroupMapper.fromDtoToDomain(
+        response.data.data.community_group,
+      );
+
+      return right(communityGroupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -125,7 +142,11 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         },
       );
 
-      return right(CommunityGroupMapper.fromDtoToDomain(response.data.data));
+      const communityGroupResponse = CommunityGroupMapper.fromDtoToDomain(
+        response.data.data.community_group,
+      );
+
+      return right(communityGroupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -146,7 +167,11 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         },
       });
 
-      return right(CommunityGroupMapper.fromDtoToDomain(response.data.data));
+      const communityGroupResponse = CommunityGroupMapper.fromDtoToDomain(
+        response.data.data.community_group,
+      );
+
+      return right(communityGroupResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

@@ -1,15 +1,15 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import {
+  CoreTeamDivision,
+  CoreTeamDivisionFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import { CoreTeamDivisionMapper } from '@app/infrastructure/dtos';
+import { CoreTeamDivisionRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  PaginationOptions,
-  CoreTeamDivision,
-  CoreTeamDivisionFilterOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CoreTeamDivisionRepository } from '@app/domain/repositories';
-import { CoreTeamDivisionMapper } from '@app/infrastructure/dtos';
 
 export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepository {
   public constructor(
@@ -38,20 +38,29 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[priority]': filterOptions?.priority,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CoreTeamDivisionMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const coreTeamDivisionsResponse = response.data.data.core_team_divisions.map(
+        CoreTeamDivisionMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([coreTeamDivisionsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -72,7 +81,11 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
         },
       });
 
-      return right(CoreTeamDivisionMapper.fromDtoToDomain(response.data.data));
+      const coreTeamDivisionResponse = CoreTeamDivisionMapper.fromDtoToDomain(
+        response.data.data.core_team_division,
+      );
+
+      return right(coreTeamDivisionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -97,7 +110,11 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
         },
       );
 
-      return right(CoreTeamDivisionMapper.fromDtoToDomain(response.data.data));
+      const coreTeamDivisionResponse = CoreTeamDivisionMapper.fromDtoToDomain(
+        response.data.data.core_team_division,
+      );
+
+      return right(coreTeamDivisionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -123,7 +140,11 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
         },
       );
 
-      return right(CoreTeamDivisionMapper.fromDtoToDomain(response.data.data));
+      const coreTeamDivisionResponse = CoreTeamDivisionMapper.fromDtoToDomain(
+        response.data.data.core_team_division,
+      );
+
+      return right(coreTeamDivisionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -144,7 +165,11 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
         },
       });
 
-      return right(CoreTeamDivisionMapper.fromDtoToDomain(response.data.data));
+      const coreTeamDivisionResponse = CoreTeamDivisionMapper.fromDtoToDomain(
+        response.data.data.core_team_division,
+      );
+
+      return right(coreTeamDivisionResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

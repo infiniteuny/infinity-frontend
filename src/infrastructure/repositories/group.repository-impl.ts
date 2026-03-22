@@ -1,11 +1,11 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
+import { Group, GroupFilterOptions, PaginationOptions } from '@app/domain/entities';
+import { GroupMapper } from '@app/infrastructure/dtos';
+import { GroupRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, Group, GroupFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { GroupRepository } from '@app/domain/repositories';
-import { GroupMapper } from '@app/infrastructure/dtos';
 
 export class GroupRepositoryImpl implements GroupRepository {
   public constructor(

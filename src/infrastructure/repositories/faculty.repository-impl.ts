@@ -1,11 +1,11 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
+import { Faculty, FacultyFilterOptions, PaginationOptions } from '@app/domain/entities';
+import { FacultyMapper } from '@app/infrastructure/dtos';
+import { FacultyRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { PaginationOptions, Faculty, FacultyFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { FacultyRepository } from '@app/domain/repositories';
-import { FacultyMapper } from '@app/infrastructure/dtos';
 
 export class FacultyRepositoryImpl implements FacultyRepository {
   public constructor(

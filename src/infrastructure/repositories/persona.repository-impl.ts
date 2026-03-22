@@ -3,9 +3,9 @@ import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import { PaginationOptions, Persona, PersonaFilterOptions } from '@app/domain/entities';
-import { SYMBOLS } from '@config';
-import { PersonaRepository } from '@app/domain/repositories';
 import { PersonaMapper } from '@app/infrastructure/dtos';
+import { PersonaRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
 
 export class PersonaRepositoryImpl implements PersonaRepository {
   public constructor(
@@ -35,20 +35,27 @@ export class PersonaRepositoryImpl implements PersonaRepository {
           'filters[name]': filterOptions?.name,
           'filters[priority]': filterOptions?.priority,
           'filters[description]': filterOptions?.description,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(PersonaMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const personasResponse = response.data.data.personas.map(PersonaMapper.fromDtoToDomain);
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([personasResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -69,7 +76,9 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         },
       });
 
-      return right(PersonaMapper.fromDtoToDomain(response.data.data));
+      const personaResponse = PersonaMapper.fromDtoToDomain(response.data.data.persona);
+
+      return right(personaResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -94,7 +103,9 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         },
       );
 
-      return right(PersonaMapper.fromDtoToDomain(response.data.data));
+      const personaResponse = PersonaMapper.fromDtoToDomain(response.data.data.persona);
+
+      return right(personaResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -120,7 +131,9 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         },
       );
 
-      return right(PersonaMapper.fromDtoToDomain(response.data.data));
+      const personaResponse = PersonaMapper.fromDtoToDomain(response.data.data.persona);
+
+      return right(personaResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -141,7 +154,9 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         },
       });
 
-      return right(PersonaMapper.fromDtoToDomain(response.data.data));
+      const personaResponse = PersonaMapper.fromDtoToDomain(response.data.data.persona);
+
+      return right(personaResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }

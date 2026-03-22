@@ -9,8 +9,8 @@ import {
   UserIncludeOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { UserRepository } from '@app/domain/repositories';
 import { UserMapper } from '@app/infrastructure/dtos';
+import { UserRepository } from '@app/domain/repositories';
 
 export class UserRepositoryImpl implements UserRepository {
   public constructor(

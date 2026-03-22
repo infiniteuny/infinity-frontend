@@ -3,14 +3,14 @@ import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
 import {
-  PaginationOptions,
   Major,
   MajorFilterOptions,
   MajorIncludeOptions,
+  PaginationOptions,
 } from '@app/domain/entities';
-import { SYMBOLS } from '@config';
-import { MajorRepository } from '@app/domain/repositories';
 import { MajorMapper } from '@app/infrastructure/dtos';
+import { MajorRepository } from '@app/domain/repositories';
+import { SYMBOLS } from '@config';
 
 export class MajorRepositoryImpl implements MajorRepository {
   public constructor(

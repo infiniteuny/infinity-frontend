@@ -1,15 +1,15 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
+import {
+  CompetitionOrganizerType,
+  CompetitionOrganizerTypeFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import { CompetitionOrganizerTypeMapper } from '@app/infrastructure/dtos';
+import { CompetitionOrganizerTypeRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  PaginationOptions,
-  CompetitionOrganizerType,
-  CompetitionOrganizerTypeFilterOptions,
-} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { CompetitionOrganizerTypeRepository } from '@app/domain/repositories';
-import { CompetitionOrganizerTypeMapper } from '@app/infrastructure/dtos';
 
 export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrganizerTypeRepository {
   public constructor(
@@ -38,20 +38,29 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
           'filters[weight]': filterOptions?.weight,
-          'filters[created_at][operator]': filterOptions?.createdAtOperator,
-          'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
-          'filters[updated_at][operator]': filterOptions?.updatedAtOperator,
-          'filters[updated_at][value]': filterOptions?.updatedAt?.toISOString(),
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
-      return right([
-        response.data.data.map(CompetitionOrganizerTypeMapper.fromDtoToDomain),
-        {
-          perPage: response.data.meta.per_page,
-          cursor: response.data.meta.next_cursor,
-        },
-      ]);
+      const competitionOrganizerTypesResponse = response.data.data.competition_organizer_types.map(
+        CompetitionOrganizerTypeMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([competitionOrganizerTypesResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -72,7 +81,11 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         },
       });
 
-      return right(CompetitionOrganizerTypeMapper.fromDtoToDomain(response.data.data));
+      const competitionOrganizerTypeResponse = CompetitionOrganizerTypeMapper.fromDtoToDomain(
+        response.data.data.competition_organizer_type,
+      );
+
+      return right(competitionOrganizerTypeResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -97,7 +110,11 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         },
       );
 
-      return right(CompetitionOrganizerTypeMapper.fromDtoToDomain(response.data.data));
+      const competitionOrganizerTypeResponse = CompetitionOrganizerTypeMapper.fromDtoToDomain(
+        response.data.data.competition_organizer_type,
+      );
+
+      return right(competitionOrganizerTypeResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -125,7 +142,11 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         },
       );
 
-      return right(CompetitionOrganizerTypeMapper.fromDtoToDomain(response.data.data));
+      const competitionOrganizerTypeResponse = CompetitionOrganizerTypeMapper.fromDtoToDomain(
+        response.data.data.competition_organizer_type,
+      );
+
+      return right(competitionOrganizerTypeResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -149,7 +170,11 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         },
       );
 
-      return right(CompetitionOrganizerTypeMapper.fromDtoToDomain(response.data.data));
+      const competitionOrganizerTypeResponse = CompetitionOrganizerTypeMapper.fromDtoToDomain(
+        response.data.data.competition_organizer_type,
+      );
+
+      return right(competitionOrganizerTypeResponse);
     } catch (error) {
       return left(handleAxiosError(error));
     }
