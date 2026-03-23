@@ -35,14 +35,6 @@ export function GeneralView({ communityGroupAdmin }: Props) {
               {communityGroupAdmin.isActive ? 'Yes' : 'No'}
             </Typography>
           </Grid>
-          <Grid size={12}>
-            <Typography variant="body1" component="p" className="font-medium">
-              Group
-            </Typography>
-            <Typography variant="body2" component="p">
-              {communityGroupAdmin.group?.name ?? 'N/A'}
-            </Typography>
-          </Grid>
         </Grid>
       </Container>
     </Box>

@@ -35,14 +35,6 @@ export function GeneralView({ coreTeam }: Props) {
               {coreTeam.isActive ? 'Yes' : 'No'}
             </Typography>
           </Grid>
-          <Grid size={12}>
-            <Typography variant="body1" component="p" className="font-medium">
-              Group
-            </Typography>
-            <Typography variant="body2" component="p">
-              {coreTeam.group?.name ?? 'N/A'}
-            </Typography>
-          </Grid>
         </Grid>
       </Container>
     </Box>
