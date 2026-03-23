@@ -101,6 +101,7 @@ import {
   UpdateProjectGallery,
   UpdateTeam,
   UpdateTestimonial,
+  GetCompetitionTeamTypes,
 } from '@app/application';
 import { SYMBOLS } from '@config';
 
@@ -129,6 +130,9 @@ serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer
+  .bind<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes)
+  .to(GetCompetitionTeamTypes);
 serverContainer.bind<GetCoreTeam>(SYMBOLS.GetCoreTeam).to(GetCoreTeam);
 serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 serverContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);

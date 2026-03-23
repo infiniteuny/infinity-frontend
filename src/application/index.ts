@@ -14,6 +14,7 @@ export * from './get-achievements';
 export * from './get-community-group-admin';
 export * from './get-community-group-admins';
 export * from './get-community-groups';
+export * from './get-competition-team-types';
 export * from './get-core-team';
 export * from './get-faculties';
 export * from './get-fund-application';

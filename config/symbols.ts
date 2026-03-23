@@ -16,6 +16,7 @@ export const SYMBOLS = {
   GetCommunityGroupAdmin: Symbol.for('GetCommunityGroupAdmin'),
   GetCommunityGroupAdmins: Symbol.for('GetCommunityGroupAdmins'),
   GetCommunityGroups: Symbol.for('GetCommunityGroups'),
+  GetCompetitionTeamTypes: Symbol.for('GetCompetitionTeamTypes'),
   GetCoreTeam: Symbol.for('GetCoreTeam'),
   GetCoreTeams: Symbol.for('GetCoreTeams'),
   GetSession: Symbol.for('GetSession'),
