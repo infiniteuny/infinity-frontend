@@ -45,6 +45,12 @@ export function GeneralForm({
       };
     }
 
+    if (typeof selectedPhoto === 'string' && selectedPhoto.trim().length > 0) {
+      setPreviewUrl(selectedPhoto);
+
+      return;
+    }
+
     setPreviewUrl(null);
   }, [selectedPhoto]);
 
@@ -260,11 +266,13 @@ export function GeneralForm({
                               color="onSurfaceVariant.main"
                               className="font-semibold"
                             >
-                              {selectedPhoto?.name}
+                              {selectedPhoto instanceof File ? selectedPhoto.name : 'Current photo'}
                             </Typography>
-                            <Typography variant="body2" color="onSurfaceVariant.main">
-                              Size: {formatBytes(selectedPhoto?.size ?? 0)}
-                            </Typography>
+                            {selectedPhoto instanceof File ? (
+                              <Typography variant="body2" color="onSurfaceVariant.main">
+                                Size: {formatBytes(selectedPhoto.size)}
+                              </Typography>
+                            ) : null}
                           </Box>
                           <IconButton disabled={isSubmitting} onClick={() => onChange(null)}>
                             <DeleteRounded />

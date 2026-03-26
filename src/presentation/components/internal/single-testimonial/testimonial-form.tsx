@@ -15,24 +15,18 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const testimonialInputSchema = z
-  .object({
-    _new: z.boolean(),
-    name: z.string().min(1, 'Name must not be empty'),
-    position: z.string().min(1, 'Position must not be empty'),
-    photo: z.optional(
-      z
-        .file('Photo must not be empty')
-        .max(5120 * 1024, 'Photo must be less than 5MB')
-        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file'),
-    ),
-    content: z.string().min(1, 'Content must not be empty'),
-  })
-  .refine((data) => data.photo || !data._new, {
-    message: 'Photo must not be empty',
-    path: ['photo'],
-    when: () => true,
-  });
+const testimonialInputSchema = z.object({
+  name: z.string().min(1, 'Name must not be empty'),
+  position: z.string().min(1, 'Position must not be empty'),
+  photo: z.union([
+    z
+      .file('Photo must not be empty')
+      .max(5120 * 1024, 'Photo must be less than 5MB')
+      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file'),
+    z.string(),
+  ]),
+  content: z.string().min(1, 'Content must not be empty'),
+});
 
 export type TestimonialInput = z.infer<typeof testimonialInputSchema>;
 
@@ -62,11 +56,8 @@ export function TestimonialForm({ initialTestimonial }: Props) {
     defaultValues: testimonial
       ? {
           ...testimonial,
-          _new: false,
-          photo: undefined,
         }
       : {
-          _new: true,
           name: '',
           position: '',
           photo: undefined,

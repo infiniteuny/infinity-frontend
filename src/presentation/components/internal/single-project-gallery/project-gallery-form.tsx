@@ -15,24 +15,19 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ProjectGalleryToolbar } from './project-gallery-toolbar';
 
-const projectGalleryInputSchema = z
-  .object({
-    _new: z.boolean(),
-    title: z.string().min(1, 'Title must not be empty'),
-    description: z.string().min(1, 'Description must not be empty'),
-    url: z.url({ protocol: /^https$/, error: 'URL must be a valid HTTPS URL' }),
-    image: z.optional(
-      z
-        .file('Image must not be empty')
-        .max(5120 * 1024, 'Image must be less than 5MB')
-        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Image must be a PNG, JPEG, or WebP file'),
-    ),
-  })
-  .refine((data) => data.image || !data._new, {
-    message: 'Image must not be empty',
-    path: ['image'],
-    when: () => true,
-  });
+const projectGalleryInputSchema = z.object({
+  title: z.string().min(1, 'Title must not be empty'),
+  description: z.string().min(1, 'Description must not be empty'),
+  url: z.url({ protocol: /^https$/, error: 'URL must be a valid HTTPS URL' }),
+  image: z.union([
+    z
+      .file('Image must not be empty')
+      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Image must be a PNG, JPEG, or WebP file')
+      .max(5120 * 1024, 'Image must be less than 5MB'),
+    z.string(),
+  ]),
+});
+
 export type ProjectGalleryInput = z.infer<typeof projectGalleryInputSchema>;
 
 type Props = {
@@ -61,11 +56,8 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
     defaultValues: projectGallery
       ? {
           ...projectGallery,
-          _new: false,
-          image: undefined,
         }
       : {
-          _new: true,
           title: '',
           description: '',
           url: '',
