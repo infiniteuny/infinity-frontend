@@ -38,10 +38,10 @@ export function GeneralForm({
   majors,
 }: Props) {
   const getMajors = useMemo(() => clientContainer.get<GetMajors>(SYMBOLS.GetMajors), []);
-  const parsedFaculties = faculties.map(FacultyMapper.fromDtoToDomain);
-  const [parsedMajors, setParsedMajors] = useState(
-    majors ? majors.map(MajorMapper.fromDtoToDomain) : [],
-  );
+  const parsedFaculties = useMemo(() => faculties.map(FacultyMapper.fromDtoToDomain), [faculties]);
+  const parsedMajors = useMemo(() => majors?.map(MajorMapper.fromDtoToDomain) ?? [], [majors]);
+
+  const [majorOptions, setMajorOptions] = useState(majors ? parsedMajors : []);
   const [majorDisabled, setMajorDisabled] = useState(false);
   const selectedFaculty = useWatch({ name: 'facultyId', control });
   const handleFacultyChange = useCallback(
@@ -53,13 +53,13 @@ export function GeneralForm({
       match(majorsResult, {
         onLeft: (error) => {
           console.error(error);
-          setParsedMajors([]);
+          setMajorOptions([]);
         },
         onRight: (data) => {
           if (!data[0].find((major) => major.id === getValues('majorId'))) {
             setValue('majorId', '0');
           }
-          setParsedMajors(data[0]);
+          setMajorOptions(data[0]);
         },
       });
 
@@ -165,13 +165,13 @@ export function GeneralForm({
                 control={control}
                 defaultValue={'0'}
                 render={({ field }) => (
-                  <Select labelId="majorId-label" label="Major" error={!!errors.majorId} {...field}>
-                    {parsedMajors.length > 0 ? (
+                  <Select {...field} labelId="majorId-label" label="Major" error={!!errors.majorId}>
+                    {majorOptions.length > 0 ? (
                       [
                         <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                           Select major
                         </MenuItem>,
-                        ...parsedMajors.map((major) => (
+                        ...majorOptions.map((major) => (
                           <MenuItem key={major.id} value={major.id}>
                             {major.degree?.name} - {major.name}
                           </MenuItem>
