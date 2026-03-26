@@ -89,6 +89,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('name')}
               id="name"
               label="Name"
               fullWidth
@@ -96,11 +97,11 @@ export function GeneralForm({
               helperText={errors.name?.message}
               error={!!errors.name}
               disabled={isSubmitting}
-              {...register('name')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('username')}
               id="username"
               label="Username"
               fullWidth
@@ -108,11 +109,11 @@ export function GeneralForm({
               helperText={errors.username?.message}
               error={!!errors.username}
               disabled={isSubmitting}
-              {...register('username')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('studentId')}
               id="studentId"
               label="Student ID"
               fullWidth
@@ -120,7 +121,6 @@ export function GeneralForm({
               helperText={errors.studentId?.message}
               error={!!errors.studentId}
               disabled={isSubmitting}
-              {...register('studentId')}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -134,10 +134,10 @@ export function GeneralForm({
                 defaultValue={'0'}
                 render={({ field }) => (
                   <Select
+                    {...field}
                     labelId="facultyId-label"
                     label="Faculty"
                     error={!!errors.facultyId}
-                    {...field}
                   >
                     <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select faculty

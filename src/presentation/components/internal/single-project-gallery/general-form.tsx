@@ -63,6 +63,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('title')}
               id="title"
               label="Title"
               fullWidth
@@ -70,11 +71,11 @@ export function GeneralForm({
               helperText={errors.title?.message}
               error={!!errors.title}
               disabled={isSubmitting}
-              {...register('title')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('description')}
               id="description"
               label="Description"
               fullWidth
@@ -84,11 +85,11 @@ export function GeneralForm({
               helperText={errors.description?.message}
               error={!!errors.description}
               disabled={isSubmitting}
-              {...register('description')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('url')}
               id="url"
               label="Project URL"
               fullWidth
@@ -97,7 +98,6 @@ export function GeneralForm({
               helperText={errors.url?.message}
               error={!!errors.url}
               disabled={isSubmitting}
-              {...register('url')}
             />
           </Grid>
           <Grid size={12}>
@@ -212,6 +212,7 @@ export function GeneralForm({
                         Allowed file types: PNG, JPEG, or WebP. Allowed size: up to 5MB.
                       </Typography>
                       <Input
+                        {...field}
                         id="image"
                         type="file"
                         inputProps={{
@@ -230,7 +231,6 @@ export function GeneralForm({
                         }}
                         sx={visuallyHidden}
                         className="pointer-events-none"
-                        {...field}
                       />
                     </Box>
                     {previewUrl ? (

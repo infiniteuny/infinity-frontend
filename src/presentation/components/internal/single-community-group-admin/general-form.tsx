@@ -41,6 +41,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('year', { valueAsNumber: true })}
               id="year"
               label="Year"
               fullWidth
@@ -48,7 +49,6 @@ export function GeneralForm({
               helperText={errors.year?.message}
               error={!!errors.year}
               disabled={isSubmitting}
-              {...register('year', { valueAsNumber: true })}
             />
           </Grid>
           <Grid size={12}>
@@ -61,7 +61,7 @@ export function GeneralForm({
                 control={control}
                 defaultValue={false}
                 render={({ field: { onChange, ...field } }) => (
-                  <RadioGroup row onChange={(e) => onChange(e.target.value === 'true')} {...field}>
+                  <RadioGroup {...field} row onChange={(e) => onChange(e.target.value === 'true')}>
                     <FormControlLabel value={true} control={<Radio />} label="Yes" />
                     <FormControlLabel value={false} control={<Radio />} label="No" />
                   </RadioGroup>

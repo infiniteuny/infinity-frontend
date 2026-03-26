@@ -63,6 +63,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('name')}
               id="name"
               label="Name"
               fullWidth
@@ -70,11 +71,11 @@ export function GeneralForm({
               helperText={errors.name?.message}
               error={!!errors.name}
               disabled={isSubmitting}
-              {...register('name')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('position')}
               id="position"
               label="Position"
               fullWidth
@@ -82,11 +83,11 @@ export function GeneralForm({
               helperText={errors.position?.message}
               error={!!errors.position}
               disabled={isSubmitting}
-              {...register('position')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('content')}
               id="content"
               label="Content"
               fullWidth
@@ -96,7 +97,6 @@ export function GeneralForm({
               helperText={errors.content?.message}
               error={!!errors.content}
               disabled={isSubmitting}
-              {...register('content')}
             />
           </Grid>
 
@@ -212,6 +212,7 @@ export function GeneralForm({
                         Allowed file types: PNG, JPEG, or WebP. Allowed size: up to 5MB.
                       </Typography>
                       <Input
+                        {...field}
                         id="photo"
                         type="file"
                         inputProps={{
@@ -230,7 +231,6 @@ export function GeneralForm({
                         }}
                         sx={visuallyHidden}
                         className="pointer-events-none"
-                        {...field}
                       />
                     </Box>
                     {previewUrl ? (

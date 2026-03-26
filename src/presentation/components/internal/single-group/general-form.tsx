@@ -40,6 +40,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('name')}
               id="name"
               label="Name"
               fullWidth
@@ -47,7 +48,6 @@ export function GeneralForm({
               helperText={errors.name?.message}
               error={!!errors.name}
               disabled={isSubmitting}
-              {...register('name')}
             />
           </Grid>
           <Grid size={12}>
@@ -61,10 +61,10 @@ export function GeneralForm({
                 defaultValue={'api'}
                 render={({ field }) => (
                   <Select
+                    {...field}
                     labelId="guardName-label"
                     label="Guard Name"
                     error={!!errors.guardName}
-                    {...field}
                   >
                     <MenuItem key="api" value="api">
                       api

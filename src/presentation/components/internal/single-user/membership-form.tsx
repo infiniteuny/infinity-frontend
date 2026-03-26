@@ -109,7 +109,7 @@ export function MembershipForm({
                 control={control}
                 defaultValue={false}
                 render={({ field: { onChange, ...field } }) => (
-                  <RadioGroup row onChange={(e) => onChange(e.target.value === 'true')} {...field}>
+                  <RadioGroup {...field} row onChange={(e) => onChange(e.target.value === 'true')}>
                     <FormControlLabel value={true} control={<Radio />} label="Yes" />
                     <FormControlLabel value={false} control={<Radio />} label="No" />
                   </RadioGroup>

@@ -27,6 +27,7 @@ export function ContactsForm({
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
+              {...register('emailAddress')}
               id="emailAddress"
               label="Email Address"
               fullWidth
@@ -34,11 +35,11 @@ export function ContactsForm({
               helperText={errors.emailAddress?.message}
               error={!!errors.emailAddress}
               disabled={isSubmitting}
-              {...register('emailAddress')}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
+              {...register('phoneNumber')}
               id="phoneNumber"
               label="Phone Number"
               fullWidth
@@ -47,7 +48,6 @@ export function ContactsForm({
               helperText={errors.phoneNumber?.message}
               error={!!errors.phoneNumber}
               disabled={isSubmitting}
-              {...register('phoneNumber')}
             />
           </Grid>
         </Grid>

@@ -109,6 +109,7 @@ export function GeneralForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <TextField
+              {...register('name')}
               id="name"
               label="Name"
               fullWidth
@@ -116,7 +117,6 @@ export function GeneralForm({
               helperText={errors.name?.message}
               error={!!errors.name}
               disabled={isSubmitting}
-              {...register('name')}
             />
           </Grid>
           <Grid size={12}>
@@ -168,10 +168,10 @@ export function GeneralForm({
                 defaultValue={'0'}
                 render={({ field }) => (
                   <Select
+                    {...field}
                     labelId="teamTypeId-label"
                     label="teamTypeId"
                     error={!!errors.teamTypeId}
-                    {...field}
                   >
                     <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select team type
@@ -199,7 +199,7 @@ export function GeneralForm({
                 control={control}
                 defaultValue={false}
                 render={({ field: { onChange, ...field } }) => (
-                  <RadioGroup row onChange={(e) => onChange(e.target.value === 'true')} {...field}>
+                  <RadioGroup {...field} row onChange={(e) => onChange(e.target.value === 'true')}>
                     <FormControlLabel value={true} control={<Radio />} label="Yes" />
                     <FormControlLabel value={false} control={<Radio />} label="No" />
                   </RadioGroup>
