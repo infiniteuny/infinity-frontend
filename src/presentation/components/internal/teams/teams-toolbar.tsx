@@ -13,7 +13,7 @@ export function TeamsToolbar() {
         href="/teams/new"
         startIcon={<AddRounded />}
       >
-        Add team
+        Add
       </Button>
     </Box>
   );

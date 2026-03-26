@@ -13,7 +13,7 @@ export function FundApplicationsToolbar() {
         href="/fund-applications/new"
         startIcon={<AddRounded />}
       >
-        Add fund application
+        Add
       </Button>
     </Box>
   );

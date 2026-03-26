@@ -13,7 +13,7 @@ export function TestimonialsToolbar() {
         href="/testimonials/new"
         startIcon={<AddRounded />}
       >
-        Add testimonial
+        Add
       </Button>
     </Box>
   );

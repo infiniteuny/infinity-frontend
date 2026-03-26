@@ -13,7 +13,7 @@ export function AchievementsToolbar() {
         href="/achievements/new"
         startIcon={<AddRounded />}
       >
-        Add achievement
+        Add
       </Button>
     </Box>
   );

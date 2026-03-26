@@ -13,7 +13,7 @@ export function CoreTeamsToolbar() {
         href="/core-teams/new"
         startIcon={<AddRounded />}
       >
-        Add core team
+        Add
       </Button>
     </Box>
   );

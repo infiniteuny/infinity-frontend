@@ -31,7 +31,7 @@ export function UserToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormProp
           href={`/users/${userId}/edit`}
           startIcon={<EditRounded />}
         >
-          Edit user
+          Edit
         </Button>
       </Box>
     );
@@ -58,7 +58,7 @@ export function UserToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormProp
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}
         >
-          Save user
+          Save
         </Button>
       </Box>
     );

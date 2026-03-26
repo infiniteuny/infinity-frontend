@@ -31,7 +31,7 @@ export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewPro
           href={`/permissions/${permissionId}/edit`}
           startIcon={<EditRounded />}
         >
-          Edit permission
+          Edit
         </Button>
       </Box>
     );
@@ -58,7 +58,7 @@ export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewPro
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}
         >
-          Save permission
+          Save
         </Button>
       </Box>
     );

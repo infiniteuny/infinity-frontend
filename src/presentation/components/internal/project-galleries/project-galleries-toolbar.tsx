@@ -13,7 +13,7 @@ export function ProjectGalleriesToolbar() {
         href="/project-galleries/new"
         startIcon={<AddRounded />}
       >
-        Add project gallery
+        Add
       </Button>
     </Box>
   );

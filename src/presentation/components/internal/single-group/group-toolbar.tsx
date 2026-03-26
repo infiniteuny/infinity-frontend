@@ -31,7 +31,7 @@ export function GroupToolbar({ groupId, ref, methods }: OneOf<[ViewProps, FormPr
           href={`/groups/${groupId}/edit`}
           startIcon={<EditRounded />}
         >
-          Edit group
+          Edit
         </Button>
       </Box>
     );
@@ -58,7 +58,7 @@ export function GroupToolbar({ groupId, ref, methods }: OneOf<[ViewProps, FormPr
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}
         >
-          Save group
+          Save
         </Button>
       </Box>
     );

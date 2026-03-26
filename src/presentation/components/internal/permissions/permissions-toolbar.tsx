@@ -13,7 +13,7 @@ export function PermissionsToolbar() {
         href="/permissions/new"
         startIcon={<AddRounded />}
       >
-        Add permission
+        Add
       </Button>
     </Box>
   );

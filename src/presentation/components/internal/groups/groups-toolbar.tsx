@@ -13,7 +13,7 @@ export function GroupsToolbar() {
         href="/groups/new"
         startIcon={<AddRounded />}
       >
-        Add group
+        Add
       </Button>
     </Box>
   );

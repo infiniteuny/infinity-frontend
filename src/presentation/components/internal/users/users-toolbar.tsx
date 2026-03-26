@@ -13,7 +13,7 @@ export function UsersToolbar() {
         href="/users/new"
         startIcon={<AddRounded />}
       >
-        Add user
+        Add
       </Button>
     </Box>
   );

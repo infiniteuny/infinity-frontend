@@ -8,12 +8,12 @@ export function CommunityGroupAdminsToolbar() {
       <Button
         variant="filled"
         className="ml-4"
-        aria-label="Add community group admin"
+        aria-label="Add community group administrator"
         LinkComponent={Link}
         href="/community-group-admins/new"
         startIcon={<AddRounded />}
       >
-        Add community group admin
+        Add
       </Button>
     </Box>
   );
