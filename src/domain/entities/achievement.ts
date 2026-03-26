@@ -64,7 +64,7 @@ export class Achievement {
   public competitionStartDate: Date;
   public competitionEndDate: Date;
   public description: string;
-  public image: string;
+  public image: string | File;
   public status: 'PENDING' | 'REJECTED' | 'ACCEPTED';
   public createdAt: Date;
   public updatedAt: Date;
@@ -87,7 +87,7 @@ export class Achievement {
     competitionStartDate: Date,
     competitionEndDate: Date,
     description: string,
-    image: string,
+    image: string | File,
     status: 'PENDING' | 'REJECTED' | 'ACCEPTED',
     createdAt: Date,
     updatedAt: Date,

@@ -11,7 +11,6 @@ export interface AchievementDto {
   id: string;
   team_id: string;
   competition_id: string;
-  competition_team_type_id: string;
   competition_scale_id: string;
   competition_time_range_id: string;
   competition_output_id: string;
@@ -20,7 +19,7 @@ export interface AchievementDto {
   competition_start_date: string;
   competition_end_date: string;
   description: string;
-  image: string;
+  image: string | File;
   status: 'PENDING' | 'REJECTED' | 'ACCEPTED';
   created_at: string;
   updated_at: string;
@@ -43,8 +42,8 @@ export class AchievementMapper {
       competition_output_id: achievement.competitionOutputId,
       competition_rank_id: achievement.competitionRankId,
       competition_branch: achievement.competitionBranch,
-      competition_start_date: achievement.competitionStartDate?.toISOString().split('T')[0],
-      competition_end_date: achievement.competitionEndDate?.toISOString().split('T')[0],
+      competition_start_date: achievement.competitionStartDate?.toISOString(),
+      competition_end_date: achievement.competitionEndDate?.toISOString(),
       description: achievement.description,
       image: achievement.image,
       status: achievement.status,
