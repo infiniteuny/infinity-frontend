@@ -134,9 +134,14 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
+
+      const response = await this.infinityApiDataSource.postForm(
         '/achievements',
-        AchievementMapper.fromDomaintoDto(achievement),
+        {
+          ...achievementDto,
+          image: achievementDto.image instanceof File ? (achievementDto.image as File) : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -175,9 +180,14 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
+
+      const response = await this.infinityApiDataSource.putForm(
         `/achievements/${id}`,
-        AchievementMapper.fromDomaintoDto(achievement),
+        {
+          ...achievementDto,
+          image: achievementDto.image instanceof File ? (achievementDto.image as File) : undefined,
+        },
         {
           signal: abortSignal,
           headers: {

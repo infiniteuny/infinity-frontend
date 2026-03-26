@@ -124,9 +124,21 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
+
+      const response = await this.infinityApiDataSource.postForm(
         '/fund-applications',
-        FundApplicationMapper.fromDomaintoDto(fundApplication),
+        {
+          ...fundApplicationDto,
+          letter_of_acceptance:
+            fundApplicationDto.letter_of_acceptance instanceof File
+              ? (fundApplicationDto.letter_of_acceptance as File)
+              : undefined,
+          proposal:
+            fundApplicationDto.proposal instanceof File
+              ? (fundApplicationDto.proposal as File)
+              : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -159,9 +171,21 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
+
+      const response = await this.infinityApiDataSource.putForm(
         `/fund-applications/${id}`,
-        FundApplicationMapper.fromDomaintoDto(fundApplication),
+        {
+          ...fundApplicationDto,
+          letter_of_acceptance:
+            fundApplicationDto.letter_of_acceptance instanceof File
+              ? (fundApplicationDto.letter_of_acceptance as File)
+              : undefined,
+          proposal:
+            fundApplicationDto.proposal instanceof File
+              ? (fundApplicationDto.proposal as File)
+              : undefined,
+        },
         {
           signal: abortSignal,
           headers: {

@@ -91,9 +91,14 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
     authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
     try {
+      const testimonialDto = TestimonialMapper.fromDomaintoDto(testimonial);
+
       const response = await this.infinityApiDataSource.postForm(
         '/testimonials',
-        TestimonialMapper.fromDomaintoDto(testimonial),
+        {
+          ...testimonialDto,
+          photo: testimonialDto.photo instanceof File ? testimonialDto.photo : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -125,7 +130,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
         `/testimonials/${id}`,
         {
           ...testimonialDto,
-          photo: testimonialDto.photo ?? undefined,
+          photo: testimonialDto.photo instanceof File ? testimonialDto.photo : undefined,
         },
         {
           signal: abortSignal,
