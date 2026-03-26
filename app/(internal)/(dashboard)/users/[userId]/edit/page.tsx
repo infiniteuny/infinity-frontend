@@ -24,15 +24,17 @@ export default async function SingleUserEditPage({ params }: Props) {
   const getMajors = serverContainer.get<GetMajors>(SYMBOLS.GetMajors);
   const userId = (await params).userId;
 
-  const userResult = await getUser.execute(userId, ['major', 'major.faculty']);
+  const [facultiesResult, userResult] = await Promise.all([
+    getFaculties.execute(undefined, { perPage: 100 }),
+    getUser.execute(userId, ['major', 'major.faculty']),
+  ]);
+
   const user = match(userResult, {
     onLeft: (error) => {
       throw error;
     },
     onRight: (data) => data,
   });
-
-  const facultiesResult = await getFaculties.execute(undefined, { perPage: 100 });
   const [faculties] = match(facultiesResult, {
     onLeft: (error) => {
       throw error;
