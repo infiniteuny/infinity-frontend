@@ -43,10 +43,10 @@ export function MembershipForm({
             <Controller
               name="startDate"
               control={control}
-              disabled={isSubmitting}
               render={({ field }) => (
                 <DatePicker
                   {...field}
+                  disabled={isSubmitting}
                   label="Start Date"
                   format="dd/LL/yyyy"
                   timezone="UTC"
@@ -73,10 +73,10 @@ export function MembershipForm({
             <Controller
               name="endDate"
               control={control}
-              disabled={isSubmitting}
               render={({ field }) => (
                 <DatePicker
                   {...field}
+                  disabled={isSubmitting}
                   label="End Date"
                   format="dd/LL/yyyy"
                   timezone="UTC"
