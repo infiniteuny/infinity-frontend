@@ -52,36 +52,59 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     );
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
+    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
+    const normalizedPaginationModel = isPageSizeChanged
+      ? { ...newPaginationModel, page: 0 }
+      : newPaginationModel;
+
     setIsLoading(true);
 
     let cursor: string | undefined;
-    if (newPaginationModel.page > paginationModel.page && paginationOptions.nextCursor) {
+    if (isPageSizeChanged) {
+      cursor = undefined;
+    } else if (
+      normalizedPaginationModel.page > paginationModel.page &&
+      paginationOptions.nextCursor
+    ) {
       cursor = paginationOptions.nextCursor;
-    } else if (newPaginationModel.page < paginationModel.page && paginationOptions.previousCursor) {
+    } else if (
+      normalizedPaginationModel.page < paginationModel.page &&
+      paginationOptions.previousCursor
+    ) {
       cursor = paginationOptions.previousCursor;
     } else {
       cursor = paginationOptions.cursor;
     }
 
-    const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
-
     try {
-      const result = await getCoreTeams.execute(undefined, newPaginationOptions);
+      const result = await getCoreTeams.execute(undefined, {
+        perPage: normalizedPaginationModel.pageSize,
+        cursor,
+      });
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
-          setRows(newRows);
-          setPaginationOptions(nextPaginationOptions);
-          setPaginationMeta({ hasNextPage: Boolean(nextPaginationOptions.nextCursor) });
+          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
 
           let page;
-          if (newPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
+          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
             page = 1;
+          } else if (
+            normalizedPaginationModel.page < paginationModel.page &&
+            !nextPaginationOptions.previousCursor
+          ) {
+            page = 0;
           } else {
-            page = newPaginationModel.page;
+            page = normalizedPaginationModel.page;
           }
 
-          setPaginationModel({ page, pageSize: newPaginationModel.pageSize });
+          setRows(newRows);
+          setRowCount(
+            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
+          );
+          setPaginationMeta({ hasNextPage });
+          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
+          setPaginationOptions(nextPaginationOptions);
         },
         onLeft: (error) => {
           throw error;
@@ -121,11 +144,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
                 flex: 1,
               },
               {
-                field: 'group',
-                headerName: 'Group',
-                flex: 1,
-              },
-              {
                 field: 'isActive',
                 headerName: 'Active',
                 type: 'boolean',
@@ -135,7 +153,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
             rows={rows.map((coreTeam) => ({
               id: coreTeam.id,
               year: coreTeam.year,
-              group: coreTeam.group?.name || 'N/A',
               isActive: coreTeam.isActive,
             }))}
             slots={{
@@ -158,7 +175,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
             rowCount={rowCount}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
-            onRowCountChange={setRowCount}
             onPaginationModelChange={handlePaginationModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick

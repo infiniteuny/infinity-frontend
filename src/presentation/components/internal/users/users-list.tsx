@@ -52,62 +52,67 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     );
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
+    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
+    const normalizedPaginationModel = isPageSizeChanged
+      ? { ...newPaginationModel, page: 0 }
+      : newPaginationModel;
+
     setIsLoading(true);
 
     let cursor: string | undefined;
-    if (newPaginationModel.page > paginationModel.page && paginationOptions.nextCursor) {
+    if (isPageSizeChanged) {
+      cursor = undefined;
+    } else if (
+      normalizedPaginationModel.page > paginationModel.page &&
+      paginationOptions.nextCursor
+    ) {
       cursor = paginationOptions.nextCursor;
-    } else if (newPaginationModel.page < paginationModel.page && paginationOptions.previousCursor) {
+    } else if (
+      normalizedPaginationModel.page < paginationModel.page &&
+      paginationOptions.previousCursor
+    ) {
       cursor = paginationOptions.previousCursor;
     } else {
       cursor = paginationOptions.cursor;
     }
 
-    const newPaginationOptions = new PaginationOptions(newPaginationModel.pageSize, cursor);
-
     try {
-      await fetchUsers(newPaginationOptions, newPaginationModel);
-    } catch (error) {
-      console.error('Error fetching users:', error);
+      const result = await getUsers.execute(['major', 'major.faculty'], undefined, {
+        perPage: normalizedPaginationModel.pageSize,
+        cursor,
+      });
+
+      match(result, {
+        onRight: ([newRows, nextPaginationOptions]) => {
+          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
+
+          let page;
+          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
+            page = 1;
+          } else if (
+            normalizedPaginationModel.page < paginationModel.page &&
+            !nextPaginationOptions.previousCursor
+          ) {
+            page = 0;
+          } else {
+            page = normalizedPaginationModel.page;
+          }
+
+          setRows(newRows);
+          setRowCount(
+            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
+          );
+          setPaginationMeta({ hasNextPage });
+          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
+          setPaginationOptions(nextPaginationOptions);
+        },
+        onLeft: (error) => {
+          throw error;
+        },
+      });
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fetchUsers = async (
-    paginationOptions: PaginationOptions,
-    newPaginationModel?: GridPaginationModel,
-  ): Promise<void> => {
-    const result = await getUsers.execute(['major', 'major.faculty'], undefined, paginationOptions);
-
-    return match(result, {
-      onRight: ([users, newPaginationOptions]) => {
-        setRows(users);
-        setPaginationOptions(newPaginationOptions);
-        setPaginationMeta({
-          hasNextPage: Boolean(newPaginationOptions.nextCursor),
-        });
-
-        let page;
-        if (newPaginationModel?.page === 0 && newPaginationOptions.previousCursor) {
-          page = 1;
-        } else if (newPaginationModel) {
-          page = newPaginationModel.page;
-        } else if (paginationModel.page === 0 && newPaginationOptions.previousCursor) {
-          page = 1;
-        } else {
-          page = paginationModel.page;
-        }
-
-        setPaginationModel({
-          page,
-          pageSize: newPaginationModel?.pageSize || paginationModel.pageSize,
-        });
-      },
-      onLeft: (error) => {
-        throw error;
-      },
-    });
   };
 
   const handleRowClick = (params: GridRowParams) => {
@@ -251,7 +256,6 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             rowCount={rowCount}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
-            onRowCountChange={setRowCount}
             onPaginationModelChange={handlePaginationModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
