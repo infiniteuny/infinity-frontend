@@ -161,8 +161,10 @@ Entity filter options map to query parameters:
 ```typescript
 params: {
   'filters[field_name]': filterOptions?.fieldName,
-  'filters[created_at][operator]': filterOptions?.createdAtOperator,
-  'filters[created_at][value]': filterOptions?.createdAt?.toISOString(),
+  'filters[created_at]':
+    filterOptions?.createdAt != null
+      ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+      : undefined,
 }
 ```
 
