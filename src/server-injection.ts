@@ -72,6 +72,11 @@ import {
   GetCommunityGroupAdmin,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
+  GetCompetitions,
+  GetCompetitionOutputs,
+  GetCompetitionRanks,
+  GetCompetitionScales,
+  GetCompetitionTimeRanges,
   GetCoreTeam,
   GetCoreTeams,
   GetFaculties,
@@ -130,9 +135,18 @@ serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer.bind<GetCompetitions>(SYMBOLS.GetCompetitions).to(GetCompetitions);
+serverContainer
+  .bind<GetCompetitionOutputs>(SYMBOLS.GetCompetitionOutputs)
+  .to(GetCompetitionOutputs);
+serverContainer.bind<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks).to(GetCompetitionRanks);
+serverContainer.bind<GetCompetitionScales>(SYMBOLS.GetCompetitionScales).to(GetCompetitionScales);
 serverContainer
   .bind<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes)
   .to(GetCompetitionTeamTypes);
+serverContainer
+  .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
+  .to(GetCompetitionTimeRanges);
 serverContainer.bind<GetCoreTeam>(SYMBOLS.GetCoreTeam).to(GetCoreTeam);
 serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 serverContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
