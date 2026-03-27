@@ -42,8 +42,6 @@ export function GeneralForm({
     const query = teamInput.trim();
 
     if (query.length < 1) {
-      setTeamOptions([]);
-      setIsTeamLoading(false);
       return () => {
         active = false;
       };
@@ -102,6 +100,11 @@ export function GeneralForm({
                   inputValue={teamInput}
                   onInputChange={(_, value) => {
                     setTeamInput(value);
+
+                    if (value.trim().length < 1) {
+                      setTeamOptions([]);
+                      setIsTeamLoading(false);
+                    }
                   }}
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}

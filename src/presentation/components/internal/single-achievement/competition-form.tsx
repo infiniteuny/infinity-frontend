@@ -90,8 +90,6 @@ export function CompetitionForm({
     const query = competitionInput.trim();
 
     if (query.length < 1) {
-      setCompetitionOptions([]);
-      setIsCompetitionLoading(false);
       return () => {
         active = false;
       };
@@ -156,6 +154,11 @@ export function CompetitionForm({
                   inputValue={competitionInput}
                   onInputChange={(_, value) => {
                     setCompetitionInput(value);
+
+                    if (value.trim().length < 1) {
+                      setCompetitionOptions([]);
+                      setIsCompetitionLoading(false);
+                    }
                   }}
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}

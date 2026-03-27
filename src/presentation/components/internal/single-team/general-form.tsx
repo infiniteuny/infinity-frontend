@@ -62,8 +62,6 @@ export function GeneralForm({
     const query = leaderInput.trim();
 
     if (query.length < 1) {
-      setLeaderOptions([]);
-      setIsLeaderLoading(false);
       return () => {
         active = false;
       };
@@ -134,6 +132,11 @@ export function GeneralForm({
                   inputValue={leaderInput}
                   onInputChange={(_, value) => {
                     setLeaderInput(value);
+
+                    if (value.trim().length < 1) {
+                      setLeaderOptions([]);
+                      setIsLeaderLoading(false);
+                    }
                   }}
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
