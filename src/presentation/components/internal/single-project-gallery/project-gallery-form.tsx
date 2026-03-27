@@ -6,7 +6,7 @@ import { CreateProjectGallery, UpdateProjectGallery } from '@app/application';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { ProjectGalleryDto, ProjectGalleryMapper } from '@app/infrastructure/dtos';
-import { Resolver, useForm } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { useMemo, useRef } from 'react';
@@ -65,9 +65,9 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
         },
   });
 
-  const { handleSubmit: submit, watch, formState } = methods;
+  const { handleSubmit: submit, control, formState } = methods;
 
-  const name = watch('title');
+  const name = useWatch({ name: 'title', control });
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {

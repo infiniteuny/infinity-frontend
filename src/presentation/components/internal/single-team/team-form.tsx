@@ -5,7 +5,7 @@ import { clientContainer } from '@app/client-injection';
 import { CreateTeam, UpdateTeam } from '@app/application';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
-import { Resolver, useForm } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { CompetitionTeamTypeDto, TeamDto, TeamMapper } from '@app/infrastructure/dtos';
@@ -52,9 +52,9 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
         },
   });
 
-  const { handleSubmit: submit, watch, formState } = methods;
+  const { handleSubmit: submit, control, formState } = methods;
 
-  const name = watch('name');
+  const name = useWatch({ name: 'name', control });
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {

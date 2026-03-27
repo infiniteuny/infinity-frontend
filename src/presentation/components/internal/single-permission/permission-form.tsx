@@ -7,7 +7,7 @@ import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { PermissionDto, PermissionMapper } from '@app/infrastructure/dtos';
 import { PermissionToolbar } from './permission-toolbar';
-import { Resolver, useForm } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { useMemo, useRef } from 'react';
@@ -53,9 +53,9 @@ export function PermissionForm({ initialPermission }: Props) {
         },
   });
 
-  const { handleSubmit: submit, watch, formState } = methods;
+  const { handleSubmit: submit, control, formState } = methods;
 
-  const name = watch('name');
+  const name = useWatch({ name: 'name', control });
 
   const handleSubmit = submit(async (data) => {
     if (!formState.isDirty) {

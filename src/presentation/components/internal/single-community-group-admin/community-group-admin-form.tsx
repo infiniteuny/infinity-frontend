@@ -7,7 +7,7 @@ import { CommunityGroupAdminToolbar } from './community-group-admin-toolbar';
 import { CreateCommunityGroupAdmin, UpdateCommunityGroupAdmin } from '@app/application';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
-import { Resolver, useForm } from 'react-hook-form';
+import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { useMemo, useRef } from 'react';
@@ -68,9 +68,9 @@ export function CommunityGroupAdminForm({ initialCommunityGroupAdmin }: Props) {
         },
   });
 
-  const { handleSubmit: submit, watch, formState } = methods;
+  const { handleSubmit: submit, control, formState } = methods;
 
-  const name = watch('year');
+  const name = useWatch({ name: 'year', control });
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {
