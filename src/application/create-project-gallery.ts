@@ -12,9 +12,10 @@ export type CreateProjectGalleryParams = [
 ];
 
 @injectable()
-export class CreateProjectGallery
-  implements UseCase<Promise<Either<ProjectGallery, Error>>, CreateProjectGalleryParams>
-{
+export class CreateProjectGallery implements UseCase<
+  Promise<Either<ProjectGallery, Error>>,
+  CreateProjectGalleryParams
+> {
   private readonly projectGalleryRepository: ProjectGalleryRepository;
 
   public constructor(

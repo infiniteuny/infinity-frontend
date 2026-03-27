@@ -8,9 +8,10 @@ import { Testimonial } from '@app/domain/entities';
 export type GetTestimonialParams = [id: string, abortSignal?: AbortSignal, authenticate?: boolean];
 
 @injectable()
-export class GetTestimonial
-  implements UseCase<Promise<Either<Testimonial, Error>>, GetTestimonialParams>
-{
+export class GetTestimonial implements UseCase<
+  Promise<Either<Testimonial, Error>>,
+  GetTestimonialParams
+> {
   private readonly testimonialRepository: TestimonialRepository;
 
   public constructor(

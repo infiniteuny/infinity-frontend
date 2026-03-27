@@ -17,13 +17,10 @@ export type GetCompetitionTimeRangeParams = [
 ];
 
 @injectable()
-export class GetCompetitionTimeRanges
-  implements
-    UseCase<
-      Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>>,
-      GetCompetitionTimeRangeParams
-    >
-{
+export class GetCompetitionTimeRanges implements UseCase<
+  Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>>,
+  GetCompetitionTimeRangeParams
+> {
   private readonly competitionTimeRangeRepository: CompetitionTimeRangeRepository;
 
   public constructor(

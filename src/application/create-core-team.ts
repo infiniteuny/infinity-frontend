@@ -12,9 +12,10 @@ export type CreateCoreTeamParams = [
 ];
 
 @injectable()
-export class CreateCoreTeam
-  implements UseCase<Promise<Either<CoreTeam, Error>>, CreateCoreTeamParams>
-{
+export class CreateCoreTeam implements UseCase<
+  Promise<Either<CoreTeam, Error>>,
+  CreateCoreTeamParams
+> {
   private readonly coreTeamRepository: CoreTeamRepository;
 
   public constructor(

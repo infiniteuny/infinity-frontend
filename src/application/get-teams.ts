@@ -19,9 +19,10 @@ export type GetTeamsParams = [
 ];
 
 @injectable()
-export class GetTeams
-  implements UseCase<Promise<Either<[Team[], PaginationOptions], Error>>, GetTeamsParams>
-{
+export class GetTeams implements UseCase<
+  Promise<Either<[Team[], PaginationOptions], Error>>,
+  GetTeamsParams
+> {
   private readonly teamRepository: TeamRepository;
 
   public constructor(

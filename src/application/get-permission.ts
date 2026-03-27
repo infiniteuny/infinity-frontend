@@ -8,9 +8,10 @@ import { Permission } from '@app/domain/entities';
 export type GetPermissionParams = [id: string, abortSignal?: AbortSignal, authenticate?: boolean];
 
 @injectable()
-export class GetPermission
-  implements UseCase<Promise<Either<Permission, Error>>, GetPermissionParams>
-{
+export class GetPermission implements UseCase<
+  Promise<Either<Permission, Error>>,
+  GetPermissionParams
+> {
   private readonly permissionRepository: PermissionRepository;
 
   public constructor(

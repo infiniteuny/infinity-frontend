@@ -19,10 +19,10 @@ export type GetCompetitionsParams = [
 ];
 
 @injectable()
-export class GetCompetitions
-  implements
-    UseCase<Promise<Either<[Competition[], PaginationOptions], Error>>, GetCompetitionsParams>
-{
+export class GetCompetitions implements UseCase<
+  Promise<Either<[Competition[], PaginationOptions], Error>>,
+  GetCompetitionsParams
+> {
   private readonly competitionRepository: CompetitionRepository;
 
   public constructor(

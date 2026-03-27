@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { AddRounded } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';

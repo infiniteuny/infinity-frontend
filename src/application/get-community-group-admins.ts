@@ -17,13 +17,10 @@ export type GetCommunityGroupAdminsParams = [
 ];
 
 @injectable()
-export class GetCommunityGroupAdmins
-  implements
-    UseCase<
-      Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>>,
-      GetCommunityGroupAdminsParams
-    >
-{
+export class GetCommunityGroupAdmins implements UseCase<
+  Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>>,
+  GetCommunityGroupAdminsParams
+> {
   private readonly communityGroupAdminRepository: CommunityGroupAdminRepository;
 
   public constructor(

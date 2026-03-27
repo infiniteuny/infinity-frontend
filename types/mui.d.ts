@@ -1,6 +1,6 @@
 import { M3ColorTones } from '@app/utils/create-m3-theme';
 
-declare module '@mui/material/styles/createPalette' {
+declare module '@mui/material/styles' {
   interface PaletteOptions {
     primary?: PaletteColorOptions;
     onPrimary?: PaletteColorOptions;

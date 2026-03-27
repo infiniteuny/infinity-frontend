@@ -13,9 +13,10 @@ export type UpdatePermissionParams = [
 ];
 
 @injectable()
-export class UpdatePermission
-  implements UseCase<Promise<Either<Permission, Error>>, UpdatePermissionParams>
-{
+export class UpdatePermission implements UseCase<
+  Promise<Either<Permission, Error>>,
+  UpdatePermissionParams
+> {
   private readonly permissionRepository: PermissionRepository;
 
   public constructor(

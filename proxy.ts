@@ -5,7 +5,8 @@ import { SYMBOLS } from '@config';
 
 const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
 
-export default authDataSource.auth((req) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default authDataSource.auth((req: any) => {
   if ((!req.auth && req.nextUrl.pathname !== '/login') || req.auth?.error) {
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
 
@@ -14,6 +15,5 @@ export default authDataSource.auth((req) => {
 });
 
 export const config = {
-  runtime: 'nodejs',
   matcher: ['/((?!auth|login|logout|_next/static|_next/image|favicon.ico).*)'],
 };

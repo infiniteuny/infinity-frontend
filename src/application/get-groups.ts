@@ -13,9 +13,10 @@ export type GetGroupsParams = [
 ];
 
 @injectable()
-export class GetGroups
-  implements UseCase<Promise<Either<[Group[], PaginationOptions], Error>>, GetGroupsParams>
-{
+export class GetGroups implements UseCase<
+  Promise<Either<[Group[], PaginationOptions], Error>>,
+  GetGroupsParams
+> {
   private readonly groupRepository: GroupRepository;
 
   public constructor(

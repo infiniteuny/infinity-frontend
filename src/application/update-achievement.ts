@@ -26,9 +26,10 @@ export type UpdateAchievementParams = [
 ];
 
 @injectable()
-export class UpdateAchievement
-  implements UseCase<Promise<Either<Achievement, Error>>, UpdateAchievementParams>
-{
+export class UpdateAchievement implements UseCase<
+  Promise<Either<Achievement, Error>>,
+  UpdateAchievementParams
+> {
   private readonly achievementRepository: AchievementRepository;
 
   public constructor(

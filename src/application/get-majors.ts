@@ -19,9 +19,10 @@ export type GetMajorsParams = [
 ];
 
 @injectable()
-export class GetMajors
-  implements UseCase<Promise<Either<[Major[], PaginationOptions], Error>>, GetMajorsParams>
-{
+export class GetMajors implements UseCase<
+  Promise<Either<[Major[], PaginationOptions], Error>>,
+  GetMajorsParams
+> {
   private readonly majorRepository: MajorRepository;
 
   public constructor(

@@ -19,9 +19,10 @@ export type GetUsersParams = [
 ];
 
 @injectable()
-export class GetUsers
-  implements UseCase<Promise<Either<[User[], PaginationOptions], Error>>, GetUsersParams>
-{
+export class GetUsers implements UseCase<
+  Promise<Either<[User[], PaginationOptions], Error>>,
+  GetUsersParams
+> {
   private readonly userRepository: UserRepository;
 
   public constructor(

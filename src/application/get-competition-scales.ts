@@ -17,13 +17,10 @@ export type GetCompetitionScaleParams = [
 ];
 
 @injectable()
-export class GetCompetitionScales
-  implements
-    UseCase<
-      Promise<Either<[CompetitionScale[], PaginationOptions], Error>>,
-      GetCompetitionScaleParams
-    >
-{
+export class GetCompetitionScales implements UseCase<
+  Promise<Either<[CompetitionScale[], PaginationOptions], Error>>,
+  GetCompetitionScaleParams
+> {
   private readonly competitionScaleRepository: CompetitionScaleRepository;
 
   public constructor(

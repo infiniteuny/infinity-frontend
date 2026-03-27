@@ -15,9 +15,10 @@ export type UpdateCommunityGroupAdminParams = [
 ];
 
 @injectable()
-export class UpdateCommunityGroupAdmin
-  implements UseCase<Promise<Either<CommunityGroupAdmin, Error>>, UpdateCommunityGroupAdminParams>
-{
+export class UpdateCommunityGroupAdmin implements UseCase<
+  Promise<Either<CommunityGroupAdmin, Error>>,
+  UpdateCommunityGroupAdminParams
+> {
   private readonly communityGroupAdminRepository: CommunityGroupAdminRepository;
 
   public constructor(

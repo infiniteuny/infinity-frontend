@@ -17,13 +17,10 @@ export type GetCompetitionTeamTypeParams = [
 ];
 
 @injectable()
-export class GetCompetitionTeamTypes
-  implements
-    UseCase<
-      Promise<Either<[CompetitionTeamType[], PaginationOptions], Error>>,
-      GetCompetitionTeamTypeParams
-    >
-{
+export class GetCompetitionTeamTypes implements UseCase<
+  Promise<Either<[CompetitionTeamType[], PaginationOptions], Error>>,
+  GetCompetitionTeamTypeParams
+> {
   private readonly competitionTeamTypeRepository: CompetitionTeamTypeRepository;
 
   public constructor(

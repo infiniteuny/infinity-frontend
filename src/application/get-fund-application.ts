@@ -13,9 +13,10 @@ export type GetFundApplicationParams = [
 ];
 
 @injectable()
-export class GetFundApplication
-  implements UseCase<Promise<Either<FundApplication, Error>>, GetFundApplicationParams>
-{
+export class GetFundApplication implements UseCase<
+  Promise<Either<FundApplication, Error>>,
+  GetFundApplicationParams
+> {
   private readonly fundApplicationRepository: FundApplicationRepository;
 
   public constructor(

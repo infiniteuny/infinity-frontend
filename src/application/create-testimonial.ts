@@ -12,9 +12,10 @@ export type CreateTestimonialParams = [
 ];
 
 @injectable()
-export class CreateTestimonial
-  implements UseCase<Promise<Either<Testimonial, Error>>, CreateTestimonialParams>
-{
+export class CreateTestimonial implements UseCase<
+  Promise<Either<Testimonial, Error>>,
+  CreateTestimonialParams
+> {
   private readonly testimonialRepository: TestimonialRepository;
 
   public constructor(

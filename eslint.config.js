@@ -1,26 +1,23 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const js = require('@eslint/js');
-const { FlatCompat } = require('@eslint/eslintrc');
+const { defineConfig, globalIgnores } = require('eslint/config');
+const nextCoreWebVitals = require('eslint-config-next/core-web-vitals');
+const nextTs = require('eslint-config-next/typescript');
+const prettierRecommended = require('eslint-plugin-prettier/recommended');
+const typescriptEslintPlugin = require('@typescript-eslint/eslint-plugin');
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
-module.exports = [
-  ...compat.config({
-    extends: [
-      'eslint:recommended',
-      'next/core-web-vitals',
-      'next/typescript',
-      'plugin:prettier/recommended',
-    ],
+module.exports = defineConfig([
+  ...nextCoreWebVitals,
+  ...nextTs,
+  prettierRecommended,
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    plugins: {
+      '@typescript-eslint': typescriptEslintPlugin,
+    },
     rules: {
       'no-prototype-builtins': 'off',
       '@typescript-eslint/explicit-member-accessibility': 'error',
     },
-  }),
-  {
-    ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
-];
+  globalIgnores(['node_modules/**', '.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+]);

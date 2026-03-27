@@ -13,9 +13,10 @@ export type GetCoreTeamsParams = [
 ];
 
 @injectable()
-export class GetCoreTeams
-  implements UseCase<Promise<Either<[CoreTeam[], PaginationOptions], Error>>, GetCoreTeamsParams>
-{
+export class GetCoreTeams implements UseCase<
+  Promise<Either<[CoreTeam[], PaginationOptions], Error>>,
+  GetCoreTeamsParams
+> {
   private readonly coreTeamRepository: CoreTeamRepository;
 
   public constructor(

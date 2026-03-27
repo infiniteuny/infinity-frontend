@@ -13,9 +13,10 @@ export type GetFacultiesParams = [
 ];
 
 @injectable()
-export class GetFaculties
-  implements UseCase<Promise<Either<[Faculty[], PaginationOptions], Error>>, GetFacultiesParams>
-{
+export class GetFaculties implements UseCase<
+  Promise<Either<[Faculty[], PaginationOptions], Error>>,
+  GetFacultiesParams
+> {
   private readonly facultyRepository: FacultyRepository;
 
   public constructor(
