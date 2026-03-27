@@ -19,6 +19,7 @@ export function SidebarMenu({ menu }: Props) {
 
   useEffect(() => {
     if (menu.path === path) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActive(true);
     } else {
       setActive(false);

@@ -65,7 +65,7 @@ export function NavbarDropdownMenu({ menu }: Props) {
           aria-expanded={open ? 'true' : undefined}
           aria-haspopup="true"
           onClick={handleOpen}
-          className="py-[6px]"
+          className="py-1.5"
         >
           {menu.icon ? (
             <ListItemIcon>
@@ -77,6 +77,7 @@ export function NavbarDropdownMenu({ menu }: Props) {
       </ListItem>
       <Popper
         open={open}
+        // eslint-disable-next-line react-hooks/refs
         anchorEl={anchorRef.current}
         role={undefined}
         placement="bottom"

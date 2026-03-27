@@ -38,6 +38,7 @@ export function GeneralForm({
   useEffect(() => {
     if (selectedImage instanceof File) {
       const objectUrl = URL.createObjectURL(selectedImage);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviewUrl(objectUrl);
 
       return () => {
