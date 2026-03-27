@@ -56,12 +56,6 @@ export const APP: {
           icon: 'emoji-events',
           items: [
             {
-              name: 'Teams',
-              icon: 'groups',
-              path: '/teams',
-              matcher: '^\\/teams',
-            },
-            {
               name: 'Fund Applications',
               icon: 'request-quote',
               path: '/fund-applications',
@@ -114,6 +108,12 @@ export const APP: {
               icon: 'person',
               path: '/users',
               matcher: '^\\/users',
+            },
+            {
+              name: 'Teams',
+              icon: 'groups',
+              path: '/teams',
+              matcher: '^\\/teams',
             },
             {
               name: 'Groups',
