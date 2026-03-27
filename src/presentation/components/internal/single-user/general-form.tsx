@@ -12,12 +12,12 @@ import {
   Typography,
 } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import { Controller, UseFormReturn, useWatch } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import { FacultyDto, FacultyMapper, MajorDto, MajorMapper } from '@app/infrastructure/dtos';
 import { GetMajors } from '@app/application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { UserInput } from './user-form';
 
 type Props = {
@@ -43,7 +43,7 @@ export function GeneralForm({
 
   const [majorOptions, setMajorOptions] = useState(majors ? parsedMajors : []);
   const [majorDisabled, setMajorDisabled] = useState(false);
-  const selectedFaculty = useWatch({ name: 'facultyId', control });
+
   const handleFacultyChange = useCallback(
     async (facultyId: string) => {
       setMajorDisabled(true);
@@ -67,12 +67,6 @@ export function GeneralForm({
     },
     [getMajors, getValues, setValue],
   );
-
-  useEffect(() => {
-    if (selectedFaculty && selectedFaculty !== '0') {
-      handleFacultyChange(selectedFaculty);
-    }
-  }, [handleFacultyChange, selectedFaculty]);
 
   return (
     <Box component="section" className="mb-4 w-full px-6">
@@ -132,12 +126,20 @@ export function GeneralForm({
                 name="facultyId"
                 control={control}
                 defaultValue={'0'}
-                render={({ field }) => (
+                render={({ field: { onChange, ...field } }) => (
                   <Select
                     {...field}
                     labelId="facultyId-label"
                     label="Faculty"
                     error={!!errors.facultyId}
+                    onChange={(event) => {
+                      onChange(event);
+                      const facultyId = event.target.value;
+
+                      if (facultyId && facultyId !== '0') {
+                        handleFacultyChange(facultyId);
+                      }
+                    }}
                   >
                     <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select faculty

@@ -12,7 +12,7 @@ import {
 import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import { Icon } from '@app/presentation/components/shared';
 import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
-import { MouseEvent, useMemo, useState } from 'react';
+import { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
 import { usePathname } from 'next/navigation';
 
@@ -34,18 +34,14 @@ export function SidebarDropdownMenu({ menu }: Props) {
   );
 
   const active = useMemo(() => {
-    let status = false;
-
-    menu.items.map((item) => {
-      if (item.path === path || (item.matcher ? RegExp(item.matcher).test(path) : false)) {
-        status = true;
-      }
-    });
-
-    setExpanded(status);
-
-    return status;
+    return menu.items.some(
+      (item) => item.path === path || (item.matcher ? RegExp(item.matcher).test(path) : false),
+    );
   }, [menu.items, path]);
+
+  useEffect(() => {
+    setExpanded(active);
+  }, [active]);
 
   const handleExpand = (event: MouseEvent<HTMLButtonElement>) => {
     if (!active) {
