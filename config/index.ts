@@ -25,12 +25,12 @@ export const APP: {
   };
 } = {
   site: {
-    url: 'https:/www.infiniteuny.id',
+    url: 'https://www.infiniteuny.id',
     title: 'INFINITE Dashboard',
     tagline: "Let's Make Infinite Technology!",
     description:
       'INFINITE Dashboard is a platform for our members to manage their day-to-day activities.',
-    image: 'https:/www.infiniteuny.id/assets/images/og-image.png',
+    image: 'https://www.infiniteuny.id/assets/images/og-image.png',
     locale: 'id_ID',
   },
   internal: {
