@@ -26,9 +26,7 @@ const coreTeamInputSchema = z
     message:
       'Active core team cannot be deactivated, please set another as active to deactivate this one.',
     path: ['isActive'],
-    when: (payload) => {
-      return coreTeamInputSchema.pick({ isActive: true }).safeParse(payload.value).success;
-    },
+    when: (payload) => z.object({ isActive: z.boolean() }).safeParse(payload.value).success,
   });
 
 export type CoreTeamInput = z.infer<typeof coreTeamInputSchema>;

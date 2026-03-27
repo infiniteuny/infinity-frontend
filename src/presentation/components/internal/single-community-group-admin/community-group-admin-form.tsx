@@ -26,8 +26,7 @@ const communityGroupAdminInputSchema = z
     message:
       'Active community group administrator cannot be deactivated, please set another as active to deactivate this one.',
     path: ['isActive'],
-    when: (payload) =>
-      communityGroupAdminInputSchema.pick({ isActive: true }).safeParse(payload.value).success,
+    when: (payload) => z.object({ isActive: z.boolean() }).safeParse(payload.value).success,
   });
 
 export type CommunityGroupAdminInput = z.infer<typeof communityGroupAdminInputSchema>;
