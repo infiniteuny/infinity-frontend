@@ -12,7 +12,7 @@ export function InternalFooter() {
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
       className={`flex h-16 w-auto items-center px-6 py-2 md:px-12 lg:px-18 ${
-        sidebarExtended ? 'lg:ml-[260px]' : 'lg:ml-14'
+        sidebarExtended ? 'lg:ml-65' : 'lg:ml-14'
       }`}
     >
       <Typography

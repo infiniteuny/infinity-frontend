@@ -65,7 +65,7 @@ export function InternalSidebar({ menus }: Props) {
         sx={{
           bgcolor: 'surfaceContainer.main',
         }}
-        className={`no-scrollbar fixed top-0 bottom-0 left-0 z-550 flex w-[260px] max-w-full flex-col overflow-x-auto px-0 pt-[74px] transition-all lg:translate-x-0 ${
+        className={`no-scrollbar fixed top-0 bottom-0 left-0 z-550 flex w-65 max-w-full flex-col overflow-x-auto px-0 pt-18.5 transition-all lg:translate-x-0 ${
           sidebarOpened ? 'translate-x-0' : '-translate-x-full'
         } ${sidebarExtended || sidebarHovered ? '' : 'lg:w-20! lg:overflow-y-hidden'}`}
       >

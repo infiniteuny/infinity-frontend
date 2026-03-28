@@ -24,12 +24,12 @@ export function InternalHeader() {
           }),
         }),
       ]}
-      className="flex h-[74px] w-full flex-row items-center p-4 shadow-none lg:pl-0"
+      className="flex h-18.5 w-full flex-row items-center p-4 shadow-none lg:pl-0"
     >
       <IconButton className="lg:hidden" onClick={() => setSidebarOpenedState(!sidebarOpened)}>
         <MenuRounded />
       </IconButton>
-      <div className="w-full md:w-[204px] lg:w-[260px]">
+      <div className="w-full md:w-51 lg:w-65">
         <InfiniteLogo
           width={46}
           height={46}

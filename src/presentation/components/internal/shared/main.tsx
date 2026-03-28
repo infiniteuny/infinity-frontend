@@ -20,8 +20,8 @@ export function InternalMain({ children }: Props) {
       component="main"
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
-      className={`min-h-[calc(100vh-4rem)] w-full scroll-mt-[74px] overflow-auto px-0 pt-[74px] ${
-        sidebarExtended ? 'lg:pl-[260px]' : 'lg:pl-20'
+      className={`min-h-[calc(100vh-4rem)] w-full scroll-mt-18.5 overflow-auto px-0 pt-18.5 ${
+        sidebarExtended ? 'lg:pl-65' : 'lg:pl-20'
       }`}
     >
       {children}

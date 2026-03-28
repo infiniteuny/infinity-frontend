@@ -13,7 +13,7 @@ export function NavbarMenu({ menu }: Props) {
       <ListItemButton
         LinkComponent={Link}
         href={menu.hasOwnProperty('path') ? (menu as PathMenu).path : (menu as UrlMenu).url}
-        className="py-[6px]"
+        className="py-1.5"
       >
         {menu.icon ? (
           <ListItemIcon>
