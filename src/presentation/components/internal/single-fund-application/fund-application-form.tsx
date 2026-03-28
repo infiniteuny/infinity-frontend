@@ -33,15 +33,21 @@ const fundApplicationInputSchema = z
     competitionEndDate: z.date('End date must be a valid date'),
     letterOfAcceptance: z.union([
       z
-        .file()
+        .file('Letter of Acceptance must not be empty')
         .mime(['application/pdf'], 'Letter of acceptance must be a PDF file')
         .max(20480000, 'Letter of acceptance must be less than or equal to 20MB'),
       z.string(),
     ]),
     proposal: z.union([
       z
-        .file()
-        .mime(['application/pdf'], 'Proposal must be a PDF file')
+        .file('Proposal must not be empty')
+        .mime(
+          [
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          ],
+          'Proposal must be a DOC or DOCX file',
+        )
         .max(20480000, 'Proposal must be less than or equal to 20MB'),
       z.string(),
     ]),
