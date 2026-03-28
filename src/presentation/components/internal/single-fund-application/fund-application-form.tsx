@@ -161,8 +161,17 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
-          <GeneralForm methods={methods} />
-          <CompetitionForm methods={methods} competitionScales={competitionScales} />
+          <GeneralForm
+            methods={methods}
+            teams={initialFundApplication?.team ? [initialFundApplication.team] : undefined}
+          />
+          <CompetitionForm
+            methods={methods}
+            competitionScales={competitionScales}
+            competitions={
+              initialFundApplication?.competition ? [initialFundApplication.competition] : undefined
+            }
+          />
           <DocumentsForm methods={methods} />
         </Box>
       </LocalizationProvider>

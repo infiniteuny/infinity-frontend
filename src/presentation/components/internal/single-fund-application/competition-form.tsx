@@ -22,11 +22,17 @@ import { FundApplicationInput } from './fund-application-form';
 import { DateTime } from 'luxon';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Competition } from '@app/domain/entities';
-import { CompetitionScaleDto, CompetitionScaleMapper } from '@app/infrastructure/dtos';
+import {
+  CompetitionDto,
+  CompetitionMapper,
+  CompetitionScaleDto,
+  CompetitionScaleMapper,
+} from '@app/infrastructure/dtos';
 
 type Props = {
   methods: UseFormReturn<FundApplicationInput>;
   competitionScales: CompetitionScaleDto[];
+  competitions?: CompetitionDto[];
 };
 
 export function CompetitionForm({
@@ -36,6 +42,7 @@ export function CompetitionForm({
     formState: { isSubmitting, errors },
   },
   competitionScales,
+  competitions,
 }: Props) {
   const getCompetitions = useMemo(
     () => clientContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions),
@@ -45,9 +52,13 @@ export function CompetitionForm({
     () => competitionScales.map(CompetitionScaleMapper.fromDtoToDomain),
     [competitionScales],
   );
+  const parsedCompetitions = useMemo(
+    () => competitions?.map(CompetitionMapper.fromDtoToDomain) ?? [],
+    [competitions],
+  );
 
-  const [competitionInput, setCompetitionInput] = useState('');
-  const [competitionOptions, setCompetitionOptions] = useState<Competition[]>([]);
+  const [competitionInput, setCompetitionInput] = useState(parsedCompetitions[0]?.name ?? '');
+  const [competitionOptions, setCompetitionOptions] = useState<Competition[]>(parsedCompetitions);
   const [isCompetitionLoading, setIsCompetitionLoading] = useState(false);
 
   useEffect(() => {

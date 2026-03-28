@@ -16,7 +16,11 @@ import {
 
 export default async function FundApplicationsPage() {
   const getFundApplications = serverContainer.get<GetFundApplications>(SYMBOLS.GetFundApplications);
-  const result = await getFundApplications.execute(undefined, undefined, { perPage: 25 });
+  const result = await getFundApplications.execute(
+    ['team', 'competition', 'competition_scale'],
+    undefined,
+    { perPage: 25 },
+  );
   const [fundApplications, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

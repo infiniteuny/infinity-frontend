@@ -18,11 +18,13 @@ import { FundApplicationInput } from './fund-application-form';
 import { GetTeams } from '@app/application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useEffect, useMemo, useState } from 'react';
 import { Team } from '@app/domain/entities';
+import { TeamDto, TeamMapper } from '@app/infrastructure/dtos';
+import { useEffect, useMemo, useState } from 'react';
 
 type Props = {
   methods: UseFormReturn<FundApplicationInput>;
+  teams?: TeamDto[];
 };
 
 export function GeneralForm({
@@ -30,11 +32,13 @@ export function GeneralForm({
     control,
     formState: { isSubmitting, errors },
   },
+  teams,
 }: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
+  const parsedTeams = useMemo(() => teams?.map(TeamMapper.fromDtoToDomain) ?? [], [teams]);
 
-  const [teamInput, setTeamInput] = useState('');
-  const [teamOptions, setTeamOptions] = useState<Team[]>([]);
+  const [teamInput, setTeamInput] = useState(parsedTeams[0]?.name ?? '');
+  const [teamOptions, setTeamOptions] = useState<Team[]>(parsedTeams);
   const [isTeamLoading, setIsTeamLoading] = useState(false);
 
   useEffect(() => {

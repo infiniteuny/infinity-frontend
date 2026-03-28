@@ -27,7 +27,7 @@ export default async function SingleFundApplicationEditPage({ params }: Props) {
 
   const [competitionScalesResult, fundApplicationResult] = await Promise.all([
     getCompetitionScales.execute(undefined, { perPage: 100 }),
-    getFundApplication.execute(fundApplicationId),
+    getFundApplication.execute(fundApplicationId, ['team', 'competition']),
   ]);
 
   const [competitionScales] = match(competitionScalesResult, {

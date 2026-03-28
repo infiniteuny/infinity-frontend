@@ -39,7 +39,11 @@ export default async function SingleFundApplicationPage({ params }: Props) {
 
   if (fundApplicationId !== 'new') {
     const getFundApplication = serverContainer.get<GetFundApplication>(SYMBOLS.GetFundApplication);
-    const fundApplicationResult = await getFundApplication.execute(fundApplicationId);
+    const fundApplicationResult = await getFundApplication.execute(fundApplicationId, [
+      'team',
+      'competition',
+      'competition_scale',
+    ]);
     const fundApplication = match(fundApplicationResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {

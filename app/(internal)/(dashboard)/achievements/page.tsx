@@ -16,7 +16,18 @@ import {
 
 export default async function AchievementsPage() {
   const getAchievements = serverContainer.get<GetAchievements>(SYMBOLS.GetAchievements);
-  const result = await getAchievements.execute(undefined, undefined, { perPage: 25 });
+  const result = await getAchievements.execute(
+    [
+      'team',
+      'competition',
+      'competition_scale',
+      'competition_time_range',
+      'competition_output',
+      'competition_rank',
+    ],
+    undefined,
+    { perPage: 25 },
+  );
   const [achievements, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

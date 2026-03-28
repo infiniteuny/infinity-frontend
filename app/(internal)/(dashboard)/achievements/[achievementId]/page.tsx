@@ -40,7 +40,14 @@ export default async function SingleAchievementPage({ params }: Props) {
 
   if (achievementId !== 'new') {
     const getAchievement = serverContainer.get<GetAchievement>(SYMBOLS.GetAchievement);
-    const achievementResult = await getAchievement.execute(achievementId, []);
+    const achievementResult = await getAchievement.execute(achievementId, [
+      'team',
+      'competition',
+      'competition_scale',
+      'competition_time_range',
+      'competition_output',
+      'competition_rank',
+    ]);
     const achievement = match(achievementResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
@@ -54,7 +61,15 @@ export default async function SingleAchievementPage({ params }: Props) {
 
     return (
       <>
-        <SectionHeader title={achievement.competition?.name ?? achievement.competitionBranch}>
+        <SectionHeader
+          title={
+            achievement.competitionRank?.name &&
+            achievement.competition?.name &&
+            achievement.competitionBranch
+              ? `${achievement.competitionRank.name} ${achievement.competition.name} ${achievement.competitionBranch}`
+              : 'N/A'
+          }
+        >
           <AchievementToolbar achievementId={achievement.id} />
         </SectionHeader>
         <AchievementView

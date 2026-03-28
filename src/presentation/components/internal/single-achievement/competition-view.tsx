@@ -41,7 +41,7 @@ export function CompetitionView({ achievement }: Props) {
               Competition Scale
             </Typography>
             <Typography variant="body2" component="p">
-              {achievement.competitionScale?.name ?? achievement.competitionScaleId}
+              {achievement.competitionScale?.name ?? 'N/A'}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -49,7 +49,7 @@ export function CompetitionView({ achievement }: Props) {
               Competition Time Range
             </Typography>
             <Typography variant="body2" component="p">
-              {achievement.competitionTimeRange?.name ?? achievement.competitionTimeRangeId}
+              {achievement.competitionTimeRange?.name ?? 'N/A'}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -57,7 +57,7 @@ export function CompetitionView({ achievement }: Props) {
               Competition Output
             </Typography>
             <Typography variant="body2" component="p">
-              {achievement.competitionOutput?.name ?? achievement.competitionOutputId}
+              {achievement.competitionOutput?.name ?? 'N/A'}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -65,7 +65,7 @@ export function CompetitionView({ achievement }: Props) {
               Competition Rank
             </Typography>
             <Typography variant="body2" component="p">
-              {achievement.competitionRank?.name ?? achievement.competitionRankId}
+              {achievement.competitionRank?.name ?? 'N/A'}
             </Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
