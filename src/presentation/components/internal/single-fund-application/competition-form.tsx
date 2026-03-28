@@ -208,10 +208,10 @@ export function CompetitionForm({
             <Controller
               name="competitionStartDate"
               control={control}
-              disabled={isSubmitting}
               render={({ field }) => (
                 <DatePicker
                   {...field}
+                  disabled={isSubmitting}
                   label="Start Date"
                   format="dd/LL/yyyy"
                   timezone="UTC"
@@ -238,10 +238,10 @@ export function CompetitionForm({
             <Controller
               name="competitionEndDate"
               control={control}
-              disabled={isSubmitting}
               render={({ field }) => (
                 <DatePicker
                   {...field}
+                  disabled={isSubmitting}
                   label="End Date"
                   format="dd/LL/yyyy"
                   timezone="UTC"
