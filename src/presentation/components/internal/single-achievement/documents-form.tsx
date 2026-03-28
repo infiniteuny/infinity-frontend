@@ -234,7 +234,15 @@ export function DocumentsForm({
                               </Typography>
                             ) : null}
                           </Box>
-                          <IconButton disabled={isSubmitting} onClick={() => onChange(null)}>
+                          <IconButton
+                            disabled={isSubmitting}
+                            onClick={() => {
+                              if (imageInputRef.current) {
+                                imageInputRef.current.value = '';
+                              }
+                              onChange(null);
+                            }}
+                          >
                             <DeleteRounded />
                           </IconButton>
                         </Box>

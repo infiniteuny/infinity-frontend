@@ -275,7 +275,15 @@ export function GeneralForm({
                               </Typography>
                             ) : null}
                           </Box>
-                          <IconButton disabled={isSubmitting} onClick={() => onChange(null)}>
+                          <IconButton
+                            disabled={isSubmitting}
+                            onClick={() => {
+                              if (photoInputRef.current) {
+                                photoInputRef.current.value = '';
+                              }
+                              onChange(null);
+                            }}
+                          >
                             <DeleteRounded />
                           </IconButton>
                         </Box>
