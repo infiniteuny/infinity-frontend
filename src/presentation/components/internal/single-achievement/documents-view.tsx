@@ -1,5 +1,7 @@
-import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { Achievement } from '@app/domain/entities';
+import { Box, Container, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { DownloadRounded } from '@mui/icons-material';
+import Link from 'next/link';
 
 type Props = {
   achievement: Achievement;
@@ -24,6 +26,34 @@ export function DocumentsView({ achievement }: Props) {
               Image
             </Typography>
             <Box
+              sx={{ borderColor: 'outline' }}
+              className="mt-2 w-full rounded-lg border border-solid p-4"
+            >
+              <Box className="flex flex-row items-center justify-between gap-2">
+                <Typography variant="body2" color="onSurfaceVariant.main" className="font-semibold">
+                  Image
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                  {typeof achievement.image === 'string' ? (
+                    <>
+                      <IconButton
+                        component="a"
+                        LinkComponent={Link}
+                        href={achievement.image}
+                        download="image.jpg"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Download image"
+                        title="Download"
+                      >
+                        <DownloadRounded fontSize="small" />
+                      </IconButton>
+                    </>
+                  ) : null}
+                </Stack>
+              </Box>
+            </Box>
+            <Box
               component="img"
               src={achievement.image as string}
               alt={`${achievement.competition?.name} ${achievement.competitionBranch}`}
@@ -32,6 +62,7 @@ export function DocumentsView({ achievement }: Props) {
                 maxHeight: 280,
                 objectFit: 'contain',
               }}
+              className="mt-2"
             />
           </Grid>
         </Grid>
