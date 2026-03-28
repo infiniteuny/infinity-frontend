@@ -16,6 +16,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { FundApplicationInput } from './fund-application-form';
 import { formatBytes } from '@app/utils';
 import { visuallyHidden } from '@mui/utils';
+import { PdfViewer } from '@app/presentation/components/internal/shared';
 
 type Props = {
   methods: UseFormReturn<FundApplicationInput>;
@@ -191,7 +192,8 @@ export function DocumentsForm({
                         }}
                         className="mt-4 p-4"
                       >
-                        <Box className="flex flex-row items-center justify-between gap-2">
+                        <PdfViewer file={value} title="Letter of Acceptance Preview" height={500} />
+                        <Box className="mt-2 flex flex-row items-center justify-between gap-2">
                           <Box>
                             <Typography
                               variant="body2"
@@ -206,7 +208,15 @@ export function DocumentsForm({
                               </Typography>
                             ) : null}
                           </Box>
-                          <IconButton disabled={isSubmitting} onClick={() => onChange(null)}>
+                          <IconButton
+                            disabled={isSubmitting}
+                            onClick={() => {
+                              if (letterInputRef.current) {
+                                letterInputRef.current.value = '';
+                              }
+                              onChange(null);
+                            }}
+                          >
                             <DeleteRounded />
                           </IconButton>
                         </Box>
@@ -329,14 +339,15 @@ export function DocumentsForm({
                         })}
                         className="pointer-events-none"
                       >
-                        Allowed file type: PDF. Allowed size: up to 20MB.
+                        Allowed file type: DOC, DOCX. Allowed size: up to 20MB.
                       </Typography>
                       <Input
                         {...field}
                         id="proposal"
                         type="file"
                         inputProps={{
-                          accept: 'application/pdf',
+                          accept:
+                            'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                         }}
                         inputRef={(element) => {
                           ref(element);
@@ -378,7 +389,15 @@ export function DocumentsForm({
                               </Typography>
                             ) : null}
                           </Box>
-                          <IconButton disabled={isSubmitting} onClick={() => onChange(null)}>
+                          <IconButton
+                            disabled={isSubmitting}
+                            onClick={() => {
+                              if (proposalInputRef.current) {
+                                proposalInputRef.current.value = '';
+                              }
+                              onChange(null);
+                            }}
+                          >
                             <DeleteRounded />
                           </IconButton>
                         </Box>
