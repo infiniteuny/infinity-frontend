@@ -17,7 +17,7 @@
     "@mui/icons-material": "7.3.9",
     "@mui/material": "7.3.9",
     "@mui/material-nextjs": "7.3.9",
-    "@mui/x-data-grid": "8.28.0",
+    "@mui/x-data-grid": "8.28.1",
     "@mui/x-date-pickers": "8.27.2",
     "axios": "1.13.6",
     "effect": "3.21.0",
