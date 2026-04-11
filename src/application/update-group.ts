@@ -1,5 +1,5 @@
-import type { GroupRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { GroupRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -15,12 +15,16 @@ export type UpdateGroupParams = [
 @injectable()
 export class UpdateGroup implements UseCase<Promise<Either<Group, Error>>, UpdateGroupParams> {
   private readonly groupRepository: GroupRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.GroupRepository)
     groupRepository: GroupRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.groupRepository = groupRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -29,6 +33,19 @@ export class UpdateGroup implements UseCase<Promise<Either<Group, Error>>, Updat
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Group, Error>> {
-    return await this.groupRepository.updateGroup(id, group, abortSignal, authenticate);
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
+    return await this.groupRepository.updateGroup(id, group, abortSignal, accessToken);
   }
 }

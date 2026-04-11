@@ -1,5 +1,5 @@
-import type { FundApplicationRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { FundApplicationRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -18,12 +18,16 @@ export class GetFundApplication implements UseCase<
   GetFundApplicationParams
 > {
   private readonly fundApplicationRepository: FundApplicationRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.FundApplicationRepository)
     fundApplicationRepository: FundApplicationRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.fundApplicationRepository = fundApplicationRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -32,11 +36,24 @@ export class GetFundApplication implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<FundApplication, Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.fundApplicationRepository.getFundApplication(
       id,
       includeOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

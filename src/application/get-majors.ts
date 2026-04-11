@@ -1,5 +1,5 @@
-import type { MajorRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { MajorRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
@@ -24,12 +24,16 @@ export class GetMajors implements UseCase<
   GetMajorsParams
 > {
   private readonly majorRepository: MajorRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.MajorRepository)
     majorRepository: MajorRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.majorRepository = majorRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -39,12 +43,25 @@ export class GetMajors implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[Major[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.majorRepository.getMajors(
       includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

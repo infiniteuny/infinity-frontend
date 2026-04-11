@@ -1,5 +1,5 @@
-import type { CommunityGroupAdminRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { CommunityGroupAdminRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -20,12 +20,16 @@ export class UpdateCommunityGroupAdmin implements UseCase<
   UpdateCommunityGroupAdminParams
 > {
   private readonly communityGroupAdminRepository: CommunityGroupAdminRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CommunityGroupAdminRepository)
     communityGroupAdminRepository: CommunityGroupAdminRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.communityGroupAdminRepository = communityGroupAdminRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -36,11 +40,24 @@ export class UpdateCommunityGroupAdmin implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.communityGroupAdminRepository.updateCommunityGroupAdmin(
       id,
       communityGroupAdmin,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

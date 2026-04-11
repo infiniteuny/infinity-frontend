@@ -1,5 +1,5 @@
-import type { CoreTeamRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { CoreTeamRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -10,12 +10,16 @@ export type GetCoreTeamParams = [id: string, abortSignal?: AbortSignal, authenti
 @injectable()
 export class GetCoreTeam implements UseCase<Promise<Either<CoreTeam, Error>>, GetCoreTeamParams> {
   private readonly coreTeamRepository: CoreTeamRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CoreTeamRepository)
     coreTeamRepository: CoreTeamRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.coreTeamRepository = coreTeamRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -23,6 +27,19 @@ export class GetCoreTeam implements UseCase<Promise<Either<CoreTeam, Error>>, Ge
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<CoreTeam, Error>> {
-    return await this.coreTeamRepository.getCoreTeam(id, abortSignal, authenticate);
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
+    return await this.coreTeamRepository.getCoreTeam(id, abortSignal, accessToken);
   }
 }

@@ -1,5 +1,5 @@
-import type { TestimonialRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { TestimonialRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -18,12 +18,16 @@ export class UpdateTestimonial implements UseCase<
   UpdateTestimonialParams
 > {
   private readonly testimonialRepository: TestimonialRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.TestimonialRepository)
     testimonialRepository: TestimonialRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.testimonialRepository = testimonialRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -32,11 +36,24 @@ export class UpdateTestimonial implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Testimonial, Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.testimonialRepository.updateTestimonial(
       id,
       testimonial,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

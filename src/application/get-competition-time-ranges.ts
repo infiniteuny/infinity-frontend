@@ -1,10 +1,10 @@
-import type { CompetitionTimeRangeRepository } from '@app/domain/repositories';
+import type { CompetitionTimeRangeRepository, AuthRepository } from '@app/domain/repositories';
 import {
   CompetitionTimeRange,
   CompetitionTimeRangeFilterOptions,
   PaginationOptions,
 } from '@app/domain/entities';
-import { Either } from 'effect/Either';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -22,12 +22,16 @@ export class GetCompetitionTimeRanges implements UseCase<
   GetCompetitionTimeRangeParams
 > {
   private readonly competitionTimeRangeRepository: CompetitionTimeRangeRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CompetitionTimeRangeRepository)
     competitionTimeRangeRepository: CompetitionTimeRangeRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.competitionTimeRangeRepository = competitionTimeRangeRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -36,11 +40,24 @@ export class GetCompetitionTimeRanges implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.competitionTimeRangeRepository.getCompetitionTimeRanges(
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

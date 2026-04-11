@@ -1,5 +1,5 @@
-import type { ProjectGalleryRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { ProjectGalleryRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -17,12 +17,16 @@ export class GetProjectGallery implements UseCase<
   GetProjectGalleryParams
 > {
   private readonly projectGalleryRepository: ProjectGalleryRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.ProjectGalleryRepository)
     projectGalleryRepository: ProjectGalleryRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.projectGalleryRepository = projectGalleryRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -30,6 +34,19 @@ export class GetProjectGallery implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<ProjectGallery, Error>> {
-    return await this.projectGalleryRepository.getProjectGallery(id, abortSignal, authenticate);
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
+    return await this.projectGalleryRepository.getProjectGallery(id, abortSignal, accessToken);
   }
 }

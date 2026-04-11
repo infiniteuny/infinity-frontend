@@ -1,5 +1,5 @@
-import type { TeamRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { TeamRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
@@ -24,12 +24,16 @@ export class GetTeams implements UseCase<
   GetTeamsParams
 > {
   private readonly teamRepository: TeamRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.TeamRepository)
     teamRepository: TeamRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.teamRepository = teamRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -39,12 +43,25 @@ export class GetTeams implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[Team[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.teamRepository.getTeams(
       includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

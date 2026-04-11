@@ -1,5 +1,5 @@
-import type { TeamRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { TeamRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -15,12 +15,16 @@ export type UpdateTeamParams = [
 @injectable()
 export class UpdateTeam implements UseCase<Promise<Either<Team, Error>>, UpdateTeamParams> {
   private readonly teamRepository: TeamRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.TeamRepository)
     teamRepository: TeamRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.teamRepository = teamRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -29,6 +33,19 @@ export class UpdateTeam implements UseCase<Promise<Either<Team, Error>>, UpdateT
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Team, Error>> {
-    return await this.teamRepository.updateTeam(id, team, abortSignal, authenticate);
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
+    return await this.teamRepository.updateTeam(id, team, abortSignal, accessToken);
   }
 }

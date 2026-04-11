@@ -1,5 +1,5 @@
-import type { CommunityGroupRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { CommunityGroupRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
@@ -22,12 +22,16 @@ export class GetCommunityGroups implements UseCase<
   GetCommunityGroupsParams
 > {
   private readonly communityGroupRepository: CommunityGroupRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CommunityGroupRepository)
     communityGroupRepository: CommunityGroupRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.communityGroupRepository = communityGroupRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -36,11 +40,24 @@ export class GetCommunityGroups implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[CommunityGroup[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.communityGroupRepository.getCommunityGroups(
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

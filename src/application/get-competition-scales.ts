@@ -1,10 +1,10 @@
-import type { CompetitionScaleRepository } from '@app/domain/repositories';
+import type { CompetitionScaleRepository, AuthRepository } from '@app/domain/repositories';
 import {
   CompetitionScale,
   CompetitionScaleFilterOptions,
   PaginationOptions,
 } from '@app/domain/entities';
-import { Either } from 'effect/Either';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -22,12 +22,16 @@ export class GetCompetitionScales implements UseCase<
   GetCompetitionScaleParams
 > {
   private readonly competitionScaleRepository: CompetitionScaleRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CompetitionScaleRepository)
     competitionScaleRepository: CompetitionScaleRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.competitionScaleRepository = competitionScaleRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -36,11 +40,24 @@ export class GetCompetitionScales implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[CompetitionScale[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.competitionScaleRepository.getCompetitionScales(
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

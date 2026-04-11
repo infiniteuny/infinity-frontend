@@ -1,5 +1,5 @@
-import type { GroupRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { GroupRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { PaginationOptions, Group, GroupFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
@@ -18,12 +18,16 @@ export class GetGroups implements UseCase<
   GetGroupsParams
 > {
   private readonly groupRepository: GroupRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.GroupRepository)
     groupRepository: GroupRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.groupRepository = groupRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -32,11 +36,24 @@ export class GetGroups implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[Group[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.groupRepository.getGroups(
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

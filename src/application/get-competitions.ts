@@ -1,5 +1,5 @@
-import type { CompetitionRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { CompetitionRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   Competition,
@@ -24,12 +24,16 @@ export class GetCompetitions implements UseCase<
   GetCompetitionsParams
 > {
   private readonly competitionRepository: CompetitionRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CompetitionRepository)
     competitionRepository: CompetitionRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.competitionRepository = competitionRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -39,12 +43,25 @@ export class GetCompetitions implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[Competition[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.competitionRepository.getCompetitions(
       includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

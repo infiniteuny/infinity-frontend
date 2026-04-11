@@ -1,5 +1,5 @@
-import type { UserRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { UserRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
@@ -24,12 +24,16 @@ export class GetUsers implements UseCase<
   GetUsersParams
 > {
   private readonly userRepository: UserRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.UserRepository)
     userRepository: UserRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.userRepository = userRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -39,12 +43,25 @@ export class GetUsers implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.userRepository.getUsers(
       includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }

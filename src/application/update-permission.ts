@@ -1,5 +1,5 @@
-import type { PermissionRepository } from '@app/domain/repositories';
-import { Either } from 'effect/Either';
+import type { PermissionRepository, AuthRepository } from '@app/domain/repositories';
+import { Either, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -18,12 +18,16 @@ export class UpdatePermission implements UseCase<
   UpdatePermissionParams
 > {
   private readonly permissionRepository: PermissionRepository;
+  private readonly authRepository: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.PermissionRepository)
     permissionRepository: PermissionRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
   ) {
     this.permissionRepository = permissionRepository;
+    this.authRepository = authRepository;
   }
 
   public async execute(
@@ -32,11 +36,24 @@ export class UpdatePermission implements UseCase<
     abortSignal?: AbortSignal,
     authenticate?: boolean,
   ): Promise<Either<Permission, Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      accessToken = match(accessTokenResult, {
+        onLeft: (error) => {
+          throw error;
+        },
+        onRight: (token) => token,
+      });
+    }
+
     return await this.permissionRepository.updatePermission(
       id,
       permission,
       abortSignal,
-      authenticate,
+      accessToken,
     );
   }
 }
