@@ -15,23 +15,19 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCompetitionOutputs(
     filterOptions?: CompetitionOutputFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CompetitionOutput[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/competition-outputs', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -69,15 +65,13 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
   public async getCompetitionOutput(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOutput, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/competition-outputs/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -94,7 +88,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
   public async createCompetitionOutput(
     competitionOutput: Omit<CompetitionOutput, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOutput, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -103,9 +97,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -124,7 +116,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
     id: string,
     competitionOutput: Partial<Omit<CompetitionOutput, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOutput, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -133,9 +125,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -153,15 +143,13 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
   public async deleteCompetitionOutput(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOutput, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/competition-outputs/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

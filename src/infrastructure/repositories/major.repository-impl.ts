@@ -16,8 +16,6 @@ export class MajorRepositoryImpl implements MajorRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getMajors(
@@ -25,15 +23,13 @@ export class MajorRepositoryImpl implements MajorRepository {
     filterOptions?: MajorFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Major[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/majors', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -77,15 +73,13 @@ export class MajorRepositoryImpl implements MajorRepository {
     id: string,
     includeOptions?: MajorIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/majors/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -107,7 +101,7 @@ export class MajorRepositoryImpl implements MajorRepository {
   public async createMajor(
     major: Omit<Major, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -116,9 +110,7 @@ export class MajorRepositoryImpl implements MajorRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -137,7 +129,7 @@ export class MajorRepositoryImpl implements MajorRepository {
     id: string,
     major: Partial<Major>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.patch(
@@ -146,9 +138,7 @@ export class MajorRepositoryImpl implements MajorRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -166,15 +156,13 @@ export class MajorRepositoryImpl implements MajorRepository {
   public async deleteMajor(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Major, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/majors/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

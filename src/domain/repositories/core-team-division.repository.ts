@@ -10,31 +10,31 @@ export interface CoreTeamDivisionRepository {
     filterOptions?: CoreTeamDivisionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[CoreTeamDivision[], PaginationOptions], Error>>;
 
   getCoreTeamDivision(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CoreTeamDivision, Error>>;
 
   createCoreTeamDivision(
     coreTeamDivision: Omit<CoreTeamDivision, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CoreTeamDivision, Error>>;
 
   updateCoreTeamDivision(
     id: string,
     coreTeamDivision: Partial<Omit<CoreTeamDivision, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CoreTeamDivision, Error>>;
 
   deleteCoreTeamDivision(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CoreTeamDivision, Error>>;
 }

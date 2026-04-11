@@ -11,23 +11,19 @@ export class FacultyRepositoryImpl implements FacultyRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getFaculties(
     filterOptions?: FacultyFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Faculty[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/faculties', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -65,15 +61,13 @@ export class FacultyRepositoryImpl implements FacultyRepository {
   public async getFaculty(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Faculty, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/faculties/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -90,7 +84,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
   public async createFaculty(
     faculty: Omit<Faculty, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Faculty, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -99,9 +93,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -120,7 +112,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
     id: string,
     faculty: Partial<Faculty>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Faculty, Error>> {
     try {
       const response = await this.infinityApiDataSource.patch(
@@ -129,9 +121,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -149,15 +139,13 @@ export class FacultyRepositoryImpl implements FacultyRepository {
   public async deleteFaculty(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Faculty, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/faculties/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

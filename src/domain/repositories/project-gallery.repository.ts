@@ -10,31 +10,31 @@ export interface ProjectGalleryRepository {
     filterOptions?: ProjectGalleryFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[ProjectGallery[], PaginationOptions], Error>>;
 
   getProjectGallery(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>>;
 
   createProjectGallery(
     projectGallery: Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>>;
 
   updateProjectGallery(
     id: string,
     projectGallery: Partial<Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>>;
 
   deleteProjectGallery(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>>;
 }

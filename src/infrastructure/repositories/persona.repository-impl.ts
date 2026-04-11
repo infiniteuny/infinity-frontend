@@ -11,23 +11,19 @@ export class PersonaRepositoryImpl implements PersonaRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getPersonas(
     filterOptions?: PersonaFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Persona[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/personas', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -64,15 +60,13 @@ export class PersonaRepositoryImpl implements PersonaRepository {
   public async getPersona(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/personas/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -87,7 +81,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
   public async createPersona(
     persona: Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -96,9 +90,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -115,7 +107,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
     id: string,
     persona: Partial<Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -124,9 +116,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -142,15 +132,13 @@ export class PersonaRepositoryImpl implements PersonaRepository {
   public async deletePersona(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/personas/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

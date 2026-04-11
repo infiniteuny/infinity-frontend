@@ -12,14 +12,14 @@ export interface UserRepository {
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[User[], PaginationOptions], Error>>;
 
   getUser(
     id: string,
     includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<User, Error>>;
 
   createUser(
@@ -28,19 +28,15 @@ export interface UserRepository {
       'startDate' | 'endDate'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<User, Error>>;
 
   updateUser(
     id: string,
     user: Partial<Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<User, Error>>;
 
-  deleteUser(
-    id: string,
-    abortSignal?: AbortSignal,
-    authenticate?: boolean,
-  ): Promise<Either<User, Error>>;
+  deleteUser(id: string, abortSignal?: AbortSignal, token?: string): Promise<Either<User, Error>>;
 }

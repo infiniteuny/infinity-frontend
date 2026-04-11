@@ -12,32 +12,32 @@ export interface CompetitionRepository {
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[Competition[], PaginationOptions], Error>>;
 
   getCompetition(
     id: string,
     includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Competition, Error>>;
 
   createCompetition(
     competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Competition, Error>>;
 
   updateCompetition(
     id: string,
     competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Competition, Error>>;
 
   deleteCompetition(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Competition, Error>>;
 }

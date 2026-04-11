@@ -6,31 +6,31 @@ export interface PermissionRepository {
     filterOptions?: PermissionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[Permission[], PaginationOptions], Error>>;
 
   getPermission(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Permission, Error>>;
 
   createPermission(
     permission: Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Permission, Error>>;
 
   updatePermission(
     id: string,
     permission: Partial<Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Permission, Error>>;
 
   deletePermission(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Permission, Error>>;
 }

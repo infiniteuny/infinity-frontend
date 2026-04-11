@@ -11,23 +11,19 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCoreTeams(
     filterOptions?: CoreTeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CoreTeam[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/core-teams', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -63,15 +59,13 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
   public async getCoreTeam(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CoreTeam, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/core-teams/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -86,7 +80,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
   public async createCoreTeam(
     coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CoreTeam, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -95,9 +89,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -114,7 +106,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
     id: string,
     coreTeam: Partial<Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CoreTeam, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -123,9 +115,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -141,15 +131,13 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
   public async deleteCoreTeam(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CoreTeam, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/core-teams/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

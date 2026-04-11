@@ -12,32 +12,28 @@ export interface TeamRepository {
     filterOptions?: TeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[Team[], PaginationOptions], Error>>;
 
   getTeam(
     id: string,
     includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Team, Error>>;
 
   createTeam(
     team: Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Team, Error>>;
 
   updateTeam(
     id: string,
     team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Team, Error>>;
 
-  deleteTeam(
-    id: string,
-    abortSignal?: AbortSignal,
-    authenticate?: boolean,
-  ): Promise<Either<Team, Error>>;
+  deleteTeam(id: string, abortSignal?: AbortSignal, token?: string): Promise<Either<Team, Error>>;
 }

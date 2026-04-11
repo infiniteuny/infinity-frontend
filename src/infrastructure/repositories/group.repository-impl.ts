@@ -11,23 +11,19 @@ export class GroupRepositoryImpl implements GroupRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getGroups(
     filterOptions?: GroupFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Group[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/groups', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -63,15 +59,13 @@ export class GroupRepositoryImpl implements GroupRepository {
   public async getGroup(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Group, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/groups/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -86,7 +80,7 @@ export class GroupRepositoryImpl implements GroupRepository {
   public async createGroup(
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Group, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -95,9 +89,7 @@ export class GroupRepositoryImpl implements GroupRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -114,7 +106,7 @@ export class GroupRepositoryImpl implements GroupRepository {
     id: string,
     group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Group, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -123,9 +115,7 @@ export class GroupRepositoryImpl implements GroupRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -141,15 +131,13 @@ export class GroupRepositoryImpl implements GroupRepository {
   public async deleteGroup(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Group, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/groups/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

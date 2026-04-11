@@ -10,31 +10,31 @@ export interface CompetitionRankRepository {
     filterOptions?: CompetitionRankFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[CompetitionRank[], PaginationOptions], Error>>;
 
   getCompetitionRank(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>>;
 
   createCompetitionRank(
     competitionRank: Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>>;
 
   updateCompetitionRank(
     id: string,
     competitionRank: Partial<Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>>;
 
   deleteCompetitionRank(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>>;
 }

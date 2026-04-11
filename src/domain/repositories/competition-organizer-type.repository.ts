@@ -10,19 +10,19 @@ export interface CompetitionOrganizerTypeRepository {
     filterOptions?: CompetitionOrganizerTypeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[CompetitionOrganizerType[], PaginationOptions], Error>>;
 
   getCompetitionOrganizerType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>>;
 
   createCompetitionOrganizerType(
     competitionOrganizerType: Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>>;
 
   updateCompetitionOrganizerType(
@@ -31,12 +31,12 @@ export interface CompetitionOrganizerTypeRepository {
       Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>>;
 
   deleteCompetitionOrganizerType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>>;
 }

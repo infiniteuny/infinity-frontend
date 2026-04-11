@@ -15,23 +15,19 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCompetitionOrganizerTypes(
     filterOptions?: CompetitionOrganizerTypeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CompetitionOrganizerType[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/competition-organizer-types', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -69,15 +65,13 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
   public async getCompetitionOrganizerType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/competition-organizer-types/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -94,7 +88,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
   public async createCompetitionOrganizerType(
     competitionOrganizerType: Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -103,9 +97,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -126,7 +118,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
       Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -135,9 +127,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -155,7 +145,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
   public async deleteCompetitionOrganizerType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(
@@ -163,9 +153,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );

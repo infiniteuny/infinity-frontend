@@ -15,23 +15,19 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCompetitionTimeRanges(
     filterOptions?: CompetitionTimeRangeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/competition-time-ranges', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -69,15 +65,13 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
   public async getCompetitionTimeRange(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionTimeRange, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/competition-time-ranges/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -94,7 +88,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
   public async createCompetitionTimeRange(
     competitionTimeRange: Omit<CompetitionTimeRange, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionTimeRange, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -103,9 +97,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -124,7 +116,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
     id: string,
     competitionTimeRange: Partial<Omit<CompetitionTimeRange, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionTimeRange, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -133,9 +125,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -153,15 +143,13 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
   public async deleteCompetitionTimeRange(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionTimeRange, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/competition-time-ranges/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

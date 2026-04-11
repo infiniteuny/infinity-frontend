@@ -11,23 +11,19 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getPermissions(
     filterOptions?: PermissionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Permission[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/permissions', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -65,15 +61,13 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   public async getPermission(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Permission, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/permissions/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -88,7 +82,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   public async createPermission(
     permission: Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Permission, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -97,9 +91,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -116,7 +108,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
     id: string,
     permission: Partial<Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Permission, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -125,9 +117,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -143,15 +133,13 @@ export class PermissionRepositoryImpl implements PermissionRepository {
   public async deletePermission(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Permission, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/permissions/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

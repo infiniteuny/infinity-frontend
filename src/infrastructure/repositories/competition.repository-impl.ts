@@ -16,8 +16,6 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCompetitions(
@@ -25,15 +23,13 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Competition[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/competitions', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -78,15 +74,13 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
     id: string,
     includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Competition, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/competitions/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -106,7 +100,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   public async createCompetition(
     competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Competition, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -115,9 +109,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -134,7 +126,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
     id: string,
     competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Competition, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -143,9 +135,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -161,15 +151,13 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   public async deleteCompetition(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Competition, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/competitions/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

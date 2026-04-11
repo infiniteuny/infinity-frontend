@@ -10,13 +10,13 @@ export interface CommunityGroupAdminRepository {
     filterOptions?: CommunityGroupAdminFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>>;
 
   getCommunityGroupAdmin(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>>;
 
   createCommunityGroupAdmin(
@@ -25,7 +25,7 @@ export interface CommunityGroupAdminRepository {
       'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>>;
 
   updateCommunityGroupAdmin(
@@ -34,12 +34,12 @@ export interface CommunityGroupAdminRepository {
       Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>>;
 
   deleteCommunityGroupAdmin(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>>;
 }

@@ -16,8 +16,6 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getFundApplications(
@@ -25,15 +23,13 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     filterOptions?: FundApplicationFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[FundApplication[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/fund-applications', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -88,15 +84,13 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     id: string,
     includeOptions?: FundApplicationIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/fund-applications/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -121,7 +115,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
       'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
       const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
@@ -142,9 +136,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -168,7 +160,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
       const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
@@ -189,9 +181,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -209,15 +199,13 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
   public async deleteFundApplication(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/fund-applications/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

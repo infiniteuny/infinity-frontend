@@ -16,8 +16,6 @@ export class AchievementRepositoryImpl implements AchievementRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getAchievements(
@@ -25,15 +23,13 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     filterOptions?: AchievementFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Achievement[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/achievements', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -92,15 +88,13 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     id: string,
     includeOptions?: AchievementIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/achievements/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -131,7 +125,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
       | 'competitionRank'
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
       const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
@@ -145,9 +139,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -177,7 +169,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
       const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
@@ -191,9 +183,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -209,15 +199,13 @@ export class AchievementRepositoryImpl implements AchievementRepository {
   public async deleteAchievement(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/achievements/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

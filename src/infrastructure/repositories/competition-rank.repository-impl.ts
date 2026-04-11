@@ -15,23 +15,19 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCompetitionRanks(
     filterOptions?: CompetitionRankFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CompetitionRank[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/competition-ranks', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -69,15 +65,13 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
   public async getCompetitionRank(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/competition-ranks/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -94,7 +88,7 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
   public async createCompetitionRank(
     competitionRank: Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -103,9 +97,7 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -124,7 +116,7 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
     id: string,
     competitionRank: Partial<Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -133,9 +125,7 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -153,15 +143,13 @@ export class CompetitionRankRepositoryImpl implements CompetitionRankRepository 
   public async deleteCompetitionRank(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CompetitionRank, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/competition-ranks/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

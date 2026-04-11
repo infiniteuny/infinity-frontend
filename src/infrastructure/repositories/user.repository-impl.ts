@@ -16,8 +16,6 @@ export class UserRepositoryImpl implements UserRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getUsers(
@@ -25,15 +23,13 @@ export class UserRepositoryImpl implements UserRepository {
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/users', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -87,15 +83,13 @@ export class UserRepositoryImpl implements UserRepository {
     id: string,
     includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<User, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/users/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -118,7 +112,7 @@ export class UserRepositoryImpl implements UserRepository {
       'startDate' | 'endDate'
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<User, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -127,9 +121,7 @@ export class UserRepositoryImpl implements UserRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -146,7 +138,7 @@ export class UserRepositoryImpl implements UserRepository {
     id: string,
     user: Partial<Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<User, Error>> {
     try {
       const response = await this.infinityApiDataSource.patch(
@@ -155,9 +147,7 @@ export class UserRepositoryImpl implements UserRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -173,15 +163,13 @@ export class UserRepositoryImpl implements UserRepository {
   public async deleteUser(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<User, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/users/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

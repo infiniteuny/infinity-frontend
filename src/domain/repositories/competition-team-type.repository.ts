@@ -10,31 +10,31 @@ export interface CompetitionTeamTypeRepository {
     filterOptions?: CompetitionTeamTypeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[CompetitionTeamType[], PaginationOptions], Error>>;
 
   getCompetitionTeamType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionTeamType, Error>>;
 
   createCompetitionTeamType(
     competitionTeamType: Omit<CompetitionTeamType, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionTeamType, Error>>;
 
   updateCompetitionTeamType(
     id: string,
     competitionTeamType: Partial<Omit<CompetitionTeamType, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionTeamType, Error>>;
 
   deleteCompetitionTeamType(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<CompetitionTeamType, Error>>;
 }

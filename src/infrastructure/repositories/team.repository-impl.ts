@@ -16,8 +16,6 @@ export class TeamRepositoryImpl implements TeamRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getTeams(
@@ -25,15 +23,13 @@ export class TeamRepositoryImpl implements TeamRepository {
     filterOptions?: TeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Team[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/teams', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -75,15 +71,13 @@ export class TeamRepositoryImpl implements TeamRepository {
     id: string,
     includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Team, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/teams/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           includes: includeOptions
@@ -103,7 +97,7 @@ export class TeamRepositoryImpl implements TeamRepository {
   public async createTeam(
     team: Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Team, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -112,9 +106,7 @@ export class TeamRepositoryImpl implements TeamRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -131,7 +123,7 @@ export class TeamRepositoryImpl implements TeamRepository {
     id: string,
     team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Team, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -140,9 +132,7 @@ export class TeamRepositoryImpl implements TeamRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -158,15 +148,13 @@ export class TeamRepositoryImpl implements TeamRepository {
   public async deleteTeam(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Team, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/teams/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

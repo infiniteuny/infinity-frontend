@@ -15,23 +15,19 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCommunityGroupAdmins(
     filterOptions?: CommunityGroupAdminFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/community-group-admins', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -69,15 +65,13 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   public async getCommunityGroupAdmin(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/community-group-admins/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -97,7 +91,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
       'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -106,9 +100,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -129,7 +121,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
       Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -138,9 +130,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -158,15 +148,13 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
   public async deleteCommunityGroupAdmin(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/community-group-admins/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

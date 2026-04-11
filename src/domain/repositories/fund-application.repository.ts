@@ -12,14 +12,14 @@ export interface FundApplicationRepository {
     filterOptions?: FundApplicationFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[FundApplication[], PaginationOptions], Error>>;
 
   getFundApplication(
     id: string,
     includeOptions?: FundApplicationIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<FundApplication, Error>>;
 
   createFundApplication(
@@ -28,7 +28,7 @@ export interface FundApplicationRepository {
       'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<FundApplication, Error>>;
 
   updateFundApplication(
@@ -40,12 +40,12 @@ export interface FundApplicationRepository {
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<FundApplication, Error>>;
 
   deleteFundApplication(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<FundApplication, Error>>;
 }

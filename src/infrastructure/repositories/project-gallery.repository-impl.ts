@@ -15,23 +15,19 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getProjectGalleries(
     filterOptions?: ProjectGalleryFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[ProjectGallery[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/project-galleries', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -70,15 +66,13 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
   public async getProjectGallery(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/project-galleries/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -95,7 +89,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
   public async createProjectGallery(
     projectGallery: Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
       const projectGalleryDto = ProjectGalleryMapper.fromDomaintoDto(projectGallery);
@@ -110,9 +104,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -131,7 +123,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
     id: string,
     projectGallery: Partial<Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
       const projectGalleryDto = ProjectGalleryMapper.fromDomaintoDto(projectGallery);
@@ -146,9 +138,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -166,15 +156,13 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
   public async deleteProjectGallery(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/project-galleries/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

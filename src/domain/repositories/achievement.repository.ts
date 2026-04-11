@@ -12,14 +12,14 @@ export interface AchievementRepository {
     filterOptions?: AchievementFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<[Achievement[], PaginationOptions], Error>>;
 
   getAchievement(
     id: string,
     includeOptions?: AchievementIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Achievement, Error>>;
 
   createAchievement(
@@ -36,7 +36,7 @@ export interface AchievementRepository {
       | 'competitionRank'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Achievement, Error>>;
 
   updateAchievement(
@@ -56,12 +56,12 @@ export interface AchievementRepository {
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Achievement, Error>>;
 
   deleteAchievement(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    token?: string,
   ): Promise<Either<Achievement, Error>>;
 }

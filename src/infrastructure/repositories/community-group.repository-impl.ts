@@ -15,23 +15,19 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getCommunityGroups(
     filterOptions?: CommunityGroupFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[CommunityGroup[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/community-groups', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -71,15 +67,13 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
   public async getCommunityGroup(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/community-groups/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -96,7 +90,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
   public async createCommunityGroup(
     communityGroup: Omit<CommunityGroup, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
       const response = await this.infinityApiDataSource.post(
@@ -105,9 +99,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -126,7 +118,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
     id: string,
     communityGroup: Partial<Omit<CommunityGroup, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
       const response = await this.infinityApiDataSource.put(
@@ -135,9 +127,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -155,15 +145,13 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
   public async deleteCommunityGroup(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/community-groups/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 

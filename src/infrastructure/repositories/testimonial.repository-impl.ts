@@ -11,23 +11,19 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
     private infinityApiDataSource: InfinityApiDataSource,
-    @inject(SYMBOLS.AccessTokenDataSource)
-    private accessTokenDataSource: () => Promise<string>,
   ) {}
 
   public async getTestimonials(
     filterOptions?: TestimonialFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<[Testimonial[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get('/testimonials', {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         params: {
           per_page: paginationOptions?.perPage,
@@ -65,15 +61,13 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
   public async getTestimonial(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/testimonials/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -88,7 +82,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
   public async createTestimonial(
     testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
       const testimonialDto = TestimonialMapper.fromDomaintoDto(testimonial);
@@ -102,9 +96,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -121,7 +113,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
     id: string,
     testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
       const testimonialDto = TestimonialMapper.fromDomaintoDto(testimonial);
@@ -135,9 +127,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
         {
           signal: abortSignal,
           headers: {
-            ...(authenticate
-              ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-              : {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         },
       );
@@ -153,15 +143,13 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
   public async deleteTestimonial(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
+    token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
       const response = await this.infinityApiDataSource.delete(`/testimonials/${id}`, {
         signal: abortSignal,
         headers: {
-          ...(authenticate
-            ? { Authorization: `Bearer ${await this.accessTokenDataSource()}` }
-            : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
