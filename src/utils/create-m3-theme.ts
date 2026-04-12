@@ -857,23 +857,36 @@ export function createM3Theme({
           MuiDataGrid: {
             styleOverrides: {
               root: ({ theme }) => ({
-                borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.1),
+                background: 'transparent',
+                borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.3),
                 '& .MuiDataGrid-withBorderColor': {
-                  borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.1),
+                  borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.3),
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                  background: 'transparent',
                 },
               }),
-              overlay: {
-                background: 'transparent',
-              },
               columnHeader: ({ theme }) => ({
-                borderBottom: `1px solid ${theme.alpha(theme.vars.palette.outlineVariant, 0.1)} !important`,
+                background: 'transparent',
+                borderBottom: `1px solid ${theme.alpha(theme.vars.palette.outlineVariant, 0.3)} !important`,
                 '& .MuiDataGrid-columnSeparator': {
-                  color: theme.vars.palette.outlineVariant,
+                  color: 'transparent',
                 },
+              }),
+              'row--firstVisible': {
+                '& .MuiDataGrid-cell': {
+                  border: '0px',
+                },
+              },
+              cell: ({ theme }) => ({
+                borderColor: theme.alpha(theme.vars.palette.outlineVariant, 0.3),
               }),
               panelContent: ({ theme }) => ({
                 background: theme.vars.palette.surfaceContainer.main,
               }),
+              overlay: {
+                background: 'transparent',
+              },
             },
           },
         },
