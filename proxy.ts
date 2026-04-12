@@ -7,8 +7,6 @@ import { SYMBOLS } from '@config';
 
 export default async function proxy(req: NextRequest): Promise<Response | undefined> {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
-  const logout = serverContainer.get<Logout>(SYMBOLS.Logout);
-
   const sessionResult = await getSession.execute(req);
   const session = match(sessionResult, {
     onLeft: () => null,
@@ -19,6 +17,7 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
   if ((!session || isSessionExpired) && req.nextUrl.pathname !== '/login') {
     // Workaround for the fact that account cookie not always invalidated
     // at the same time as session cookie.
+    const logout = serverContainer.get<Logout>(SYMBOLS.Logout);
     await logout.execute(req);
 
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
