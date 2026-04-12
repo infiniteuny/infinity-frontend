@@ -35,7 +35,6 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
     account: {
       storeStateStrategy: 'cookie',
       storeAccountCookie: true,
-      updateAccountOnSignIn: true,
     },
     plugins: [
       nextCookies(),
