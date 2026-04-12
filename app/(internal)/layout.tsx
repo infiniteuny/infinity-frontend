@@ -1,9 +1,14 @@
 import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
+import { GetSession } from '@app/application';
 import { InternalFooter, InternalHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
 import { ReactNode } from 'react';
+import { serverContainer } from '@app/server-injection';
+import { SessionDto, SessionMapper } from '@app/infrastructure/dtos';
+import { SYMBOLS } from '@config';
 
 type Props = {
   children: ReactNode;
@@ -20,7 +25,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InternalLayout({ children }: Props) {
+export default async function InternalLayout({ children }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+
   return (
     <html
       lang={APP.site.locale}
@@ -30,7 +45,7 @@ export default function InternalLayout({ children }: Props) {
       <body id="__next">
         <MuiSetup>
           <SkipToContentButton />
-          <InternalHeader />
+          <InternalHeader session={SessionMapper.fromDomaintoDto(session) as SessionDto} />
           {children}
           <InternalFooter />
         </MuiSetup>

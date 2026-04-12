@@ -1,28 +1,30 @@
 'use client';
 
-import {
-  Avatar,
-  Divider,
-  IconButton,
-  List,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@mui/material';
+import { Avatar, Button, IconButton, List, Popover, Typography } from '@mui/material';
 import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 import { NavbarDropdownMenu } from './navbar-dropdown-menu';
 import { NavbarMenu } from './navbar-menu';
-import { Logout } from '@mui/icons-material';
-import { useState } from 'react';
+import { Logout as LogoutIcon } from '@mui/icons-material';
+import { SessionDto, SessionMapper } from '@app/infrastructure/dtos';
+import { useMemo, useState } from 'react';
+import { clientContainer } from '@app/client-injection';
+import { Logout } from '@app/application';
+import { SYMBOLS } from '@config';
+import { useRouter } from 'next/navigation';
 
 type Props = {
+  session: SessionDto;
   menus?: Required<
     PathMenu | UrlMenu | NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>
   >[];
 };
 
-export function InternalNavbar({ menus }: Props) {
+export function InternalNavbar({ session, menus }: Props) {
+  const logout = useMemo(() => clientContainer.get<Logout>(SYMBOLS.Logout), []);
+  const router = useRouter();
+
+  const parsedSession = SessionMapper.fromDtoToDomain(session);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -34,9 +36,10 @@ export function InternalNavbar({ menus }: Props) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setAnchorEl(null);
-    // logout();
+    await logout.execute();
+    router.push('/login');
   };
 
   return (
@@ -67,17 +70,18 @@ export function InternalNavbar({ menus }: Props) {
           className="h-8 w-8"
         />
       </IconButton>
-      <Menu
+      <Popover
         id="account-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         onClick={handleClose}
+        disableScrollLock
+        keepMounted
         slotProps={{
           paper: {
             elevation: 0,
-            className:
-              'max-w-[300px] mt-3 overflow-visible drop-shadow-md before:content-[""] before:block before:absolute before:top-0 before:right-3.5 before:w-2.5 before:h-2.5 before:-translate-y-1/2 before:rotate-45 before:z-0',
+            className: 'max-w-[100%] min-w-[200px] w-[350px] p-4 mt-3 rounded-2xl drop-shadow-md',
             sx: [
               (theme) => ({
                 bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
@@ -98,15 +102,20 @@ export function InternalNavbar({ menus }: Props) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {/* <Typography className="px-4 pb-2">{session?.user?.name || 'User'}</Typography> */}
-        <Divider />
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
+        <Typography typography="h5" className="px-4 text-center">
+          Hi! {parsedSession.user.name || 'User'}
+        </Typography>
+        <Button
+          variant="elevated"
+          fullWidth
+          className="mt-4"
+          size="large"
+          startIcon={<LogoutIcon fontSize="small" />}
+          onClick={handleLogout}
+        >
           Logout
-        </MenuItem>
-      </Menu>
+        </Button>
+      </Popover>
     </nav>
   );
 }
