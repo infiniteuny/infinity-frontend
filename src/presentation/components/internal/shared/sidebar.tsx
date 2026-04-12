@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material';
 import {
   Backdrop,
+  Box,
   Container,
   List,
   ListItem,
@@ -69,7 +70,7 @@ export function InternalSidebar({ menus }: Props) {
           sidebarOpened ? 'translate-x-0' : '-translate-x-full'
         } ${sidebarExtended || sidebarHovered ? '' : 'lg:w-20! lg:overflow-y-hidden'}`}
       >
-        <div className="flex min-h-full flex-col justify-between">
+        <Box className="flex min-h-full flex-col justify-between">
           <List>
             {menus
               ? menus.map((menu, i) => {
@@ -87,7 +88,7 @@ export function InternalSidebar({ menus }: Props) {
             sx={{
               bgcolor: 'surfaceContainer.main',
             }}
-            className="sticky bottom-0 z-11 mt-auto hidden px-0 lg:block"
+            className="sticky bottom-0 z-11 hidden px-0 lg:block"
           >
             <List>
               <ListItem>
@@ -110,7 +111,7 @@ export function InternalSidebar({ menus }: Props) {
               </ListItem>
             </List>
           </Container>
-        </div>
+        </Box>
       </Container>
     </>
   );
