@@ -102,6 +102,10 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
         };
       }, additionalOptions),
     ],
+    disabledPaths: ['/error'],
+    onAPIError: {
+      errorURL: '/login',
+    },
     advanced: {
       cookiePrefix: 'auth',
     },
