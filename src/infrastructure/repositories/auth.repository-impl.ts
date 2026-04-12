@@ -17,12 +17,7 @@ export class AuthRepositoryImpl implements AuthRepository {
   public async signIn(callbackUrl?: string): Promise<Either<void, Error>> {
     try {
       if (this.isServer) {
-        await (this.authDataSource as AuthServerDataSource).api.signInWithOAuth2({
-          body: {
-            providerId: 'infinite-sso',
-            callbackURL: callbackUrl,
-          },
-        });
+        return left(new Error('Sign-in is not supported on the server side'));
       } else {
         await (this.authDataSource as AuthClientDataSource).signIn.oauth2({
           providerId: 'infinite-sso',
