@@ -4,6 +4,7 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { Login } from '@app/application';
 import { SYMBOLS } from '@config/symbols';
+import { LoginRounded } from '@mui/icons-material';
 
 type Props = {
   callbackUrl?: string;
@@ -34,9 +35,10 @@ export function LoginForm({ callbackUrl }: Props) {
 
       <Box component="form" noValidate className="mt-4">
         <Button
-          variant="outlined"
+          variant="filled"
           fullWidth
           className="mt-4"
+          startIcon={<LoginRounded fontSize="small" />}
           onClick={() => login.execute(callbackUrl)}
         >
           Login with INFINITE SSO
