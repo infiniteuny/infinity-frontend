@@ -34,7 +34,7 @@ export class GetFundApplication implements UseCase<
     id: string,
     includeOptions?: FundApplicationIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
     let accessToken: string | undefined;
 

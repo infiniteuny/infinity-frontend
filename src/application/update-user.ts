@@ -31,7 +31,7 @@ export class UpdateUser implements UseCase<Promise<Either<User, Error>>, UpdateU
     id: string,
     user: Partial<Omit<User, 'id' | 'isActive' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<User, Error>> {
     let accessToken: string | undefined;
 

@@ -34,7 +34,7 @@ export class GetGroups implements UseCase<
     filterOptions?: GroupFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Group[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

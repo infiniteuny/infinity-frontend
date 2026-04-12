@@ -38,7 +38,7 @@ export class CreateCommunityGroupAdmin implements UseCase<
       'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     let accessToken: string | undefined;
 

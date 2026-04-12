@@ -34,7 +34,7 @@ export class GetPermissions implements UseCase<
     filterOptions?: PermissionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Permission[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

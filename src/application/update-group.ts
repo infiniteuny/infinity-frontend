@@ -31,7 +31,7 @@ export class UpdateGroup implements UseCase<Promise<Either<Group, Error>>, Updat
     id: string,
     group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Group, Error>> {
     let accessToken: string | undefined;
 

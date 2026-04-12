@@ -38,7 +38,7 @@ export class GetCommunityGroupAdmins implements UseCase<
     filterOptions?: CommunityGroupAdminFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

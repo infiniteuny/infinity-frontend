@@ -32,7 +32,7 @@ export class CreateTestimonial implements UseCase<
   public async execute(
     testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
     let accessToken: string | undefined;
 

@@ -54,7 +54,7 @@ export class CreateAchievement implements UseCase<
       | 'competitionRank'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
     let accessToken: string | undefined;
 

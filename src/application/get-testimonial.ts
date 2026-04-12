@@ -28,7 +28,7 @@ export class GetTestimonial implements UseCase<
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
     let accessToken: string | undefined;
 

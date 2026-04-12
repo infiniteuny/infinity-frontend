@@ -34,7 +34,7 @@ export class GetFaculties implements UseCase<
     filterOptions?: FacultyFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Faculty[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

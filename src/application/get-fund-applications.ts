@@ -41,7 +41,7 @@ export class GetFundApplications implements UseCase<
     filterOptions?: FundApplicationFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[FundApplication[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

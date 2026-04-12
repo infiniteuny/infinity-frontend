@@ -25,7 +25,7 @@ export class GetCoreTeam implements UseCase<Promise<Either<CoreTeam, Error>>, Ge
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<CoreTeam, Error>> {
     let accessToken: string | undefined;
 

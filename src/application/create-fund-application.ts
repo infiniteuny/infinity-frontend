@@ -38,7 +38,7 @@ export class CreateFundApplication implements UseCase<
       'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
     let accessToken: string | undefined;
 

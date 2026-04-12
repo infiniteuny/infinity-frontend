@@ -31,7 +31,7 @@ export class UpdateTeam implements UseCase<Promise<Either<Team, Error>>, UpdateT
     id: string,
     team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
     let accessToken: string | undefined;
 

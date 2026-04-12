@@ -32,7 +32,7 @@ export class CreateProjectGallery implements UseCase<
   public async execute(
     projectGallery: Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<ProjectGallery, Error>> {
     let accessToken: string | undefined;
 

@@ -41,7 +41,7 @@ export class GetAchievements implements UseCase<
     filterOptions?: AchievementFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Achievement[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

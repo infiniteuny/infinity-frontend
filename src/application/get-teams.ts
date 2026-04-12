@@ -41,7 +41,7 @@ export class GetTeams implements UseCase<
     filterOptions?: TeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Team[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

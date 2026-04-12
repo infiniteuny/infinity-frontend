@@ -38,7 +38,7 @@ export class GetCompetitionOutputs implements UseCase<
     filterOptions?: CompetitionOutputFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[CompetitionOutput[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

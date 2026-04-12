@@ -41,7 +41,7 @@ export class GetUsers implements UseCase<
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

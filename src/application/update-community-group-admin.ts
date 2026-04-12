@@ -38,7 +38,7 @@ export class UpdateCommunityGroupAdmin implements UseCase<
       Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     let accessToken: string | undefined;
 

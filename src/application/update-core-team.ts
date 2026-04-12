@@ -34,7 +34,7 @@ export class UpdateCoreTeam implements UseCase<
     id: string,
     coreTeam: Partial<Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<CoreTeam, Error>> {
     let accessToken: string | undefined;
 

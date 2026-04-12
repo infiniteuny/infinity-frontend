@@ -34,7 +34,7 @@ export class UpdateTestimonial implements UseCase<
     id: string,
     testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
     let accessToken: string | undefined;
 

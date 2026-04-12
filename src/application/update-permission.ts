@@ -34,7 +34,7 @@ export class UpdatePermission implements UseCase<
     id: string,
     permission: Partial<Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Permission, Error>> {
     let accessToken: string | undefined;
 

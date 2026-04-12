@@ -38,7 +38,7 @@ export class GetCommunityGroups implements UseCase<
     filterOptions?: CommunityGroupFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[CommunityGroup[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

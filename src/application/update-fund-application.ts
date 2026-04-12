@@ -44,7 +44,7 @@ export class UpdateFundApplication implements UseCase<
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
     let accessToken: string | undefined;
 

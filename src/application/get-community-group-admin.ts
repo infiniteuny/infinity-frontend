@@ -32,7 +32,7 @@ export class GetCommunityGroupAdmin implements UseCase<
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
     let accessToken: string | undefined;
 

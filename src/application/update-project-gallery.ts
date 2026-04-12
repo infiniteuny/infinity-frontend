@@ -34,7 +34,7 @@ export class UpdateProjectGallery implements UseCase<
     id: string,
     projectGallery: Partial<Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<ProjectGallery, Error>> {
     let accessToken: string | undefined;
 

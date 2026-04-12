@@ -38,7 +38,7 @@ export class GetProjectGalleries implements UseCase<
     filterOptions?: ProjectGalleryFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[ProjectGallery[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

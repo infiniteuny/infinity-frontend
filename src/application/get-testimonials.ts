@@ -34,7 +34,7 @@ export class GetTestimonials implements UseCase<
     filterOptions?: TestimonialFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Testimonial[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

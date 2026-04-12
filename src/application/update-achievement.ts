@@ -60,7 +60,7 @@ export class UpdateAchievement implements UseCase<
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
     let accessToken: string | undefined;
 

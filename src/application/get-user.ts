@@ -31,7 +31,7 @@ export class GetUser implements UseCase<Promise<Either<User, Error>>, GetUserPar
     id: string,
     includeOptions?: UserIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<User, Error>> {
     let accessToken: string | undefined;
 

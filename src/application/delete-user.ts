@@ -25,7 +25,7 @@ export class DeleteUser implements UseCase<Promise<Either<User, Error>>, DeleteU
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<User, Error>> {
     let accessToken: string | undefined;
 

@@ -34,7 +34,7 @@ export class GetAchievement implements UseCase<
     id: string,
     includeOptions?: AchievementIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
     let accessToken: string | undefined;
 

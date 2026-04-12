@@ -25,7 +25,7 @@ export class GetGroup implements UseCase<Promise<Either<Group, Error>>, GetGroup
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Group, Error>> {
     let accessToken: string | undefined;
 

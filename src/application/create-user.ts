@@ -35,7 +35,7 @@ export class CreateUser implements UseCase<Promise<Either<User, Error>>, CreateU
       'startDate' | 'endDate'
     >,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<User, Error>> {
     let accessToken: string | undefined;
 

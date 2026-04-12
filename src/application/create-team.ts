@@ -29,7 +29,7 @@ export class CreateTeam implements UseCase<Promise<Either<Team, Error>>, CreateT
   public async execute(
     team: Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
     let accessToken: string | undefined;
 

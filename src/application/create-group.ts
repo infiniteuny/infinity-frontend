@@ -29,7 +29,7 @@ export class CreateGroup implements UseCase<Promise<Either<Group, Error>>, Creat
   public async execute(
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Group, Error>> {
     let accessToken: string | undefined;
 

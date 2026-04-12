@@ -31,7 +31,7 @@ export class GetTeam implements UseCase<Promise<Either<Team, Error>>, GetTeamPar
     id: string,
     includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
     let accessToken: string | undefined;
 

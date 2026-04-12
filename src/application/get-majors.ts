@@ -41,7 +41,7 @@ export class GetMajors implements UseCase<
     filterOptions?: MajorFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[Major[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

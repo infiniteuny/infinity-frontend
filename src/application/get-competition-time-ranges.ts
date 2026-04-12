@@ -38,7 +38,7 @@ export class GetCompetitionTimeRanges implements UseCase<
     filterOptions?: CompetitionTimeRangeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 

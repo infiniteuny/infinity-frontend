@@ -34,7 +34,7 @@ export class GetCoreTeams implements UseCase<
     filterOptions?: CoreTeamFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate?: boolean,
+    authenticate: boolean = true,
   ): Promise<Either<[CoreTeam[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
