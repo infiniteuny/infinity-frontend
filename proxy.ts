@@ -19,6 +19,8 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
 
     return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, req.nextUrl.origin));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
