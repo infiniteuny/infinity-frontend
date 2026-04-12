@@ -10,6 +10,10 @@ export type AuthServerDataSource = ReturnType<typeof authServerDataSourceImpl>;
 const additionalOptions = {
   user: {
     additionalFields: {
+      internalId: {
+        type: 'string',
+        input: false,
+      },
       username: {
         type: 'string',
         input: false,
@@ -51,6 +55,7 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
                 'base64',
               ).toString('utf-8');
               const accessTokenData = JSON.parse(accessTokenPayload);
+              const id = accessTokenData.sub;
               const email = accessTokenData.email;
 
               if (!email || email.trim() === '') {
@@ -78,7 +83,8 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
               }
 
               return {
-                id: users[0].id,
+                id: id,
+                internalId: users[0].id,
                 name: users[0].name,
                 username: users[0].username,
                 email: email,
@@ -86,6 +92,7 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
               };
             },
             mapProfileToUser: (profile) => ({
+              internalId: profile.internalId,
               name: profile.name,
               username: profile.username,
             }),

@@ -92,7 +92,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       return right(
         new Session(
           {
-            id: session.account?.accountId || '',
+            id: session.user.internalId || '',
             name: session.user.name || '',
             username: session.user.username || '',
             emailAddress: session.user.email || '',
