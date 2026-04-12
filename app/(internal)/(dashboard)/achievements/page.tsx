@@ -14,6 +14,8 @@ import {
   AchievementsToolbar,
 } from '@app/presentation/components/internal/achievements';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AchievementsPage() {
   const getAchievements = serverContainer.get<GetAchievements>(SYMBOLS.GetAchievements);
   const result = await getAchievements.execute(

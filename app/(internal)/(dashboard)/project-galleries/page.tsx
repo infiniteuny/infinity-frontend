@@ -14,6 +14,8 @@ import {
   ProjectGalleriesToolbar,
 } from '@app/presentation/components/internal/project-galleries';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProjectGalleriesPage() {
   const getProjectGalleries = serverContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries);
   const result = await getProjectGalleries.execute(undefined, { perPage: 25 });

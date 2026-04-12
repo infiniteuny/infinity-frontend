@@ -11,6 +11,8 @@ import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UsersList, UsersToolbar } from '@app/presentation/components/internal/users';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersPage() {
   const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
   const result = await getUsers.execute(

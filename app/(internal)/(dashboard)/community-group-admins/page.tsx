@@ -14,6 +14,8 @@ import {
   CommunityGroupAdminsToolbar,
 } from '@app/presentation/components/internal/community-group-admins';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CommunityGroupAdminsPage() {
   const getCommunityGroupAdmins = serverContainer.get<GetCommunityGroupAdmins>(
     SYMBOLS.GetCommunityGroupAdmins,

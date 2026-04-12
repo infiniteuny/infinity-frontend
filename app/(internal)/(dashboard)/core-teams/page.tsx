@@ -11,6 +11,8 @@ import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { CoreTeamsList, CoreTeamsToolbar } from '@app/presentation/components/internal/core-teams';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CoreTeamsPage() {
   const getCoreTeams = serverContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams);
   const result = await getCoreTeams.execute(undefined, { perPage: 25 });

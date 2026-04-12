@@ -11,6 +11,8 @@ import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { TeamsList, TeamsToolbar } from '@app/presentation/components/internal/teams';
 
+export const dynamic = 'force-dynamic';
+
 export default async function TeamsPage() {
   const getTeams = serverContainer.get<GetTeams>(SYMBOLS.GetTeams);
   const result = await getTeams.execute(['leader', 'team_type'], undefined, { perPage: 25 });

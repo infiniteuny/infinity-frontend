@@ -14,6 +14,8 @@ import {
   FundApplicationsToolbar,
 } from '@app/presentation/components/internal/fund-applications';
 
+export const dynamic = 'force-dynamic';
+
 export default async function FundApplicationsPage() {
   const getFundApplications = serverContainer.get<GetFundApplications>(SYMBOLS.GetFundApplications);
   const result = await getFundApplications.execute(

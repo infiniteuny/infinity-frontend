@@ -14,6 +14,8 @@ import {
   TestimonialsToolbar,
 } from '@app/presentation/components/internal/testimonials';
 
+export const dynamic = 'force-dynamic';
+
 export default async function TestimonialsPage() {
   const getTestimonials = serverContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials);
   const result = await getTestimonials.execute(undefined, { perPage: 25 });

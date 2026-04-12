@@ -14,6 +14,8 @@ import {
   PermissionsToolbar,
 } from '@app/presentation/components/internal/permissions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PermissionsPage() {
   const getPermissions = serverContainer.get<GetPermissions>(SYMBOLS.GetPermissions);
   const result = await getPermissions.execute(undefined, { perPage: 25 });
