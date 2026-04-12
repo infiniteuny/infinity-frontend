@@ -4,7 +4,7 @@ import { Avatar, Button, IconButton, List, Popover, Typography } from '@mui/mate
 import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 import { NavbarDropdownMenu } from './navbar-dropdown-menu';
 import { NavbarMenu } from './navbar-menu';
-import { Logout as LogoutIcon } from '@mui/icons-material';
+import { LogoutRounded } from '@mui/icons-material';
 import { SessionDto, SessionMapper } from '@app/infrastructure/dtos';
 import { useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
@@ -110,7 +110,7 @@ export function InternalNavbar({ session, menus }: Props) {
           fullWidth
           className="mt-4"
           size="large"
-          startIcon={<LogoutIcon fontSize="small" />}
+          startIcon={<LogoutRounded fontSize="small" />}
           onClick={handleLogout}
         >
           Logout
