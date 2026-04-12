@@ -36,10 +36,20 @@ export class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  public async signOut(): Promise<Either<void, Error>> {
+  public async signOut(request?: Request): Promise<Either<void, Error>> {
     try {
       if (this.isServer) {
-        await (this.authDataSource as AuthServerDataSource).api.signOut();
+        let headers: HeadersInit;
+
+        if (request) {
+          headers = new NextRequest(request).headers;
+        } else {
+          const { headers: headersFunc } = await import('next/headers.js');
+          headers = await headersFunc();
+        }
+        await (this.authDataSource as AuthServerDataSource).api.signOut({
+          headers,
+        });
       } else {
         await (this.authDataSource as AuthClientDataSource).signOut();
       }

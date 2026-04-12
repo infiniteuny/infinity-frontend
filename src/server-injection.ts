@@ -96,7 +96,6 @@ import {
   GetTestimonials,
   GetUser,
   GetUsers,
-  Login,
   UpdateAchievement,
   UpdateCommunityGroupAdmin,
   UpdateCoreTeam,
@@ -108,6 +107,7 @@ import {
   UpdateTestimonial,
   GetCompetitionTeamTypes,
   GetUsersUnauthenticated,
+  Logout,
 } from '@app/application';
 import { SYMBOLS } from '@config';
 
@@ -170,7 +170,7 @@ serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer
   .bind<GetUsersUnauthenticated>(SYMBOLS.GetUsersUnauthenticated)
   .to(GetUsersUnauthenticated);
-serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
+serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
 serverContainer
   .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)

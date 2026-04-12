@@ -1,4 +1,4 @@
-import { GetSession } from '@app/application';
+import { GetSession, Logout } from '@app/application';
 import { match } from 'effect/Either';
 import { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -7,6 +7,8 @@ import { SYMBOLS } from '@config';
 
 export default async function proxy(req: NextRequest): Promise<Response | undefined> {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const logout = serverContainer.get<Logout>(SYMBOLS.Logout);
+
   const sessionResult = await getSession.execute(req);
   const session = match(sessionResult, {
     onLeft: () => null,
@@ -15,6 +17,10 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
   const isSessionExpired = session ? session.expiresAt < new Date() : true;
 
   if ((!session || isSessionExpired) && req.nextUrl.pathname !== '/login') {
+    // Workaround for the fact that account cookie not always invalidated
+    // at the same time as session cookie.
+    await logout.execute(req);
+
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
 
     return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, req.nextUrl.origin));
