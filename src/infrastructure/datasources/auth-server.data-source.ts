@@ -108,6 +108,9 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
     },
     advanced: {
       cookiePrefix: 'auth',
+      database: {
+        generateId: 'uuid',
+      },
     },
   });
 };
