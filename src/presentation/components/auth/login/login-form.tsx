@@ -1,13 +1,17 @@
 'use client';
 
 import { Box, Button, Paper, Typography } from '@mui/material';
-import { login } from '@app/presentation/actions';
+import { clientContainer } from '@app/client-injection';
+import { Login } from '@app/application';
+import { SYMBOLS } from '@config/symbols';
 
 type Props = {
   callbackUrl?: string;
 };
 
 export function LoginForm({ callbackUrl }: Props) {
+  const login = clientContainer.get<Login>(SYMBOLS.Login);
+
   return (
     <Paper
       elevation={0}
@@ -29,7 +33,12 @@ export function LoginForm({ callbackUrl }: Props) {
       </Typography>
 
       <Box component="form" noValidate className="mt-4">
-        <Button variant="outlined" fullWidth className="mt-4" onClick={() => login(callbackUrl)}>
+        <Button
+          variant="outlined"
+          fullWidth
+          className="mt-4"
+          onClick={() => login.execute(callbackUrl)}
+        >
           Login with INFINITE SSO
         </Button>
       </Box>

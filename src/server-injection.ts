@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import type { AuthDataSource } from '@app/infrastructure/datasources/auth.data-source';
 import { AuthController, AuthControllerImpl } from '@app/presentation/controllers';
 import {
   AchievementRepository,
@@ -53,7 +52,8 @@ import {
 } from '@app/infrastructure/repositories';
 import { Container } from 'inversify';
 import {
-  createAuthDataSourceImpl,
+  AuthServerDataSource,
+  authServerDataSourceImpl,
   InfinityApiDataSource,
   infinityApiDataSourceImpl,
 } from '@app/infrastructure/datasources/server';
@@ -107,6 +107,7 @@ import {
   UpdateTeam,
   UpdateTestimonial,
   GetCompetitionTeamTypes,
+  GetUsersUnauthenticated,
 } from '@app/application';
 import { SYMBOLS } from '@config';
 
@@ -166,6 +167,9 @@ serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+serverContainer
+  .bind<GetUsersUnauthenticated>(SYMBOLS.GetUsersUnauthenticated)
+  .to(GetUsersUnauthenticated);
 serverContainer.bind<Login>(SYMBOLS.Login).to(Login);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
 serverContainer
@@ -240,18 +244,10 @@ serverContainer
 serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
-serverContainer.bind<AuthDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
-  const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
-  return createAuthDataSourceImpl(getUsers);
+serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
+  const getUsers = serverContainer.get<GetUsersUnauthenticated>(SYMBOLS.GetUsersUnauthenticated);
+  return authServerDataSourceImpl(getUsers);
 });
-
-serverContainer
-  .bind<() => Promise<string>>(SYMBOLS.AccessTokenDataSource)
-  .toDynamicValue(() => async () => {
-    const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
-    const session = await authDataSource.auth();
-    return session?.accessToken || '';
-  });
 serverContainer
   .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
   .toConstantValue(infinityApiDataSourceImpl);

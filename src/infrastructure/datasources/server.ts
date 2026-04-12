@@ -1,2 +1,2 @@
-export * from './auth.data-source';
+export * from './auth-server.data-source';
 export * from './infinity-api.data-source';

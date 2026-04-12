@@ -1,5 +1,6 @@
 import type { AuthRepository } from '@app/domain/repositories';
 import { inject, injectable } from 'inversify';
+import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
@@ -21,6 +22,13 @@ export class Login implements UseCase<void, LoginParams> {
       ? new URL(callbackUrl).pathname + new URL(callbackUrl).searchParams.toString()
       : undefined;
 
-    await this.authRepository.signIn(redirectUrl);
+    const signInResult = await this.authRepository.signIn(redirectUrl);
+
+    return match(signInResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: () => undefined,
+    });
   }
 }

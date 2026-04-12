@@ -23,6 +23,7 @@ import {
   TeamRepository,
   TestimonialRepository,
   UserRepository,
+  AuthRepository,
 } from '@app/domain/repositories';
 import {
   AchievementRepositoryImpl,
@@ -48,6 +49,7 @@ import {
   TeamRepositoryImpl,
   TestimonialRepositoryImpl,
   UserRepositoryImpl,
+  AuthRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import {
   CreateAchievement,
@@ -92,17 +94,17 @@ import {
   UpdateTeam,
   UpdateTestimonial,
   UpdateUser,
+  Login,
 } from '@app/application';
 import {
+  AuthClientDataSource,
+  authClientDataSourceImpl,
   InfinityApiDataSource,
   infinityApiDataSourceImpl,
-} from '@app/infrastructure/datasources/server';
-import {
   SessionStorageDataSource,
   SessionStorageDataSourceImpl,
 } from '@app/infrastructure/datasources/client';
 import { SYMBOLS } from '@config';
-import { getSession } from 'next-auth/react';
 
 export const clientContainer = new Container();
 
@@ -152,6 +154,7 @@ clientContainer
 clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+clientContainer.bind<Login>(SYMBOLS.Login).to(Login);
 clientContainer
   .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
   .to(SetSidebarExtendedState);
@@ -174,6 +177,7 @@ clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 clientContainer
   .bind<AchievementRepository>(SYMBOLS.AchievementRepository)
   .to(AchievementRepositoryImpl);
+clientContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
 clientContainer
   .bind<CommunityGroupAdminRepository>(SYMBOLS.CommunityGroupAdminRepository)
   .to(CommunityGroupAdminRepositoryImpl);
@@ -226,9 +230,9 @@ clientContainer
 clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
-clientContainer.bind<() => Promise<string>>(SYMBOLS.AccessTokenDataSource).toDynamicValue(() => {
-  return async () => (await getSession())?.accessToken || '';
-});
+clientContainer
+  .bind<AuthClientDataSource>(SYMBOLS.AuthDataSource)
+  .toConstantValue(authClientDataSourceImpl);
 clientContainer
   .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
   .toConstantValue(infinityApiDataSourceImpl);

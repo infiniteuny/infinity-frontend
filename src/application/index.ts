@@ -40,6 +40,7 @@ export * from './get-testimonial';
 export * from './get-testimonials';
 export * from './get-user';
 export * from './get-users';
+export * from './get-users-unauthenticated';
 export * from './login';
 export * from './set-sidebar-extended-state';
 export * from './update-achievement';

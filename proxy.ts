@@ -1,18 +1,25 @@
-import { AuthDataSource } from '@app/infrastructure/datasources/server';
+import { GetSession } from '@app/application';
+import { match } from 'effect/Either';
+import { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
-const authDataSource = serverContainer.get<AuthDataSource>(SYMBOLS.AuthDataSource);
+export default async function proxy(req: NextRequest): Promise<Response | undefined> {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const sessionResult = await getSession.execute(req);
+  const session = match(sessionResult, {
+    onLeft: () => null,
+    onRight: (data) => data,
+  });
+  const isSessionExpired = session ? session.expiresAt < new Date() : true;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default authDataSource.auth((req: any) => {
-  if ((!req.auth && req.nextUrl.pathname !== '/login') || req.auth?.error) {
+  if ((!session || isSessionExpired) && req.nextUrl.pathname !== '/login') {
     const callbackUrl = encodeURIComponent(req.nextUrl.toString());
 
     return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, req.nextUrl.origin));
   }
-});
+}
 
 export const config = {
   matcher: ['/((?!auth|login|logout|_next/static|_next/image|favicon.ico).*)'],

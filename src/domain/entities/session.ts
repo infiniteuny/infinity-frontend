@@ -6,7 +6,6 @@ export class Session {
     emailAddress: string;
     picture?: string;
   };
-  public accessToken: string;
   public expiresAt: Date;
 
   public constructor(
@@ -17,11 +16,9 @@ export class Session {
       emailAddress: string;
       picture?: string;
     },
-    accessToken: string,
     expiresAt: Date,
   ) {
     this.user = user;
-    this.accessToken = accessToken;
     this.expiresAt = expiresAt;
   }
 }

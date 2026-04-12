@@ -42,6 +42,7 @@ export const SYMBOLS = {
   GetTestimonials: Symbol.for('GetTestimonials'),
   GetUser: Symbol.for('GetUser'),
   GetUsers: Symbol.for('GetUsers'),
+  GetUsersUnauthenticated: Symbol.for('GetUsersUnauthenticated'),
   Login: Symbol.for('Login'),
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),
   UpdateAchievement: Symbol.for('UpdateAchievement'),
@@ -85,7 +86,6 @@ export const SYMBOLS = {
   UserRepository: Symbol.for('UserRepository'),
 
   // Data sources
-  AccessTokenDataSource: Symbol.for('AccessTokenDataSource'),
   AuthDataSource: Symbol.for('AuthDataSource'),
   InfinityApiDataSource: Symbol.for('InfinityApiDataSource'),
   SessionStorageDataSource: Symbol.for('SessionStorageDataSource'),

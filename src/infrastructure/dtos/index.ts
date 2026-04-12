@@ -19,6 +19,7 @@ export * from './pagination-options.dto';
 export * from './permission.dto';
 export * from './persona.dto';
 export * from './project-gallery.dto';
+export * from './session.dto';
 export * from './team.dto';
 export * from './testimonial.dto';
 export * from './user.dto';
