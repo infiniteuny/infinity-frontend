@@ -1,6 +1,6 @@
 'use client';
 
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { ReactNode } from 'react';
 import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
 
@@ -20,11 +20,16 @@ export function InternalMain({ children }: Props) {
       component="main"
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
-      className={`min-h-[calc(100vh-4rem)] w-full overflow-auto px-0 ${
+      className={`h-full min-h-[calc(100vh-8.625rem)] w-full overflow-auto pr-4 ${
         sidebarExtended ? 'lg:pl-65' : 'lg:pl-20'
       }`}
     >
-      {children}
+      <Box
+        sx={{ bgcolor: 'surfaceContainerLow.main' }}
+        className="flow-root h-full min-h-[calc(100vh-8.625rem)] w-full rounded-2xl"
+      >
+        {children}
+      </Box>
     </Container>
   );
 }
