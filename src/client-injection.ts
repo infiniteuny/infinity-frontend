@@ -95,6 +95,7 @@ import {
   UpdateTestimonial,
   UpdateUser,
   Login,
+  Logout,
 } from '@app/application';
 import {
   AuthClientDataSource,
@@ -155,6 +156,7 @@ clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 clientContainer.bind<Login>(SYMBOLS.Login).to(Login);
+clientContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
 clientContainer
   .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
   .to(SetSidebarExtendedState);

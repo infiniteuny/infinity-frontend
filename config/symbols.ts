@@ -44,6 +44,7 @@ export const SYMBOLS = {
   GetUsers: Symbol.for('GetUsers'),
   GetUsersUnauthenticated: Symbol.for('GetUsersUnauthenticated'),
   Login: Symbol.for('Login'),
+  Logout: Symbol.for('Logout'),
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),
   UpdateAchievement: Symbol.for('UpdateAchievement'),
   UpdateCommunityGroupAdmin: Symbol.for('UpdateCommunityGroupAdmin'),
