@@ -1,7 +1,7 @@
 'use client';
 
 import { Achievement, PaginationOptions } from '@app/domain/entities';
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
@@ -123,118 +123,112 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'team',
+              headerName: 'Team',
+              flex: 1,
+            },
+            {
+              field: 'competition',
+              headerName: 'Competition',
+              flex: 2,
+            },
+            {
+              field: 'competitionScale',
+              headerName: 'Scale',
+              flex: 1,
+            },
+            {
+              field: 'competitionTimeRange',
+              headerName: 'Time Range',
+              flex: 1,
+            },
+            {
+              field: 'competitionOutput',
+              headerName: 'Output',
+              flex: 1,
+            },
+            {
+              field: 'competitionRank',
+              headerName: 'Rank',
+              flex: 1,
+            },
+            {
+              field: 'competitionBranch',
+              headerName: 'Branch',
+              flex: 2,
+            },
+            {
+              field: 'competitionStartDate',
+              headerName: 'Start Date',
+              flex: 1,
+            },
+            {
+              field: 'competitionEndDate',
+              headerName: 'End Date',
+              flex: 1,
+            },
+            {
+              field: 'image',
+              headerName: 'Image',
+              flex: 0.5,
+            },
+            {
+              field: 'status',
+              headerName: 'Status',
+              flex: 1,
+            },
+          ]}
+          rows={rows.map((achievement) => ({
+            id: achievement.id,
+            team: achievement.team?.name || 'N/A',
+            competition: achievement.competition?.name || 'N/A',
+            competitionScale: achievement.competitionScale?.name || 'N/A',
+            competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
+            competitionOutput: achievement.competitionOutput?.name || 'N/A',
+            competitionRank: achievement.competitionRank?.name || 'N/A',
+            competitionBranch: achievement.competitionBranch,
+            competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
+            competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
+            status: achievement.status,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No achievements found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                id: false,
               },
-              {
-                field: 'team',
-                headerName: 'Team',
-                flex: 1,
-              },
-              {
-                field: 'competition',
-                headerName: 'Competition',
-                flex: 2,
-              },
-              {
-                field: 'competitionScale',
-                headerName: 'Scale',
-                flex: 1,
-              },
-              {
-                field: 'competitionTimeRange',
-                headerName: 'Time Range',
-                flex: 1,
-              },
-              {
-                field: 'competitionOutput',
-                headerName: 'Output',
-                flex: 1,
-              },
-              {
-                field: 'competitionRank',
-                headerName: 'Rank',
-                flex: 1,
-              },
-              {
-                field: 'competitionBranch',
-                headerName: 'Branch',
-                flex: 2,
-              },
-              {
-                field: 'competitionStartDate',
-                headerName: 'Start Date',
-                flex: 1,
-              },
-              {
-                field: 'competitionEndDate',
-                headerName: 'End Date',
-                flex: 1,
-              },
-              {
-                field: 'image',
-                headerName: 'Image',
-                flex: 0.5,
-              },
-              {
-                field: 'status',
-                headerName: 'Status',
-                flex: 1,
-              },
-            ]}
-            rows={rows.map((achievement) => ({
-              id: achievement.id,
-              team: achievement.team?.name || 'N/A',
-              competition: achievement.competition?.name || 'N/A',
-              competitionScale: achievement.competitionScale?.name || 'N/A',
-              competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
-              competitionOutput: achievement.competitionOutput?.name || 'N/A',
-              competitionRank: achievement.competitionRank?.name || 'N/A',
-              competitionBranch: achievement.competitionBranch,
-              competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
-              competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
-              status: achievement.status,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No achievements found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+            },
+          }}
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }

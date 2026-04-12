@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
@@ -122,146 +122,140 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': {
-                display: 'none',
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': {
+              display: 'none',
+            },
+            '.MuiDataGrid-row': {
+              '&:hover': {
+                cursor: 'pointer',
               },
-              '.MuiDataGrid-row': {
-                '&:hover': {
-                  cursor: 'pointer',
-                },
+            },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'name',
+              headerName: 'Name',
+              flex: 2,
+            },
+            {
+              field: 'username',
+              headerName: 'Username',
+              flex: 1,
+            },
+            {
+              field: 'emailAddress',
+              headerName: 'Email Address',
+              flex: 2,
+            },
+            {
+              field: 'phoneNumber',
+              headerName: 'Phone Number',
+              flex: 1,
+            },
+            {
+              field: 'studentId',
+              headerName: 'Student ID',
+              flex: 1,
+            },
+            {
+              field: 'major',
+              headerName: 'Major',
+              flex: 1,
+            },
+            {
+              field: 'faculty',
+              headerName: 'Faculty',
+              flex: 1,
+            },
+            {
+              field: 'startDate',
+              headerName: 'Start Date',
+              flex: 1,
+              valueFormatter: (value) => {
+                if (!value) return 'N/A';
+                return new Date(value).toLocaleDateString();
               },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
+            },
+            {
+              field: 'endDate',
+              headerName: 'End Date',
+              flex: 1,
+              valueFormatter: (value) => {
+                if (!value) return 'N/A';
+                return new Date(value).toLocaleDateString();
               },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
+            },
+            {
+              field: 'isMember',
+              headerName: 'Member',
+              flex: 0.5,
+              type: 'boolean',
+            },
+            {
+              field: 'isExtraordinary',
+              headerName: 'Extraordinary',
+              flex: 0.5,
+              type: 'boolean',
+            },
+            {
+              field: 'isActive',
+              headerName: 'Active',
+              flex: 0.5,
+              type: 'boolean',
+            },
+          ]}
+          rows={rows.map((user) => ({
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            emailAddress: user.emailAddress,
+            phoneNumber: user.phoneNumber,
+            studentId: user.studentId,
+            major: (user.major as Major)?.name || 'N/A',
+            faculty: (user.major as Major)?.faculty?.name || 'N/A',
+            startDate: user.startDate,
+            endDate: user.endDate,
+            isMember: user.isMember,
+            isExtraordinary: user.isExtraordinary,
+            isActive: user.isActive,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No users found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                id: false,
+                username: false,
+                emailAddress: false,
+                phoneNumber: false,
+                isExtraordinary: false,
               },
-              {
-                field: 'username',
-                headerName: 'Username',
-                flex: 1,
-              },
-              {
-                field: 'emailAddress',
-                headerName: 'Email Address',
-                flex: 2,
-              },
-              {
-                field: 'phoneNumber',
-                headerName: 'Phone Number',
-                flex: 1,
-              },
-              {
-                field: 'studentId',
-                headerName: 'Student ID',
-                flex: 1,
-              },
-              {
-                field: 'major',
-                headerName: 'Major',
-                flex: 1,
-              },
-              {
-                field: 'faculty',
-                headerName: 'Faculty',
-                flex: 1,
-              },
-              {
-                field: 'startDate',
-                headerName: 'Start Date',
-                flex: 1,
-                valueFormatter: (value) => {
-                  if (!value) return 'N/A';
-                  return new Date(value).toLocaleDateString();
-                },
-              },
-              {
-                field: 'endDate',
-                headerName: 'End Date',
-                flex: 1,
-                valueFormatter: (value) => {
-                  if (!value) return 'N/A';
-                  return new Date(value).toLocaleDateString();
-                },
-              },
-              {
-                field: 'isMember',
-                headerName: 'Member',
-                flex: 0.5,
-                type: 'boolean',
-              },
-              {
-                field: 'isExtraordinary',
-                headerName: 'Extraordinary',
-                flex: 0.5,
-                type: 'boolean',
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                flex: 0.5,
-                type: 'boolean',
-              },
-            ]}
-            rows={rows.map((user) => ({
-              id: user.id,
-              name: user.name,
-              username: user.username,
-              emailAddress: user.emailAddress,
-              phoneNumber: user.phoneNumber,
-              studentId: user.studentId,
-              major: (user.major as Major)?.name || 'N/A',
-              faculty: (user.major as Major)?.faculty?.name || 'N/A',
-              startDate: user.startDate,
-              endDate: user.endDate,
-              isMember: user.isMember,
-              isExtraordinary: user.isExtraordinary,
-              isActive: user.isActive,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No users found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  username: false,
-                  emailAddress: false,
-                  phoneNumber: false,
-                  isExtraordinary: false,
-                },
-              },
-            }}
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+            },
+          }}
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }

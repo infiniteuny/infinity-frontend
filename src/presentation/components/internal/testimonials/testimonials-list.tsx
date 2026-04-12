@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
@@ -123,78 +123,72 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'name',
+              headerName: 'Name',
+              flex: 2,
+            },
+            {
+              field: 'position',
+              headerName: 'Position',
+              flex: 1,
+            },
+            {
+              field: 'content',
+              headerName: 'Content',
+              flex: 2.5,
+            },
+            {
+              field: 'photo',
+              headerName: 'Photo',
+              flex: 0.5,
+            },
+          ]}
+          rows={rows.map((testimonial) => ({
+            id: testimonial.id,
+            name: testimonial.name,
+            position: testimonial.position,
+            photo: testimonial.photo,
+            content: testimonial.content,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No testimonials found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                id: false,
+                content: false,
               },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-              },
-              {
-                field: 'position',
-                headerName: 'Position',
-                flex: 1,
-              },
-              {
-                field: 'content',
-                headerName: 'Content',
-                flex: 2.5,
-              },
-              {
-                field: 'photo',
-                headerName: 'Photo',
-                flex: 0.5,
-              },
-            ]}
-            rows={rows.map((testimonial) => ({
-              id: testimonial.id,
-              name: testimonial.name,
-              position: testimonial.position,
-              photo: testimonial.photo,
-              content: testimonial.content,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No testimonials found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  content: false,
-                },
-              },
-            }}
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+            },
+          }}
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
@@ -128,67 +128,61 @@ export function CommunityGroupAdminsList({
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'year',
+              headerName: 'Year',
+              flex: 1,
+            },
+            {
+              field: 'isActive',
+              headerName: 'Active',
+              type: 'boolean',
+              flex: 0.5,
+            },
+          ]}
+          rows={rows.map((communityGroupAdmin) => ({
+            id: communityGroupAdmin.id,
+            year: communityGroupAdmin.year,
+            isActive: communityGroupAdmin.isActive,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No community group administrators found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                id: false,
+                group: false,
               },
-              {
-                field: 'year',
-                headerName: 'Year',
-                flex: 1,
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                type: 'boolean',
-                flex: 0.5,
-              },
-            ]}
-            rows={rows.map((communityGroupAdmin) => ({
-              id: communityGroupAdmin.id,
-              year: communityGroupAdmin.year,
-              isActive: communityGroupAdmin.isActive,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No community group administrators found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  group: false,
-                },
-              },
-            }}
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+            },
+          }}
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }

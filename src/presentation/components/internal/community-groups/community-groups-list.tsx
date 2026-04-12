@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CommunityGroup, PaginationOptions } from '@app/domain/entities';
 import {
@@ -123,65 +123,59 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 1.5,
-              },
-              {
-                field: 'priority',
-                headerName: 'Priority',
-                flex: 1,
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                type: 'boolean',
-                flex: 0.75,
-              },
-            ]}
-            rows={rows.map((communityGroup) => ({
-              id: communityGroup.id,
-              name: communityGroup.name,
-              priority: communityGroup.priority,
-              isActive: communityGroup.isActive,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No community groups found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'name',
+              headerName: 'Name',
+              flex: 1.5,
+            },
+            {
+              field: 'priority',
+              headerName: 'Priority',
+              flex: 1,
+            },
+            {
+              field: 'isActive',
+              headerName: 'Active',
+              type: 'boolean',
+              flex: 0.75,
+            },
+          ]}
+          rows={rows.map((communityGroup) => ({
+            id: communityGroup.id,
+            name: communityGroup.name,
+            priority: communityGroup.priority,
+            isActive: communityGroup.isActive,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No community groups found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, NoSsr } from '@mui/material';
+import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
@@ -123,107 +123,101 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
   };
 
   return (
-    <Box component="section" className="w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <NoSsr>
-          <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
+    <Box component="section" className="mb-6 w-full px-6">
+      <NoSsr>
+        <DataGrid
+          sx={{
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+          }}
+          columns={[
+            {
+              field: 'id',
+              headerName: 'ID',
+              flex: 1,
+            },
+            {
+              field: 'team',
+              headerName: 'Team',
+              flex: 1,
+            },
+            {
+              field: 'competition',
+              headerName: 'Competition',
+              flex: 2,
+            },
+            {
+              field: 'competitionScale',
+              headerName: 'Scale',
+              flex: 1,
+            },
+            {
+              field: 'competitionBranch',
+              headerName: 'Branch',
+              flex: 2,
+            },
+            {
+              field: 'competitionStartDate',
+              headerName: 'Start Date',
+              flex: 1,
+            },
+            {
+              field: 'competitionEndDate',
+              headerName: 'End Date',
+              flex: 1,
+            },
+            {
+              field: 'letterOfAcceptance',
+              headerName: 'LoA',
+              flex: 0.5,
+            },
+            {
+              field: 'proposal',
+              headerName: 'Proposal',
+              flex: 0.5,
+            },
+            {
+              field: 'status',
+              headerName: 'Status',
+              flex: 1,
+            },
+          ]}
+          rows={rows.map((fundApplication) => ({
+            id: fundApplication.id,
+            team: fundApplication.team?.name || 'N/A',
+            competition: fundApplication.competition?.name || 'N/A',
+            competitionScale: fundApplication.competitionScale?.name || 'N/A',
+            competitionBranch: fundApplication.competitionBranch,
+            competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),
+            competitionEndDate: fundApplication.competitionEndDate.toLocaleDateString(),
+            letterOfAcceptance: fundApplication.letterOfAcceptance,
+            proposal: fundApplication.proposal,
+            status: fundApplication.status,
+          }))}
+          slots={{
+            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+          }}
+          slotProps={{
+            noRowsOverlay: { text: 'No fund applications found.' },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+          paginationMode="server"
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                id: false,
               },
-              {
-                field: 'team',
-                headerName: 'Team',
-                flex: 1,
-              },
-              {
-                field: 'competition',
-                headerName: 'Competition',
-                flex: 2,
-              },
-              {
-                field: 'competitionScale',
-                headerName: 'Scale',
-                flex: 1,
-              },
-              {
-                field: 'competitionBranch',
-                headerName: 'Branch',
-                flex: 2,
-              },
-              {
-                field: 'competitionStartDate',
-                headerName: 'Start Date',
-                flex: 1,
-              },
-              {
-                field: 'competitionEndDate',
-                headerName: 'End Date',
-                flex: 1,
-              },
-              {
-                field: 'letterOfAcceptance',
-                headerName: 'LoA',
-                flex: 0.5,
-              },
-              {
-                field: 'proposal',
-                headerName: 'Proposal',
-                flex: 0.5,
-              },
-              {
-                field: 'status',
-                headerName: 'Status',
-                flex: 1,
-              },
-            ]}
-            rows={rows.map((fundApplication) => ({
-              id: fundApplication.id,
-              team: fundApplication.team?.name || 'N/A',
-              competition: fundApplication.competition?.name || 'N/A',
-              competitionScale: fundApplication.competitionScale?.name || 'N/A',
-              competitionBranch: fundApplication.competitionBranch,
-              competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),
-              competitionEndDate: fundApplication.competitionEndDate.toLocaleDateString(),
-              letterOfAcceptance: fundApplication.letterOfAcceptance,
-              proposal: fundApplication.proposal,
-              status: fundApplication.status,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No fund applications found.' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
-            paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
-            loading={isLoading}
-            rowCount={rowCount}
-            paginationMeta={paginationMeta}
-            paginationModel={paginationModel}
-            onPaginationModelChange={handlePaginationModelChange}
-            onRowClick={handleRowClick}
-            disableRowSelectionOnClick
-          />
-        </NoSsr>
-      </Container>
+            },
+          }}
+          loading={isLoading}
+          rowCount={rowCount}
+          paginationMeta={paginationMeta}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowClick={handleRowClick}
+          disableRowSelectionOnClick
+        />
+      </NoSsr>
     </Box>
   );
 }
