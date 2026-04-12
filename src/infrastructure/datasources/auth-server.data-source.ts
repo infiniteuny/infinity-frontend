@@ -28,7 +28,7 @@ export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
       cookieCache: {
         enabled: true,
         maxAge: 3 * 60 * 60, // 3 hours
-        strategy: 'compact',
+        strategy: 'jwe',
         refreshCache: true,
       },
     },
