@@ -76,6 +76,7 @@ import {
   GetCompetitionOutputs,
   GetCompetitionRanks,
   GetCompetitionScales,
+  GetCompetitionTeamTypes,
   GetCompetitionTimeRanges,
   GetCoreTeam,
   GetCoreTeams,
@@ -96,6 +97,7 @@ import {
   GetTestimonials,
   GetUser,
   GetUsers,
+  GetUsersWithToken,
   UpdateAchievement,
   UpdateCommunityGroupAdmin,
   UpdateCoreTeam,
@@ -105,8 +107,6 @@ import {
   UpdateProjectGallery,
   UpdateTeam,
   UpdateTestimonial,
-  GetCompetitionTeamTypes,
-  GetUsersUnauthenticated,
   Logout,
 } from '@app/application';
 import { SYMBOLS } from '@config';
@@ -167,9 +167,7 @@ serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
-serverContainer
-  .bind<GetUsersUnauthenticated>(SYMBOLS.GetUsersUnauthenticated)
-  .to(GetUsersUnauthenticated);
+serverContainer.bind<GetUsersWithToken>(SYMBOLS.GetUsersWithToken).to(GetUsersWithToken);
 serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
 serverContainer
@@ -245,7 +243,7 @@ serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryIm
 
 // Data sources
 serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
-  const getUsers = serverContainer.get<GetUsersUnauthenticated>(SYMBOLS.GetUsersUnauthenticated);
+  const getUsers = serverContainer.get<GetUsersWithToken>(SYMBOLS.GetUsersWithToken);
   return authServerDataSourceImpl(getUsers);
 });
 serverContainer

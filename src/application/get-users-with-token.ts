@@ -10,18 +10,18 @@ import {
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
-export type GetUsersUnauthenticatedParams = [
+export type GetUsersWithTokenParams = [
   includeOptions?: UserIncludeOptions,
   filterOptions?: UserFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
+  token?: string,
 ];
 
 @injectable()
-export class GetUsersUnauthenticated implements UseCase<
+export class GetUsersWithToken implements UseCase<
   Promise<Either<[User[], PaginationOptions], Error>>,
-  GetUsersUnauthenticatedParams
+  GetUsersWithTokenParams
 > {
   private readonly userRepository: UserRepository;
 
@@ -37,12 +37,14 @@ export class GetUsersUnauthenticated implements UseCase<
     filterOptions?: UserFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
+    token?: string,
   ): Promise<Either<[User[], PaginationOptions], Error>> {
     return await this.userRepository.getUsers(
       includeOptions,
       filterOptions,
       paginationOptions,
       abortSignal,
+      token,
     );
   }
 }

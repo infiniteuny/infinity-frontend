@@ -1,7 +1,7 @@
-import { betterAuth, BetterAuthOptions } from 'better-auth';
+import { betterAuth, BetterAuthOptions } from 'better-auth/minimal';
 import { customSession, genericOAuth } from 'better-auth/plugins';
 import { getAccountCookie } from 'better-auth/cookies';
-import { GetUsersUnauthenticated } from '@app/application';
+import { GetUsersWithToken } from '@app/application';
 import { match } from 'effect/Either';
 import { nextCookies } from 'better-auth/next-js';
 
@@ -22,7 +22,7 @@ const additionalOptions = {
   },
 } satisfies BetterAuthOptions;
 
-export const authServerDataSourceImpl = (getUsers: GetUsersUnauthenticated) => {
+export const authServerDataSourceImpl = (getUsers: GetUsersWithToken) => {
   return betterAuth({
     ...additionalOptions,
     basePath: '/auth',

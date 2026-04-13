@@ -42,7 +42,7 @@ export const SYMBOLS = {
   GetTestimonials: Symbol.for('GetTestimonials'),
   GetUser: Symbol.for('GetUser'),
   GetUsers: Symbol.for('GetUsers'),
-  GetUsersUnauthenticated: Symbol.for('GetUsersUnauthenticated'),
+  GetUsersWithToken: Symbol.for('GetUsersWithToken'),
   Login: Symbol.for('Login'),
   Logout: Symbol.for('Logout'),
   SetSidebarExtendedState: Symbol.for('SetSidebarExtendedState'),
