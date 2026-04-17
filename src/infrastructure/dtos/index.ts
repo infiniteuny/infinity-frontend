@@ -23,3 +23,4 @@ export * from './session.dto';
 export * from './team.dto';
 export * from './testimonial.dto';
 export * from './user.dto';
+export * from './user-permission.dto';

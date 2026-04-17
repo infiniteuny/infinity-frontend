@@ -9,6 +9,7 @@ export interface SessionDto {
     email_address: string;
     picture?: string;
   };
+  permissions: string[];
   expires_at: string;
 }
 
@@ -24,6 +25,7 @@ export class SessionMapper {
             picture: session.user.picture,
           }
         : undefined,
+      permissions: session.permissions,
       expires_at: session.expiresAt?.toISOString(),
     };
   }
@@ -37,6 +39,7 @@ export class SessionMapper {
         emailAddress: dto.user.email_address,
         picture: dto.user.picture,
       },
+      dto.permissions,
       DateTime.fromISO(dto.expires_at).toJSDate(),
     );
   }
