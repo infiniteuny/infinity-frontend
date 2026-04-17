@@ -4,6 +4,8 @@ import { getAccountCookie } from 'better-auth/cookies';
 import { GetUsersWithToken, GetUserPermissionsWithToken } from '@app/application';
 import { match } from 'effect/Either';
 import { nextCookies } from 'better-auth/next-js';
+import { Redis } from 'ioredis';
+import { redisStorage } from '@better-auth/redis-storage';
 
 export type AuthServerDataSource = ReturnType<typeof authServerDataSourceImpl>;
 
@@ -26,6 +28,11 @@ const additionalOptions = {
   },
 } satisfies BetterAuthOptions;
 
+const redis = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+});
+
 export const authServerDataSourceImpl = (
   getUsers: GetUsersWithToken,
   getUserPermissions: GetUserPermissionsWithToken,
@@ -33,19 +40,24 @@ export const authServerDataSourceImpl = (
   return betterAuth({
     ...additionalOptions,
     basePath: '/auth',
+    secondaryStorage: redisStorage({
+      client: redis,
+      keyPrefix: 'auth:',
+    }),
     session: {
       expiresIn: 1 * 60 * 60, // 1 hour
       updateAge: 10 * 60, // 10 minutes
       cookieCache: {
-        enabled: true,
-        maxAge: 60 * 60, // 1 hour
-        strategy: 'jwe',
-        refreshCache: true,
+        enabled: false,
+        refreshCache: false,
       },
     },
     account: {
       storeStateStrategy: 'cookie',
       storeAccountCookie: true,
+      accountLinking: {
+        enabled: false,
+      },
     },
     plugins: [
       nextCookies(),
@@ -130,6 +142,45 @@ export const authServerDataSourceImpl = (
         };
       }, additionalOptions),
     ],
+    databaseHooks: {
+      // user: {
+      //   update: {
+      //     after: async (user, ctx) => {
+      //       const account = await getAccountCookie(ctx!);
+
+      //       const userPermissionsResult = await getUserPermissions.execute(
+      //         user.internalId as string,
+      //         undefined,
+      //         account?.accessToken ?? '',
+      //       );
+
+      //       const userPermissions = match(userPermissionsResult, {
+      //         onLeft: (error) => {
+      //           throw error;
+      //         },
+      //         onRight: (result) => result,
+      //       });
+
+      //       console.log(userPermissions);
+      //     },
+      //   },
+      // },
+      account: {
+        create: {
+          before: async (account) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { idToken, ...data } = account;
+
+            return {
+              data: {
+                idToken: undefined,
+                ...data,
+              },
+            };
+          },
+        },
+      },
+    },
     disabledPaths: [
       '/error',
       '/ok',

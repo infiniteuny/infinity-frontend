@@ -10,6 +10,7 @@
     "format": "eslint . --fix"
   },
   "dependencies": {
+    "@better-auth/redis-storage": "1.6.2",
     "@emotion/cache": "11.14.0",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
@@ -24,6 +25,7 @@
     "effect": "3.21.0",
     "immer": "11.1.4",
     "inversify": "8.1.0",
+    "ioredis": "5.10.1",
     "luxon": "3.7.2",
     "next": "16.2.3",
     "react": "19.2.5",
