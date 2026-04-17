@@ -85,6 +85,7 @@ export const SYMBOLS = {
   TeamRepository: Symbol.for('TeamRepository'),
   TestimonialRepository: Symbol.for('TestimonialRepository'),
   UserRepository: Symbol.for('UserRepository'),
+  UserPermissionRepository: Symbol.for('UserPermissionRepository'),
 
   // Data sources
   AuthDataSource: Symbol.for('AuthDataSource'),

@@ -22,3 +22,4 @@ export * from './project-gallery.repository-impl';
 export * from './team.repository-impl';
 export * from './testimonial.repository-impl';
 export * from './user.repository-impl';
+export * from './user-permission.repository-impl';

@@ -93,6 +93,7 @@ export class AuthRepositoryImpl implements AuthRepository {
             emailAddress: session.user.email || '',
             picture: session.user.image || undefined,
           },
+          session.user.permissions || [],
           session.account!.accessTokenExpiresAt!,
         ),
       );

@@ -24,6 +24,7 @@ import {
   TeamRepository,
   TestimonialRepository,
   UserRepository,
+  UserPermissionRepository,
 } from '@app/domain/repositories';
 import {
   AchievementRepositoryImpl,
@@ -49,6 +50,7 @@ import {
   TeamRepositoryImpl,
   TestimonialRepositoryImpl,
   UserRepositoryImpl,
+  UserPermissionRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import { Container } from 'inversify';
 import {
@@ -240,6 +242,9 @@ serverContainer
   .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
   .to(TestimonialRepositoryImpl);
 serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
+serverContainer
+  .bind<UserPermissionRepository>(SYMBOLS.UserPermissionRepository)
+  .to(UserPermissionRepositoryImpl);
 
 // Data sources
 serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {

@@ -23,6 +23,7 @@ import {
   TeamRepository,
   TestimonialRepository,
   UserRepository,
+  UserPermissionRepository,
   AuthRepository,
 } from '@app/domain/repositories';
 import {
@@ -49,6 +50,7 @@ import {
   TeamRepositoryImpl,
   TestimonialRepositoryImpl,
   UserRepositoryImpl,
+  UserPermissionRepositoryImpl,
   AuthRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import {
@@ -230,6 +232,9 @@ clientContainer
   .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
   .to(TestimonialRepositoryImpl);
 clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
+clientContainer
+  .bind<UserPermissionRepository>(SYMBOLS.UserPermissionRepository)
+  .to(UserPermissionRepositoryImpl);
 
 // Data sources
 clientContainer
