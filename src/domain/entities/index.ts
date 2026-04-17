@@ -26,6 +26,7 @@ export * from './team';
 export * from './testimonial';
 export * from './token';
 export * from './user';
+export * from './user-permission';
 
 export enum FilterOperator {
   EQUAL = '=',
