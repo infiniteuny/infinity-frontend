@@ -8,40 +8,54 @@ type Props = {
 export function GeneralView({ achievement }: Props) {
   return (
     <Box component="section" className="mb-4 w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <Toolbar component="header" className="mb-4 h-auto min-h-10 p-0">
+      <Container maxWidth={false} className="max-w-2xl p-0">
+        <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">
             General
           </Typography>
         </Toolbar>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" component="p" className="font-medium">
-              Team
-            </Typography>
-            <Typography variant="body2" component="p">
-              {achievement.team?.name ?? 'N/A'}
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="body1" component="p" className="font-medium">
-              Status
-            </Typography>
-            <Typography variant="body2" component="p">
-              {achievement.status}
-            </Typography>
+        <Grid container spacing={0.5}>
+          <Grid size={12}>
+            <Container
+              maxWidth={false}
+              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
+              className="rounded-t-2xl rounded-b-md p-4"
+            >
+              <Typography variant="body1" component="p" className="font-medium">
+                Team
+              </Typography>
+              <Typography variant="body2" component="p">
+                {achievement.team?.name ?? 'N/A'}
+              </Typography>
+            </Container>
           </Grid>
           <Grid size={12}>
-            <Typography variant="body1" component="p" className="font-medium">
-              Description
-            </Typography>
-            <Typography variant="body2" component="p">
-              {achievement.description}
-            </Typography>
+            <Container
+              maxWidth={false}
+              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
+              className="rounded-md p-4"
+            >
+              <Typography variant="body1" component="p" className="font-medium">
+                Status
+              </Typography>
+              <Typography variant="body2" component="p">
+                {achievement.status}
+              </Typography>
+            </Container>
+          </Grid>
+          <Grid size={12}>
+            <Container
+              maxWidth={false}
+              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
+              className="rounded-t-md rounded-b-2xl p-4"
+            >
+              <Typography variant="body1" component="p" className="font-medium">
+                Description
+              </Typography>
+              <Typography variant="body2" component="p">
+                {achievement.description}
+              </Typography>
+            </Container>
           </Grid>
         </Grid>
       </Container>

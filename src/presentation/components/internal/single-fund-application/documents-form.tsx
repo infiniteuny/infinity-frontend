@@ -34,13 +34,9 @@ export function DocumentsForm({
   const [isDraggingProposal, setIsDraggingProposal] = useState(false);
 
   return (
-    <Box component="section" className="mb-4 w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <Toolbar component="header" className="mb-4 h-auto min-h-10 p-0">
+    <Box component="section" className="mb-6 w-full px-6">
+      <Container maxWidth={false} className="max-w-2xl p-0">
+        <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">
             Documents
           </Typography>
@@ -52,6 +48,7 @@ export function DocumentsForm({
                 component="label"
                 htmlFor="letter-of-acceptance"
                 error={!!errors.letterOfAcceptance}
+                className="px-3"
               >
                 Letter of Acceptance
               </FormLabel>
@@ -233,7 +230,12 @@ export function DocumentsForm({
 
           <Grid size={12}>
             <FormControl fullWidth margin="none" disabled={isSubmitting}>
-              <FormLabel component="label" htmlFor="proposal" error={!!errors.proposal}>
+              <FormLabel
+                component="label"
+                htmlFor="proposal"
+                error={!!errors.proposal}
+                className="px-3"
+              >
                 Proposal
               </FormLabel>
               <Controller

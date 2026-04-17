@@ -70,12 +70,8 @@ export function GeneralForm({
 
   return (
     <Box component="section" className="mb-4 w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <Toolbar component="header" className="mb-4 h-auto min-h-10 p-0">
+      <Container maxWidth={false} className="max-w-2xl p-0">
+        <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">
             General
           </Typography>
@@ -117,7 +113,7 @@ export function GeneralForm({
               disabled={isSubmitting}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <FormControl fullWidth margin="none" disabled={isSubmitting}>
               <InputLabel id="facultyId-label" error={!!errors.facultyId}>
                 Faculty
@@ -157,7 +153,7 @@ export function GeneralForm({
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <FormControl fullWidth margin="none" disabled={isSubmitting || majorDisabled}>
               <InputLabel id="majorId-label" error={!!errors.majorId}>
                 Major

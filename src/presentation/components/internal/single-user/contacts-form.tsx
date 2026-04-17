@@ -14,18 +14,14 @@ export function ContactsForm({
 }: Props) {
   return (
     <Box component="section" className="mb-4 w-full px-6">
-      <Container
-        maxWidth={false}
-        sx={{ bgcolor: 'surface.main' }}
-        className="w-full rounded-2xl p-4"
-      >
-        <Toolbar component="header" className="mb-4 h-auto min-h-10 p-0">
+      <Container maxWidth={false} className="max-w-2xl p-0">
+        <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">
             Contacts
           </Typography>
         </Toolbar>
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <TextField
               {...register('emailAddress')}
               id="emailAddress"
@@ -37,7 +33,7 @@ export function ContactsForm({
               disabled={isSubmitting}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={12}>
             <TextField
               {...register('phoneNumber')}
               id="phoneNumber"
