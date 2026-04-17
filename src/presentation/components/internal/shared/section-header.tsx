@@ -8,7 +8,7 @@ type Props = {
 
 export function SectionHeader({ title, children }: Props) {
   return (
-    <Toolbar component="header" className="p-6">
+    <Toolbar component="header" className="items-start p-6">
       <Typography component="h1" variant="h5" className={`${children ? 'mr-4' : ''} font-medium`}>
         {title}
       </Typography>

@@ -40,7 +40,7 @@ export function TeamToolbar({ teamId, ref, methods }: OneOf<[ViewProps, FormProp
       formState: { isDirty, isSubmitting },
     } = methods;
     return (
-      <Box className="ml-auto text-right">
+      <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
         <Button
           variant="text"
           className="ml-4"
