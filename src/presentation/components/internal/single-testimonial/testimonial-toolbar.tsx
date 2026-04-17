@@ -40,7 +40,7 @@ export function TestimonialToolbar({ testimonialId, ref, methods }: OneOf<[ViewP
       formState: { isDirty, isSubmitting },
     } = methods;
     return (
-      <Box className="ml-auto">
+      <Box className="ml-auto text-right">
         <Button
           variant="text"
           className="ml-4"

@@ -40,7 +40,7 @@ export function UserToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormProp
       formState: { isDirty, isSubmitting },
     } = methods;
     return (
-      <Box className="ml-auto">
+      <Box className="ml-auto text-right">
         <Button
           variant="text"
           className="ml-4"

@@ -40,7 +40,7 @@ export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewPro
       formState: { isDirty, isSubmitting },
     } = methods;
     return (
-      <Box className="ml-auto">
+      <Box className="ml-auto text-right">
         <Button
           variant="text"
           className="ml-4"

@@ -41,7 +41,7 @@ export function AchievementToolbar({ achievementId, ref, methods }: OneOf<[ViewP
     } = methods;
 
     return (
-      <Box className="ml-auto">
+      <Box className="ml-auto text-right">
         <Button
           variant="text"
           className="ml-4"
