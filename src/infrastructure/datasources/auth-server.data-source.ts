@@ -1,7 +1,7 @@
 import { betterAuth, BetterAuthOptions } from 'better-auth/minimal';
 import { customSession, genericOAuth } from 'better-auth/plugins';
 import { getAccountCookie } from 'better-auth/cookies';
-import { GetUsersWithToken } from '@app/application';
+import { GetUsersWithToken, GetUserPermissionsWithToken } from '@app/application';
 import { match } from 'effect/Either';
 import { nextCookies } from 'better-auth/next-js';
 
@@ -18,11 +18,18 @@ const additionalOptions = {
         type: 'string',
         input: false,
       },
+      permissions: {
+        type: 'string[]',
+        input: false,
+      },
     },
   },
 } satisfies BetterAuthOptions;
 
-export const authServerDataSourceImpl = (getUsers: GetUsersWithToken) => {
+export const authServerDataSourceImpl = (
+  getUsers: GetUsersWithToken,
+  getUserPermissions: GetUserPermissionsWithToken,
+) => {
   return betterAuth({
     ...additionalOptions,
     basePath: '/auth',
@@ -76,6 +83,19 @@ export const authServerDataSourceImpl = (getUsers: GetUsersWithToken) => {
                 onRight: (result) => result,
               });
 
+              const userPermissionsResult = await getUserPermissions.execute(
+                users[0].id,
+                undefined,
+                tokens.accessToken ?? '',
+              );
+
+              const userPermissions = match(userPermissionsResult, {
+                onLeft: (error) => {
+                  throw error;
+                },
+                onRight: (result) => result,
+              });
+
               if (users.length !== 1) {
                 throw new Error(
                   `Expected to find exactly one user with email ${email}, but found ${users.length} user(s).`,
@@ -89,6 +109,7 @@ export const authServerDataSourceImpl = (getUsers: GetUsersWithToken) => {
                 username: users[0].username,
                 email: email,
                 emailVerified: true,
+                permissions: userPermissions.map((userPermission) => userPermission.name),
               };
             },
             mapProfileToUser: (profile) => ({

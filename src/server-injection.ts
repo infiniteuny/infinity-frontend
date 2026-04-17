@@ -98,6 +98,7 @@ import {
   GetTestimonial,
   GetTestimonials,
   GetUser,
+  GetUserPermissionsWithToken,
   GetUsers,
   GetUsersWithToken,
   UpdateAchievement,
@@ -168,6 +169,9 @@ serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
+serverContainer
+  .bind<GetUserPermissionsWithToken>(SYMBOLS.GetUserPermissionsWithToken)
+  .to(GetUserPermissionsWithToken);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUsersWithToken>(SYMBOLS.GetUsersWithToken).to(GetUsersWithToken);
 serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
@@ -249,7 +253,10 @@ serverContainer
 // Data sources
 serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
   const getUsers = serverContainer.get<GetUsersWithToken>(SYMBOLS.GetUsersWithToken);
-  return authServerDataSourceImpl(getUsers);
+  const getUserPermissionsWithToken = serverContainer.get<GetUserPermissionsWithToken>(
+    SYMBOLS.GetUserPermissionsWithToken,
+  );
+  return authServerDataSourceImpl(getUsers, getUserPermissionsWithToken);
 });
 serverContainer
   .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)

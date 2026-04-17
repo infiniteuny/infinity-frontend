@@ -41,6 +41,7 @@ export const SYMBOLS = {
   GetTestimonial: Symbol.for('GetTestimonial'),
   GetTestimonials: Symbol.for('GetTestimonials'),
   GetUser: Symbol.for('GetUser'),
+  GetUserPermissionsWithToken: Symbol.for('GetUserPermissionsWithToken'),
   GetUsers: Symbol.for('GetUsers'),
   GetUsersWithToken: Symbol.for('GetUsersWithToken'),
   Login: Symbol.for('Login'),

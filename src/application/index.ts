@@ -39,6 +39,7 @@ export * from './get-teams';
 export * from './get-testimonial';
 export * from './get-testimonials';
 export * from './get-user';
+export * from './get-user-permissions-with-token';
 export * from './get-users';
 export * from './get-users-with-token';
 export * from './login';
