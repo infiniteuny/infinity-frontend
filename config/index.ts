@@ -74,16 +74,16 @@ export const APP: {
           icon: 'hub',
           items: [
             {
-              name: 'Community Group Administrators',
-              icon: 'diversity-2',
-              path: '/community-group-admins',
-              matcher: '^\\/community-group-admins',
-            },
-            {
               name: 'Core Teams',
               icon: 'groups-3',
               path: '/core-teams',
               matcher: '^\\/core-teams',
+            },
+            {
+              name: 'Community Group Administrators',
+              icon: 'diversity-2',
+              path: '/community-group-admins',
+              matcher: '^\\/community-group-admins',
             },
             {
               name: 'Project Galleries',
