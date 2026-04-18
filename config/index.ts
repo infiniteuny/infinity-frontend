@@ -133,6 +133,8 @@ export const APP: {
           name: 'Settings',
           icon: 'settings',
           path: '/settings',
+          matcher:
+            '^\\/(settings|degrees|faculties|majors|personas|team-types|core-team-divisions|community-groups|competition-organizer-types|competition-outputs|competition-ranks|competition-scales|competition-time-ranges)$',
         },
       ],
     },
