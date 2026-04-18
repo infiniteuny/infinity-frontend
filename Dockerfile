@@ -21,7 +21,9 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Copy application source code
 COPY . .
 
+# Set build stage environment variables
 ENV NODE_ENV=production
+ENV CI=1
 # Disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 

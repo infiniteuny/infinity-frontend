@@ -9,6 +9,8 @@ import { redisStorage } from '@better-auth/redis-storage';
 
 export type AuthServerDataSource = ReturnType<typeof authServerDataSourceImpl>;
 
+const isCIBuild = process.env.CI === 'true' || process.env.CI === '1';
+
 const additionalOptions = {
   user: {
     additionalFields: {
@@ -28,10 +30,12 @@ const additionalOptions = {
   },
 } satisfies BetterAuthOptions;
 
-const redis = new Redis({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
-});
+const redis = isCIBuild
+  ? undefined
+  : new Redis({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+    });
 
 export const authServerDataSourceImpl = (
   getUsers: GetUsersWithToken,
@@ -39,11 +43,15 @@ export const authServerDataSourceImpl = (
 ) => {
   return betterAuth({
     ...additionalOptions,
+    secret: isCIBuild ? 'some-ci-default-secret-please-change' : process.env.BETTER_AUTH_SECRET!,
+    baseURL: process.env.BETTER_AUTH_BASE_URL || 'http://localhost:3000',
     basePath: '/auth',
-    secondaryStorage: redisStorage({
-      client: redis,
-      keyPrefix: 'auth:',
-    }),
+    secondaryStorage: isCIBuild
+      ? undefined
+      : redisStorage({
+          client: redis,
+          keyPrefix: 'auth:',
+        }),
     session: {
       expiresIn: 1 * 60 * 60, // 1 hour
       updateAge: 10 * 60, // 10 minutes
