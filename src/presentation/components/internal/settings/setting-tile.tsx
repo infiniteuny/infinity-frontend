@@ -39,7 +39,7 @@ export function SettingTile({ title, subtitle, icon, href, onClick, position = '
   return (
     <ButtonBase
       sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-      className={`w-full justify-start p-4 text-left ${roundedClass}`}
+      className={`w-full justify-start p-4 text-left select-text ${roundedClass}`}
       focusVisibleClassName="bg-(--m3-palette-action-focus)"
       component={href ? 'a' : 'button'}
       LinkComponent={href ? Link : undefined}
