@@ -1,0 +1,164 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+      release_type:
+        description: "Release type"
+        required: true
+        type: choice
+        default: "prod"
+        options:
+          - alpha
+          - beta
+          - rc
+          - prod
+      pre_release_version:
+        description: "Pre-release version (for non production releases)"
+        required: false
+        type: number
+
+jobs:
+  container-image-release:
+    name: Container Image Release
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+    steps:
+      - name: Check if branch and release type match
+        id: guard
+        run: |
+          # Check if the branch is not main or develop
+          if [[ "$BRANCH" != "main" && "$BRANCH" != "develop" ]]; then
+            echo "Branch is not main or develop! Aborting."
+            VERSION_MISMATCH='true';
+          elif [ "$BRANCH" == "main" ] && [ "$RELEASE_TYPE" != "prod" ]; then
+            echo "Branch and release type do not match! Aborting."
+            VERSION_MISMATCH='true';
+          elif [ "$BRANCH" == "develop" ] && ( [ "$RELEASE_TYPE" == "prod" ] || [ -z "$PRE_RELEASE_VERSION" ] ); then
+            echo "Branch and release type do not match! Aborting."
+            VERSION_MISMATCH='true';
+          else
+            echo "Branch and release type match! Proceeding."
+            VERSION_MISMATCH='false';
+          fi
+
+          echo "version_mismatch=$(echo $VERSION_MISMATCH)" >> "$GITHUB_OUTPUT";
+        env:
+          BRANCH: ${{ github.ref_name }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          PRE_RELEASE_VERSION: ${{ inputs.pre_release_version }}
+
+      - name: Fail if branch and release type do not match
+        if: ${{ steps.guard.outputs.version_mismatch == 'true' }}
+        uses: actions/github-script@v9
+        with:
+          script: |
+            core.setFailed('Workflow failed. Did you set the correct version, release type, and pre-release version?');
+
+      - name: Set version
+        id: version
+        run: |
+          if [ "$RELEASE_TYPE" != "prod" ]; then
+            VERSION="${VERSION#v}-${RELEASE_TYPE}.${PRE_RELEASE_VERSION}"
+          else
+            VERSION="${VERSION#v}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION: ${{ inputs.version }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          PRE_RELEASE_VERSION: ${{ inputs.pre_release_version }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.14.1"
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Update app version
+        run: 'sed -i "s/\"version\": \".*\",/\"version\": \"${{ steps.version.outputs.version }}\",/g" package.json'
+
+      - name: Extract metadata for Container
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: type=semver,pattern={{version}},value=${{ steps.version.outputs.version }}
+          labels: |
+            org.opencontainers.image.title=Infinity Back-End
+            org.opencontainers.image.description=Infinity back-end app image, see https://github.com/infiniteuny/infinity-backend/ for more info.
+            org.opencontainers.image.vendor=INFINITE UNY
+          annotations: |
+            org.opencontainers.image.title=Infinity Back-End
+            org.opencontainers.image.description=Infinity back-end app image, see https://github.com/infiniteuny/infinity-backend/ for more info.
+            org.opencontainers.image.vendor=INFINITE UNY
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push container image
+        id: build-and-push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}-cache:latest
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}-cache:latest,mode=max
+
+      - name: Sign the images with GitHub OIDC token
+        run: |
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes ${images}
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+
+      - name: Commit version change
+        if: ${{ inputs.release_type == 'prod' }}
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: Update version to v${{ steps.version.outputs.version }}"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          target_commitish: ${{ github.ref_name }}
+          prerelease: ${{ inputs.release_type != 'prod' }}
+          make_latest: "${{ inputs.release_type == 'prod' }}"
