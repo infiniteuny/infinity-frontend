@@ -79,9 +79,18 @@ export function SettingsView() {
               <SettingTile
                 title="Personas"
                 subtitle="User personas"
-                position="bottom"
+                position="middle"
                 icon={<AssignmentIndRounded />}
                 href="/personas"
+              />
+            </Grid>
+            <Grid size={12}>
+              <SettingTile
+                title="Team Types"
+                subtitle="Types of teams"
+                position="bottom"
+                icon={<GroupsRounded />}
+                href="/team-types"
               />
             </Grid>
           </Grid>
@@ -126,18 +135,9 @@ export function SettingsView() {
           <Grid container spacing={0.5}>
             <Grid size={12}>
               <SettingTile
-                title="Team Types"
-                subtitle="Types of teams"
-                position="top"
-                icon={<GroupsRounded />}
-                href="/team-types"
-              />
-            </Grid>
-            <Grid size={12}>
-              <SettingTile
                 title="Organizer Types"
                 subtitle="Types of competition organizers"
-                position="middle"
+                position="top"
                 icon={<BusinessRounded />}
                 href="/competition-organizer-types"
               />
