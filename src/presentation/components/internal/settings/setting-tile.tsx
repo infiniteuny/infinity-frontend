@@ -25,10 +25,10 @@ export function SettingTile({ title, subtitle, icon, href, onClick, position = '
       roundedClass = 'rounded-t-2xl rounded-b-md';
       break;
     case 'middle':
-      roundedClass = 'rounded-none';
+      roundedClass = 'rounded-md';
       break;
     case 'bottom':
-      roundedClass = 'rounded-tl-md rounded-b-2xl';
+      roundedClass = 'rounded-t-md rounded-b-2xl';
       break;
     case 'single':
     default:
