@@ -1,0 +1,11 @@
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+
+export const dynamic = 'force-dynamic';
+
+export default async function SingleCompetitionRankEditPage() {
+  return (
+    <>
+      <SectionHeader title="Competition Rank"></SectionHeader>
+    </>
+  );
+}
