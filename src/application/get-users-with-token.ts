@@ -1,5 +1,5 @@
 import type { UserRepository } from '@app/domain/repositories';
-import { Either, left } from 'effect/Either';
+import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,

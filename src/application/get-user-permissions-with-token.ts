@@ -1,5 +1,5 @@
 import type { UserPermissionRepository } from '@app/domain/repositories';
-import { Either, left } from 'effect/Either';
+import { Either } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
