@@ -9,12 +9,12 @@ import {
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { CommunityGroup, PaginationOptions } from '@app/domain/entities';
+import { Major, PaginationOptions } from '@app/domain/entities';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetCommunityGroups } from '@app/application';
+import { GetMajors } from '@app/application';
 import {
-  CommunityGroupDto,
-  CommunityGroupMapper,
+  MajorDto,
+  MajorMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
@@ -24,23 +24,20 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialCommunityGroups: CommunityGroupDto[];
+  initialMajors: MajorDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
 
-export function CommunityGroupsList({ initialCommunityGroups, initialPaginationOptions }: Props) {
-  const getCommunityGroups = useMemo(
-    () => clientContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups),
-    [],
-  );
-  const initCommunityGroups = initialCommunityGroups.map(CommunityGroupMapper.fromDtoToDomain);
+export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
+  const getMajors = useMemo(() => clientContainer.get<GetMajors>(SYMBOLS.GetMajors), []);
+  const initMajors = initialMajors.map(MajorMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CommunityGroup[]>(initCommunityGroups);
+  const [rows, setRows] = useState<Major[]>(initMajors);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCommunityGroups.length,
+    initPaginationOptions.nextCursor ? -1 : initMajors.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -80,7 +77,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
     }
 
     try {
-      const result = await getCommunityGroups.execute(undefined, {
+      const result = await getMajors.execute(['degree', 'faculty'], undefined, {
         perPage: normalizedPaginationModel.pageSize,
         cursor,
       });
@@ -119,7 +116,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/community-groups/${params.row.id}`);
+    router.push(`/majors/${params.row.id}`);
   };
 
   return (
@@ -131,39 +128,24 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
             '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
           }}
           columns={[
-            {
-              field: 'id',
-              headerName: 'ID',
-              flex: 1,
-            },
-            {
-              field: 'name',
-              headerName: 'Name',
-              flex: 1.5,
-            },
-            {
-              field: 'priority',
-              headerName: 'Priority',
-              flex: 1,
-            },
-            {
-              field: 'isActive',
-              headerName: 'Active',
-              type: 'boolean',
-              flex: 0.75,
-            },
+            { field: 'id', headerName: 'ID', flex: 1 },
+            { field: 'name', headerName: 'Name', flex: 2 },
+            { field: 'code', headerName: 'Code', flex: 1 },
+            { field: 'degree', headerName: 'Degree', flex: 1.5 },
+            { field: 'faculty', headerName: 'Faculty', flex: 1.5 },
           ]}
-          rows={rows.map((communityGroup) => ({
-            id: communityGroup.id,
-            name: communityGroup.name,
-            priority: communityGroup.priority,
-            isActive: communityGroup.isActive,
+          rows={rows.map((major) => ({
+            id: major.id,
+            code: major.code,
+            name: major.name,
+            degree: major.degree?.name || 'N/A',
+            faculty: major.faculty?.name || 'N/A',
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No community groups found.' },
+            noRowsOverlay: { text: 'No majors found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"

@@ -9,12 +9,12 @@ import {
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { CommunityGroup, PaginationOptions } from '@app/domain/entities';
+import { CompetitionRank, PaginationOptions } from '@app/domain/entities';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetCommunityGroups } from '@app/application';
+import { GetCompetitionRanks } from '@app/application';
 import {
-  CommunityGroupDto,
-  CommunityGroupMapper,
+  CompetitionRankDto,
+  CompetitionRankMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
@@ -24,23 +24,23 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialCommunityGroups: CommunityGroupDto[];
+  initialCompetitionRanks: CompetitionRankDto[];
   initialPaginationOptions: PaginationOptionsDto;
 };
 
-export function CommunityGroupsList({ initialCommunityGroups, initialPaginationOptions }: Props) {
-  const getCommunityGroups = useMemo(
-    () => clientContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups),
+export function CompetitionRanksList({ initialCompetitionRanks, initialPaginationOptions }: Props) {
+  const getCompetitionRanks = useMemo(
+    () => clientContainer.get<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks),
     [],
   );
-  const initCommunityGroups = initialCommunityGroups.map(CommunityGroupMapper.fromDtoToDomain);
+  const initCompetitionRanks = initialCompetitionRanks.map(CompetitionRankMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CommunityGroup[]>(initCommunityGroups);
+  const [rows, setRows] = useState<CompetitionRank[]>(initCompetitionRanks);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCommunityGroups.length,
+    initPaginationOptions.nextCursor ? -1 : initCompetitionRanks.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -80,7 +80,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
     }
 
     try {
-      const result = await getCommunityGroups.execute(undefined, {
+      const result = await getCompetitionRanks.execute(undefined, {
         perPage: normalizedPaginationModel.pageSize,
         cursor,
       });
@@ -119,7 +119,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/community-groups/${params.row.id}`);
+    router.push(`/competition-ranks/${params.row.id}`);
   };
 
   return (
@@ -131,39 +131,20 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
             '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
           }}
           columns={[
-            {
-              field: 'id',
-              headerName: 'ID',
-              flex: 1,
-            },
-            {
-              field: 'name',
-              headerName: 'Name',
-              flex: 1.5,
-            },
-            {
-              field: 'priority',
-              headerName: 'Priority',
-              flex: 1,
-            },
-            {
-              field: 'isActive',
-              headerName: 'Active',
-              type: 'boolean',
-              flex: 0.75,
-            },
+            { field: 'id', headerName: 'ID', flex: 1 },
+            { field: 'name', headerName: 'Name', flex: 2 },
+            { field: 'weight', headerName: 'Weight', flex: 1 },
           ]}
-          rows={rows.map((communityGroup) => ({
-            id: communityGroup.id,
-            name: communityGroup.name,
-            priority: communityGroup.priority,
-            isActive: communityGroup.isActive,
+          rows={rows.map((rank) => ({
+            id: rank.id,
+            name: rank.name,
+            weight: rank.weight,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No community groups found.' },
+            noRowsOverlay: { text: 'No competition ranks found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"

@@ -4,15 +4,15 @@ import Link from 'next/link';
 import { AddRounded } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 
-export function CommunityGroupsToolbar() {
+export function CoreTeamDivisionsToolbar() {
   return (
     <Box className="ml-auto">
       <Button
         variant="filled"
         className="ml-4"
-        aria-label="Add community group"
+        aria-label="Add core team division"
         LinkComponent={Link}
-        href="/community-groups/new"
+        href="/core-team-divisions/new"
         startIcon={<AddRounded />}
       >
         Add
