@@ -75,6 +75,7 @@ export const SYMBOLS = {
   CompetitionRepository: Symbol.for('CompetitionRepository'),
   CoreTeamDivisionRepository: Symbol.for('CoreTeamDivisionRepository'),
   CoreTeamRepository: Symbol.for('CoreTeamRepository'),
+  DegreeRepository: Symbol.for('DegreeRepository'),
   InternalRepository: Symbol.for('InternalRepository'),
   FacultyRepository: Symbol.for('FacultyRepository'),
   FundApplicationRepository: Symbol.for('FundApplicationRepository'),

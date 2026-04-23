@@ -2,7 +2,7 @@ import { PaginationOptions, Degree, DegreeFilterOptions } from '@app/domain/enti
 import { Either } from 'effect/Either';
 
 export interface DegreeRepository {
-  getFaculties(
+  getDegrees(
     filterOptions?: DegreeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,

@@ -11,6 +11,7 @@ export * from './competition-time-range.repository';
 export * from './competition.repository';
 export * from './core-team-division.repository';
 export * from './core-team.repository';
+export * from './degree.repository';
 export * from './faculty.repository';
 export * from './fund-application.repository';
 export * from './group.repository';

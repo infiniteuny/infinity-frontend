@@ -14,6 +14,7 @@ import {
   CompetitionRepository,
   CoreTeamDivisionRepository,
   CoreTeamRepository,
+  DegreeRepository,
   FacultyRepository,
   FundApplicationRepository,
   GroupRepository,
@@ -40,6 +41,7 @@ import {
   CompetitionRepositoryImpl,
   CoreTeamDivisionRepositoryImpl,
   CoreTeamRepositoryImpl,
+  DegreeRepositoryImpl,
   FacultyRepositoryImpl,
   FundApplicationRepositoryImpl,
   GroupRepositoryImpl,
@@ -228,6 +230,7 @@ serverContainer
   .bind<CoreTeamDivisionRepository>(SYMBOLS.CoreTeamDivisionRepository)
   .to(CoreTeamDivisionRepositoryImpl);
 serverContainer.bind<CoreTeamRepository>(SYMBOLS.CoreTeamRepository).to(CoreTeamRepositoryImpl);
+serverContainer.bind<DegreeRepository>(SYMBOLS.DegreeRepository).to(DegreeRepositoryImpl);
 serverContainer.bind<FacultyRepository>(SYMBOLS.FacultyRepository).to(FacultyRepositoryImpl);
 serverContainer
   .bind<FundApplicationRepository>(SYMBOLS.FundApplicationRepository)
