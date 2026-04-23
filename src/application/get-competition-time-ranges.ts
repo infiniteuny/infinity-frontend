@@ -4,12 +4,12 @@ import {
   CompetitionTimeRangeFilterOptions,
   PaginationOptions,
 } from '@app/domain/entities';
-import { Either, match } from 'effect/Either';
+import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
-export type GetCompetitionTimeRangeParams = [
+export type GetCompetitionTimeRangesParams = [
   filterOptions?: CompetitionTimeRangeFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
@@ -19,7 +19,7 @@ export type GetCompetitionTimeRangeParams = [
 @injectable()
 export class GetCompetitionTimeRanges implements UseCase<
   Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>>,
-  GetCompetitionTimeRangeParams
+  GetCompetitionTimeRangesParams
 > {
   private readonly competitionTimeRangeRepository: CompetitionTimeRangeRepository;
   private readonly authRepository: AuthRepository;
@@ -45,12 +45,11 @@ export class GetCompetitionTimeRanges implements UseCase<
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.competitionTimeRangeRepository.getCompetitionTimeRanges(

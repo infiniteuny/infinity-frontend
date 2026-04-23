@@ -4,12 +4,12 @@ import {
   CompetitionOutputFilterOptions,
   PaginationOptions,
 } from '@app/domain/entities';
-import { Either, match } from 'effect/Either';
+import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
-export type GetCompetitionOutputParams = [
+export type GetCompetitionOutputsParams = [
   filterOptions?: CompetitionOutputFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
@@ -19,7 +19,7 @@ export type GetCompetitionOutputParams = [
 @injectable()
 export class GetCompetitionOutputs implements UseCase<
   Promise<Either<[CompetitionOutput[], PaginationOptions], Error>>,
-  GetCompetitionOutputParams
+  GetCompetitionOutputsParams
 > {
   private readonly competitionOutputRepository: CompetitionOutputRepository;
   private readonly authRepository: AuthRepository;
@@ -45,12 +45,11 @@ export class GetCompetitionOutputs implements UseCase<
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.competitionOutputRepository.getCompetitionOutputs(

@@ -4,12 +4,12 @@ import {
   CompetitionScaleFilterOptions,
   PaginationOptions,
 } from '@app/domain/entities';
-import { Either, match } from 'effect/Either';
+import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
-export type GetCompetitionScaleParams = [
+export type GetCompetitionScalesParams = [
   filterOptions?: CompetitionScaleFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
@@ -19,7 +19,7 @@ export type GetCompetitionScaleParams = [
 @injectable()
 export class GetCompetitionScales implements UseCase<
   Promise<Either<[CompetitionScale[], PaginationOptions], Error>>,
-  GetCompetitionScaleParams
+  GetCompetitionScalesParams
 > {
   private readonly competitionScaleRepository: CompetitionScaleRepository;
   private readonly authRepository: AuthRepository;
@@ -45,12 +45,11 @@ export class GetCompetitionScales implements UseCase<
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.competitionScaleRepository.getCompetitionScales(

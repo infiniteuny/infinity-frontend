@@ -1,5 +1,5 @@
 import type { GroupRepository, AuthRepository } from '@app/domain/repositories';
-import { Either, match } from 'effect/Either';
+import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -32,12 +32,11 @@ export class GetGroup implements UseCase<Promise<Either<Group, Error>>, GetGroup
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.groupRepository.getGroup(id, abortSignal, accessToken);

@@ -1,5 +1,5 @@
 import type { CommunityGroupAdminRepository, AuthRepository } from '@app/domain/repositories';
-import { Either, match } from 'effect/Either';
+import { Either, isRight, left } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -45,12 +45,11 @@ export class CreateCommunityGroupAdmin implements UseCase<
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.communityGroupAdminRepository.createCommunityGroupAdmin(

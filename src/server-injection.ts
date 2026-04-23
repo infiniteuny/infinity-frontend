@@ -63,37 +63,65 @@ import {
 } from '@app/infrastructure/datasources/server';
 import {
   CreateAchievement,
+  CreateCommunityGroup,
   CreateCommunityGroupAdmin,
+  CreateCompetitionOrganizerType,
+  CreateCompetitionOutput,
+  CreateCompetitionRank,
+  CreateCompetitionScale,
+  CreateCompetitionTeamType,
+  CreateCompetitionTimeRange,
+  CreateCoreTeamDivision,
   CreateCoreTeam,
+  CreateDegree,
+  CreateFaculty,
   CreateFundApplication,
   CreateGroup,
+  CreateMajor,
   CreatePermission,
+  CreatePersona,
   CreateProjectGallery,
   CreateTeam,
   CreateTestimonial,
+  GetCommunityGroup,
   GetAchievement,
   GetAchievements,
   GetCommunityGroupAdmin,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
+  GetCompetitionOrganizerType,
+  GetCompetitionOrganizerTypes,
+  GetCompetitionOutput,
   GetCompetitions,
   GetCompetitionOutputs,
+  GetCompetitionRank,
   GetCompetitionRanks,
+  GetCompetitionScale,
   GetCompetitionScales,
+  GetCompetitionTeamType,
   GetCompetitionTeamTypes,
+  GetCompetitionTimeRange,
   GetCompetitionTimeRanges,
+  GetCoreTeamDivision,
+  GetCoreTeamDivisions,
   GetCoreTeam,
   GetCoreTeams,
+  GetDegree,
+  GetDegrees,
+  GetFaculty,
   GetFaculties,
   GetFundApplication,
   GetFundApplications,
   GetGroup,
   GetGroups,
+  GetMajor,
   GetMajors,
   GetPermission,
   GetPermissions,
   GetProjectGallery,
   GetProjectGalleries,
+  GetPersona,
+  GetPersonas,
   GetSession,
   GetTeam,
   GetTeams,
@@ -104,11 +132,23 @@ import {
   GetUsers,
   GetUsersWithToken,
   UpdateAchievement,
+  UpdateCommunityGroup,
   UpdateCommunityGroupAdmin,
+  UpdateCompetitionOrganizerType,
+  UpdateCompetitionOutput,
+  UpdateCompetitionRank,
+  UpdateCompetitionScale,
+  UpdateCompetitionTeamType,
+  UpdateCompetitionTimeRange,
+  UpdateCoreTeamDivision,
   UpdateCoreTeam,
+  UpdateDegree,
+  UpdateFaculty,
   UpdateFundApplication,
   UpdateGroup,
+  UpdateMajor,
   UpdatePermission,
+  UpdatePersona,
   UpdateProjectGallery,
   UpdateTeam,
   UpdateTestimonial,
@@ -120,18 +160,45 @@ export const serverContainer = new Container();
 
 // Use Cases
 serverContainer.bind<CreateAchievement>(SYMBOLS.CreateAchievement).to(CreateAchievement);
+serverContainer.bind<CreateCommunityGroup>(SYMBOLS.CreateCommunityGroup).to(CreateCommunityGroup);
 serverContainer
   .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
   .to(CreateCommunityGroupAdmin);
+serverContainer
+  .bind<CreateCompetitionOrganizerType>(SYMBOLS.CreateCompetitionOrganizerType)
+  .to(CreateCompetitionOrganizerType);
+serverContainer
+  .bind<CreateCompetitionOutput>(SYMBOLS.CreateCompetitionOutput)
+  .to(CreateCompetitionOutput);
+serverContainer
+  .bind<CreateCompetitionRank>(SYMBOLS.CreateCompetitionRank)
+  .to(CreateCompetitionRank);
+serverContainer
+  .bind<CreateCompetitionScale>(SYMBOLS.CreateCompetitionScale)
+  .to(CreateCompetitionScale);
+serverContainer
+  .bind<CreateCompetitionTeamType>(SYMBOLS.CreateCompetitionTeamType)
+  .to(CreateCompetitionTeamType);
+serverContainer
+  .bind<CreateCompetitionTimeRange>(SYMBOLS.CreateCompetitionTimeRange)
+  .to(CreateCompetitionTimeRange);
+serverContainer
+  .bind<CreateCoreTeamDivision>(SYMBOLS.CreateCoreTeamDivision)
+  .to(CreateCoreTeamDivision);
 serverContainer.bind<CreateCoreTeam>(SYMBOLS.CreateCoreTeam).to(CreateCoreTeam);
+serverContainer.bind<CreateDegree>(SYMBOLS.CreateDegree).to(CreateDegree);
+serverContainer.bind<CreateFaculty>(SYMBOLS.CreateFaculty).to(CreateFaculty);
 serverContainer
   .bind<CreateFundApplication>(SYMBOLS.CreateFundApplication)
   .to(CreateFundApplication);
 serverContainer.bind<CreateGroup>(SYMBOLS.CreateGroup).to(CreateGroup);
+serverContainer.bind<CreateMajor>(SYMBOLS.CreateMajor).to(CreateMajor);
 serverContainer.bind<CreatePermission>(SYMBOLS.CreatePermission).to(CreatePermission);
+serverContainer.bind<CreatePersona>(SYMBOLS.CreatePersona).to(CreatePersona);
 serverContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(CreateProjectGallery);
 serverContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
 serverContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
+serverContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 serverContainer.bind<GetAchievement>(SYMBOLS.GetAchievement).to(GetAchievement);
 serverContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
 serverContainer
@@ -141,30 +208,53 @@ serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer
+  .bind<GetCompetitionOrganizerType>(SYMBOLS.GetCompetitionOrganizerType)
+  .to(GetCompetitionOrganizerType);
+serverContainer
+  .bind<GetCompetitionOrganizerTypes>(SYMBOLS.GetCompetitionOrganizerTypes)
+  .to(GetCompetitionOrganizerTypes);
+serverContainer.bind<GetCompetitionOutput>(SYMBOLS.GetCompetitionOutput).to(GetCompetitionOutput);
 serverContainer.bind<GetCompetitions>(SYMBOLS.GetCompetitions).to(GetCompetitions);
 serverContainer
   .bind<GetCompetitionOutputs>(SYMBOLS.GetCompetitionOutputs)
   .to(GetCompetitionOutputs);
 serverContainer.bind<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks).to(GetCompetitionRanks);
+serverContainer.bind<GetCompetitionRank>(SYMBOLS.GetCompetitionRank).to(GetCompetitionRank);
+serverContainer.bind<GetCompetitionScale>(SYMBOLS.GetCompetitionScale).to(GetCompetitionScale);
 serverContainer.bind<GetCompetitionScales>(SYMBOLS.GetCompetitionScales).to(GetCompetitionScales);
+serverContainer
+  .bind<GetCompetitionTeamType>(SYMBOLS.GetCompetitionTeamType)
+  .to(GetCompetitionTeamType);
 serverContainer
   .bind<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes)
   .to(GetCompetitionTeamTypes);
 serverContainer
+  .bind<GetCompetitionTimeRange>(SYMBOLS.GetCompetitionTimeRange)
+  .to(GetCompetitionTimeRange);
+serverContainer
   .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
   .to(GetCompetitionTimeRanges);
+serverContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
+serverContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
 serverContainer.bind<GetCoreTeam>(SYMBOLS.GetCoreTeam).to(GetCoreTeam);
 serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
+serverContainer.bind<GetDegree>(SYMBOLS.GetDegree).to(GetDegree);
+serverContainer.bind<GetDegrees>(SYMBOLS.GetDegrees).to(GetDegrees);
+serverContainer.bind<GetFaculty>(SYMBOLS.GetFaculty).to(GetFaculty);
 serverContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
 serverContainer.bind<GetFundApplication>(SYMBOLS.GetFundApplication).to(GetFundApplication);
 serverContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
 serverContainer.bind<GetGroup>(SYMBOLS.GetGroup).to(GetGroup);
 serverContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
+serverContainer.bind<GetMajor>(SYMBOLS.GetMajor).to(GetMajor);
 serverContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 serverContainer.bind<GetPermission>(SYMBOLS.GetPermission).to(GetPermission);
 serverContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
 serverContainer.bind<GetProjectGallery>(SYMBOLS.GetProjectGallery).to(GetProjectGallery);
 serverContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+serverContainer.bind<GetPersona>(SYMBOLS.GetPersona).to(GetPersona);
+serverContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 serverContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
 serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
@@ -178,15 +268,41 @@ serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUsersWithToken>(SYMBOLS.GetUsersWithToken).to(GetUsersWithToken);
 serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
+serverContainer.bind<UpdateCommunityGroup>(SYMBOLS.UpdateCommunityGroup).to(UpdateCommunityGroup);
 serverContainer
   .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
   .to(UpdateCommunityGroupAdmin);
+serverContainer
+  .bind<UpdateCompetitionOrganizerType>(SYMBOLS.UpdateCompetitionOrganizerType)
+  .to(UpdateCompetitionOrganizerType);
+serverContainer
+  .bind<UpdateCompetitionOutput>(SYMBOLS.UpdateCompetitionOutput)
+  .to(UpdateCompetitionOutput);
+serverContainer
+  .bind<UpdateCompetitionRank>(SYMBOLS.UpdateCompetitionRank)
+  .to(UpdateCompetitionRank);
+serverContainer
+  .bind<UpdateCompetitionScale>(SYMBOLS.UpdateCompetitionScale)
+  .to(UpdateCompetitionScale);
+serverContainer
+  .bind<UpdateCompetitionTeamType>(SYMBOLS.UpdateCompetitionTeamType)
+  .to(UpdateCompetitionTeamType);
+serverContainer
+  .bind<UpdateCompetitionTimeRange>(SYMBOLS.UpdateCompetitionTimeRange)
+  .to(UpdateCompetitionTimeRange);
+serverContainer
+  .bind<UpdateCoreTeamDivision>(SYMBOLS.UpdateCoreTeamDivision)
+  .to(UpdateCoreTeamDivision);
 serverContainer.bind<UpdateCoreTeam>(SYMBOLS.UpdateCoreTeam).to(UpdateCoreTeam);
+serverContainer.bind<UpdateDegree>(SYMBOLS.UpdateDegree).to(UpdateDegree);
+serverContainer.bind<UpdateFaculty>(SYMBOLS.UpdateFaculty).to(UpdateFaculty);
 serverContainer
   .bind<UpdateFundApplication>(SYMBOLS.UpdateFundApplication)
   .to(UpdateFundApplication);
 serverContainer.bind<UpdateGroup>(SYMBOLS.UpdateGroup).to(UpdateGroup);
+serverContainer.bind<UpdateMajor>(SYMBOLS.UpdateMajor).to(UpdateMajor);
 serverContainer.bind<UpdatePermission>(SYMBOLS.UpdatePermission).to(UpdatePermission);
+serverContainer.bind<UpdatePersona>(SYMBOLS.UpdatePersona).to(UpdatePersona);
 serverContainer.bind<UpdateProjectGallery>(SYMBOLS.UpdateProjectGallery).to(UpdateProjectGallery);
 serverContainer.bind<UpdateTeam>(SYMBOLS.UpdateTeam).to(UpdateTeam);
 serverContainer.bind<UpdateTestimonial>(SYMBOLS.UpdateTestimonial).to(UpdateTestimonial);

@@ -1,5 +1,5 @@
 import type { TestimonialRepository, AuthRepository } from '@app/domain/repositories';
-import { Either, match } from 'effect/Either';
+import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
@@ -41,12 +41,11 @@ export class GetTestimonials implements UseCase<
     if (authenticate) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
-      accessToken = match(accessTokenResult, {
-        onLeft: (error) => {
-          throw error;
-        },
-        onRight: (token) => token,
-      });
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
     }
 
     return await this.testimonialRepository.getTestimonials(
