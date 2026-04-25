@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ProjectGallery } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   projectGallery: ProjectGallery;
@@ -16,46 +17,13 @@ export function GeneralView({ projectGallery }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Title
-              </Typography>
-              <Typography variant="body2" component="p">
-                {projectGallery.title}
-              </Typography>
-            </Container>
+            <ViewTile title="Title" subtitle={projectGallery.title} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Description
-              </Typography>
-              <Typography variant="body2" component="p">
-                {projectGallery.description}
-              </Typography>
-            </Container>
+            <ViewTile title="Description" subtitle={projectGallery.description} position="middle" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                URL
-              </Typography>
-              <Typography variant="body2" component="p">
-                {projectGallery.url}
-              </Typography>
-            </Container>
+            <ViewTile title="URL" subtitle={projectGallery.url} position="middle" />
           </Grid>
           <Grid size={12}>
             <Container

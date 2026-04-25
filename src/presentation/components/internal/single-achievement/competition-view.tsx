@@ -1,6 +1,7 @@
+import { Achievement } from '@app/domain/entities';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
-import { Achievement } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   achievement: Achievement;
@@ -17,118 +18,64 @@ export function CompetitionView({ achievement }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competition?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Name"
+              subtitle={achievement.competition?.name ?? 'N/A'}
+              position="top"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Branch
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competitionBranch}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Branch"
+              subtitle={achievement.competitionBranch}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Scale
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competitionScale?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Scale"
+              subtitle={achievement.competitionScale?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Time Range
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competitionTimeRange?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Time Range"
+              subtitle={achievement.competitionTimeRange?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Output
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competitionOutput?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Output"
+              subtitle={achievement.competitionOutput?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Rank
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.competitionRank?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Rank"
+              subtitle={achievement.competitionRank?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition Start Date
-              </Typography>
-              <Typography variant="body2" component="p">
-                {DateTime.fromJSDate(achievement.competitionStartDate).toFormat(
-                  'cccc, d LLLL yyyy',
-                )}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition Start Date"
+              subtitle={DateTime.fromJSDate(achievement.competitionStartDate).toFormat(
+                'cccc, d LLLL yyyy',
+              )}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Competition End Date
-              </Typography>
-              <Typography variant="body2" component="p">
-                {DateTime.fromJSDate(achievement.competitionEndDate).toFormat('cccc, d LLLL yyyy')}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Competition End Date"
+              subtitle={DateTime.fromJSDate(achievement.competitionEndDate).toFormat(
+                'cccc, d LLLL yyyy',
+              )}
+              position="bottom"
+            />
           </Grid>
         </Grid>
       </Container>

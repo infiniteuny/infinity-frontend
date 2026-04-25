@@ -1,6 +1,7 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 import { User } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   user: User;
@@ -17,68 +18,42 @@ export function MembershipView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Active Member
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.isActive ? 'Yes' : 'No'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Active Member"
+              subtitle={user.isActive ? 'Yes' : 'No'}
+              position="top"
+            />
           </Grid>
           {user.isActive ? (
             <>
               <Grid size={12}>
-                <Container
-                  maxWidth={false}
-                  sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-                  className="rounded-md p-4"
-                >
-                  <Typography variant="body1" component="p" className="font-medium">
-                    Start Date
-                  </Typography>
-                  <Typography variant="body2" component="p">
-                    {user.startDate
+                <ViewTile
+                  title="Start Date"
+                  subtitle={
+                    user.startDate
                       ? DateTime.fromJSDate(user.startDate).toFormat('dd/LL/yyyy')
-                      : 'N/A'}
-                  </Typography>
-                </Container>
+                      : 'N/A'
+                  }
+                  position="middle"
+                />
               </Grid>
               <Grid size={12}>
-                <Container
-                  maxWidth={false}
-                  sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-                  className="rounded-md p-4"
-                >
-                  <Typography variant="body1" component="p" className="font-medium">
-                    End Date
-                  </Typography>
-                  <Typography variant="body2" component="p">
-                    {user.endDate
-                      ? DateTime.fromJSDate(user.endDate).toFormat('dd/LL/yyyy')
-                      : 'N/A'}
-                  </Typography>
-                </Container>
+                <ViewTile
+                  title="End Date"
+                  subtitle={
+                    user.endDate ? DateTime.fromJSDate(user.endDate).toFormat('dd/LL/yyyy') : 'N/A'
+                  }
+                  position="middle"
+                />
               </Grid>
             </>
           ) : null}
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Extraordinary Member
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.isExtraordinary ? 'Yes' : 'No'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Extraordinary Member"
+              subtitle={user.isExtraordinary ? 'Yes' : 'No'}
+              position="bottom"
+            />
           </Grid>
         </Grid>
       </Container>

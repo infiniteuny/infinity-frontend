@@ -1,6 +1,7 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 import { FundApplication } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   fundApplication: FundApplication;
@@ -17,74 +18,43 @@ export function CompetitionView({ fundApplication }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {fundApplication.competition?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Name"
+              subtitle={fundApplication.competition?.name ?? 'N/A'}
+              position="top"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Branch
-              </Typography>
-              <Typography variant="body2" component="p">
-                {fundApplication.competitionBranch}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Branch"
+              subtitle={fundApplication.competitionBranch}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Scale
-              </Typography>
-              <Typography variant="body2" component="p">
-                {fundApplication.competitionScale?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Scale"
+              subtitle={fundApplication.competitionScale?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Start Date
-              </Typography>
-              <Typography variant="body2" component="p">
-                {DateTime.fromJSDate(fundApplication.competitionStartDate).toFormat('dd/LL/yyyy')}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Start Date"
+              subtitle={DateTime.fromJSDate(fundApplication.competitionStartDate).toFormat(
+                'dd/LL/yyyy',
+              )}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                End Date
-              </Typography>
-              <Typography variant="body2" component="p">
-                {DateTime.fromJSDate(fundApplication.competitionEndDate).toFormat('dd/LL/yyyy')}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="End Date"
+              subtitle={DateTime.fromJSDate(fundApplication.competitionEndDate).toFormat(
+                'dd/LL/yyyy',
+              )}
+              position="bottom"
+            />
           </Grid>
         </Grid>
       </Container>

@@ -1,5 +1,6 @@
-import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { Achievement } from '@app/domain/entities';
+import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   achievement: Achievement;
@@ -16,46 +17,13 @@ export function GeneralView({ achievement }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Team
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.team?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile title="Team" subtitle={achievement.team?.name ?? 'N/A'} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Status
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.status}
-              </Typography>
-            </Container>
+            <ViewTile title="Status" subtitle={achievement.status} position="middle" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Description
-              </Typography>
-              <Typography variant="body2" component="p">
-                {achievement.description}
-              </Typography>
-            </Container>
+            <ViewTile title="Description" subtitle={achievement.description} position="bottom" />
           </Grid>
         </Grid>
       </Container>

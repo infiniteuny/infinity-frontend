@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { Group } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   group: Group;
@@ -16,32 +17,10 @@ export function GeneralView({ group }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {group.name}
-              </Typography>
-            </Container>
+            <ViewTile title="Name" subtitle={group.name} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Guard Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {group.guardName}
-              </Typography>
-            </Container>
+            <ViewTile title="Guard Name" subtitle={group.guardName} position="bottom" />
           </Grid>
         </Grid>
       </Container>

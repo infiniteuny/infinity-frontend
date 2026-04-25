@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { Testimonial } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   testimonial: Testimonial;
@@ -16,46 +17,13 @@ export function GeneralView({ testimonial }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {testimonial.name}
-              </Typography>
-            </Container>
+            <ViewTile title="Name" subtitle={testimonial.name} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Position
-              </Typography>
-              <Typography variant="body2" component="p">
-                {testimonial.position}
-              </Typography>
-            </Container>
+            <ViewTile title="Position" subtitle={testimonial.position} position="middle" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Content
-              </Typography>
-              <Typography variant="body2" component="p">
-                {testimonial.content}
-              </Typography>
-            </Container>
+            <ViewTile title="Content" subtitle={testimonial.content} position="middle" />
           </Grid>
           <Grid size={12}>
             <Container

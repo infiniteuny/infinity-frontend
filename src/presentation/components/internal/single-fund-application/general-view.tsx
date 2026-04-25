@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { FundApplication } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   fundApplication: FundApplication;
@@ -16,32 +17,10 @@ export function GeneralView({ fundApplication }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Team
-              </Typography>
-              <Typography variant="body2" component="p">
-                {fundApplication.team?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile title="Team" subtitle={fundApplication.team?.name ?? 'N/A'} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Status
-              </Typography>
-              <Typography variant="body2" component="p">
-                {fundApplication.status}
-              </Typography>
-            </Container>
+            <ViewTile title="Status" subtitle={fundApplication.status} position="bottom" />
           </Grid>
         </Grid>
       </Container>

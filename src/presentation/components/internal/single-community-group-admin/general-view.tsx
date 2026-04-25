@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CommunityGroupAdmin } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   communityGroupAdmin: CommunityGroupAdmin;
@@ -16,32 +17,14 @@ export function GeneralView({ communityGroupAdmin }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Year
-              </Typography>
-              <Typography variant="body2" component="p">
-                {communityGroupAdmin.year}
-              </Typography>
-            </Container>
+            <ViewTile title="Year" subtitle={communityGroupAdmin.year} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Active
-              </Typography>
-              <Typography variant="body2" component="p">
-                {communityGroupAdmin.isActive ? 'Yes' : 'No'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Active"
+              subtitle={communityGroupAdmin.isActive ? 'Yes' : 'No'}
+              position="bottom"
+            />
           </Grid>
         </Grid>
       </Container>

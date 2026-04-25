@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { Permission } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   permission: Permission;
@@ -16,32 +17,10 @@ export function GeneralView({ permission }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {permission.name}
-              </Typography>
-            </Container>
+            <ViewTile title="Name" subtitle={permission.name} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Guard Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {permission.guardName}
-              </Typography>
-            </Container>
+            <ViewTile title="Guard Name" subtitle={permission.guardName} position="bottom" />
           </Grid>
         </Grid>
       </Container>

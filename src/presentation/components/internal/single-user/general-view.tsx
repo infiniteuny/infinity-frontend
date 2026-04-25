@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { User } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   user: User;
@@ -16,76 +17,31 @@ export function GeneralView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Name
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.name}
-              </Typography>
-            </Container>
+            <ViewTile title="Name" subtitle={user.name} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Username
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.username}
-              </Typography>
-            </Container>
+            <ViewTile title="Username" subtitle={user.username} position="middle" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Student ID
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.studentId}
-              </Typography>
-            </Container>
+            <ViewTile title="Student ID" subtitle={user.studentId} position="middle" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Faculty
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.major?.faculty?.name ?? 'N/A'}
-              </Typography>
-            </Container>
+            <ViewTile
+              title="Faculty"
+              subtitle={user.major?.faculty?.name ?? 'N/A'}
+              position="middle"
+            />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Major
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.major
+            <ViewTile
+              title="Major"
+              subtitle={
+                user.major
                   ? `${user.major.degree ? `${user.major.degree.name} - ` : ''}${user.major.name}`
-                  : 'N/A'}
-              </Typography>
-            </Container>
+                  : 'N/A'
+              }
+              position="bottom"
+            />
           </Grid>
         </Grid>
       </Container>

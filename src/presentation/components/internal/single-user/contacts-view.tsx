@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { User } from '@app/domain/entities';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   user: User;
@@ -16,32 +17,10 @@ export function ContactsView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-2xl rounded-b-md p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Email Address
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.emailAddress}
-              </Typography>
-            </Container>
+            <ViewTile title="Email Address" subtitle={user.emailAddress} position="top" />
           </Grid>
           <Grid size={12}>
-            <Container
-              maxWidth={false}
-              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className="rounded-t-md rounded-b-2xl p-4"
-            >
-              <Typography variant="body1" component="p" className="font-medium">
-                Phone Number
-              </Typography>
-              <Typography variant="body2" component="p">
-                {user.phoneNumber}
-              </Typography>
-            </Container>
+            <ViewTile title="Phone Number" subtitle={user.phoneNumber} position="bottom" />
           </Grid>
         </Grid>
       </Container>
