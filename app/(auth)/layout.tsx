@@ -1,6 +1,7 @@
 import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { AuthFooter, AuthMain } from '@app/presentation/components/auth/shared';
+import { InitColorSchemeScript } from '@mui/material';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
 import { ReactNode } from 'react';
@@ -28,6 +29,7 @@ export default function AuthLayout({ children }: Props) {
       suppressHydrationWarning
     >
       <body id="__next">
+        <InitColorSchemeScript attribute="class" />
         <MuiSetup>
           <SkipToContentButton />
           <AuthMain>{children}</AuthMain>

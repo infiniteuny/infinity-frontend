@@ -1,6 +1,7 @@
 import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { GetSession } from '@app/application';
+import { InitColorSchemeScript } from '@mui/material';
 import { InternalFooter, InternalHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
@@ -43,6 +44,7 @@ export default async function InternalLayout({ children }: Props) {
       suppressHydrationWarning
     >
       <body id="__next">
+        <InitColorSchemeScript attribute="class" />
         <MuiSetup>
           <SkipToContentButton />
           <InternalHeader session={SessionMapper.fromDomaintoDto(session) as SessionDto} />
