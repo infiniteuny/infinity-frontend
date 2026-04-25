@@ -38,7 +38,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
             ?.filter((value, index, self) => self.indexOf(value) === index)
             .join(','),
           'filters[team_id]': filterOptions?.teamId,
-          'filters[competition_id]': filterOptions?.competitionId,
+          'filters[competition_instance_id]': filterOptions?.competitionInstanceId,
           'filters[competition_scale_id]': filterOptions?.competitionScaleId,
           'filters[competition_time_range_id]': filterOptions?.competitionTimeRangeId,
           'filters[competition_output_id]': filterOptions?.competitionOutputId,
@@ -118,7 +118,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
       | 'createdAt'
       | 'updatedAt'
       | 'team'
-      | 'competition'
+      | 'competitionInstance'
       | 'competitionScale'
       | 'competitionTimeRange'
       | 'competitionOutput'

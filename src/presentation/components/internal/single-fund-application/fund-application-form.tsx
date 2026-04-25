@@ -26,7 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const fundApplicationInputSchema = z
   .object({
     teamId: z.uuidv7('Team must be selected'),
-    competitionId: z.uuidv7('Competition must be selected'),
+    competitionInstanceId: z.uuidv7('Competition instance must be selected'),
     competitionScaleId: z.uuidv7('Scale must be selected'),
     competitionBranch: z.string().min(1, 'Competition branch must not be empty'),
     competitionStartDate: z.date('Start date must be a valid date'),
@@ -109,7 +109,7 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
         }
       : {
           teamId: '',
-          competitionId: '',
+          competitionInstanceId: '',
           competitionScaleId: '',
           competitionBranch: '',
           competitionStartDate: new Date(),
@@ -174,8 +174,10 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
           <CompetitionForm
             methods={methods}
             competitionScales={competitionScales}
-            competitions={
-              initialFundApplication?.competition ? [initialFundApplication.competition] : undefined
+            competitionInstances={
+              initialFundApplication?.competition_instance
+                ? [initialFundApplication.competition_instance]
+                : undefined
             }
           />
           <DocumentsForm methods={methods} />

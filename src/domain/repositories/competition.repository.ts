@@ -1,14 +1,8 @@
 import { Either } from 'effect/Either';
-import {
-  PaginationOptions,
-  Competition,
-  CompetitionFilterOptions,
-  CompetitionIncludeOptions,
-} from '@app/domain/entities';
+import { PaginationOptions, Competition, CompetitionFilterOptions } from '@app/domain/entities';
 
 export interface CompetitionRepository {
   getCompetitions(
-    includeOptions?: CompetitionIncludeOptions,
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -17,20 +11,19 @@ export interface CompetitionRepository {
 
   getCompetition(
     id: string,
-    includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>>;
 
   createCompetition(
-    competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>,
+    competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>>;
 
   updateCompetition(
     id: string,
-    competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>>,
+    competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>>;

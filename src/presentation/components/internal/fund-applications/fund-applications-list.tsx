@@ -185,7 +185,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
           rows={rows.map((fundApplication) => ({
             id: fundApplication.id,
             team: fundApplication.team?.name || 'N/A',
-            competition: fundApplication.competition?.name || 'N/A',
+            competition: fundApplication.competitionInstance?.name || 'N/A',
             competitionScale: fundApplication.competitionScale?.name || 'N/A',
             competitionBranch: fundApplication.competitionBranch,
             competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),

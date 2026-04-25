@@ -29,7 +29,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const achievementInputSchema = z
   .object({
     teamId: z.uuidv7('Team must be selected'),
-    competitionId: z.uuidv7('Competition must be selected'),
+    competitionInstanceId: z.uuidv7('Competition instance must be selected'),
     competitionScaleId: z.uuidv7('Competition scale must be selected'),
     competitionTimeRangeId: z.uuidv7('Competition time range must be selected'),
     competitionOutputId: z.uuidv7('Competition output must be selected'),
@@ -112,7 +112,7 @@ export function AchievementForm({
         }
       : {
           teamId: '',
-          competitionId: '',
+          competitionInstanceId: '',
           competitionScaleId: '',
           competitionTimeRangeId: '',
           competitionOutputId: '',
@@ -166,7 +166,7 @@ export function AchievementForm({
       <SectionHeader
         title={
           achievement
-            ? (achievement.competition?.name ?? achievement.competitionBranch)
+            ? (achievement.competitionInstance?.name ?? achievement.competitionBranch)
             : 'Create Achievement'
         }
       >
@@ -184,8 +184,10 @@ export function AchievementForm({
             competitionTimeRanges={competitionTimeRanges}
             competitionOutputs={competitionOutputs}
             competitionRanks={competitionRanks}
-            competitions={
-              initialAchievement?.competition ? [initialAchievement.competition] : undefined
+            competitionInstances={
+              initialAchievement?.competition_instance
+                ? [initialAchievement.competition_instance]
+                : undefined
             }
           />
           <DocumentsForm methods={methods} />

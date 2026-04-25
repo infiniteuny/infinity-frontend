@@ -20,7 +20,7 @@ export function CompetitionView({ fundApplication }: Props) {
           <Grid size={12}>
             <ViewTile
               title="Name"
-              subtitle={fundApplication.competition?.name ?? 'N/A'}
+              subtitle={fundApplication.competitionInstance?.name ?? 'N/A'}
               position="top"
             />
           </Grid>

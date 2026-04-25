@@ -42,7 +42,7 @@ export default async function SingleAchievementPage({ params }: Props) {
     const getAchievement = serverContainer.get<GetAchievement>(SYMBOLS.GetAchievement);
     const achievementResult = await getAchievement.execute(achievementId, [
       'team',
-      'competition',
+      'competition_instance',
       'competition_scale',
       'competition_time_range',
       'competition_output',
@@ -64,9 +64,9 @@ export default async function SingleAchievementPage({ params }: Props) {
         <SectionHeader
           title={
             achievement.competitionRank?.name &&
-            achievement.competition?.name &&
+            achievement.competitionInstance?.name &&
             achievement.competitionBranch
-              ? `${achievement.competitionRank.name} ${achievement.competition.name} ${achievement.competitionBranch}`
+              ? `${achievement.competitionRank.name} ${achievement.competitionInstance.name} ${achievement.competitionBranch}`
               : 'N/A'
           }
         >

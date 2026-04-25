@@ -5,6 +5,7 @@ export * from './community-group-admin.repository-impl';
 export * from './community-group-member.repository-impl';
 export * from './community-group.repository-impl';
 export * from './competition-organizer-type.repository-impl';
+export * from './competition-instance.repository-impl';
 export * from './competition-output.repository-impl';
 export * from './competition-rank.repository-impl';
 export * from './competition-scale.repository-impl';

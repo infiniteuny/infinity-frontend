@@ -20,7 +20,7 @@ export function CompetitionView({ achievement }: Props) {
           <Grid size={12}>
             <ViewTile
               title="Name"
-              subtitle={achievement.competition?.name ?? 'N/A'}
+              subtitle={achievement.competitionInstance?.name ?? 'N/A'}
               position="top"
             />
           </Grid>

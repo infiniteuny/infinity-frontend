@@ -14,7 +14,7 @@ export type UpdateAchievementParams = [
       | 'createdAt'
       | 'updatedAt'
       | 'team'
-      | 'competition'
+      | 'competitionInstance'
       | 'competitionScale'
       | 'competitionTimeRange'
       | 'competitionOutput'

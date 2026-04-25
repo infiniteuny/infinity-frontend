@@ -41,7 +41,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
     const getFundApplication = serverContainer.get<GetFundApplication>(SYMBOLS.GetFundApplication);
     const fundApplicationResult = await getFundApplication.execute(fundApplicationId, [
       'team',
-      'competition',
+      'competition_instance',
       'competition_scale',
     ]);
     const fundApplication = match(fundApplicationResult, {
@@ -58,7 +58,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
     return (
       <>
         <SectionHeader
-          title={fundApplication.competition?.name ?? fundApplication.competitionBranch}
+          title={fundApplication.competitionInstance?.name ?? fundApplication.competitionBranch}
         >
           <FundApplicationToolbar fundApplicationId={fundApplication.id} />
         </SectionHeader>

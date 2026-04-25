@@ -1,13 +1,13 @@
 import { DateTime } from 'luxon';
 import { FundApplication } from '@app/domain/entities';
 import { TeamDto, TeamMapper } from './team.dto';
-import { CompetitionDto, CompetitionMapper } from './competition.dto';
+import { CompetitionInstanceDto, CompetitionInstanceMapper } from './competition-instance.dto';
 import { CompetitionScaleDto, CompetitionScaleMapper } from './competition-scale.dto';
 
 export interface FundApplicationDto {
   id: string;
   team_id: string;
-  competition_id: string;
+  competition_instance_id: string;
   competition_team_type_id: string;
   competition_scale_id: string;
   competition_branch: string;
@@ -19,7 +19,7 @@ export interface FundApplicationDto {
   created_at: string;
   updated_at: string;
   team?: TeamDto;
-  competition?: CompetitionDto;
+  competition_instance?: CompetitionInstanceDto;
   competition_scale?: CompetitionScaleDto;
 }
 
@@ -30,7 +30,7 @@ export class FundApplicationMapper {
     return {
       id: fundApplication.id,
       team_id: fundApplication.teamId,
-      competition_id: fundApplication.competitionId,
+      competition_instance_id: fundApplication.competitionInstanceId,
       competition_scale_id: fundApplication.competitionScaleId,
       competition_branch: fundApplication.competitionBranch,
       competition_start_date: fundApplication.competitionStartDate?.toISOString().split('T')[0],
@@ -43,8 +43,10 @@ export class FundApplicationMapper {
       team: fundApplication.team
         ? (TeamMapper.fromDomaintoDto(fundApplication.team) as TeamDto)
         : undefined,
-      competition: fundApplication.competition
-        ? (CompetitionMapper.fromDomaintoDto(fundApplication.competition) as CompetitionDto)
+      competition_instance: fundApplication.competitionInstance
+        ? (CompetitionInstanceMapper.fromDomaintoDto(
+            fundApplication.competitionInstance,
+          ) as CompetitionInstanceDto)
         : undefined,
       competition_scale: fundApplication.competitionScale
         ? (CompetitionScaleMapper.fromDomaintoDto(
@@ -58,7 +60,7 @@ export class FundApplicationMapper {
     return new FundApplication(
       dto.id,
       dto.team_id,
-      dto.competition_id,
+      dto.competition_instance_id,
       dto.competition_scale_id,
       dto.competition_branch,
       DateTime.fromISO(dto.competition_start_date).toJSDate(),
@@ -69,7 +71,9 @@ export class FundApplicationMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.team ? TeamMapper.fromDtoToDomain(dto.team) : undefined,
-      dto.competition ? CompetitionMapper.fromDtoToDomain(dto.competition) : undefined,
+      dto.competition_instance
+        ? CompetitionInstanceMapper.fromDtoToDomain(dto.competition_instance)
+        : undefined,
       dto.competition_scale
         ? CompetitionScaleMapper.fromDtoToDomain(dto.competition_scale)
         : undefined,

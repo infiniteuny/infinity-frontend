@@ -55,7 +55,7 @@ export default async function SingleAchievementEditPage({ params }: Props) {
     getCompetitionTimeRanges.execute(undefined, { perPage: 100 }),
     getCompetitionOutputs.execute(undefined, { perPage: 100 }),
     getCompetitionRanks.execute(undefined, { perPage: 100 }),
-    getAchievement.execute(achievementId, ['team', 'competition']),
+    getAchievement.execute(achievementId, ['team', 'competition_instance']),
   ]);
 
   const [competitionScales] = match(competitionScalesResult, {

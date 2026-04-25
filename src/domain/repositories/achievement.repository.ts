@@ -29,7 +29,7 @@ export interface AchievementRepository {
       | 'createdAt'
       | 'updatedAt'
       | 'team'
-      | 'competition'
+      | 'competitionInstance'
       | 'competitionScale'
       | 'competitionTimeRange'
       | 'competitionOutput'

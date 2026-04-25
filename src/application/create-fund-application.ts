@@ -35,7 +35,7 @@ export class CreateFundApplication implements UseCase<
   public async execute(
     fundApplication: Omit<
       FundApplication,
-      'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
+      'id' | 'createdAt' | 'updatedAt' | 'team' | 'competitionInstance' | 'competitionScale'
     >,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,

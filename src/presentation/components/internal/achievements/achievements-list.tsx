@@ -195,7 +195,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
           rows={rows.map((achievement) => ({
             id: achievement.id,
             team: achievement.team?.name || 'N/A',
-            competition: achievement.competition?.name || 'N/A',
+            competition: achievement.competitionInstance?.name || 'N/A',
             competitionScale: achievement.competitionScale?.name || 'N/A',
             competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
             competitionOutput: achievement.competitionOutput?.name || 'N/A',

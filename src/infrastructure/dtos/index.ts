@@ -4,6 +4,7 @@ export * from './community-group-admin.dto';
 export * from './community-group-member.dto';
 export * from './community-group.dto';
 export * from './competition-organizer-type.dto';
+export * from './competition-instance.dto';
 export * from './competition-output.dto';
 export * from './competition-rank.dto';
 export * from './competition-scale.dto';

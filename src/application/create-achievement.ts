@@ -47,7 +47,7 @@ export class CreateAchievement implements UseCase<
       | 'createdAt'
       | 'updatedAt'
       | 'team'
-      | 'competition'
+      | 'competitionInstance'
       | 'competitionScale'
       | 'competitionTimeRange'
       | 'competitionOutput'

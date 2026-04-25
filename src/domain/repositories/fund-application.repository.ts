@@ -36,7 +36,7 @@ export interface FundApplicationRepository {
     fundApplication: Partial<
       Omit<
         FundApplication,
-        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
+        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competitionInstance' | 'competitionScale'
       >
     >,
     abortSignal?: AbortSignal,

@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import { Competition } from '@app/domain/entities';
+import { CompetitionInstance } from '@app/domain/entities';
 import {
-  CompetitionDto,
-  CompetitionMapper,
+  CompetitionInstanceDto,
+  CompetitionInstanceMapper,
   CompetitionOutputDto,
   CompetitionOutputMapper,
   CompetitionRankDto,
@@ -30,7 +30,7 @@ import {
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
-import { GetCompetitions } from '@app/application';
+import { GetCompetitionInstances } from '@app/application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { useEffect, useMemo, useState } from 'react';
@@ -41,7 +41,7 @@ type Props = {
   competitionTimeRanges: CompetitionTimeRangeDto[];
   competitionOutputs: CompetitionOutputDto[];
   competitionRanks: CompetitionRankDto[];
-  competitions?: CompetitionDto[];
+  competitionInstances?: CompetitionInstanceDto[];
 };
 
 export function CompetitionForm({
@@ -54,10 +54,10 @@ export function CompetitionForm({
   competitionTimeRanges,
   competitionOutputs,
   competitionRanks,
-  competitions,
+  competitionInstances,
 }: Props) {
-  const getCompetitions = useMemo(
-    () => clientContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions),
+  const getCompetitionInstances = useMemo(
+    () => clientContainer.get<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances),
     [],
   );
   const parsedCompetitionScales = useMemo(
@@ -76,18 +76,22 @@ export function CompetitionForm({
     () => competitionRanks.map(CompetitionRankMapper.fromDtoToDomain),
     [competitionRanks],
   );
-  const parsedCompetitions = useMemo(
-    () => competitions?.map(CompetitionMapper.fromDtoToDomain) ?? [],
-    [competitions],
+  const parsedCompetitionInstances = useMemo(
+    () => competitionInstances?.map(CompetitionInstanceMapper.fromDtoToDomain) ?? [],
+    [competitionInstances],
   );
 
-  const [competitionInput, setCompetitionInput] = useState(parsedCompetitions[0]?.name ?? '');
-  const [competitionOptions, setCompetitionOptions] = useState<Competition[]>(parsedCompetitions);
-  const [isCompetitionLoading, setIsCompetitionLoading] = useState(false);
+  const [competitionInstanceInput, setCompetitionInstanceInput] = useState(
+    parsedCompetitionInstances[0]?.name ?? '',
+  );
+  const [competitionInstanceOptions, setCompetitionInstanceOptions] = useState<
+    CompetitionInstance[]
+  >(parsedCompetitionInstances);
+  const [isCompetitionInstanceLoading, setIsCompetitionInstanceLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
-    const query = competitionInput.trim();
+    const query = competitionInstanceInput.trim();
 
     if (query.length < 1) {
       return () => {
@@ -96,9 +100,9 @@ export function CompetitionForm({
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsCompetitionLoading(true);
+      setIsCompetitionInstanceLoading(true);
 
-      const competitionsResult = await getCompetitions.execute(
+      const competitionInstancesResult = await getCompetitionInstances.execute(
         undefined,
         { name: query },
         { perPage: 10 },
@@ -106,23 +110,23 @@ export function CompetitionForm({
 
       if (!active) return;
 
-      match(competitionsResult, {
+      match(competitionInstancesResult, {
         onLeft: () => {
-          setCompetitionOptions([]);
+          setCompetitionInstanceOptions([]);
         },
-        onRight: ([competitions]) => {
-          setCompetitionOptions(competitions);
+        onRight: ([competitionInstances]) => {
+          setCompetitionInstanceOptions(competitionInstances);
         },
       });
 
-      setIsCompetitionLoading(false);
+      setIsCompetitionInstanceLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [competitionInput, getCompetitions]);
+  }, [competitionInstanceInput, getCompetitionInstances]);
 
   return (
     <Box component="section" className="mb-4 w-full px-6">
@@ -135,44 +139,48 @@ export function CompetitionForm({
         <Grid container spacing={2}>
           <Grid size={12}>
             <Controller
-              name="competitionId"
+              name="competitionInstanceId"
               control={control}
               defaultValue={''}
               render={({ field }) => (
                 <Autocomplete
-                  options={competitionOptions}
+                  options={competitionInstanceOptions}
                   value={
-                    competitionOptions.find((competition) => competition.id === field.value) ?? null
+                    competitionInstanceOptions.find(
+                      (competitionInstance) => competitionInstance.id === field.value,
+                    ) ?? null
                   }
-                  onChange={(_, competition) => {
-                    field.onChange(competition?.id ?? '');
+                  onChange={(_, competitionInstance) => {
+                    field.onChange(competitionInstance?.id ?? '');
                   }}
-                  inputValue={competitionInput}
+                  inputValue={competitionInstanceInput}
                   onInputChange={(_, value) => {
-                    setCompetitionInput(value);
+                    setCompetitionInstanceInput(value);
 
                     if (value.trim().length < 1) {
-                      setCompetitionOptions([]);
-                      setIsCompetitionLoading(false);
+                      setCompetitionInstanceOptions([]);
+                      setIsCompetitionInstanceLoading(false);
                     }
                   }}
                   getOptionLabel={(option) => option.name}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
-                  loading={isCompetitionLoading}
+                  loading={isCompetitionInstanceLoading}
                   noOptionsText={
-                    competitionInput ? 'No competitions found' : 'Type to search competition'
+                    competitionInstanceInput
+                      ? 'No competition instances found'
+                      : 'Type to search competition instance'
                   }
                   disabled={isSubmitting}
                   filterOptions={(options) => options}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      id="competitionId"
+                      id="competitionInstanceId"
                       label="Name"
                       fullWidth
                       margin="none"
-                      helperText={errors.competitionId?.message}
-                      error={!!errors.competitionId}
+                      helperText={errors.competitionInstanceId?.message}
+                      error={!!errors.competitionInstanceId}
                       disabled={isSubmitting}
                     />
                   )}

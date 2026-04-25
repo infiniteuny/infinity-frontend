@@ -1,13 +1,17 @@
 import { FilterOperator } from '.';
-import { Competition } from './competition';
+import { CompetitionInstance } from './competition-instance';
 import { CompetitionScale } from './competition-scale';
 import { Team } from './team';
 
-export type FundApplicationIncludeOptions = ('team' | 'competition' | 'competition_scale')[];
+export type FundApplicationIncludeOptions = (
+  | 'team'
+  | 'competition_instance'
+  | 'competition_scale'
+)[];
 
 export interface FundApplicationFilterOptions {
   teamId?: string;
-  competitionId?: string;
+  competitionInstanceId?: string;
   competitionScaleId?: string;
   competitionBranch?: string;
   competitionStartDateOperator?: FilterOperator;
@@ -24,7 +28,7 @@ export interface FundApplicationFilterOptions {
 export interface FundApplicationSortOptions {
   id?: 'ASC' | 'DESC';
   teamId?: 'ASC' | 'DESC';
-  competitionId?: 'ASC' | 'DESC';
+  competitionInstanceId?: 'ASC' | 'DESC';
   competitionScaleId?: 'ASC' | 'DESC';
   competitionBranch?: 'ASC' | 'DESC';
   competitionStartDate?: 'ASC' | 'DESC';
@@ -37,7 +41,7 @@ export interface FundApplicationSortOptions {
 export class FundApplication {
   public id: string;
   public teamId: string;
-  public competitionId: string;
+  public competitionInstanceId: string;
   public competitionScaleId: string;
   public competitionBranch: string;
   public competitionStartDate: Date;
@@ -48,13 +52,13 @@ export class FundApplication {
   public createdAt: Date;
   public updatedAt: Date;
   public team?: Team;
-  public competition?: Competition;
+  public competitionInstance?: CompetitionInstance;
   public competitionScale?: CompetitionScale;
 
   public constructor(
     id: string,
     teamId: string,
-    competitionId: string,
+    competitionInstanceId: string,
     competitionScaleId: string,
     competitionBranch: string,
     competitionStartDate: Date,
@@ -65,12 +69,12 @@ export class FundApplication {
     createdAt: Date,
     updatedAt: Date,
     team?: Team,
-    competition?: Competition,
+    competitionInstance?: CompetitionInstance,
     competitionScale?: CompetitionScale,
   ) {
     this.id = id;
     this.teamId = teamId;
-    this.competitionId = competitionId;
+    this.competitionInstanceId = competitionInstanceId;
     this.competitionScaleId = competitionScaleId;
     this.competitionBranch = competitionBranch;
     this.competitionStartDate = competitionStartDate;
@@ -81,7 +85,7 @@ export class FundApplication {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.team = team;
-    this.competition = competition;
+    this.competitionInstance = competitionInstance;
     this.competitionScale = competitionScale;
   }
 }

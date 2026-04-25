@@ -38,7 +38,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
             ?.filter((value, index, self) => self.indexOf(value) === index)
             .join(','),
           'filters[team_id]': filterOptions?.teamId,
-          'filters[competition_id]': filterOptions?.competitionId,
+          'filters[competition_instance_id]': filterOptions?.competitionInstanceId,
           'filters[competition_scale_id]': filterOptions?.competitionScaleId,
           'filters[competition_branch]': filterOptions?.competitionBranch,
           'filters[competition_start_date]':
@@ -156,7 +156,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     fundApplication: Partial<
       Omit<
         FundApplication,
-        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competition' | 'competitionScale'
+        'id' | 'createdAt' | 'updatedAt' | 'team' | 'competitionInstance' | 'competitionScale'
       >
     >,
     abortSignal?: AbortSignal,

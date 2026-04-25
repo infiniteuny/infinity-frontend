@@ -4,12 +4,7 @@ import { CompetitionRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import {
-  Competition,
-  CompetitionFilterOptions,
-  CompetitionIncludeOptions,
-  PaginationOptions,
-} from '@app/domain/entities';
+import { Competition, CompetitionFilterOptions, PaginationOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 
 export class CompetitionRepositoryImpl implements CompetitionRepository {
@@ -19,7 +14,6 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   ) {}
 
   public async getCompetitions(
-    includeOptions?: CompetitionIncludeOptions,
     filterOptions?: CompetitionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
@@ -34,14 +28,8 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         params: {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
-          includes: includeOptions
-            ?.filter((value, index, self) => self.indexOf(value) === index)
-            .join(','),
           'filters[name]': filterOptions?.name,
           'filters[description]': filterOptions?.description,
-          'filters[url]': filterOptions?.url,
-          'filters[organizer]': filterOptions?.organizer,
-          'filters[organizer_type_id]': filterOptions?.organizerTypeId,
           'filters[created_at]':
             filterOptions?.createdAt != null
               ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
@@ -72,7 +60,6 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
 
   public async getCompetition(
     id: string,
-    includeOptions?: CompetitionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>> {
@@ -81,11 +68,6 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
         signal: abortSignal,
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        params: {
-          includes: includeOptions
-            ?.filter((value, index, self) => self.indexOf(value) === index)
-            .join(','),
         },
       });
 
@@ -98,7 +80,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
   }
 
   public async createCompetition(
-    competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>,
+    competition: Omit<Competition, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>> {
@@ -124,7 +106,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
 
   public async updateCompetition(
     id: string,
-    competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt' | 'organizerType'>>,
+    competition: Partial<Omit<Competition, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Competition, Error>> {

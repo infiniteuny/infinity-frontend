@@ -7,6 +7,7 @@ import {
   CommunityGroupAdminRepository,
   CommunityGroupMemberRepository,
   CommunityGroupRepository,
+  CompetitionInstanceRepository,
   CompetitionOrganizerTypeRepository,
   CompetitionOutputRepository,
   CompetitionRankRepository,
@@ -41,6 +42,7 @@ import {
   CommunityGroupAdminRepositoryImpl,
   CommunityGroupMemberRepositoryImpl,
   CommunityGroupRepositoryImpl,
+  CompetitionInstanceRepositoryImpl,
   CompetitionOrganizerTypeRepositoryImpl,
   CompetitionOutputRepositoryImpl,
   CompetitionRankRepositoryImpl,
@@ -79,6 +81,7 @@ import {
   CreateAchievement,
   CreateCommunityGroup,
   CreateCommunityGroupAdmin,
+  CreateCompetitionInstance,
   CreateCompetitionOrganizerType,
   CreateCompetitionOutput,
   CreateCompetitionRank,
@@ -97,12 +100,15 @@ import {
   CreateProjectGallery,
   CreateTeam,
   CreateTestimonial,
+  DeleteCompetitionInstance,
   GetCommunityGroup,
   GetAchievement,
   GetAchievements,
   GetCommunityGroupAdmin,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
+  GetCompetitionInstance,
+  GetCompetitionInstances,
   GetCompetitionOrganizerType,
   GetCompetitionOrganizerTypes,
   GetCompetitionOutput,
@@ -148,6 +154,7 @@ import {
   UpdateAchievement,
   UpdateCommunityGroup,
   UpdateCommunityGroupAdmin,
+  UpdateCompetitionInstance,
   UpdateCompetitionOrganizerType,
   UpdateCompetitionOutput,
   UpdateCompetitionRank,
@@ -178,6 +185,9 @@ serverContainer.bind<CreateCommunityGroup>(SYMBOLS.CreateCommunityGroup).to(Crea
 serverContainer
   .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
   .to(CreateCommunityGroupAdmin);
+serverContainer
+  .bind<CreateCompetitionInstance>(SYMBOLS.CreateCompetitionInstance)
+  .to(CreateCompetitionInstance);
 serverContainer
   .bind<CreateCompetitionOrganizerType>(SYMBOLS.CreateCompetitionOrganizerType)
   .to(CreateCompetitionOrganizerType);
@@ -222,6 +232,12 @@ serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer
+  .bind<GetCompetitionInstance>(SYMBOLS.GetCompetitionInstance)
+  .to(GetCompetitionInstance);
+serverContainer
+  .bind<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances)
+  .to(GetCompetitionInstances);
 serverContainer
   .bind<GetCompetitionOrganizerType>(SYMBOLS.GetCompetitionOrganizerType)
   .to(GetCompetitionOrganizerType);
@@ -281,11 +297,17 @@ serverContainer
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUsersWithToken>(SYMBOLS.GetUsersWithToken).to(GetUsersWithToken);
 serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
+serverContainer
+  .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
+  .to(DeleteCompetitionInstance);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
 serverContainer.bind<UpdateCommunityGroup>(SYMBOLS.UpdateCommunityGroup).to(UpdateCommunityGroup);
 serverContainer
   .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
   .to(UpdateCommunityGroupAdmin);
+serverContainer
+  .bind<UpdateCompetitionInstance>(SYMBOLS.UpdateCompetitionInstance)
+  .to(UpdateCompetitionInstance);
 serverContainer
   .bind<UpdateCompetitionOrganizerType>(SYMBOLS.UpdateCompetitionOrganizerType)
   .to(UpdateCompetitionOrganizerType);
@@ -341,6 +363,9 @@ serverContainer
 serverContainer
   .bind<CommunityGroupRepository>(SYMBOLS.CommunityGroupRepository)
   .to(CommunityGroupRepositoryImpl);
+serverContainer
+  .bind<CompetitionInstanceRepository>(SYMBOLS.CompetitionInstanceRepository)
+  .to(CompetitionInstanceRepositoryImpl);
 serverContainer
   .bind<CompetitionOrganizerTypeRepository>(SYMBOLS.CompetitionOrganizerTypeRepository)
   .to(CompetitionOrganizerTypeRepositoryImpl);

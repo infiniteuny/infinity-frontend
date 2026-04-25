@@ -61,7 +61,7 @@ export function DocumentsView({ achievement }: Props) {
               <Box
                 component="img"
                 src={achievement.image as string}
-                alt={`${achievement.competition?.name} ${achievement.competitionBranch}`}
+                alt={`${achievement.competitionInstance?.name} ${achievement.competitionBranch}`}
                 sx={{
                   width: '100%',
                   maxHeight: 280,
