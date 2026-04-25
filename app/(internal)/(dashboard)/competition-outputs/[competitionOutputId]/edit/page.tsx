@@ -1,11 +1,41 @@
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { GetCompetitionOutput } from '@app/application';
+import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+import { CompetitionOutputDto, CompetitionOutputMapper } from '@app/infrastructure/dtos';
+import { CompetitionOutputForm } from '@app/presentation/components/internal/single-competition-output';
 
-export const dynamic = 'force-dynamic';
+type Props = {
+  params: Promise<{
+    competitionOutputId: string;
+  }>;
+};
 
-export default async function SingleCompetitionOutputEditPage() {
+export default async function SingleCompetitionOutputEditPage({ params }: Props) {
+  const getCompetitionOutput = serverContainer.get<GetCompetitionOutput>(
+    SYMBOLS.GetCompetitionOutput,
+  );
+  const competitionOutputId = (await params).competitionOutputId;
+
+  const competitionOutputResult = await getCompetitionOutput.execute(competitionOutputId);
+  const competitionOutput = match(competitionOutputResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
   return (
-    <>
-      <SectionHeader title="Competition Output"></SectionHeader>
-    </>
+    <CompetitionOutputForm
+      initialCompetitionOutput={
+        CompetitionOutputMapper.fromDomaintoDto(competitionOutput) as CompetitionOutputDto
+      }
+    />
   );
 }

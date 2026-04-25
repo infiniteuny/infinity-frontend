@@ -1,11 +1,33 @@
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { GetFaculty } from '@app/application';
+import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+import { FacultyDto, FacultyMapper } from '@app/infrastructure/dtos';
+import { FacultyForm } from '@app/presentation/components/internal/single-faculty';
 
-export const dynamic = 'force-dynamic';
+type Props = {
+  params: Promise<{
+    facultyId: string;
+  }>;
+};
 
-export default async function SingleFacultyEditPage() {
-  return (
-    <>
-      <SectionHeader title="Faculty"></SectionHeader>
-    </>
-  );
+export default async function SingleFacultyEditPage({ params }: Props) {
+  const getFaculty = serverContainer.get<GetFaculty>(SYMBOLS.GetFaculty);
+  const facultyId = (await params).facultyId;
+
+  const facultyResult = await getFaculty.execute(facultyId);
+  const faculty = match(facultyResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return <FacultyForm initialFaculty={FacultyMapper.fromDomaintoDto(faculty) as FacultyDto} />;
 }
