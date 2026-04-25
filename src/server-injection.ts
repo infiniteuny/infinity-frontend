@@ -3,7 +3,9 @@ import { AuthController, AuthControllerImpl } from '@app/presentation/controller
 import {
   AchievementRepository,
   AuthRepository,
+  CommunityGroupAdminMemberRepository,
   CommunityGroupAdminRepository,
+  CommunityGroupMemberRepository,
   CommunityGroupRepository,
   CompetitionOrganizerTypeRepository,
   CompetitionOutputRepository,
@@ -13,24 +15,31 @@ import {
   CompetitionTimeRangeRepository,
   CompetitionRepository,
   CoreTeamDivisionRepository,
+  CoreTeamMemberRepository,
   CoreTeamRepository,
   DegreeRepository,
   FacultyRepository,
   FundApplicationRepository,
+  GroupPermissionRepository,
   GroupRepository,
   MajorRepository,
   PermissionRepository,
   PersonaRepository,
   ProjectGalleryRepository,
+  TeamMemberRepository,
   TeamRepository,
   TestimonialRepository,
+  UserGroupRepository,
   UserRepository,
   UserPermissionRepository,
+  UserPersonaRepository,
 } from '@app/domain/repositories';
 import {
   AchievementRepositoryImpl,
   AuthRepositoryImpl,
+  CommunityGroupAdminMemberRepositoryImpl,
   CommunityGroupAdminRepositoryImpl,
+  CommunityGroupMemberRepositoryImpl,
   CommunityGroupRepositoryImpl,
   CompetitionOrganizerTypeRepositoryImpl,
   CompetitionOutputRepositoryImpl,
@@ -40,19 +49,24 @@ import {
   CompetitionTimeRangeRepositoryImpl,
   CompetitionRepositoryImpl,
   CoreTeamDivisionRepositoryImpl,
+  CoreTeamMemberRepositoryImpl,
   CoreTeamRepositoryImpl,
   DegreeRepositoryImpl,
   FacultyRepositoryImpl,
   FundApplicationRepositoryImpl,
+  GroupPermissionRepositoryImpl,
   GroupRepositoryImpl,
   MajorRepositoryImpl,
   PermissionRepositoryImpl,
   PersonaRepositoryImpl,
   ProjectGalleryRepositoryImpl,
+  TeamMemberRepositoryImpl,
   TeamRepositoryImpl,
   TestimonialRepositoryImpl,
+  UserGroupRepositoryImpl,
   UserRepositoryImpl,
   UserPermissionRepositoryImpl,
+  UserPersonaRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import { Container } from 'inversify';
 import {
@@ -316,8 +330,14 @@ serverContainer
   .to(AchievementRepositoryImpl);
 serverContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
 serverContainer
+  .bind<CommunityGroupAdminMemberRepository>(SYMBOLS.CommunityGroupAdminMemberRepository)
+  .to(CommunityGroupAdminMemberRepositoryImpl);
+serverContainer
   .bind<CommunityGroupAdminRepository>(SYMBOLS.CommunityGroupAdminRepository)
   .to(CommunityGroupAdminRepositoryImpl);
+serverContainer
+  .bind<CommunityGroupMemberRepository>(SYMBOLS.CommunityGroupMemberRepository)
+  .to(CommunityGroupMemberRepositoryImpl);
 serverContainer
   .bind<CommunityGroupRepository>(SYMBOLS.CommunityGroupRepository)
   .to(CommunityGroupRepositoryImpl);
@@ -345,12 +365,18 @@ serverContainer
 serverContainer
   .bind<CoreTeamDivisionRepository>(SYMBOLS.CoreTeamDivisionRepository)
   .to(CoreTeamDivisionRepositoryImpl);
+serverContainer
+  .bind<CoreTeamMemberRepository>(SYMBOLS.CoreTeamMemberRepository)
+  .to(CoreTeamMemberRepositoryImpl);
 serverContainer.bind<CoreTeamRepository>(SYMBOLS.CoreTeamRepository).to(CoreTeamRepositoryImpl);
 serverContainer.bind<DegreeRepository>(SYMBOLS.DegreeRepository).to(DegreeRepositoryImpl);
 serverContainer.bind<FacultyRepository>(SYMBOLS.FacultyRepository).to(FacultyRepositoryImpl);
 serverContainer
   .bind<FundApplicationRepository>(SYMBOLS.FundApplicationRepository)
   .to(FundApplicationRepositoryImpl);
+serverContainer
+  .bind<GroupPermissionRepository>(SYMBOLS.GroupPermissionRepository)
+  .to(GroupPermissionRepositoryImpl);
 serverContainer.bind<GroupRepository>(SYMBOLS.GroupRepository).to(GroupRepositoryImpl);
 serverContainer.bind<MajorRepository>(SYMBOLS.MajorRepository).to(MajorRepositoryImpl);
 serverContainer
@@ -360,14 +386,21 @@ serverContainer.bind<PersonaRepository>(SYMBOLS.PersonaRepository).to(PersonaRep
 serverContainer
   .bind<ProjectGalleryRepository>(SYMBOLS.ProjectGalleryRepository)
   .to(ProjectGalleryRepositoryImpl);
+serverContainer
+  .bind<TeamMemberRepository>(SYMBOLS.TeamMemberRepository)
+  .to(TeamMemberRepositoryImpl);
 serverContainer.bind<TeamRepository>(SYMBOLS.TeamRepository).to(TeamRepositoryImpl);
 serverContainer
   .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
   .to(TestimonialRepositoryImpl);
+serverContainer.bind<UserGroupRepository>(SYMBOLS.UserGroupRepository).to(UserGroupRepositoryImpl);
 serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 serverContainer
   .bind<UserPermissionRepository>(SYMBOLS.UserPermissionRepository)
   .to(UserPermissionRepositoryImpl);
+serverContainer
+  .bind<UserPersonaRepository>(SYMBOLS.UserPersonaRepository)
+  .to(UserPersonaRepositoryImpl);
 
 // Data sources
 serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
