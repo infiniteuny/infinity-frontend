@@ -75,6 +75,7 @@ import {
   CreateAchievement,
   CreateCommunityGroup,
   CreateCommunityGroupAdmin,
+  CreateCompetition,
   CreateCompetitionInstance,
   CreateCompetitionOrganizerType,
   CreateCompetitionOutput,
@@ -95,12 +96,14 @@ import {
   CreateTeam,
   CreateTestimonial,
   CreateUser,
+  DeleteCompetition,
   DeleteCompetitionInstance,
   DeleteUser,
   GetAchievements,
   GetCommunityGroup,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
+  GetCompetition,
   GetCompetitionInstance,
   GetCompetitionInstances,
   GetCompetitionOrganizerType,
@@ -139,6 +142,7 @@ import {
   UpdateAchievement,
   UpdateCommunityGroup,
   UpdateCommunityGroupAdmin,
+  UpdateCompetition,
   UpdateCompetitionInstance,
   UpdateCompetitionOrganizerType,
   UpdateCompetitionOutput,
@@ -180,6 +184,7 @@ clientContainer.bind<CreateCommunityGroup>(SYMBOLS.CreateCommunityGroup).to(Crea
 clientContainer
   .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
   .to(CreateCommunityGroupAdmin);
+clientContainer.bind<CreateCompetition>(SYMBOLS.CreateCompetition).to(CreateCompetition);
 clientContainer
   .bind<CreateCompetitionInstance>(SYMBOLS.CreateCompetitionInstance)
   .to(CreateCompetitionInstance);
@@ -219,6 +224,7 @@ clientContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
 clientContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
 clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
+clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
 clientContainer
   .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
   .to(DeleteCompetitionInstance);
@@ -228,6 +234,7 @@ clientContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
 clientContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+clientContainer.bind<GetCompetition>(SYMBOLS.GetCompetition).to(GetCompetition);
 clientContainer
   .bind<GetCompetitionInstance>(SYMBOLS.GetCompetitionInstance)
   .to(GetCompetitionInstance);
@@ -292,6 +299,7 @@ clientContainer.bind<UpdateCommunityGroup>(SYMBOLS.UpdateCommunityGroup).to(Upda
 clientContainer
   .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
   .to(UpdateCommunityGroupAdmin);
+clientContainer.bind<UpdateCompetition>(SYMBOLS.UpdateCompetition).to(UpdateCompetition);
 clientContainer
   .bind<UpdateCompetitionInstance>(SYMBOLS.UpdateCompetitionInstance)
   .to(UpdateCompetitionInstance);
