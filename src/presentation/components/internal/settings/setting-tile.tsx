@@ -6,6 +6,7 @@ type Props = {
   title: string;
   subtitle?: string;
   icon?: ReactNode;
+  trailingIcon?: ReactNode;
   position?: 'top' | 'middle' | 'bottom' | 'single';
 } & (
   | {
@@ -18,7 +19,15 @@ type Props = {
     }
 );
 
-export function SettingTile({ title, subtitle, icon, href, onClick, position = 'single' }: Props) {
+export function SettingTile({
+  title,
+  subtitle,
+  icon,
+  trailingIcon,
+  href,
+  onClick,
+  position = 'single',
+}: Props) {
   let roundedClass;
   switch (position) {
     case 'top':
@@ -46,8 +55,10 @@ export function SettingTile({ title, subtitle, icon, href, onClick, position = '
       href={href}
       onClick={onClick}
     >
-      {icon ? <Box className="flex w-10 items-center justify-center pr-4">{icon}</Box> : null}
-      <Box>
+      {icon ? (
+        <Box className="flex w-10 shrink-0 items-center justify-center pr-4">{icon}</Box>
+      ) : null}
+      <Box className="flex-1">
         <Typography
           variant="body1"
           component="p"
@@ -61,6 +72,7 @@ export function SettingTile({ title, subtitle, icon, href, onClick, position = '
           </Typography>
         ) : null}
       </Box>
+      {trailingIcon ? <Box className="flex shrink-0 items-center pl-4">{trailingIcon}</Box> : null}
     </ButtonBase>
   );
 }
