@@ -118,9 +118,17 @@ export class CompetitionInstanceRepositoryImpl implements CompetitionInstanceRep
     token?: string,
   ): Promise<Either<CompetitionInstance, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const competitionInstanceDto = CompetitionInstanceMapper.fromDomaintoDto(competitionInstance);
+
+      const response = await this.infinityApiDataSource.postForm(
         '/competition-instances',
-        CompetitionInstanceMapper.fromDomaintoDto(competitionInstance),
+        {
+          ...competitionInstanceDto,
+          logo:
+            competitionInstanceDto.logo instanceof File
+              ? (competitionInstanceDto.logo as File)
+              : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -148,9 +156,17 @@ export class CompetitionInstanceRepositoryImpl implements CompetitionInstanceRep
     token?: string,
   ): Promise<Either<CompetitionInstance, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const competitionInstanceDto = CompetitionInstanceMapper.fromDomaintoDto(competitionInstance);
+
+      const response = await this.infinityApiDataSource.putForm(
         `/competition-instances/${id}`,
-        CompetitionInstanceMapper.fromDomaintoDto(competitionInstance),
+        {
+          ...competitionInstanceDto,
+          logo:
+            competitionInstanceDto.logo instanceof File
+              ? (competitionInstanceDto.logo as File)
+              : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
