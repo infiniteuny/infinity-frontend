@@ -43,7 +43,7 @@ export class CompetitionInstance {
   public url: string | null;
   public organizer: string;
   public organizerTypeId: string;
-  public logo: string;
+  public logo: string | File;
   public startDate: Date;
   public endDate: Date;
   public location: string;
@@ -60,7 +60,7 @@ export class CompetitionInstance {
     url: string | null,
     organizer: string,
     organizerTypeId: string,
-    logo: string,
+    logo: string | File,
     startDate: Date,
     endDate: Date,
     location: string,
