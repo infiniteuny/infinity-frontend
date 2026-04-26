@@ -14,7 +14,7 @@ export interface CompetitionInstanceDto {
   url: string | null;
   organizer: string;
   organizer_type_id: string;
-  logo: string;
+  logo: string | File;
   start_date: string;
   end_date: string;
   location: string;
