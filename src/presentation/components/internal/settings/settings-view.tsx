@@ -7,7 +7,9 @@ import {
   AssignmentIndRounded,
   BusinessRounded,
   CategoryRounded,
+  ChevronRightRounded,
   Diversity2Rounded,
+  EmojiEventsRounded,
   Groups3Rounded,
   GroupsRounded,
   SchoolRounded,
@@ -34,6 +36,7 @@ export function SettingsView() {
                 title="System Configurations"
                 subtitle="General system-wide settings and configurations"
                 icon={<TuneRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/settings/system"
               />
             </Grid>
@@ -54,6 +57,7 @@ export function SettingsView() {
                 subtitle="Academic degrees"
                 position="top"
                 icon={<StairsRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/degrees"
               />
             </Grid>
@@ -63,6 +67,7 @@ export function SettingsView() {
                 subtitle="Academic faculties"
                 position="middle"
                 icon={<SchoolRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/faculties"
               />
             </Grid>
@@ -72,6 +77,7 @@ export function SettingsView() {
                 subtitle="Academic majors"
                 position="middle"
                 icon={<AdjustRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/majors"
               />
             </Grid>
@@ -81,6 +87,7 @@ export function SettingsView() {
                 subtitle="User personas"
                 position="middle"
                 icon={<AssignmentIndRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/personas"
               />
             </Grid>
@@ -90,6 +97,7 @@ export function SettingsView() {
                 subtitle="Types of teams"
                 position="bottom"
                 icon={<GroupsRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/team-types"
               />
             </Grid>
@@ -110,6 +118,7 @@ export function SettingsView() {
                 subtitle="Divisions within the core team"
                 position="top"
                 icon={<Groups3Rounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/core-team-divisions"
               />
             </Grid>
@@ -119,6 +128,7 @@ export function SettingsView() {
                 subtitle="Groups within the community"
                 position="bottom"
                 icon={<Diversity2Rounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/community-groups"
               />
             </Grid>
@@ -135,10 +145,21 @@ export function SettingsView() {
           <Grid container spacing={0.5}>
             <Grid size={12}>
               <SettingTile
+                title="Competitions"
+                subtitle="List of competitions and their details"
+                position="top"
+                icon={<EmojiEventsRounded />}
+                trailingIcon={<ChevronRightRounded />}
+                href="/competitions"
+              />
+            </Grid>
+            <Grid size={12}>
+              <SettingTile
                 title="Organizer Types"
                 subtitle="Types of competition organizers"
-                position="top"
+                position="middle"
                 icon={<BusinessRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/competition-organizer-types"
               />
             </Grid>
@@ -148,6 +169,7 @@ export function SettingsView() {
                 subtitle="Regional level of the competition"
                 position="middle"
                 icon={<SquareFootRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/competition-scales"
               />
             </Grid>
@@ -157,6 +179,7 @@ export function SettingsView() {
                 subtitle="Duration of the competition"
                 position="middle"
                 icon={<TimelapseRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/competition-time-ranges"
               />
             </Grid>
@@ -166,6 +189,7 @@ export function SettingsView() {
                 subtitle="Types of outputs produced by the competition"
                 position="middle"
                 icon={<CategoryRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/competition-outputs"
               />
             </Grid>
@@ -175,6 +199,7 @@ export function SettingsView() {
                 subtitle="Winning ranks in the competition"
                 position="bottom"
                 icon={<WorkspacePremiumRounded />}
+                trailingIcon={<ChevronRightRounded />}
                 href="/competition-ranks"
               />
             </Grid>

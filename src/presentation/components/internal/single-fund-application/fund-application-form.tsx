@@ -110,7 +110,7 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
       : {
           teamId: '',
           competitionInstanceId: '',
-          competitionScaleId: '',
+          competitionScaleId: '0',
           competitionBranch: '',
           competitionStartDate: new Date(),
           competitionEndDate: new Date(),

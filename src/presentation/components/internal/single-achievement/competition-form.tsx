@@ -216,7 +216,7 @@ export function CompetitionForm({
                     label="Competition Scale"
                     error={!!errors.competitionScaleId}
                   >
-                    <MenuItem key="empty" value="" disabled sx={{ display: 'none' }}>
+                    <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select competition scale
                     </MenuItem>
                     {parsedCompetitionScales.map((competitionScale) => (
@@ -248,7 +248,7 @@ export function CompetitionForm({
                     label="Competition Time Range"
                     error={!!errors.competitionTimeRangeId}
                   >
-                    <MenuItem key="empty" value="" disabled sx={{ display: 'none' }}>
+                    <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select competition time range
                     </MenuItem>
                     {parsedCompetitionTimeRanges.map((competitionTimeRange) => (
@@ -280,7 +280,7 @@ export function CompetitionForm({
                     label="Competition Output"
                     error={!!errors.competitionOutputId}
                   >
-                    <MenuItem key="empty" value="" disabled sx={{ display: 'none' }}>
+                    <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select competition output
                     </MenuItem>
                     {parsedCompetitionOutputs.map((competitionOutput) => (
@@ -312,7 +312,7 @@ export function CompetitionForm({
                     label="Competition Rank"
                     error={!!errors.competitionRankId}
                   >
-                    <MenuItem key="empty" value="" disabled sx={{ display: 'none' }}>
+                    <MenuItem key="0" value="0" disabled sx={{ display: 'none' }}>
                       Select competition rank
                     </MenuItem>
                     {parsedCompetitionRanks.map((competitionRank) => (
