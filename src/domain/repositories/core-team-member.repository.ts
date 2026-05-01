@@ -1,15 +1,24 @@
-import { CoreTeamMember } from '@app/domain/entities';
+import {
+  CoreTeamMember,
+  CoreTeamMemberFilterOptions,
+  CoreTeamMemberIncludeOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CoreTeamMemberRepository {
   getCoreTeamMembers(
     coreTeamId: string,
+    includeOptions?: CoreTeamMemberIncludeOptions,
+    filterOptions?: CoreTeamMemberFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<CoreTeamMember[], Error>>;
+  ): Promise<Either<[CoreTeamMember[], PaginationOptions], Error>>;
 
   getCoreTeamMember(
     id: string,
+    includeOptions?: CoreTeamMemberIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>>;

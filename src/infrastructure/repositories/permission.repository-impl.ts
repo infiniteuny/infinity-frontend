@@ -87,7 +87,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/permissions',
-        PermissionMapper.fromDomaintoDto(permission),
+        PermissionMapper.fromDomainToDto(permission),
         {
           signal: abortSignal,
           headers: {
@@ -113,7 +113,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/permissions/${id}`,
-        PermissionMapper.fromDomaintoDto(permission),
+        PermissionMapper.fromDomainToDto(permission),
         {
           signal: abortSignal,
           headers: {

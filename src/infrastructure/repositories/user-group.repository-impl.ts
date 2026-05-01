@@ -2,7 +2,7 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { UserGroup } from '@app/domain/entities';
+import { PaginationOptions, UserGroup, UserGroupFilterOptions } from '@app/domain/entities';
 import { UserGroupMapper } from '@app/infrastructure/dtos';
 import { UserGroupRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -15,14 +15,30 @@ export class UserGroupRepositoryImpl implements UserGroupRepository {
 
   public async getUserGroups(
     userId: string,
+    filterOptions?: UserGroupFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<UserGroup[], Error>> {
+  ): Promise<Either<[UserGroup[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/users/${userId}/groups`, {
         signal: abortSignal,
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
+          'filters[name]': filterOptions?.name,
+          'filters[guard_name]': filterOptions?.guardName,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
@@ -30,7 +46,14 @@ export class UserGroupRepositoryImpl implements UserGroupRepository {
         UserGroupMapper.fromDtoToDomain,
       );
 
-      return right(userGroupsResponse);
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([userGroupsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }

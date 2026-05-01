@@ -1,12 +1,14 @@
-import { UserGroup } from '@app/domain/entities';
+import { PaginationOptions, UserGroup, UserGroupFilterOptions } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserGroupRepository {
   getUserGroups(
     userId: string,
+    filterOptions?: UserGroupFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<UserGroup[], Error>>;
+  ): Promise<Either<[UserGroup[], PaginationOptions], Error>>;
 
   getUserGroup(
     id: string,

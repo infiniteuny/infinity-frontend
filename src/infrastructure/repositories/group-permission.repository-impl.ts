@@ -2,7 +2,11 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { GroupPermission } from '@app/domain/entities';
+import {
+  GroupPermission,
+  GroupPermissionFilterOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { GroupPermissionMapper } from '@app/infrastructure/dtos';
 import { GroupPermissionRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -15,14 +19,30 @@ export class GroupPermissionRepositoryImpl implements GroupPermissionRepository 
 
   public async getGroupPermissions(
     groupId: string,
+    filterOptions?: GroupPermissionFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<GroupPermission[], Error>> {
+  ): Promise<Either<[GroupPermission[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/groups/${groupId}/permissions`, {
         signal: abortSignal,
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
+          'filters[name]': filterOptions?.name,
+          'filters[guard_name]': filterOptions?.guardName,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
@@ -30,7 +50,14 @@ export class GroupPermissionRepositoryImpl implements GroupPermissionRepository 
         GroupPermissionMapper.fromDtoToDomain,
       );
 
-      return right(groupPermissionsResponse);
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([groupPermissionsResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }

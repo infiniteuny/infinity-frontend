@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { CoreTeamMember } from '@app/domain/entities';
+import {
+  CoreTeamMember,
+  CoreTeamMemberFilterOptions,
+  CoreTeamMemberIncludeOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { CoreTeamMemberMapper } from '@app/infrastructure/dtos';
 import { CoreTeamMemberRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -15,14 +20,48 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
 
   public async getCoreTeamMembers(
     coreTeamId: string,
+    includeOptions?: CoreTeamMemberIncludeOptions,
+    filterOptions?: CoreTeamMemberFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<CoreTeamMember[], Error>> {
+  ): Promise<Either<[CoreTeamMember[], PaginationOptions], Error>> {
     try {
       const response = await this.infinityApiDataSource.get(`/core-teams/${coreTeamId}/members`, {
         signal: abortSignal,
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
+          'filters[sso_id]': filterOptions?.ssoId,
+          'filters[name]': filterOptions?.name,
+          'filters[email_address]': filterOptions?.emailAddress,
+          'filters[phone_number]': filterOptions?.phoneNumber,
+          'filters[student_id]': filterOptions?.studentId,
+          'filters[major_id]': filterOptions?.majorId,
+          'filters[start_date]':
+            filterOptions?.startDate != null
+              ? (filterOptions.startDateOperator ?? '') + filterOptions.startDate.toISOString()
+              : undefined,
+          'filters[end_date]':
+            filterOptions?.endDate != null
+              ? (filterOptions.endDateOperator ?? '') + filterOptions?.endDate?.toISOString()
+              : undefined,
+          'filters[is_member]': filterOptions?.isMember,
+          'filters[is_extraordinary]': filterOptions?.isExtraordinary,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
@@ -30,7 +69,14 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
         CoreTeamMemberMapper.fromDtoToDomain,
       );
 
-      return right(coreTeamMembersResponse);
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([coreTeamMembersResponse, paginationOptionsResponse]);
     } catch (error) {
       return left(handleAxiosError(error));
     }
@@ -38,6 +84,7 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
 
   public async getCoreTeamMember(
     id: string,
+    includeOptions?: CoreTeamMemberIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>> {
@@ -46,6 +93,11 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
         signal: abortSignal,
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        params: {
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
         },
       });
 

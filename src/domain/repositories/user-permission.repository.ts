@@ -1,12 +1,26 @@
-import { UserPermission } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  UserPermission,
+  UserPermissionFilterOptions,
+  UserPermissionIncludeOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserPermissionRepository {
   getUserPermissions(
     userId: string,
+    includeOptions: UserPermissionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<UserPermission[], Error>>;
+  ): Promise<Either<[UserPermission[]], Error>>;
+
+  getUserPermissions(
+    userId: string,
+    filterOptions?: UserPermissionFilterOptions,
+    paginationOptions?: PaginationOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<[UserPermission[], PaginationOptions], Error>>;
 
   getUserPermission(
     id: string,

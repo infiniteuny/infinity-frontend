@@ -1,15 +1,24 @@
-import { CommunityGroupAdminMember } from '@app/domain/entities';
+import {
+  CommunityGroupAdminMember,
+  CommunityGroupAdminMemberFilterOptions,
+  CommunityGroupAdminMemberIncludeOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CommunityGroupAdminMemberRepository {
   getCommunityGroupAdminMembers(
     communityGroupAdminId: string,
+    includeOptions?: CommunityGroupAdminMemberIncludeOptions,
+    filterOptions?: CommunityGroupAdminMemberFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<CommunityGroupAdminMember[], Error>>;
+  ): Promise<Either<[CommunityGroupAdminMember[], PaginationOptions], Error>>;
 
   getCommunityGroupAdminMember(
     id: string,
+    includeOptions?: CommunityGroupAdminMemberIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CommunityGroupAdminMember, Error>>;

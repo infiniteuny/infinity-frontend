@@ -1,12 +1,14 @@
-import { UserPersona } from '@app/domain/entities';
+import { PaginationOptions, UserPersona, UserPersonaFilterOptions } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserPersonaRepository {
   getUserPersonas(
     userId: string,
+    filterOptions?: UserPersonaFilterOptions,
+    paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<UserPersona[], Error>>;
+  ): Promise<Either<[UserPersona[], PaginationOptions], Error>>;
 
   getUserPersona(
     id: string,

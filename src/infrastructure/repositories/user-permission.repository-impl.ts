@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject } from 'inversify';
-import { UserPermission } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  UserPermission,
+  UserPermissionFilterOptions,
+  UserPermissionIncludeOptions,
+} from '@app/domain/entities';
 import { UserPermissionMapper } from '@app/infrastructure/dtos';
 import { UserPermissionRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -15,14 +20,58 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
 
   public async getUserPermissions(
     userId: string,
+    includeOptions: UserPermissionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<UserPermission[], Error>> {
+  ): Promise<Either<[UserPermission[]], Error>>;
+  public async getUserPermissions(
+    userId: string,
+    filterOptions?: UserPermissionFilterOptions,
+    paginationOptions?: PaginationOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<[UserPermission[], PaginationOptions], Error>>;
+  public async getUserPermissions(
+    userId: string,
+    includeOptionsOrFilterOptions?: UserPermissionIncludeOptions | UserPermissionFilterOptions,
+    abortSignalOrPaginationOptions?: AbortSignal | PaginationOptions,
+    tokenOrAbortSignal?: AbortSignal | string,
+    token?: string,
+  ): Promise<Either<[UserPermission[]] | [UserPermission[], PaginationOptions], Error>> {
+    const hasIncludeOptions = Array.isArray(includeOptionsOrFilterOptions);
+    const includeOptions = hasIncludeOptions ? includeOptionsOrFilterOptions : undefined;
+    const filterOptions = hasIncludeOptions
+      ? undefined
+      : (includeOptionsOrFilterOptions as UserPermissionFilterOptions | undefined);
+    const paginationOptions = hasIncludeOptions
+      ? undefined
+      : (abortSignalOrPaginationOptions as PaginationOptions | undefined);
+    const abortSignal = hasIncludeOptions
+      ? (abortSignalOrPaginationOptions as AbortSignal | undefined)
+      : (tokenOrAbortSignal as AbortSignal | undefined);
+    const authToken = hasIncludeOptions ? (tokenOrAbortSignal as string | undefined) : token;
     try {
       const response = await this.infinityApiDataSource.get(`/users/${userId}/permissions`, {
         signal: abortSignal,
         headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+        },
+        params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
+          includes: includeOptions
+            ?.filter((value, index, self) => self.indexOf(value) === index)
+            .join(','),
+          'filters[name]': filterOptions?.name,
+          'filters[guard_name]': filterOptions?.guardName,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
         },
       });
 
@@ -30,7 +79,18 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
         UserPermissionMapper.fromDtoToDomain,
       );
 
-      return right(userPermissionsResponse);
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      if (hasIncludeOptions) {
+        return right([userPermissionsResponse]);
+      } else {
+        return right([userPermissionsResponse, paginationOptionsResponse]);
+      }
     } catch (error) {
       return left(handleAxiosError(error));
     }
