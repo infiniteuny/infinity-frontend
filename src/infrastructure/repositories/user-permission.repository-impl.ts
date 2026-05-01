@@ -79,16 +79,16 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
         UserPermissionMapper.fromDtoToDomain,
       );
 
-      const paginationOptionsResponse = new PaginationOptions(
-        response.data.data.meta.per_page,
-        paginationOptions?.cursor,
-        response.data.data.meta.next_cursor ?? undefined,
-        response.data.data.meta.prev_cursor ?? undefined,
-      );
-
       if (hasIncludeOptions) {
         return right(userPermissionsResponse);
       } else {
+        const paginationOptionsResponse = new PaginationOptions(
+          response.data.data.meta.per_page,
+          paginationOptions?.cursor,
+          response.data.data.meta.next_cursor ?? undefined,
+          response.data.data.meta.prev_cursor ?? undefined,
+        );
+
         return right([userPermissionsResponse, paginationOptionsResponse]);
       }
     } catch (error) {
