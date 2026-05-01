@@ -29,5 +29,5 @@ export default async function SingleCoreTeamEditPage({ params }: Props) {
     onRight: (data) => data,
   });
 
-  return <CoreTeamForm initialCoreTeam={CoreTeamMapper.fromDomaintoDto(coreTeam) as CoreTeamDto} />;
+  return <CoreTeamForm initialCoreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto} />;
 }

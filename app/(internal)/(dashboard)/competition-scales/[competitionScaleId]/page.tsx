@@ -44,7 +44,7 @@ export default async function SingleCompetitionScalePage({ params }: Props) {
         </SectionHeader>
         <CompetitionScaleView
           initialCompetitionScale={
-            CompetitionScaleMapper.fromDomaintoDto(competitionScale) as CompetitionScaleDto
+            CompetitionScaleMapper.fromDomainToDto(competitionScale) as CompetitionScaleDto
           }
         />
       </>

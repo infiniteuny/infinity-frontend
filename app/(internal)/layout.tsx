@@ -47,7 +47,7 @@ export default async function InternalLayout({ children }: Props) {
         <InitColorSchemeScript attribute="class" />
         <MuiSetup>
           <SkipToContentButton />
-          <InternalHeader session={SessionMapper.fromDomaintoDto(session) as SessionDto} />
+          <InternalHeader session={SessionMapper.fromDomainToDto(session) as SessionDto} />
           {children}
           <InternalFooter />
         </MuiSetup>

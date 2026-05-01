@@ -29,5 +29,5 @@ export default async function SingleFacultyEditPage({ params }: Props) {
     onRight: (data) => data,
   });
 
-  return <FacultyForm initialFaculty={FacultyMapper.fromDomaintoDto(faculty) as FacultyDto} />;
+  return <FacultyForm initialFaculty={FacultyMapper.fromDomainToDto(faculty) as FacultyDto} />;
 }

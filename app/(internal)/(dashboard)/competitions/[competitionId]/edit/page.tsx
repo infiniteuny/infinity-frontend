@@ -31,7 +31,7 @@ export default async function SingleCompetitionEditPage({ params }: Props) {
 
   return (
     <CompetitionForm
-      initialCompetition={CompetitionMapper.fromDomaintoDto(competition) as CompetitionDto}
+      initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
     />
   );
 }

@@ -29,5 +29,5 @@ export default async function SinglePersonaEditPage({ params }: Props) {
     onRight: (data) => data,
   });
 
-  return <PersonaForm initialPersona={PersonaMapper.fromDomaintoDto(persona) as PersonaDto} />;
+  return <PersonaForm initialPersona={PersonaMapper.fromDomainToDto(persona) as PersonaDto} />;
 }

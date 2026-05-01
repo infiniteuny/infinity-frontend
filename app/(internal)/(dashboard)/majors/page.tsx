@@ -29,9 +29,9 @@ export default async function MajorsPage() {
         <MajorsToolbar />
       </SectionHeader>
       <MajorsList
-        initialMajors={majors.map(MajorMapper.fromDomaintoDto) as MajorDto[]}
+        initialMajors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

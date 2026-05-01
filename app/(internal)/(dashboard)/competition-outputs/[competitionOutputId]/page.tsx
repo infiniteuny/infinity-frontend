@@ -44,7 +44,7 @@ export default async function SingleCompetitionOutputPage({ params }: Props) {
         </SectionHeader>
         <CompetitionOutputView
           initialCompetitionOutput={
-            CompetitionOutputMapper.fromDomaintoDto(competitionOutput) as CompetitionOutputDto
+            CompetitionOutputMapper.fromDomainToDto(competitionOutput) as CompetitionOutputDto
           }
         />
       </>

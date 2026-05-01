@@ -31,7 +31,7 @@ export default async function SingleTestimonialEditPage({ params }: Props) {
 
   return (
     <TestimonialForm
-      initialTestimonial={TestimonialMapper.fromDomaintoDto(testimonial) as TestimonialDto}
+      initialTestimonial={TestimonialMapper.fromDomainToDto(testimonial) as TestimonialDto}
     />
   );
 }

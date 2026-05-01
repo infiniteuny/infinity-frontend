@@ -74,11 +74,11 @@ export default async function SingleCompetitionInstanceEditPage({ params }: Prop
       competitionId={competitionId}
       competitionName={competition.name}
       initialCompetitionInstance={
-        CompetitionInstanceMapper.fromDomaintoDto(competitionInstance) as CompetitionInstanceDto
+        CompetitionInstanceMapper.fromDomainToDto(competitionInstance) as CompetitionInstanceDto
       }
       competitionOrganizerTypes={
         competitionOrganizerTypes.map(
-          CompetitionOrganizerTypeMapper.fromDomaintoDto,
+          CompetitionOrganizerTypeMapper.fromDomainToDto,
         ) as CompetitionOrganizerTypeDto[]
       }
     />

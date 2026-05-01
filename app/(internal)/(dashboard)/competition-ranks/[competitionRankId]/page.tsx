@@ -42,7 +42,7 @@ export default async function SingleCompetitionRankPage({ params }: Props) {
         </SectionHeader>
         <CompetitionRankView
           initialCompetitionRank={
-            CompetitionRankMapper.fromDomaintoDto(competitionRank) as CompetitionRankDto
+            CompetitionRankMapper.fromDomainToDto(competitionRank) as CompetitionRankDto
           }
         />
       </>

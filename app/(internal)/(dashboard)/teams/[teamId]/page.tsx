@@ -41,7 +41,7 @@ export default async function SingleTeamPage({ params }: Props) {
         <SectionHeader title={team.name}>
           <TeamToolbar teamId={team.id} />
         </SectionHeader>
-        <TeamView initialTeam={TeamMapper.fromDomaintoDto(team) as TeamDto} />
+        <TeamView initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto} />
       </>
     );
   } else {
@@ -61,7 +61,7 @@ export default async function SingleTeamPage({ params }: Props) {
     return (
       <TeamForm
         teamTypes={
-          teamTypes.map(CompetitionTeamTypeMapper.fromDomaintoDto) as CompetitionTeamTypeDto[]
+          teamTypes.map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
         }
       />
     );

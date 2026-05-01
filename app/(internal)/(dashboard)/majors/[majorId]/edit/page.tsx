@@ -56,9 +56,9 @@ export default async function SingleMajorEditPage({ params }: Props) {
 
   return (
     <MajorForm
-      initialMajor={MajorMapper.fromDomaintoDto(major) as MajorDto}
-      degrees={degrees.map(DegreeMapper.fromDomaintoDto) as DegreeDto[]}
-      faculties={faculties.map(FacultyMapper.fromDomaintoDto) as FacultyDto[]}
+      initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto}
+      degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
+      faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
     />
   );
 }

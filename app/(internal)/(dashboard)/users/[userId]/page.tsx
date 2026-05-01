@@ -36,7 +36,7 @@ export default async function SingleUserPage({ params }: Props) {
         <SectionHeader title={user.name}>
           <UserToolbar userId={user.id} />
         </SectionHeader>
-        <UserView initialUser={UserMapper.fromDomaintoDto(user) as UserDto} />
+        <UserView initialUser={UserMapper.fromDomainToDto(user) as UserDto} />
       </>
     );
   } else {
@@ -49,6 +49,6 @@ export default async function SingleUserPage({ params }: Props) {
       onRight: (data) => data,
     });
 
-    return <UserForm faculties={faculties.map(FacultyMapper.fromDomaintoDto) as FacultyDto[]} />;
+    return <UserForm faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]} />;
   }
 }

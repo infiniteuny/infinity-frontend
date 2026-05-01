@@ -32,7 +32,7 @@ export default async function SingleCompetitionScaleEditPage({ params }: Props) 
   return (
     <CompetitionScaleForm
       initialCompetitionScale={
-        CompetitionScaleMapper.fromDomaintoDto(competitionScale) as CompetitionScaleDto
+        CompetitionScaleMapper.fromDomainToDto(competitionScale) as CompetitionScaleDto
       }
     />
   );

@@ -30,7 +30,7 @@ export default async function SinglePermissionEditPage({ params }: Props) {
 
   return (
     <PermissionForm
-      initialPermission={PermissionMapper.fromDomaintoDto(permission) as PermissionDto}
+      initialPermission={PermissionMapper.fromDomainToDto(permission) as PermissionDto}
     />
   );
 }

@@ -36,11 +36,11 @@ export default async function CommunityGroupAdminsPage() {
       <CommunityGroupAdminsList
         initialCommunityGroupAdmins={
           communityGroupAdmins.map(
-            CommunityGroupAdminMapper.fromDomaintoDto,
+            CommunityGroupAdminMapper.fromDomainToDto,
           ) as CommunityGroupAdminDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

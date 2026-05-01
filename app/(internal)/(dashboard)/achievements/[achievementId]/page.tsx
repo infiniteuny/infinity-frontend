@@ -73,7 +73,7 @@ export default async function SingleAchievementPage({ params }: Props) {
           <AchievementToolbar achievementId={achievement.id} />
         </SectionHeader>
         <AchievementView
-          initialAchievement={AchievementMapper.fromDomaintoDto(achievement) as AchievementDto}
+          initialAchievement={AchievementMapper.fromDomainToDto(achievement) as AchievementDto}
         />
       </>
     );
@@ -131,18 +131,18 @@ export default async function SingleAchievementPage({ params }: Props) {
     return (
       <AchievementForm
         competitionScales={
-          competitionScales.map(CompetitionScaleMapper.fromDomaintoDto) as CompetitionScaleDto[]
+          competitionScales.map(CompetitionScaleMapper.fromDomainToDto) as CompetitionScaleDto[]
         }
         competitionTimeRanges={
           competitionTimeRanges.map(
-            CompetitionTimeRangeMapper.fromDomaintoDto,
+            CompetitionTimeRangeMapper.fromDomainToDto,
           ) as CompetitionTimeRangeDto[]
         }
         competitionOutputs={
-          competitionOutputs.map(CompetitionOutputMapper.fromDomaintoDto) as CompetitionOutputDto[]
+          competitionOutputs.map(CompetitionOutputMapper.fromDomainToDto) as CompetitionOutputDto[]
         }
         competitionRanks={
-          competitionRanks.map(CompetitionRankMapper.fromDomaintoDto) as CompetitionRankDto[]
+          competitionRanks.map(CompetitionRankMapper.fromDomainToDto) as CompetitionRankDto[]
         }
       />
     );

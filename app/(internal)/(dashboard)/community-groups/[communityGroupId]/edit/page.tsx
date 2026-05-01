@@ -32,7 +32,7 @@ export default async function SingleCommunityGroupEditPage({ params }: Props) {
   return (
     <CommunityGroupForm
       initialCommunityGroup={
-        CommunityGroupMapper.fromDomaintoDto(communityGroup) as CommunityGroupDto
+        CommunityGroupMapper.fromDomainToDto(communityGroup) as CommunityGroupDto
       }
     />
   );

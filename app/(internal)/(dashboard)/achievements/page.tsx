@@ -44,10 +44,10 @@ export default async function AchievementsPage() {
       </SectionHeader>
       <AchievementsList
         initialAchievements={
-          achievements.map(AchievementMapper.fromDomaintoDto) as AchievementDto[]
+          achievements.map(AchievementMapper.fromDomainToDto) as AchievementDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

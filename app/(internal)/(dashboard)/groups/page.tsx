@@ -29,9 +29,9 @@ export default async function GroupsPage() {
         <GroupsToolbar />
       </SectionHeader>
       <GroupsList
-        initialGroups={groups.map(GroupMapper.fromDomaintoDto) as GroupDto[]}
+        initialGroups={groups.map(GroupMapper.fromDomainToDto) as GroupDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

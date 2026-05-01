@@ -45,7 +45,7 @@ export default async function SingleCompetitionTimeRangePage({ params }: Props) 
         </SectionHeader>
         <CompetitionTimeRangeView
           initialCompetitionTimeRange={
-            CompetitionTimeRangeMapper.fromDomaintoDto(
+            CompetitionTimeRangeMapper.fromDomainToDto(
               competitionTimeRange,
             ) as CompetitionTimeRangeDto
           }

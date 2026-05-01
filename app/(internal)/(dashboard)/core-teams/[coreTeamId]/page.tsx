@@ -40,7 +40,7 @@ export default async function SingleCoreTeamPage({ params }: Props) {
         <SectionHeader title={coreTeam.year.toString()}>
           <CoreTeamToolbar coreTeamId={coreTeam.id} />
         </SectionHeader>
-        <CoreTeamView initialCoreTeam={CoreTeamMapper.fromDomaintoDto(coreTeam) as CoreTeamDto} />
+        <CoreTeamView initialCoreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto} />
       </>
     );
   } else {

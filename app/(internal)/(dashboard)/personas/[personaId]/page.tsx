@@ -40,7 +40,7 @@ export default async function SinglePersonaPage({ params }: Props) {
         <SectionHeader title={persona.name}>
           <PersonaToolbar personaId={persona.id} />
         </SectionHeader>
-        <PersonaView initialPersona={PersonaMapper.fromDomaintoDto(persona) as PersonaDto} />
+        <PersonaView initialPersona={PersonaMapper.fromDomainToDto(persona) as PersonaDto} />
       </>
     );
   } else {

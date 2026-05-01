@@ -29,9 +29,9 @@ export default async function TeamsPage() {
         <TeamsToolbar />
       </SectionHeader>
       <TeamsList
-        initialTeams={teams.map(TeamMapper.fromDomaintoDto) as TeamDto[]}
+        initialTeams={teams.map(TeamMapper.fromDomainToDto) as TeamDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

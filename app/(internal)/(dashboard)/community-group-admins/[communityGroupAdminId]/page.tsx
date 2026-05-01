@@ -44,7 +44,7 @@ export default async function SingleCommunityGroupAdminPage({ params }: Props) {
         </SectionHeader>
         <CommunityGroupAdminView
           initialCommunityGroupAdmin={
-            CommunityGroupAdminMapper.fromDomaintoDto(communityGroupAdmin) as CommunityGroupAdminDto
+            CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
           }
         />
       </>

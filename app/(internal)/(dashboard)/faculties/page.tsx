@@ -29,9 +29,9 @@ export default async function FacultiesPage() {
         <FacultiesToolbar />
       </SectionHeader>
       <FacultiesList
-        initialFaculties={faculties.map(FacultyMapper.fromDomaintoDto) as FacultyDto[]}
+        initialFaculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

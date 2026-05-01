@@ -36,11 +36,11 @@ export default async function CompetitionOrganizerTypesPage() {
       <CompetitionOrganizerTypesList
         initialCompetitionOrganizerTypes={
           competitionOrganizerTypes.map(
-            CompetitionOrganizerTypeMapper.fromDomaintoDto,
+            CompetitionOrganizerTypeMapper.fromDomainToDto,
           ) as CompetitionOrganizerTypeDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

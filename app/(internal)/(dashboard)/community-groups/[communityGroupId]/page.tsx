@@ -42,7 +42,7 @@ export default async function SingleCommunityGroupPage({ params }: Props) {
         </SectionHeader>
         <CommunityGroupView
           initialCommunityGroup={
-            CommunityGroupMapper.fromDomaintoDto(communityGroup) as CommunityGroupDto
+            CommunityGroupMapper.fromDomainToDto(communityGroup) as CommunityGroupDto
           }
         />
       </>

@@ -32,7 +32,7 @@ export default async function SingleCoreTeamDivisionEditPage({ params }: Props) 
   return (
     <CoreTeamDivisionForm
       initialCoreTeamDivision={
-        CoreTeamDivisionMapper.fromDomaintoDto(coreTeamDivision) as CoreTeamDivisionDto
+        CoreTeamDivisionMapper.fromDomainToDto(coreTeamDivision) as CoreTeamDivisionDto
       }
     />
   );

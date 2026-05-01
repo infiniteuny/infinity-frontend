@@ -28,5 +28,5 @@ export default async function SingleGroupEditPage({ params }: Props) {
     onRight: (data) => data,
   });
 
-  return <GroupForm initialGroup={GroupMapper.fromDomaintoDto(group) as GroupDto} />;
+  return <GroupForm initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />;
 }

@@ -40,7 +40,7 @@ export default async function SingleFacultyPage({ params }: Props) {
         <SectionHeader title={faculty.name}>
           <FacultyToolbar facultyId={faculty.id} />
         </SectionHeader>
-        <FacultyView initialFaculty={FacultyMapper.fromDomaintoDto(faculty) as FacultyDto} />
+        <FacultyView initialFaculty={FacultyMapper.fromDomainToDto(faculty) as FacultyDto} />
       </>
     );
   } else {

@@ -33,10 +33,10 @@ export default async function CompetitionsPage() {
       </SectionHeader>
       <CompetitionsList
         initialCompetitions={
-          competitions.map(CompetitionMapper.fromDomaintoDto) as CompetitionDto[]
+          competitions.map(CompetitionMapper.fromDomainToDto) as CompetitionDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

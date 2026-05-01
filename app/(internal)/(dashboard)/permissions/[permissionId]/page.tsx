@@ -41,7 +41,7 @@ export default async function SinglePermissionPage({ params }: Props) {
           <PermissionToolbar permissionId={permission.id} />
         </SectionHeader>
         <PermissionView
-          initialPermission={PermissionMapper.fromDomaintoDto(permission) as PermissionDto}
+          initialPermission={PermissionMapper.fromDomainToDto(permission) as PermissionDto}
         />
       </>
     );

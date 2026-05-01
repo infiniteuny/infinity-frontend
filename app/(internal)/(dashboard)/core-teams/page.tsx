@@ -29,9 +29,9 @@ export default async function CoreTeamsPage() {
         <CoreTeamsToolbar />
       </SectionHeader>
       <CoreTeamsList
-        initialCoreTeams={coreTeams.map(CoreTeamMapper.fromDomaintoDto) as CoreTeamDto[]}
+        initialCoreTeams={coreTeams.map(CoreTeamMapper.fromDomainToDto) as CoreTeamDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

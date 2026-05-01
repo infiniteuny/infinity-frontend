@@ -49,9 +49,9 @@ export default async function SingleTeamEditPage({ params }: Props) {
 
   return (
     <TeamForm
-      initialTeam={TeamMapper.fromDomaintoDto(team) as TeamDto}
+      initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto}
       teamTypes={
-        teamTypes.map(CompetitionTeamTypeMapper.fromDomaintoDto) as CompetitionTeamTypeDto[]
+        teamTypes.map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
       }
     />
   );

@@ -63,11 +63,11 @@ export default async function CompetitionInstancesPage({ params }: Props) {
       <CompetitionInstancesList
         initialCompetitionInstances={
           competitionInstances.map(
-            CompetitionInstanceMapper.fromDomaintoDto,
+            CompetitionInstanceMapper.fromDomainToDto,
           ) as CompetitionInstanceDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
         competitionId={competitionId}
       />

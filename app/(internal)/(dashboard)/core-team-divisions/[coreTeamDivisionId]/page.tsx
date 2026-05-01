@@ -44,7 +44,7 @@ export default async function SingleCoreTeamDivisionPage({ params }: Props) {
         </SectionHeader>
         <CoreTeamDivisionView
           initialCoreTeamDivision={
-            CoreTeamDivisionMapper.fromDomaintoDto(coreTeamDivision) as CoreTeamDivisionDto
+            CoreTeamDivisionMapper.fromDomainToDto(coreTeamDivision) as CoreTeamDivisionDto
           }
         />
       </>

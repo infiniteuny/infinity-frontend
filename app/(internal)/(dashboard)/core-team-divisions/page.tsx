@@ -35,10 +35,10 @@ export default async function CoreTeamDivisionsPage() {
       </SectionHeader>
       <CoreTeamDivisionsList
         initialCoreTeamDivisions={
-          coreTeamDivisions.map(CoreTeamDivisionMapper.fromDomaintoDto) as CoreTeamDivisionDto[]
+          coreTeamDivisions.map(CoreTeamDivisionMapper.fromDomainToDto) as CoreTeamDivisionDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

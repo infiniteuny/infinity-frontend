@@ -32,7 +32,7 @@ export default async function SingleProjectGalleryEditPage({ params }: Props) {
   return (
     <ProjectGalleryForm
       initialProjectGallery={
-        ProjectGalleryMapper.fromDomaintoDto(projectGallery) as ProjectGalleryDto
+        ProjectGalleryMapper.fromDomainToDto(projectGallery) as ProjectGalleryDto
       }
     />
   );

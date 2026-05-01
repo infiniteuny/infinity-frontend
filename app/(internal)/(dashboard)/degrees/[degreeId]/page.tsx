@@ -40,7 +40,7 @@ export default async function SingleDegreePage({ params }: Props) {
         <SectionHeader title={degree.name}>
           <DegreeToolbar degreeId={degree.id} />
         </SectionHeader>
-        <DegreeView initialDegree={DegreeMapper.fromDomaintoDto(degree) as DegreeDto} />
+        <DegreeView initialDegree={DegreeMapper.fromDomainToDto(degree) as DegreeDto} />
       </>
     );
   } else {

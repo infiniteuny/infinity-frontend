@@ -34,9 +34,9 @@ export default async function UsersPage() {
         <UsersToolbar />
       </SectionHeader>
       <UsersList
-        initialUsers={users.map(UserMapper.fromDomaintoDto) as UserDto[]}
+        initialUsers={users.map(UserMapper.fromDomainToDto) as UserDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

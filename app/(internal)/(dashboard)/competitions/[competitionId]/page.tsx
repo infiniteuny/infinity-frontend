@@ -41,7 +41,7 @@ export default async function SingleCompetitionPage({ params }: Props) {
           <CompetitionToolbar competitionId={competition.id} />
         </SectionHeader>
         <CompetitionView
-          initialCompetition={CompetitionMapper.fromDomaintoDto(competition) as CompetitionDto}
+          initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
         />
       </>
     );

@@ -32,7 +32,7 @@ export default async function SingleCompetitionRankEditPage({ params }: Props) {
   return (
     <CompetitionRankForm
       initialCompetitionRank={
-        CompetitionRankMapper.fromDomaintoDto(competitionRank) as CompetitionRankDto
+        CompetitionRankMapper.fromDomainToDto(competitionRank) as CompetitionRankDto
       }
     />
   );

@@ -34,7 +34,7 @@ export default async function SingleCompetitionTimeRangeEditPage({ params }: Pro
   return (
     <CompetitionTimeRangeForm
       initialCompetitionTimeRange={
-        CompetitionTimeRangeMapper.fromDomaintoDto(competitionTimeRange) as CompetitionTimeRangeDto
+        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange) as CompetitionTimeRangeDto
       }
     />
   );

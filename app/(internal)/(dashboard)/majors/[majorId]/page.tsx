@@ -47,7 +47,7 @@ export default async function SingleMajorPage({ params }: Props) {
         <SectionHeader title={major.name}>
           <MajorToolbar majorId={major.id} />
         </SectionHeader>
-        <MajorView initialMajor={MajorMapper.fromDomaintoDto(major) as MajorDto} />
+        <MajorView initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto} />
       </>
     );
   } else {
@@ -72,8 +72,8 @@ export default async function SingleMajorPage({ params }: Props) {
 
     return (
       <MajorForm
-        degrees={degrees.map(DegreeMapper.fromDomaintoDto) as DegreeDto[]}
-        faculties={faculties.map(FacultyMapper.fromDomaintoDto) as FacultyDto[]}
+        degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
+        faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
       />
     );
   }

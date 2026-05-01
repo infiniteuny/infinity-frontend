@@ -42,7 +42,7 @@ export default async function SingleProjectGalleryPage({ params }: Props) {
         </SectionHeader>
         <ProjectGalleryView
           initialProjectGallery={
-            ProjectGalleryMapper.fromDomaintoDto(projectGallery) as ProjectGalleryDto
+            ProjectGalleryMapper.fromDomainToDto(projectGallery) as ProjectGalleryDto
           }
         />
       </>

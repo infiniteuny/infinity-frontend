@@ -29,9 +29,9 @@ export default async function DegreesPage() {
         <DegreesToolbar />
       </SectionHeader>
       <DegreesList
-        initialDegrees={degrees.map(DegreeMapper.fromDomaintoDto) as DegreeDto[]}
+        initialDegrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

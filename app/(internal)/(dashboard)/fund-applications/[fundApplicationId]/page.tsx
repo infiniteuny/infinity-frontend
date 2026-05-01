@@ -64,7 +64,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
         </SectionHeader>
         <FundApplicationView
           initialFundApplication={
-            FundApplicationMapper.fromDomaintoDto(fundApplication) as FundApplicationDto
+            FundApplicationMapper.fromDomainToDto(fundApplication) as FundApplicationDto
           }
         />
       </>
@@ -73,7 +73,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
     return (
       <FundApplicationForm
         competitionScales={
-          competitionScales.map(CompetitionScaleMapper.fromDomaintoDto) as CompetitionScaleDto[]
+          competitionScales.map(CompetitionScaleMapper.fromDomainToDto) as CompetitionScaleDto[]
         }
       />
     );

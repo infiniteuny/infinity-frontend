@@ -34,7 +34,7 @@ export default async function SingleCommunityGroupAdminEditPage({ params }: Prop
   return (
     <CommunityGroupAdminForm
       initialCommunityGroupAdmin={
-        CommunityGroupAdminMapper.fromDomaintoDto(communityGroupAdmin) as CommunityGroupAdminDto
+        CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
       }
     />
   );

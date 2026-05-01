@@ -36,11 +36,11 @@ export default async function TeamTypesPage() {
       <CompetitionTeamTypesList
         initialCompetitionTeamTypes={
           competitionTeamTypes.map(
-            CompetitionTeamTypeMapper.fromDomaintoDto,
+            CompetitionTeamTypeMapper.fromDomainToDto,
           ) as CompetitionTeamTypeDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

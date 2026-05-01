@@ -37,10 +37,10 @@ export default async function FundApplicationsPage() {
       </SectionHeader>
       <FundApplicationsList
         initialFundApplications={
-          fundApplications.map(FundApplicationMapper.fromDomaintoDto) as FundApplicationDto[]
+          fundApplications.map(FundApplicationMapper.fromDomainToDto) as FundApplicationDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

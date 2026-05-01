@@ -33,10 +33,10 @@ export default async function TestimonialsPage() {
       </SectionHeader>
       <TestimonialsList
         initialTestimonials={
-          testimonials.map(TestimonialMapper.fromDomaintoDto) as TestimonialDto[]
+          testimonials.map(TestimonialMapper.fromDomainToDto) as TestimonialDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

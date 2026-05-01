@@ -32,9 +32,9 @@ export default async function PermissionsPage() {
         <PermissionsToolbar />
       </SectionHeader>
       <PermissionsList
-        initialPermissions={permissions.map(PermissionMapper.fromDomaintoDto) as PermissionDto[]}
+        initialPermissions={permissions.map(PermissionMapper.fromDomainToDto) as PermissionDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

@@ -34,7 +34,7 @@ export default async function SingleCompetitionOutputEditPage({ params }: Props)
   return (
     <CompetitionOutputForm
       initialCompetitionOutput={
-        CompetitionOutputMapper.fromDomaintoDto(competitionOutput) as CompetitionOutputDto
+        CompetitionOutputMapper.fromDomainToDto(competitionOutput) as CompetitionOutputDto
       }
     />
   );

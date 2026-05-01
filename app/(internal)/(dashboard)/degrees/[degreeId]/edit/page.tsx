@@ -29,5 +29,5 @@ export default async function SingleDegreeEditPage({ params }: Props) {
     onRight: (data) => data,
   });
 
-  return <DegreeForm initialDegree={DegreeMapper.fromDomaintoDto(degree) as DegreeDto} />;
+  return <DegreeForm initialDegree={DegreeMapper.fromDomainToDto(degree) as DegreeDto} />;
 }

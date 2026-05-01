@@ -36,11 +36,11 @@ export default async function CompetitionTimeRangesPage() {
       <CompetitionTimeRangesList
         initialCompetitionTimeRanges={
           competitionTimeRanges.map(
-            CompetitionTimeRangeMapper.fromDomaintoDto,
+            CompetitionTimeRangeMapper.fromDomainToDto,
           ) as CompetitionTimeRangeDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

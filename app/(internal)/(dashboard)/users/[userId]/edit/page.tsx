@@ -56,9 +56,9 @@ export default async function SingleUserEditPage({ params }: Props) {
 
   return (
     <UserForm
-      faculties={faculties.map(FacultyMapper.fromDomaintoDto) as FacultyDto[]}
-      majors={majors.map(MajorMapper.fromDomaintoDto) as MajorDto[]}
-      initialUser={UserMapper.fromDomaintoDto(user) as UserDto}
+      faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
+      majors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
+      initialUser={UserMapper.fromDomainToDto(user) as UserDto}
     />
   );
 }

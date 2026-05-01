@@ -40,7 +40,7 @@ export default async function SingleGroupPage({ params }: Props) {
         <SectionHeader title={group.name}>
           <GroupToolbar groupId={group.id} />
         </SectionHeader>
-        <GroupView initialGroup={GroupMapper.fromDomaintoDto(group) as GroupDto} />
+        <GroupView initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />
       </>
     );
   } else {

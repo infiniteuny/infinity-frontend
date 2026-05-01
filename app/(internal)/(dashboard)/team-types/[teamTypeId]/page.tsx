@@ -44,7 +44,7 @@ export default async function SingleCompetitionTeamTypePage({ params }: Props) {
         </SectionHeader>
         <CompetitionTeamTypeView
           initialCompetitionTeamType={
-            CompetitionTeamTypeMapper.fromDomaintoDto(competitionTeamType) as CompetitionTeamTypeDto
+            CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType) as CompetitionTeamTypeDto
           }
         />
       </>

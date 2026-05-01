@@ -39,7 +39,7 @@ export default async function SingleCompetitionOrganizerTypeEditPage({ params }:
   return (
     <CompetitionOrganizerTypeForm
       initialCompetitionOrganizerType={
-        CompetitionOrganizerTypeMapper.fromDomaintoDto(
+        CompetitionOrganizerTypeMapper.fromDomainToDto(
           competitionOrganizerType,
         ) as CompetitionOrganizerTypeDto
       }

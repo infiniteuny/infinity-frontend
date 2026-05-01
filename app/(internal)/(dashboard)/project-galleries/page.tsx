@@ -33,10 +33,10 @@ export default async function ProjectGalleriesPage() {
       </SectionHeader>
       <ProjectGalleriesList
         initialProjectGalleries={
-          projectGalleries.map(ProjectGalleryMapper.fromDomaintoDto) as ProjectGalleryDto[]
+          projectGalleries.map(ProjectGalleryMapper.fromDomainToDto) as ProjectGalleryDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

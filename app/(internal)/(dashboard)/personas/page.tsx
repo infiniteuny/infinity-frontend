@@ -29,9 +29,9 @@ export default async function PersonasPage() {
         <PersonasToolbar />
       </SectionHeader>
       <PersonasList
-        initialPersonas={personas.map(PersonaMapper.fromDomaintoDto) as PersonaDto[]}
+        initialPersonas={personas.map(PersonaMapper.fromDomainToDto) as PersonaDto[]}
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

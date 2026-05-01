@@ -60,7 +60,7 @@ export default async function SingleCompetitionInstancePage({ params }: Props) {
         </SectionHeader>
         <CompetitionInstanceView
           initialCompetitionInstance={
-            CompetitionInstanceMapper.fromDomaintoDto(competitionInstance) as CompetitionInstanceDto
+            CompetitionInstanceMapper.fromDomainToDto(competitionInstance) as CompetitionInstanceDto
           }
         />
       </>
@@ -100,7 +100,7 @@ export default async function SingleCompetitionInstancePage({ params }: Props) {
         competitionName={competition.name}
         competitionOrganizerTypes={
           competitionOrganizerTypes.map(
-            CompetitionOrganizerTypeMapper.fromDomaintoDto,
+            CompetitionOrganizerTypeMapper.fromDomainToDto,
           ) as CompetitionOrganizerTypeDto[]
         }
       />

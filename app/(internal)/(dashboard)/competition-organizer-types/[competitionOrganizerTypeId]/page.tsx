@@ -51,7 +51,7 @@ export default async function SingleCompetitionOrganizerTypePage({ params }: Pro
         </SectionHeader>
         <CompetitionOrganizerTypeView
           initialCompetitionOrganizerType={
-            CompetitionOrganizerTypeMapper.fromDomaintoDto(
+            CompetitionOrganizerTypeMapper.fromDomainToDto(
               competitionOrganizerType,
             ) as CompetitionOrganizerTypeDto
           }

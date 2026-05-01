@@ -41,7 +41,7 @@ export default async function SingleTestimonialPage({ params }: Props) {
           <TestimonialToolbar testimonialId={testimonial.id} />
         </SectionHeader>
         <TestimonialView
-          initialTestimonial={TestimonialMapper.fromDomaintoDto(testimonial) as TestimonialDto}
+          initialTestimonial={TestimonialMapper.fromDomainToDto(testimonial) as TestimonialDto}
         />
       </>
     );

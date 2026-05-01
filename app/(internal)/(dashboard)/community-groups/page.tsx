@@ -33,10 +33,10 @@ export default async function CommunityGroupsPage() {
       </SectionHeader>
       <CommunityGroupsList
         initialCommunityGroups={
-          communityGroups.map(CommunityGroupMapper.fromDomaintoDto) as CommunityGroupDto[]
+          communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]
         }
         initialPaginationOptions={
-          PaginationOptionsMapper.fromDomaintoDto(paginationOptions) as PaginationOptionsDto
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
     </>

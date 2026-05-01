@@ -34,7 +34,7 @@ export default async function SingleCompetitionTeamTypeEditPage({ params }: Prop
   return (
     <CompetitionTeamTypeForm
       initialCompetitionTeamType={
-        CompetitionTeamTypeMapper.fromDomaintoDto(competitionTeamType) as CompetitionTeamTypeDto
+        CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType) as CompetitionTeamTypeDto
       }
     />
   );
