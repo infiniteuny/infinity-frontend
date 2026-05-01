@@ -1,7 +1,11 @@
+import { CoreTeamDivision } from './core-team-division';
 import { Major } from './major';
 import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
 
-export type CoreTeamMemberIncludeOptions = UserIncludeOptions;
+export type CoreTeamMemberIncludeOptions = (
+  | UserIncludeOptions[number]
+  | 'membership.core_team_division'
+)[];
 
 export type CoreTeamMemberFilterOptions = UserFilterOptions;
 
@@ -16,6 +20,7 @@ export class CoreTeamMember extends User {
     position: string;
     createdAt: Date;
     updatedAt: Date;
+    coreTeamDivision?: CoreTeamDivision;
   };
 
   public constructor(
@@ -42,6 +47,7 @@ export class CoreTeamMember extends User {
       position: string;
       createdAt: Date;
       updatedAt: Date;
+      coreTeamDivision?: CoreTeamDivision;
     },
     major?: Major,
   ) {

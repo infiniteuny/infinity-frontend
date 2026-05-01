@@ -5,12 +5,10 @@ export type UserGroupFilterOptions = GroupFilterOptions;
 export type UserGroupSortOptions = GroupSortOptions;
 
 export class UserGroup extends Group {
-  public membership: {
+  public entitlement: {
     id: string;
     userId: string;
     groupId: string;
-    createdAt: Date;
-    updatedAt: Date;
   };
 
   public constructor(
@@ -19,15 +17,13 @@ export class UserGroup extends Group {
     guardName: 'api',
     createdAt: Date,
     updatedAt: Date,
-    membership: {
+    entitlement: {
       id: string;
       userId: string;
       groupId: string;
-      createdAt: Date;
-      updatedAt: Date;
     },
   ) {
     super(id, name, guardName, createdAt, updatedAt);
-    this.membership = membership;
+    this.entitlement = entitlement;
   }
 }

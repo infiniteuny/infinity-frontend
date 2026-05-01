@@ -1,7 +1,11 @@
+import { CommunityGroup } from './community-group';
 import { Major } from './major';
 import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
 
-export type CommunityGroupAdminMemberIncludeOptions = UserIncludeOptions;
+export type CommunityGroupAdminMemberIncludeOptions = (
+  | UserIncludeOptions[number]
+  | 'membership.community_group'
+)[];
 
 export type CommunityGroupAdminMemberFilterOptions = UserFilterOptions;
 
@@ -17,6 +21,7 @@ export class CommunityGroupAdminMember extends User {
     animation: string;
     createdAt: Date;
     updatedAt: Date;
+    communityGroup?: CommunityGroup;
   };
 
   public constructor(
@@ -44,6 +49,7 @@ export class CommunityGroupAdminMember extends User {
       animation: string;
       createdAt: Date;
       updatedAt: Date;
+      communityGroup?: CommunityGroup;
     },
     major?: Major,
   ) {

@@ -5,7 +5,7 @@ export type UserPersonaFilterOptions = PersonaFilterOptions;
 export type UserPersonaSortOptions = PersonaSortOptions;
 
 export class UserPersona extends Persona {
-  public membership: {
+  public entitlement: {
     id: string;
     userId: string;
     personaId: string;
@@ -21,7 +21,7 @@ export class UserPersona extends Persona {
     logo: string,
     createdAt: Date,
     updatedAt: Date,
-    membership: {
+    entitlement: {
       id: string;
       userId: string;
       personaId: string;
@@ -30,6 +30,6 @@ export class UserPersona extends Persona {
     },
   ) {
     super(id, name, priority, description, logo, createdAt, updatedAt);
-    this.membership = membership;
+    this.entitlement = entitlement;
   }
 }
