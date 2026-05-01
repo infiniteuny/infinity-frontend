@@ -12,7 +12,7 @@ export interface UserPermissionRepository {
     includeOptions: UserPermissionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<[UserPermission[]], Error>>;
+  ): Promise<Either<UserPermission[], Error>>;
 
   getUserPermissions(
     userId: string,

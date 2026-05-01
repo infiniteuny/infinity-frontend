@@ -23,7 +23,7 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
     includeOptions: UserPermissionIncludeOptions,
     abortSignal?: AbortSignal,
     token?: string,
-  ): Promise<Either<[UserPermission[]], Error>>;
+  ): Promise<Either<UserPermission[], Error>>;
   public async getUserPermissions(
     userId: string,
     filterOptions?: UserPermissionFilterOptions,
@@ -37,7 +37,7 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
     abortSignalOrPaginationOptions?: AbortSignal | PaginationOptions,
     tokenOrAbortSignal?: AbortSignal | string,
     token?: string,
-  ): Promise<Either<[UserPermission[]] | [UserPermission[], PaginationOptions], Error>> {
+  ): Promise<Either<UserPermission[] | [UserPermission[], PaginationOptions], Error>> {
     const hasIncludeOptions = Array.isArray(includeOptionsOrFilterOptions);
     const includeOptions = hasIncludeOptions ? includeOptionsOrFilterOptions : undefined;
     const filterOptions = hasIncludeOptions
@@ -87,7 +87,7 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
       );
 
       if (hasIncludeOptions) {
-        return right([userPermissionsResponse]);
+        return right(userPermissionsResponse);
       } else {
         return right([userPermissionsResponse, paginationOptionsResponse]);
       }
