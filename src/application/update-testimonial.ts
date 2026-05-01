@@ -9,7 +9,6 @@ export type UpdateTestimonialParams = [
   id: string,
   testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class UpdateTestimonial implements UseCase<
     id: string,
     testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.testimonialRepository.updateTestimonial(
+        id,
+        testimonial,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.testimonialRepository.updateTestimonial(
-      id,
-      testimonial,
-      abortSignal,
-      accessToken,
-    );
   }
 }

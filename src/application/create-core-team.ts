@@ -8,7 +8,6 @@ import { CoreTeam } from '@app/domain/entities';
 export type CreateCoreTeamParams = [
   coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,20 +31,17 @@ export class CreateCoreTeam implements UseCase<
   public async execute(
     coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CoreTeam, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.coreTeamRepository.createCoreTeam(
+        coreTeam,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.coreTeamRepository.createCoreTeam(coreTeam, abortSignal, accessToken);
   }
 }

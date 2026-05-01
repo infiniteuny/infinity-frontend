@@ -11,7 +11,6 @@ export type UpdateCompetitionOrganizerTypeParams = [
     Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>
   >,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -38,25 +37,18 @@ export class UpdateCompetitionOrganizerType implements UseCase<
       Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionOrganizerTypeRepository.updateCompetitionOrganizerType(
+        id,
+        competitionOrganizerType,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionOrganizerTypeRepository.updateCompetitionOrganizerType(
-      id,
-      competitionOrganizerType,
-      abortSignal,
-      accessToken,
-    );
   }
 }

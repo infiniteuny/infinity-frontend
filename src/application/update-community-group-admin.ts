@@ -11,7 +11,6 @@ export type UpdateCommunityGroupAdminParams = [
     Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
   >,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -38,25 +37,18 @@ export class UpdateCommunityGroupAdmin implements UseCase<
       Omit<CommunityGroupAdmin, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CommunityGroupAdmin, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.communityGroupAdminRepository.updateCommunityGroupAdmin(
+        id,
+        communityGroupAdmin,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.communityGroupAdminRepository.updateCommunityGroupAdmin(
-      id,
-      communityGroupAdmin,
-      abortSignal,
-      accessToken,
-    );
   }
 }

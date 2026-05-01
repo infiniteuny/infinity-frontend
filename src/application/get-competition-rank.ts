@@ -5,11 +5,7 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import { CompetitionRank } from '@app/domain/entities';
 
-export type GetCompetitionRankParams = [
-  id: string,
-  abortSignal?: AbortSignal,
-  authenticate?: boolean,
-];
+export type GetCompetitionRankParams = [id: string, abortSignal?: AbortSignal];
 
 @injectable()
 export class GetCompetitionRank implements UseCase<
@@ -32,20 +28,17 @@ export class GetCompetitionRank implements UseCase<
   public async execute(
     id: string,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionRank, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionRankRepository.getCompetitionRank(
+        id,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionRankRepository.getCompetitionRank(id, abortSignal, accessToken);
   }
 }

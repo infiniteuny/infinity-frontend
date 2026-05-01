@@ -5,7 +5,7 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import { Group } from '@app/domain/entities';
 
-export type GetGroupParams = [id: string, abortSignal?: AbortSignal, authenticate?: boolean];
+export type GetGroupParams = [id: string, abortSignal?: AbortSignal];
 
 @injectable()
 export class GetGroup implements UseCase<Promise<Either<Group, Error>>, GetGroupParams> {
@@ -22,23 +22,13 @@ export class GetGroup implements UseCase<Promise<Either<Group, Error>>, GetGroup
     this.authRepository = authRepository;
   }
 
-  public async execute(
-    id: string,
-    abortSignal?: AbortSignal,
-    authenticate: boolean = true,
-  ): Promise<Either<Group, Error>> {
-    let accessToken: string | undefined;
+  public async execute(id: string, abortSignal?: AbortSignal): Promise<Either<Group, Error>> {
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.groupRepository.getGroup(id, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.groupRepository.getGroup(id, abortSignal, accessToken);
   }
 }

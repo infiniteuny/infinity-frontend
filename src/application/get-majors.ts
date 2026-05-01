@@ -15,7 +15,6 @@ export type GetMajorsParams = [
   filterOptions?: MajorFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -41,26 +40,19 @@ export class GetMajors implements UseCase<
     filterOptions?: MajorFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<[Major[], PaginationOptions], Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.majorRepository.getMajors(
+        includeOptions,
+        filterOptions,
+        paginationOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.majorRepository.getMajors(
-      includeOptions,
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

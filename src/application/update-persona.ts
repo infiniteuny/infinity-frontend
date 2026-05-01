@@ -9,7 +9,6 @@ export type UpdatePersonaParams = [
   id: string,
   persona: Partial<Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,20 +33,18 @@ export class UpdatePersona implements UseCase<
     id: string,
     persona: Partial<Omit<Persona, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Persona, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.personaRepository.updatePersona(
+        id,
+        persona,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.personaRepository.updatePersona(id, persona, abortSignal, accessToken);
   }
 }

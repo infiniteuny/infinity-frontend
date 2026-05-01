@@ -22,7 +22,6 @@ export type UpdateAchievementParams = [
     >
   >,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -60,25 +59,18 @@ export class UpdateAchievement implements UseCase<
       >
     >,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Achievement, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.achievementRepository.updateAchievement(
+        id,
+        achievement,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.achievementRepository.updateAchievement(
-      id,
-      achievement,
-      abortSignal,
-      accessToken,
-    );
   }
 }

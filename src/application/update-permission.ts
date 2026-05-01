@@ -9,7 +9,6 @@ export type UpdatePermissionParams = [
   id: string,
   permission: Partial<Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class UpdatePermission implements UseCase<
     id: string,
     permission: Partial<Omit<Permission, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Permission, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.permissionRepository.updatePermission(
+        id,
+        permission,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.permissionRepository.updatePermission(
-      id,
-      permission,
-      abortSignal,
-      accessToken,
-    );
   }
 }

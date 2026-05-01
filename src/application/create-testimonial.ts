@@ -8,7 +8,6 @@ import { Testimonial } from '@app/domain/entities';
 export type CreateTestimonialParams = [
   testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,24 +31,17 @@ export class CreateTestimonial implements UseCase<
   public async execute(
     testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Testimonial, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.testimonialRepository.createTestimonial(
+        testimonial,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.testimonialRepository.createTestimonial(
-      testimonial,
-      abortSignal,
-      accessToken,
-    );
   }
 }

@@ -8,7 +8,6 @@ import { Degree } from '@app/domain/entities';
 export type CreateDegreeParams = [
   degree: Omit<Degree, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -29,20 +28,13 @@ export class CreateDegree implements UseCase<Promise<Either<Degree, Error>>, Cre
   public async execute(
     degree: Omit<Degree, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Degree, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.degreeRepository.createDegree(degree, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.degreeRepository.createDegree(degree, abortSignal, accessToken);
   }
 }

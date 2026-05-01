@@ -9,7 +9,6 @@ export type GetPermissionsParams = [
   filterOptions?: PermissionFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class GetPermissions implements UseCase<
     filterOptions?: PermissionFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<[Permission[], PaginationOptions], Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.permissionRepository.getPermissions(
+        filterOptions,
+        paginationOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.permissionRepository.getPermissions(
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

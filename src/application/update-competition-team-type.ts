@@ -9,7 +9,6 @@ export type UpdateCompetitionTeamTypeParams = [
   id: string,
   competitionTeamType: Partial<Omit<CompetitionTeamType, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class UpdateCompetitionTeamType implements UseCase<
     id: string,
     competitionTeamType: Partial<Omit<CompetitionTeamType, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionTeamType, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionTeamTypeRepository.updateCompetitionTeamType(
+        id,
+        competitionTeamType,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionTeamTypeRepository.updateCompetitionTeamType(
-      id,
-      competitionTeamType,
-      abortSignal,
-      accessToken,
-    );
   }
 }

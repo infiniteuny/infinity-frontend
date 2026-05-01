@@ -5,7 +5,7 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import { Permission } from '@app/domain/entities';
 
-export type GetPermissionParams = [id: string, abortSignal?: AbortSignal, authenticate?: boolean];
+export type GetPermissionParams = [id: string, abortSignal?: AbortSignal];
 
 @injectable()
 export class GetPermission implements UseCase<
@@ -25,23 +25,17 @@ export class GetPermission implements UseCase<
     this.authRepository = authRepository;
   }
 
-  public async execute(
-    id: string,
-    abortSignal?: AbortSignal,
-    authenticate: boolean = true,
-  ): Promise<Either<Permission, Error>> {
-    let accessToken: string | undefined;
+  public async execute(id: string, abortSignal?: AbortSignal): Promise<Either<Permission, Error>> {
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.permissionRepository.getPermission(
+        id,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.permissionRepository.getPermission(id, abortSignal, accessToken);
   }
 }

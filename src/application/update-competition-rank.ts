@@ -9,7 +9,6 @@ export type UpdateCompetitionRankParams = [
   id: string,
   competitionRank: Partial<Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class UpdateCompetitionRank implements UseCase<
     id: string,
     competitionRank: Partial<Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionRank, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionRankRepository.updateCompetitionRank(
+        id,
+        competitionRank,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionRankRepository.updateCompetitionRank(
-      id,
-      competitionRank,
-      abortSignal,
-      accessToken,
-    );
   }
 }

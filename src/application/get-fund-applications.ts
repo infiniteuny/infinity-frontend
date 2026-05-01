@@ -15,7 +15,6 @@ export type GetFundApplicationsParams = [
   filterOptions?: FundApplicationFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -41,26 +40,19 @@ export class GetFundApplications implements UseCase<
     filterOptions?: FundApplicationFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<[FundApplication[], PaginationOptions], Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.fundApplicationRepository.getFundApplications(
+        includeOptions,
+        filterOptions,
+        paginationOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.fundApplicationRepository.getFundApplications(
-      includeOptions,
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

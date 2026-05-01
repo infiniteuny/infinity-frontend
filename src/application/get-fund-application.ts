@@ -9,7 +9,6 @@ export type GetFundApplicationParams = [
   id: string,
   includeOptions?: FundApplicationIncludeOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class GetFundApplication implements UseCase<
     id: string,
     includeOptions?: FundApplicationIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<FundApplication, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.fundApplicationRepository.getFundApplication(
+        id,
+        includeOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.fundApplicationRepository.getFundApplication(
-      id,
-      includeOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

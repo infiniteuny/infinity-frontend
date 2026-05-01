@@ -9,7 +9,6 @@ export type UpdateTeamParams = [
   id: string,
   team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -31,20 +30,13 @@ export class UpdateTeam implements UseCase<Promise<Either<Team, Error>>, UpdateT
     id: string,
     team: Partial<Omit<Team, 'id' | 'createdAt' | 'updatedAt' | 'leader' | 'teamType'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.teamRepository.updateTeam(id, team, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.teamRepository.updateTeam(id, team, abortSignal, accessToken);
   }
 }

@@ -13,7 +13,6 @@ export type GetCompetitionOrganizerTypesParams = [
   filterOptions?: CompetitionOrganizerTypeFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -38,25 +37,18 @@ export class GetCompetitionOrganizerTypes implements UseCase<
     filterOptions?: CompetitionOrganizerTypeFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<[CompetitionOrganizerType[], PaginationOptions], Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionOrganizerTypeRepository.getCompetitionOrganizerTypes(
+        filterOptions,
+        paginationOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionOrganizerTypeRepository.getCompetitionOrganizerTypes(
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

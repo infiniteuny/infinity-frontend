@@ -8,7 +8,6 @@ import { CompetitionOrganizerType } from '@app/domain/entities';
 export type CreateCompetitionOrganizerTypeParams = [
   competitionOrganizerType: Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,24 +31,17 @@ export class CreateCompetitionOrganizerType implements UseCase<
   public async execute(
     competitionOrganizerType: Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionOrganizerType, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionOrganizerTypeRepository.createCompetitionOrganizerType(
+        competitionOrganizerType,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionOrganizerTypeRepository.createCompetitionOrganizerType(
-      competitionOrganizerType,
-      abortSignal,
-      accessToken,
-    );
   }
 }

@@ -8,7 +8,6 @@ import { Group } from '@app/domain/entities';
 export type CreateGroupParams = [
   group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -29,20 +28,13 @@ export class CreateGroup implements UseCase<Promise<Either<Group, Error>>, Creat
   public async execute(
     group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Group, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.groupRepository.createGroup(group, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.groupRepository.createGroup(group, abortSignal, accessToken);
   }
 }

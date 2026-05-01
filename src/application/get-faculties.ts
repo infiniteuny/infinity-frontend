@@ -9,7 +9,6 @@ export type GetFacultiesParams = [
   filterOptions?: FacultyFilterOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -34,25 +33,18 @@ export class GetFaculties implements UseCase<
     filterOptions?: FacultyFilterOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<[Faculty[], PaginationOptions], Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.facultyRepository.getFaculties(
+        filterOptions,
+        paginationOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.facultyRepository.getFaculties(
-      filterOptions,
-      paginationOptions,
-      abortSignal,
-      accessToken,
-    );
   }
 }

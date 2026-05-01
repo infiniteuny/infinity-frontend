@@ -8,7 +8,6 @@ import { CompetitionScale } from '@app/domain/entities';
 export type CreateCompetitionScaleParams = [
   competitionScale: Omit<CompetitionScale, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,24 +31,17 @@ export class CreateCompetitionScale implements UseCase<
   public async execute(
     competitionScale: Omit<CompetitionScale, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionScale, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionScaleRepository.createCompetitionScale(
+        competitionScale,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionScaleRepository.createCompetitionScale(
-      competitionScale,
-      abortSignal,
-      accessToken,
-    );
   }
 }

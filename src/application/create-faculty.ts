@@ -8,7 +8,6 @@ import { Faculty } from '@app/domain/entities';
 export type CreateFacultyParams = [
   faculty: Omit<Faculty, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,20 +31,17 @@ export class CreateFaculty implements UseCase<
   public async execute(
     faculty: Omit<Faculty, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Faculty, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.facultyRepository.createFaculty(
+        faculty,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.facultyRepository.createFaculty(faculty, abortSignal, accessToken);
   }
 }

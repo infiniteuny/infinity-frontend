@@ -8,7 +8,6 @@ import { Major } from '@app/domain/entities';
 export type CreateMajorParams = [
   major: Omit<Major, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -29,20 +28,13 @@ export class CreateMajor implements UseCase<Promise<Either<Major, Error>>, Creat
   public async execute(
     major: Omit<Major, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Major, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.majorRepository.createMajor(major, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.majorRepository.createMajor(major, abortSignal, accessToken);
   }
 }

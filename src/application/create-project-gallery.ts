@@ -8,7 +8,6 @@ import { ProjectGallery } from '@app/domain/entities';
 export type CreateProjectGalleryParams = [
   projectGallery: Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,24 +31,17 @@ export class CreateProjectGallery implements UseCase<
   public async execute(
     projectGallery: Omit<ProjectGallery, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<ProjectGallery, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.projectGalleryRepository.createProjectGallery(
+        projectGallery,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.projectGalleryRepository.createProjectGallery(
-      projectGallery,
-      abortSignal,
-      accessToken,
-    );
   }
 }

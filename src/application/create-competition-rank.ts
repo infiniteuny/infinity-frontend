@@ -8,7 +8,6 @@ import { CompetitionRank } from '@app/domain/entities';
 export type CreateCompetitionRankParams = [
   competitionRank: Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -32,24 +31,17 @@ export class CreateCompetitionRank implements UseCase<
   public async execute(
     competitionRank: Omit<CompetitionRank, 'id' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<CompetitionRank, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.competitionRankRepository.createCompetitionRank(
+        competitionRank,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.competitionRankRepository.createCompetitionRank(
-      competitionRank,
-      abortSignal,
-      accessToken,
-    );
   }
 }

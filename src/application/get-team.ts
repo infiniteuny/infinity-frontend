@@ -9,7 +9,6 @@ export type GetTeamParams = [
   id: string,
   includeOptions?: TeamIncludeOptions,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -31,20 +30,18 @@ export class GetTeam implements UseCase<Promise<Either<Team, Error>>, GetTeamPar
     id: string,
     includeOptions?: TeamIncludeOptions,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Team, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.teamRepository.getTeam(
+        id,
+        includeOptions,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.teamRepository.getTeam(id, includeOptions, abortSignal, accessToken);
   }
 }

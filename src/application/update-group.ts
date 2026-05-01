@@ -9,7 +9,6 @@ export type UpdateGroupParams = [
   id: string,
   group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
-  authenticate?: boolean,
 ];
 
 @injectable()
@@ -31,20 +30,18 @@ export class UpdateGroup implements UseCase<Promise<Either<Group, Error>>, Updat
     id: string,
     group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
-    authenticate: boolean = true,
   ): Promise<Either<Group, Error>> {
-    let accessToken: string | undefined;
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.groupRepository.updateGroup(
+        id,
+        group,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.groupRepository.updateGroup(id, group, abortSignal, accessToken);
   }
 }

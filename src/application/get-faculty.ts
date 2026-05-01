@@ -5,7 +5,7 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import { Faculty } from '@app/domain/entities';
 
-export type GetFacultyParams = [id: string, abortSignal?: AbortSignal, authenticate?: boolean];
+export type GetFacultyParams = [id: string, abortSignal?: AbortSignal];
 
 @injectable()
 export class GetFaculty implements UseCase<Promise<Either<Faculty, Error>>, GetFacultyParams> {
@@ -22,23 +22,13 @@ export class GetFaculty implements UseCase<Promise<Either<Faculty, Error>>, GetF
     this.authRepository = authRepository;
   }
 
-  public async execute(
-    id: string,
-    abortSignal?: AbortSignal,
-    authenticate: boolean = true,
-  ): Promise<Either<Faculty, Error>> {
-    let accessToken: string | undefined;
+  public async execute(id: string, abortSignal?: AbortSignal): Promise<Either<Faculty, Error>> {
+    const accessTokenResult = await this.authRepository.getAccessToken();
 
-    if (authenticate) {
-      const accessTokenResult = await this.authRepository.getAccessToken();
-
-      if (isRight(accessTokenResult)) {
-        accessToken = accessTokenResult.right;
-      } else {
-        return left(accessTokenResult.left);
-      }
+    if (isRight(accessTokenResult)) {
+      return await this.facultyRepository.getFaculty(id, abortSignal, accessTokenResult.right);
+    } else {
+      return left(accessTokenResult.left);
     }
-
-    return await this.facultyRepository.getFaculty(id, abortSignal, accessToken);
   }
 }
