@@ -1,0 +1,1 @@
+Auth uses better-auth v1.6 with SSO via OpenID Connect. Access token required for API calls; sessions/tokens obtained via data sources. Auth routes under app/(auth)/.

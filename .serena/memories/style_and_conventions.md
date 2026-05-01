@@ -1,0 +1,1 @@
+TypeScript strict, decorators enabled. ESLint flat config with @typescript-eslint/explicit-member-accessibility. Prettier: single quotes, trailing commas, 100 char width, tailwindcss plugin. DI symbols in config/symbols.ts; use SYMBOLS.XxxUseCase when binding/resolving. reflect-metadata must be imported before inversify bindings in injection files.
