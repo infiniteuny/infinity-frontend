@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 import { UserPersona } from '@app/domain/entities';
 import { PersonaDto, PersonaMapper } from './persona.dto';
 
-interface UserPersonaMembershipDto {
+interface UserPersonaEntitlementDto {
   id: string;
   user_id: string;
   persona_id: string;
@@ -11,20 +11,20 @@ interface UserPersonaMembershipDto {
 }
 
 export interface UserPersonaDto extends PersonaDto {
-  membership: UserPersonaMembershipDto;
+  entitlement: UserPersonaEntitlementDto;
 }
 
 export class UserPersonaMapper {
   public static fromDomainToDto(userPersona: Partial<UserPersona>): Partial<UserPersonaDto> {
     return {
       ...PersonaMapper.fromDomainToDto(userPersona),
-      membership: userPersona.membership
+      entitlement: userPersona.entitlement
         ? {
-            id: userPersona.membership.id,
-            user_id: userPersona.membership.userId,
-            persona_id: userPersona.membership.personaId,
-            created_at: userPersona.membership.createdAt.toISOString(),
-            updated_at: userPersona.membership.updatedAt.toISOString(),
+            id: userPersona.entitlement.id,
+            user_id: userPersona.entitlement.userId,
+            persona_id: userPersona.entitlement.personaId,
+            created_at: userPersona.entitlement.createdAt.toISOString(),
+            updated_at: userPersona.entitlement.updatedAt.toISOString(),
           }
         : undefined,
     };
@@ -40,11 +40,11 @@ export class UserPersonaMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       {
-        id: dto.membership.id,
-        userId: dto.membership.user_id,
-        personaId: dto.membership.persona_id,
-        createdAt: DateTime.fromISO(dto.membership.created_at).toJSDate(),
-        updatedAt: DateTime.fromISO(dto.membership.updated_at).toJSDate(),
+        id: dto.entitlement.id,
+        userId: dto.entitlement.user_id,
+        personaId: dto.entitlement.persona_id,
+        createdAt: DateTime.fromISO(dto.entitlement.created_at).toJSDate(),
+        updatedAt: DateTime.fromISO(dto.entitlement.updated_at).toJSDate(),
       },
     );
   }

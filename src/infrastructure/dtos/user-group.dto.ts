@@ -2,29 +2,25 @@ import { DateTime } from 'luxon';
 import { UserGroup } from '@app/domain/entities';
 import { GroupDto, GroupMapper } from './group.dto';
 
-interface UserGroupMembershipDto {
+interface UserGroupEntitlementDto {
   id: string;
   user_id: string;
   group_id: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface UserGroupDto extends GroupDto {
-  membership: UserGroupMembershipDto;
+  entitlement: UserGroupEntitlementDto;
 }
 
 export class UserGroupMapper {
   public static fromDomainToDto(userGroup: Partial<UserGroup>): Partial<UserGroupDto> {
     return {
       ...GroupMapper.fromDomainToDto(userGroup),
-      membership: userGroup.membership
+      entitlement: userGroup.entitlement
         ? {
-            id: userGroup.membership.id,
-            user_id: userGroup.membership.userId,
-            group_id: userGroup.membership.groupId,
-            created_at: userGroup.membership.createdAt.toISOString(),
-            updated_at: userGroup.membership.updatedAt.toISOString(),
+            id: userGroup.entitlement.id,
+            user_id: userGroup.entitlement.userId,
+            group_id: userGroup.entitlement.groupId,
           }
         : undefined,
     };
@@ -38,11 +34,9 @@ export class UserGroupMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       {
-        id: dto.membership.id,
-        userId: dto.membership.user_id,
-        groupId: dto.membership.group_id,
-        createdAt: DateTime.fromISO(dto.membership.created_at).toJSDate(),
-        updatedAt: DateTime.fromISO(dto.membership.updated_at).toJSDate(),
+        id: dto.entitlement.id,
+        userId: dto.entitlement.user_id,
+        groupId: dto.entitlement.group_id,
       },
     );
   }
