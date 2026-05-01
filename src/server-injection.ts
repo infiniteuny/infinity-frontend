@@ -30,10 +30,11 @@ import {
   TeamMemberRepository,
   TeamRepository,
   TestimonialRepository,
+  UserCommunityGroupRepository,
   UserGroupRepository,
-  UserRepository,
   UserPermissionRepository,
   UserPersonaRepository,
+  UserRepository,
 } from '@app/domain/repositories';
 import {
   AchievementRepositoryImpl,
@@ -65,10 +66,11 @@ import {
   TeamMemberRepositoryImpl,
   TeamRepositoryImpl,
   TestimonialRepositoryImpl,
+  UserCommunityGroupRepositoryImpl,
   UserGroupRepositoryImpl,
-  UserRepositoryImpl,
   UserPermissionRepositoryImpl,
   UserPersonaRepositoryImpl,
+  UserRepositoryImpl,
 } from '@app/infrastructure/repositories';
 import { Container } from 'inversify';
 import {
@@ -141,6 +143,7 @@ import {
   GetFundApplications,
   GetGroup,
   GetGroups,
+  GetGroupPermissions,
   GetMajor,
   GetMajors,
   GetPermission,
@@ -152,12 +155,15 @@ import {
   GetSession,
   GetTeam,
   GetTeams,
+  GetTeamMembers,
   GetTestimonial,
   GetTestimonials,
   GetUser,
   GetUserPermissions,
   GetUserPermissionsWithToken,
   GetUserPersonas,
+  GetUserCommunityGroups,
+  GetUserGroups,
   GetUsers,
   GetUsersWithToken,
   UpdateAchievement,
@@ -184,6 +190,11 @@ import {
   UpdateTeam,
   UpdateTestimonial,
   Logout,
+  GetCoreTeamMembers,
+  GetCommunityGroupMembers,
+  GetCoreTeamMember,
+  GetCommunityGroupAdminMember,
+  GetCommunityGroupAdminMembers,
 } from '@app/application';
 import { SYMBOLS } from '@config';
 
@@ -235,7 +246,6 @@ serverContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
 serverContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
 serverContainer.bind<CreateUserPermission>(SYMBOLS.CreateUserPermission).to(CreateUserPermission);
 serverContainer.bind<CreateUserPersona>(SYMBOLS.CreateUserPersona).to(CreateUserPersona);
-serverContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 serverContainer.bind<GetAchievement>(SYMBOLS.GetAchievement).to(GetAchievement);
 serverContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
 serverContainer
@@ -244,7 +254,17 @@ serverContainer
 serverContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
+serverContainer
+  .bind<GetCommunityGroupAdminMember>(SYMBOLS.GetCommunityGroupAdminMember)
+  .to(GetCommunityGroupAdminMember);
+serverContainer
+  .bind<GetCommunityGroupAdminMembers>(SYMBOLS.GetCommunityGroupAdminMembers)
+  .to(GetCommunityGroupAdminMembers);
+serverContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 serverContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+serverContainer
+  .bind<GetCommunityGroupMembers>(SYMBOLS.GetCommunityGroupMembers)
+  .to(GetCommunityGroupMembers);
 serverContainer.bind<GetCompetition>(SYMBOLS.GetCompetition).to(GetCompetition);
 serverContainer
   .bind<GetCompetitionInstance>(SYMBOLS.GetCompetitionInstance)
@@ -281,6 +301,8 @@ serverContainer
   .to(GetCompetitionTimeRanges);
 serverContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
 serverContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
+serverContainer.bind<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember).to(GetCoreTeamMember);
+serverContainer.bind<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers).to(GetCoreTeamMembers);
 serverContainer.bind<GetCoreTeam>(SYMBOLS.GetCoreTeam).to(GetCoreTeam);
 serverContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
 serverContainer.bind<GetDegree>(SYMBOLS.GetDegree).to(GetDegree);
@@ -291,6 +313,7 @@ serverContainer.bind<GetFundApplication>(SYMBOLS.GetFundApplication).to(GetFundA
 serverContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
 serverContainer.bind<GetGroup>(SYMBOLS.GetGroup).to(GetGroup);
 serverContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
+serverContainer.bind<GetGroupPermissions>(SYMBOLS.GetGroupPermissions).to(GetGroupPermissions);
 serverContainer.bind<GetMajor>(SYMBOLS.GetMajor).to(GetMajor);
 serverContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 serverContainer.bind<GetPermission>(SYMBOLS.GetPermission).to(GetPermission);
@@ -302,9 +325,14 @@ serverContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 serverContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 serverContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
 serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
+serverContainer.bind<GetTeamMembers>(SYMBOLS.GetTeamMembers).to(GetTeamMembers);
 serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
+serverContainer
+  .bind<GetUserCommunityGroups>(SYMBOLS.GetUserCommunityGroups)
+  .to(GetUserCommunityGroups);
+serverContainer.bind<GetUserGroups>(SYMBOLS.GetUserGroups).to(GetUserGroups);
 serverContainer.bind<GetUserPermissions>(SYMBOLS.GetUserPermissions).to(GetUserPermissions);
 serverContainer
   .bind<GetUserPermissionsWithToken>(SYMBOLS.GetUserPermissionsWithToken)
@@ -438,14 +466,17 @@ serverContainer.bind<TeamRepository>(SYMBOLS.TeamRepository).to(TeamRepositoryIm
 serverContainer
   .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
   .to(TestimonialRepositoryImpl);
+serverContainer
+  .bind<UserCommunityGroupRepository>(SYMBOLS.UserCommunityGroupRepository)
+  .to(UserCommunityGroupRepositoryImpl);
 serverContainer.bind<UserGroupRepository>(SYMBOLS.UserGroupRepository).to(UserGroupRepositoryImpl);
-serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 serverContainer
   .bind<UserPermissionRepository>(SYMBOLS.UserPermissionRepository)
   .to(UserPermissionRepositoryImpl);
 serverContainer
   .bind<UserPersonaRepository>(SYMBOLS.UserPersonaRepository)
   .to(UserPersonaRepositoryImpl);
+serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
 serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
