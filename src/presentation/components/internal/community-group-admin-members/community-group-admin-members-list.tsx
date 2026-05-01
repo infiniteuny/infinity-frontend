@@ -4,40 +4,50 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridSlots,
-  GridPaginationModel,
   GridPaginationMeta,
+  GridPaginationModel,
   GridRowParams,
+  GridSlots,
 } from '@mui/x-data-grid';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetUsers } from '@app/application';
+import { GetCommunityGroupAdminMembers } from '@app/application';
 import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
-  UserDto,
-  UserMapper,
+  CommunityGroupAdminMemberDto,
+  CommunityGroupAdminMemberMapper,
 } from '@app/infrastructure/dtos';
+import { PaginationOptions, CommunityGroupAdminMember, Major } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { User, PaginationOptions, Major } from '@app/domain/entities';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialUsers: UserDto[];
+  initialCommunityGroupAdminMembers: CommunityGroupAdminMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
+  communityGroupAdminId: string;
 };
 
-export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
+export function CommunityGroupAdminMembersList({
+  initialCommunityGroupAdminMembers,
+  initialPaginationOptions,
+  communityGroupAdminId,
+}: Props) {
+  const initCommunityGroupAdminMembers = initialCommunityGroupAdminMembers.map(
+    CommunityGroupAdminMemberMapper.fromDtoToDomain,
+  );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
+  const getCommunityGroupAdminMembers = useMemo(
+    () => clientContainer.get<GetCommunityGroupAdminMembers>(SYMBOLS.GetCommunityGroupAdminMembers),
+    [],
+  );
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<User[]>(initUsers);
+  const [rows, setRows] = useState<CommunityGroupAdminMember[]>(initCommunityGroupAdminMembers);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUsers.length,
+    initPaginationOptions.nextCursor ? -1 : initCommunityGroupAdminMembers.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -77,10 +87,15 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     }
 
     try {
-      const result = await getUsers.execute(['major', 'major.faculty'], undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
+      const result = await getCommunityGroupAdminMembers.execute(
+        communityGroupAdminId,
+        ['major', 'major.faculty', 'membership.community_group'],
+        undefined,
+        {
+          perPage: normalizedPaginationModel.pageSize,
+          cursor,
+        },
+      );
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -116,7 +131,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/users/${params.row.id}`);
+    router.push(`/community-group-admins/${communityGroupAdminId}/members/${params.row.id}`);
   };
 
   return (
@@ -124,14 +139,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
       <NoSsr>
         <DataGrid
           sx={{
-            '.MuiTablePagination-displayedRows': {
-              display: 'none',
-            },
-            '.MuiDataGrid-row': {
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            },
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
           }}
           columns={[
             {
@@ -143,6 +152,11 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               field: 'name',
               headerName: 'Name',
               flex: 2,
+            },
+            {
+              field: 'group',
+              headerName: 'Group',
+              flex: 1,
             },
             {
               field: 'username',
@@ -211,26 +225,27 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               type: 'boolean',
             },
           ]}
-          rows={rows.map((user) => ({
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            emailAddress: user.emailAddress,
-            phoneNumber: user.phoneNumber,
-            studentId: user.studentId,
-            major: (user.major as Major)?.name || 'N/A',
-            faculty: (user.major as Major)?.faculty?.name || 'N/A',
-            startDate: user.startDate,
-            endDate: user.endDate,
-            isMember: user.isMember,
-            isExtraordinary: user.isExtraordinary,
-            isActive: user.isActive,
+          rows={rows.map((member) => ({
+            id: member.id,
+            name: member.name,
+            group: member.membership.communityGroup?.name || 'N/A',
+            username: member.username,
+            emailAddress: member.emailAddress,
+            phoneNumber: member.phoneNumber,
+            studentId: member.studentId,
+            major: (member.major as Major)?.name || 'N/A',
+            faculty: (member.major as Major)?.faculty?.name || 'N/A',
+            startDate: member.startDate,
+            endDate: member.endDate,
+            isMember: member.isMember,
+            isExtraordinary: member.isExtraordinary,
+            isActive: member.isActive,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No users found.' },
+            noRowsOverlay: { text: 'No community group administrator members found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"
@@ -241,6 +256,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 username: false,
                 emailAddress: false,
                 phoneNumber: false,
+                startDate: false,
+                endDate: false,
                 isExtraordinary: false,
               },
             },

@@ -10,34 +10,38 @@ import {
   GridRowParams,
 } from '@mui/x-data-grid';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetUsers } from '@app/application';
+import { GetUserPersonas } from '@app/application';
 import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
-  UserDto,
-  UserMapper,
+  UserPersonaDto,
+  UserPersonaMapper,
 } from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
-import { User, PaginationOptions, Major } from '@app/domain/entities';
+import { PaginationOptions, UserPersona } from '@app/domain/entities';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialUsers: UserDto[];
+  initialUserPersonas: UserPersonaDto[];
   initialPaginationOptions: PaginationOptionsDto;
+  userId: string;
 };
 
-export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
+export function UserPersonasList({ initialUserPersonas, initialPaginationOptions, userId }: Props) {
+  const initUserPersonas = initialUserPersonas.map(UserPersonaMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
+  const getUserPersonas = useMemo(
+    () => clientContainer.get<GetUserPersonas>(SYMBOLS.GetUserPersonas),
+    [],
+  );
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<User[]>(initUsers);
+  const [rows, setRows] = useState<UserPersona[]>(initUserPersonas);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUsers.length,
+    initPaginationOptions.nextCursor ? -1 : initUserPersonas.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -77,13 +81,21 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     }
 
     try {
-      const result = await getUsers.execute(['major', 'major.faculty'], undefined, {
+      const result = await getUserPersonas.execute(userId, undefined, {
         perPage: normalizedPaginationModel.pageSize,
         cursor,
       });
 
       match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
+        onRight: (data) => {
+          const newRows = Array.isArray(data) ? data[0] : data;
+          const nextPaginationOptions = Array.isArray(data) ? data[1] : undefined;
+
+          if (!nextPaginationOptions) {
+            setRows(newRows);
+            return;
+          }
+
           const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
 
           let page;
@@ -116,7 +128,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/users/${params.row.id}`);
+    router.push(`/personas/${params.row.id}`);
   };
 
   return (
@@ -142,95 +154,30 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             {
               field: 'name',
               headerName: 'Name',
-              flex: 2,
+              flex: 3,
             },
             {
-              field: 'username',
-              headerName: 'Username',
+              field: 'priority',
+              headerName: 'Priority',
               flex: 1,
             },
             {
-              field: 'emailAddress',
-              headerName: 'Email Address',
-              flex: 2,
-            },
-            {
-              field: 'phoneNumber',
-              headerName: 'Phone Number',
-              flex: 1,
-            },
-            {
-              field: 'studentId',
-              headerName: 'Student ID',
-              flex: 1,
-            },
-            {
-              field: 'major',
-              headerName: 'Major',
-              flex: 1,
-            },
-            {
-              field: 'faculty',
-              headerName: 'Faculty',
-              flex: 1,
-            },
-            {
-              field: 'startDate',
-              headerName: 'Start Date',
-              flex: 1,
-              valueFormatter: (value) => {
-                if (!value) return 'N/A';
-                return new Date(value).toLocaleDateString();
-              },
-            },
-            {
-              field: 'endDate',
-              headerName: 'End Date',
-              flex: 1,
-              valueFormatter: (value) => {
-                if (!value) return 'N/A';
-                return new Date(value).toLocaleDateString();
-              },
-            },
-            {
-              field: 'isMember',
-              headerName: 'Member',
-              flex: 0.5,
-              type: 'boolean',
-            },
-            {
-              field: 'isExtraordinary',
-              headerName: 'Extraordinary',
-              flex: 0.5,
-              type: 'boolean',
-            },
-            {
-              field: 'isActive',
-              headerName: 'Active',
-              flex: 0.5,
-              type: 'boolean',
+              field: 'description',
+              headerName: 'Description',
+              flex: 3,
             },
           ]}
-          rows={rows.map((user) => ({
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            emailAddress: user.emailAddress,
-            phoneNumber: user.phoneNumber,
-            studentId: user.studentId,
-            major: (user.major as Major)?.name || 'N/A',
-            faculty: (user.major as Major)?.faculty?.name || 'N/A',
-            startDate: user.startDate,
-            endDate: user.endDate,
-            isMember: user.isMember,
-            isExtraordinary: user.isExtraordinary,
-            isActive: user.isActive,
+          rows={rows.map((userPersona) => ({
+            id: userPersona.id,
+            name: userPersona.name,
+            priority: userPersona.priority,
+            description: userPersona.description,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No users found.' },
+            noRowsOverlay: { text: 'No user personas found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"
@@ -238,10 +185,6 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             columns: {
               columnVisibilityModel: {
                 id: false,
-                username: false,
-                emailAddress: false,
-                phoneNumber: false,
-                isExtraordinary: false,
               },
             },
           }}

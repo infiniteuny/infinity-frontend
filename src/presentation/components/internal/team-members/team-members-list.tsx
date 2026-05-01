@@ -4,40 +4,47 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridSlots,
-  GridPaginationModel,
   GridPaginationMeta,
+  GridPaginationModel,
   GridRowParams,
+  GridSlots,
 } from '@mui/x-data-grid';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetUsers } from '@app/application';
+import { GetTeamMembers } from '@app/application';
 import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
-  UserDto,
-  UserMapper,
+  TeamDto,
+  TeamMapper,
+  TeamMemberDto,
+  TeamMemberMapper,
 } from '@app/infrastructure/dtos';
+import { Major, PaginationOptions, TeamMember } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { User, PaginationOptions, Major } from '@app/domain/entities';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialUsers: UserDto[];
+  initialTeamMembers: TeamMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
+  team: TeamDto;
 };
 
-export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
+export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, team }: Props) {
+  const initTeamMembers = initialTeamMembers.map(TeamMemberMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
+  const parsedTeam = TeamMapper.fromDtoToDomain(team);
+  const getTeamMembers = useMemo(
+    () => clientContainer.get<GetTeamMembers>(SYMBOLS.GetTeamMembers),
+    [],
+  );
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<User[]>(initUsers);
+  const [rows, setRows] = useState<TeamMember[]>(initTeamMembers);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUsers.length,
+    initPaginationOptions.nextCursor ? -1 : initTeamMembers.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -77,10 +84,15 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     }
 
     try {
-      const result = await getUsers.execute(['major', 'major.faculty'], undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
+      const result = await getTeamMembers.execute(
+        parsedTeam.id,
+        ['major', 'major.faculty'],
+        undefined,
+        {
+          perPage: normalizedPaginationModel.pageSize,
+          cursor,
+        },
+      );
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -124,14 +136,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
       <NoSsr>
         <DataGrid
           sx={{
-            '.MuiTablePagination-displayedRows': {
-              display: 'none',
-            },
-            '.MuiDataGrid-row': {
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            },
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
           }}
           columns={[
             {
@@ -143,6 +149,11 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               field: 'name',
               headerName: 'Name',
               flex: 2,
+            },
+            {
+              field: 'role',
+              headerName: 'Role',
+              flex: 0.5,
             },
             {
               field: 'username',
@@ -211,26 +222,27 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               type: 'boolean',
             },
           ]}
-          rows={rows.map((user) => ({
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            emailAddress: user.emailAddress,
-            phoneNumber: user.phoneNumber,
-            studentId: user.studentId,
-            major: (user.major as Major)?.name || 'N/A',
-            faculty: (user.major as Major)?.faculty?.name || 'N/A',
-            startDate: user.startDate,
-            endDate: user.endDate,
-            isMember: user.isMember,
-            isExtraordinary: user.isExtraordinary,
-            isActive: user.isActive,
+          rows={rows.map((member) => ({
+            id: member.id,
+            name: member.name,
+            role: member.id == parsedTeam.leaderId ? 'Leader' : 'Member',
+            username: member.username,
+            emailAddress: member.emailAddress,
+            phoneNumber: member.phoneNumber,
+            studentId: member.studentId,
+            major: (member.major as Major)?.name || 'N/A',
+            faculty: (member.major as Major)?.faculty?.name || 'N/A',
+            startDate: member.startDate,
+            endDate: member.endDate,
+            isMember: member.isMember,
+            isExtraordinary: member.isExtraordinary,
+            isActive: member.isActive,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No users found.' },
+            noRowsOverlay: { text: 'No team members found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"
@@ -241,6 +253,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 username: false,
                 emailAddress: false,
                 phoneNumber: false,
+                startDate: false,
+                endDate: false,
                 isExtraordinary: false,
               },
             },

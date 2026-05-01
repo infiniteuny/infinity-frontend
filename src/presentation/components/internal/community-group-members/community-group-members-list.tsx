@@ -4,40 +4,50 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridSlots,
-  GridPaginationModel,
   GridPaginationMeta,
+  GridPaginationModel,
   GridRowParams,
+  GridSlots,
 } from '@mui/x-data-grid';
 import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetUsers } from '@app/application';
+import { GetCommunityGroupMembers } from '@app/application';
 import { match } from 'effect/Either';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
-  UserDto,
-  UserMapper,
+  CommunityGroupMemberDto,
+  CommunityGroupMemberMapper,
 } from '@app/infrastructure/dtos';
+import { PaginationOptions, CommunityGroupMember, Major } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
-import { User, PaginationOptions, Major } from '@app/domain/entities';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  initialUsers: UserDto[];
+  initialCommunityGroupMembers: CommunityGroupMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
+  communityGroupId: string;
 };
 
-export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
+export function CommunityGroupMembersList({
+  initialCommunityGroupMembers,
+  initialPaginationOptions,
+  communityGroupId,
+}: Props) {
+  const initCommunityGroupMembers = initialCommunityGroupMembers.map(
+    CommunityGroupMemberMapper.fromDtoToDomain,
+  );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
+  const getCommunityGroupMembers = useMemo(
+    () => clientContainer.get<GetCommunityGroupMembers>(SYMBOLS.GetCommunityGroupMembers),
+    [],
+  );
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<User[]>(initUsers);
+  const [rows, setRows] = useState<CommunityGroupMember[]>(initCommunityGroupMembers);
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUsers.length,
+    initPaginationOptions.nextCursor ? -1 : initCommunityGroupMembers.length,
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
@@ -77,10 +87,15 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     }
 
     try {
-      const result = await getUsers.execute(['major', 'major.faculty'], undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
+      const result = await getCommunityGroupMembers.execute(
+        communityGroupId,
+        ['major', 'major.faculty'],
+        undefined,
+        {
+          perPage: normalizedPaginationModel.pageSize,
+          cursor,
+        },
+      );
 
       match(result, {
         onRight: ([newRows, nextPaginationOptions]) => {
@@ -124,14 +139,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
       <NoSsr>
         <DataGrid
           sx={{
-            '.MuiTablePagination-displayedRows': {
-              display: 'none',
-            },
-            '.MuiDataGrid-row': {
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            },
+            '.MuiTablePagination-displayedRows': { display: 'none' },
+            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
           }}
           columns={[
             {
@@ -211,26 +220,26 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               type: 'boolean',
             },
           ]}
-          rows={rows.map((user) => ({
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            emailAddress: user.emailAddress,
-            phoneNumber: user.phoneNumber,
-            studentId: user.studentId,
-            major: (user.major as Major)?.name || 'N/A',
-            faculty: (user.major as Major)?.faculty?.name || 'N/A',
-            startDate: user.startDate,
-            endDate: user.endDate,
-            isMember: user.isMember,
-            isExtraordinary: user.isExtraordinary,
-            isActive: user.isActive,
+          rows={rows.map((member) => ({
+            id: member.id,
+            name: member.name,
+            username: member.username,
+            emailAddress: member.emailAddress,
+            phoneNumber: member.phoneNumber,
+            studentId: member.studentId,
+            major: (member.major as Major)?.name || 'N/A',
+            faculty: (member.major as Major)?.faculty?.name || 'N/A',
+            startDate: member.startDate,
+            endDate: member.endDate,
+            isMember: member.isMember,
+            isExtraordinary: member.isExtraordinary,
+            isActive: member.isActive,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
           }}
           slotProps={{
-            noRowsOverlay: { text: 'No users found.' },
+            noRowsOverlay: { text: 'No community group members found.' },
           }}
           pageSizeOptions={[25, 50, 100]}
           paginationMode="server"
@@ -241,6 +250,8 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 username: false,
                 emailAddress: false,
                 phoneNumber: false,
+                startDate: false,
+                endDate: false,
                 isExtraordinary: false,
               },
             },
