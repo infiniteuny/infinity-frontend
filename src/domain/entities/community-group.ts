@@ -2,8 +2,8 @@ import { FilterOperator } from '.';
 
 export interface CommunityGroupFilterOptions {
   name?: string;
-  priority?: number;
   description?: string;
+  priority?: number;
   isActive?: boolean;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
@@ -23,8 +23,8 @@ export interface CommunityGroupSortOptions {
 export class CommunityGroup {
   public id: string;
   public name: string;
-  public priority: number;
   public description: string;
+  public priority: number;
   public logo: string;
   public isActive: boolean;
   public createdAt: Date;
@@ -33,8 +33,8 @@ export class CommunityGroup {
   public constructor(
     id: string,
     name: string,
-    priority: number,
     description: string,
+    priority: number,
     logo: string,
     isActive: boolean,
     createdAt: Date,
@@ -42,8 +42,8 @@ export class CommunityGroup {
   ) {
     this.id = id;
     this.name = name;
-    this.priority = priority;
     this.description = description;
+    this.priority = priority;
     this.logo = logo;
     this.isActive = isActive;
     this.createdAt = createdAt;

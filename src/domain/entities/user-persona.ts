@@ -1,4 +1,8 @@
-import { Persona } from './persona';
+import { Persona, PersonaFilterOptions, PersonaSortOptions } from './persona';
+
+export type UserPersonaFilterOptions = PersonaFilterOptions;
+
+export type UserPersonaSortOptions = PersonaSortOptions;
 
 export class UserPersona extends Persona {
   public membership: {

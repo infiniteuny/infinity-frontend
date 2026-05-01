@@ -1,4 +1,8 @@
-import { Permission } from './permission';
+import { Permission, PermissionFilterOptions, PermissionSortOptions } from './permission';
+
+export type GroupPermissionFilterOptions = PermissionFilterOptions;
+
+export type GroupPermissionSortOptions = PermissionSortOptions;
 
 export class GroupPermission extends Permission {
   public entitlement: {

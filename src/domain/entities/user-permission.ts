@@ -1,4 +1,10 @@
-import { Permission } from './permission';
+import { Permission, PermissionFilterOptions, PermissionSortOptions } from './permission';
+
+export type UserPermissionIncludeOptions = 'nested'[];
+
+export type UserPermissionFilterOptions = PermissionFilterOptions;
+
+export type UserPermissionSortOptions = PermissionSortOptions;
 
 export class UserPermission extends Permission {
   public entitlement: {

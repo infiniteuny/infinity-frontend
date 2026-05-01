@@ -1,5 +1,11 @@
 import { Major } from './major';
-import { User } from './user';
+import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
+
+export type TeamMemberIncludeOptions = UserIncludeOptions;
+
+export type TeamMemberFilterOptions = UserFilterOptions;
+
+export type TeamMemberSortOptions = UserSortOptions;
 
 export class TeamMember extends User {
   public membership: {

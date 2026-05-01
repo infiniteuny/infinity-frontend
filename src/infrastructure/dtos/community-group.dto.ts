@@ -4,8 +4,8 @@ import { CommunityGroup } from '@app/domain/entities';
 export interface CommunityGroupDto {
   id: string;
   name: string;
-  priority: number;
   description: string;
+  priority: number;
   logo: string;
   is_active: boolean;
   created_at: string;
@@ -19,8 +19,8 @@ export class CommunityGroupMapper {
     return {
       id: communityGroup.id,
       name: communityGroup.name,
-      priority: communityGroup.priority,
       description: communityGroup.description,
+      priority: communityGroup.priority,
       logo: communityGroup.logo,
       is_active: communityGroup.isActive,
       created_at: communityGroup.createdAt?.toISOString(),
@@ -32,8 +32,8 @@ export class CommunityGroupMapper {
     return new CommunityGroup(
       dto.id,
       dto.name,
-      dto.priority,
       dto.description,
+      dto.priority,
       dto.logo,
       dto.is_active,
       DateTime.fromISO(dto.created_at).toJSDate(),

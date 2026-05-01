@@ -1,4 +1,8 @@
-import { Group } from './group';
+import { Group, GroupFilterOptions, GroupSortOptions } from './group';
+
+export type UserGroupFilterOptions = GroupFilterOptions;
+
+export type UserGroupSortOptions = GroupSortOptions;
 
 export class UserGroup extends Group {
   public membership: {

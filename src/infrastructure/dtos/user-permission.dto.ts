@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { UserPermission } from '@app/domain/entities';
-import { PermissionDto } from './permission.dto';
+import { PermissionDto, PermissionMapper } from './permission.dto';
 
 interface UserPermissionEntitlementDto {
   id: string;
@@ -9,32 +9,28 @@ interface UserPermissionEntitlementDto {
   permission_id: string;
 }
 
-export interface UserPermissionDto<T> extends PermissionDto {
-  entitlement: T;
+export interface UserPermissionDto extends PermissionDto {
+  entitlement: UserPermissionEntitlementDto;
 }
 
 export class UserPermissionMapper {
   public static fromDomainToDto(
     userPermission: Partial<UserPermission>,
-  ): Partial<UserPermissionDto<Partial<UserPermissionEntitlementDto>>> {
+  ): Partial<UserPermissionDto> {
     return {
-      id: userPermission.id,
-      name: userPermission.name,
-      guard_name: userPermission.guardName,
-      created_at: userPermission.createdAt?.toISOString(),
-      updated_at: userPermission.updatedAt?.toISOString(),
-      entitlement: {
-        id: userPermission.entitlement?.id,
-        user_id: userPermission.entitlement?.userId,
-        group_id: userPermission.entitlement?.groupId,
-        permission_id: userPermission.entitlement?.permissionId,
-      },
+      ...PermissionMapper.fromDomainToDto(userPermission),
+      entitlement: userPermission.entitlement
+        ? {
+            id: userPermission.entitlement?.id,
+            user_id: userPermission.entitlement?.userId,
+            group_id: userPermission.entitlement?.groupId,
+            permission_id: userPermission.entitlement?.permissionId,
+          }
+        : undefined,
     };
   }
 
-  public static fromDtoToDomain(
-    dto: UserPermissionDto<UserPermissionEntitlementDto>,
-  ): UserPermission {
+  public static fromDtoToDomain(dto: UserPermissionDto): UserPermission {
     return new UserPermission(
       dto.id,
       dto.name,

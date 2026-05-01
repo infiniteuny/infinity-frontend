@@ -1,5 +1,11 @@
 import { Major } from './major';
-import { User } from './user';
+import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
+
+export type CommunityGroupMemberIncludeOptions = UserIncludeOptions;
+
+export type CommunityGroupMemberFilterOptions = UserFilterOptions;
+
+export type CommunityGroupMemberSortOptions = UserSortOptions;
 
 export class CommunityGroupMember extends User {
   public membership: {

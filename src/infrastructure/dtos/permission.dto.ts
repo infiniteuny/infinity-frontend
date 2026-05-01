@@ -10,7 +10,7 @@ export interface PermissionDto {
 }
 
 export class PermissionMapper {
-  public static fromDomaintoDto(permission: Partial<Permission>): Partial<PermissionDto> {
+  public static fromDomainToDto(permission: Partial<Permission>): Partial<PermissionDto> {
     return {
       id: permission.id,
       name: permission.name,
