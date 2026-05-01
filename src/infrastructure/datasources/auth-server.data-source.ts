@@ -105,6 +105,7 @@ export const authServerDataSourceImpl = (
 
               const userPermissionsResult = await getUserPermissions.execute(
                 users[0].id,
+                ['nested'],
                 undefined,
                 tokens.accessToken ?? '',
               );
