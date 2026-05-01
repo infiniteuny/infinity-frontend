@@ -28,6 +28,7 @@ export * from './project-gallery.repository';
 export * from './team-member.repository';
 export * from './team.repository';
 export * from './testimonial.repository';
+export * from './user-community-group.repository';
 export * from './user-group.repository';
 export * from './user-permission.repository';
 export * from './user-persona.repository';

@@ -31,6 +31,7 @@ export * from './team-member';
 export * from './team';
 export * from './testimonial';
 export * from './token';
+export * from './user-community-group';
 export * from './user-group';
 export * from './user-permission';
 export * from './user-persona';
