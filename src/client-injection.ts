@@ -96,9 +96,13 @@ import {
   CreateTeam,
   CreateTestimonial,
   CreateUser,
+  CreateUserPermission,
+  CreateUserPersona,
   DeleteCompetition,
   DeleteCompetitionInstance,
   DeleteUser,
+  DeleteUserPermission,
+  DeleteUserPersona,
   GetAchievements,
   GetCommunityGroup,
   GetCommunityGroupAdmins,
@@ -131,6 +135,8 @@ import {
   GetMajor,
   GetMajors,
   GetPermissions,
+  GetUserPermissions,
+  GetUserPersonas,
   GetPersona,
   GetPersonas,
   GetProjectGalleries,
@@ -223,11 +229,15 @@ clientContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(Crea
 clientContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
 clientContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
 clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
+clientContainer.bind<CreateUserPermission>(SYMBOLS.CreateUserPermission).to(CreateUserPermission);
+clientContainer.bind<CreateUserPersona>(SYMBOLS.CreateUserPersona).to(CreateUserPersona);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
 clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
 clientContainer
   .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
   .to(DeleteCompetitionInstance);
+clientContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
+clientContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
 clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
 clientContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 clientContainer
@@ -281,6 +291,8 @@ clientContainer.bind<GetMajor>(SYMBOLS.GetMajor).to(GetMajor);
 clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
 clientContainer.bind<GetPersona>(SYMBOLS.GetPersona).to(GetPersona);
+clientContainer.bind<GetUserPermissions>(SYMBOLS.GetUserPermissions).to(GetUserPermissions);
+clientContainer.bind<GetUserPersonas>(SYMBOLS.GetUserPersonas).to(GetUserPersonas);
 clientContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
 clientContainer

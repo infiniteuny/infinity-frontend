@@ -101,8 +101,12 @@ import {
   CreateProjectGallery,
   CreateTeam,
   CreateTestimonial,
+  CreateUserPermission,
+  CreateUserPersona,
   DeleteCompetition,
   DeleteCompetitionInstance,
+  DeleteUserPermission,
+  DeleteUserPersona,
   GetCommunityGroup,
   GetAchievement,
   GetAchievements,
@@ -151,7 +155,9 @@ import {
   GetTestimonial,
   GetTestimonials,
   GetUser,
+  GetUserPermissions,
   GetUserPermissionsWithToken,
+  GetUserPersonas,
   GetUsers,
   GetUsersWithToken,
   UpdateAchievement,
@@ -227,6 +233,8 @@ serverContainer.bind<CreatePersona>(SYMBOLS.CreatePersona).to(CreatePersona);
 serverContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(CreateProjectGallery);
 serverContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
 serverContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
+serverContainer.bind<CreateUserPermission>(SYMBOLS.CreateUserPermission).to(CreateUserPermission);
+serverContainer.bind<CreateUserPersona>(SYMBOLS.CreateUserPersona).to(CreateUserPersona);
 serverContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 serverContainer.bind<GetAchievement>(SYMBOLS.GetAchievement).to(GetAchievement);
 serverContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
@@ -297,9 +305,11 @@ serverContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 serverContainer.bind<GetTestimonial>(SYMBOLS.GetTestimonial).to(GetTestimonial);
 serverContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
 serverContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
+serverContainer.bind<GetUserPermissions>(SYMBOLS.GetUserPermissions).to(GetUserPermissions);
 serverContainer
   .bind<GetUserPermissionsWithToken>(SYMBOLS.GetUserPermissionsWithToken)
   .to(GetUserPermissionsWithToken);
+serverContainer.bind<GetUserPersonas>(SYMBOLS.GetUserPersonas).to(GetUserPersonas);
 serverContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 serverContainer.bind<GetUsersWithToken>(SYMBOLS.GetUsersWithToken).to(GetUsersWithToken);
 serverContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
@@ -307,6 +317,8 @@ serverContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteComp
 serverContainer
   .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
   .to(DeleteCompetitionInstance);
+serverContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
+serverContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
 serverContainer.bind<UpdateCommunityGroup>(SYMBOLS.UpdateCommunityGroup).to(UpdateCommunityGroup);
 serverContainer
