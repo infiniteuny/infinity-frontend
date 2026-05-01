@@ -1,6 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CoreTeam } from '@app/domain/entities';
+import { SettingTile } from '@app/presentation/components/internal/settings';
 import { ViewTile } from '@app/presentation/components/internal/shared';
+import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
   coreTeam: CoreTeam;
@@ -23,6 +25,15 @@ export function GeneralView({ coreTeam }: Props) {
             <ViewTile
               title="Active"
               subtitle={coreTeam.isActive ? 'Yes' : 'No'}
+              position="middle"
+            />
+          </Grid>
+          <Grid size={12}>
+            <SettingTile
+              title="Members"
+              subtitle="Manage core team members"
+              trailingIcon={<ChevronRightRounded />}
+              href={`/core-teams/${coreTeam.id}/members`}
               position="bottom"
             />
           </Grid>

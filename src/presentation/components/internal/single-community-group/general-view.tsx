@@ -1,6 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CommunityGroup } from '@app/domain/entities';
+import { SettingTile } from '@app/presentation/components/internal/settings';
 import { ViewTile } from '@app/presentation/components/internal/shared';
+import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
   communityGroup: CommunityGroup;
@@ -20,15 +22,24 @@ export function GeneralView({ communityGroup }: Props) {
             <ViewTile title="Name" subtitle={communityGroup.name} position="top" />
           </Grid>
           <Grid size={12}>
-            <ViewTile title="Priority" subtitle={communityGroup.priority} position="middle" />
+            <ViewTile title="Description" subtitle={communityGroup.description} position="middle" />
           </Grid>
           <Grid size={12}>
-            <ViewTile title="Description" subtitle={communityGroup.description} position="middle" />
+            <ViewTile title="Priority" subtitle={communityGroup.priority} position="middle" />
           </Grid>
           <Grid size={12}>
             <ViewTile
               title="Active"
               subtitle={communityGroup.isActive ? 'Yes' : 'No'}
+              position="middle"
+            />
+          </Grid>
+          <Grid size={12}>
+            <SettingTile
+              title="Members"
+              subtitle="Manage community group members"
+              trailingIcon={<ChevronRightRounded />}
+              href={`/community-groups/${communityGroup.id}/members`}
               position="bottom"
             />
           </Grid>

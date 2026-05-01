@@ -1,5 +1,6 @@
 'use client';
 
+import { AccessControlView } from './access-control-view';
 import { ContactsView } from './contacts-view';
 import { GeneralView } from './general-view';
 import { MembershipView } from './membership-view';
@@ -18,6 +19,7 @@ export function UserView({ initialUser }: Props) {
       <GeneralView user={user} />
       <ContactsView user={user} />
       <MembershipView user={user} />
+      <AccessControlView user={user} />
       <MetadataView user={user} />
     </>
   );

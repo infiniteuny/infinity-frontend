@@ -1,7 +1,9 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
+import { SettingTile } from '@app/presentation/components/internal/settings';
 import { User } from '@app/domain/entities';
 import { ViewTile } from '@app/presentation/components/internal/shared';
+import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
   user: User;
@@ -52,6 +54,24 @@ export function MembershipView({ user }: Props) {
             <ViewTile
               title="Extraordinary Member"
               subtitle={user.isExtraordinary ? 'Yes' : 'No'}
+              position="middle"
+            />
+          </Grid>
+          <Grid size={12}>
+            <SettingTile
+              title="Personas"
+              subtitle="Manage personas"
+              trailingIcon={<ChevronRightRounded />}
+              href={`/users/${user.id}/personas`}
+              position="middle"
+            />
+          </Grid>
+          <Grid size={12}>
+            <SettingTile
+              title="Community Groups"
+              subtitle="Manage community groups membership"
+              trailingIcon={<ChevronRightRounded />}
+              href={`/users/${user.id}/community-groups`}
               position="bottom"
             />
           </Grid>

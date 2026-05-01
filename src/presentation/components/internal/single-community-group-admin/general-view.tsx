@@ -1,6 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CommunityGroupAdmin } from '@app/domain/entities';
+import { SettingTile } from '@app/presentation/components/internal/settings';
 import { ViewTile } from '@app/presentation/components/internal/shared';
+import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
   communityGroupAdmin: CommunityGroupAdmin;
@@ -23,6 +25,15 @@ export function GeneralView({ communityGroupAdmin }: Props) {
             <ViewTile
               title="Active"
               subtitle={communityGroupAdmin.isActive ? 'Yes' : 'No'}
+              position="middle"
+            />
+          </Grid>
+          <Grid size={12}>
+            <SettingTile
+              title="Members"
+              subtitle="Manage community group administrator members"
+              trailingIcon={<ChevronRightRounded />}
+              href={`/community-group-admins/${communityGroupAdmin.id}/members`}
               position="bottom"
             />
           </Grid>

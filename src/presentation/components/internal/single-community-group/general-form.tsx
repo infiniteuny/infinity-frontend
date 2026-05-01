@@ -49,19 +49,6 @@ export function GeneralForm({
           </Grid>
           <Grid size={12}>
             <TextField
-              {...register('priority', { valueAsNumber: true })}
-              id="priority"
-              label="Priority"
-              type="number"
-              fullWidth
-              margin="none"
-              helperText={errors.priority?.message}
-              error={!!errors.priority}
-              disabled={isSubmitting}
-            />
-          </Grid>
-          <Grid size={12}>
-            <TextField
               {...register('description')}
               id="description"
               label="Description"
@@ -71,6 +58,19 @@ export function GeneralForm({
               margin="none"
               helperText={errors.description?.message}
               error={!!errors.description}
+              disabled={isSubmitting}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              {...register('priority', { valueAsNumber: true })}
+              id="priority"
+              label="Priority"
+              type="number"
+              fullWidth
+              margin="none"
+              helperText={errors.priority?.message}
+              error={!!errors.priority}
               disabled={isSubmitting}
             />
           </Grid>
