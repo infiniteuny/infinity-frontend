@@ -96,7 +96,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
     try {
       const response = await this.infinityApiDataSource.post(
         '/community-group-admins',
-        CommunityGroupAdminMapper.fromDomaintoDto(communityGroupAdmin),
+        CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin),
         {
           signal: abortSignal,
           headers: {
@@ -126,7 +126,7 @@ export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRep
     try {
       const response = await this.infinityApiDataSource.put(
         `/community-group-admins/${id}`,
-        CommunityGroupAdminMapper.fromDomaintoDto(communityGroupAdmin),
+        CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin),
         {
           signal: abortSignal,
           headers: {

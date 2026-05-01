@@ -22,7 +22,7 @@ export interface UserDto {
 }
 
 export class UserMapper {
-  public static fromDomaintoDto(user: Partial<User>): Partial<UserDto> {
+  public static fromDomainToDto(user: Partial<User>): Partial<UserDto> {
     return {
       id: user.id,
       name: user.name,
@@ -39,7 +39,7 @@ export class UserMapper {
       is_active: user.isActive,
       created_at: user.createdAt?.toISOString(),
       updated_at: user.updatedAt?.toISOString(),
-      major: user.major ? (MajorMapper.fromDomaintoDto(user.major) as MajorDto) : undefined,
+      major: user.major ? (MajorMapper.fromDomainToDto(user.major) as MajorDto) : undefined,
     };
   }
 

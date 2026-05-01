@@ -14,7 +14,7 @@ export interface SessionDto {
 }
 
 export class SessionMapper {
-  public static fromDomaintoDto(session: Partial<Session>): Partial<SessionDto> {
+  public static fromDomainToDto(session: Partial<Session>): Partial<SessionDto> {
     return {
       user: session.user
         ? {

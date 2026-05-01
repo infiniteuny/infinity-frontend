@@ -10,7 +10,7 @@ export interface CoreTeamDivisionDto {
 }
 
 export class CoreTeamDivisionMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     coreTeamDivision: Partial<CoreTeamDivision>,
   ): Partial<CoreTeamDivisionDto> {
     return {

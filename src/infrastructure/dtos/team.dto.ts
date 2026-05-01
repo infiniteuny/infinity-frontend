@@ -16,7 +16,7 @@ export interface TeamDto {
 }
 
 export class TeamMapper {
-  public static fromDomaintoDto(team: Partial<Team>): Partial<TeamDto> {
+  public static fromDomainToDto(team: Partial<Team>): Partial<TeamDto> {
     return {
       id: team.id,
       leader_id: team.leaderId,
@@ -25,9 +25,9 @@ export class TeamMapper {
       is_personal: team.isPersonal,
       created_at: team.createdAt?.toISOString(),
       updated_at: team.updatedAt?.toISOString(),
-      leader: team.leader ? (UserMapper.fromDomaintoDto(team.leader) as UserDto) : undefined,
+      leader: team.leader ? (UserMapper.fromDomainToDto(team.leader) as UserDto) : undefined,
       team_type: team.teamType
-        ? (CompetitionTeamTypeMapper.fromDomaintoDto(team.teamType) as CompetitionTeamTypeDto)
+        ? (CompetitionTeamTypeMapper.fromDomainToDto(team.teamType) as CompetitionTeamTypeDto)
         : undefined,
     };
   }

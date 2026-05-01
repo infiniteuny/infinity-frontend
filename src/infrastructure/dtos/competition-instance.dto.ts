@@ -25,7 +25,7 @@ export interface CompetitionInstanceDto {
 }
 
 export class CompetitionInstanceMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     competitionInstance: Partial<CompetitionInstance>,
   ): Partial<CompetitionInstanceDto> {
     return {
@@ -43,10 +43,10 @@ export class CompetitionInstanceMapper {
       created_at: competitionInstance.createdAt?.toISOString(),
       updated_at: competitionInstance.updatedAt?.toISOString(),
       competition: competitionInstance.competition
-        ? (CompetitionMapper.fromDomaintoDto(competitionInstance.competition) as CompetitionDto)
+        ? (CompetitionMapper.fromDomainToDto(competitionInstance.competition) as CompetitionDto)
         : undefined,
       organizer_type: competitionInstance.organizerType
-        ? (CompetitionOrganizerTypeMapper.fromDomaintoDto(
+        ? (CompetitionOrganizerTypeMapper.fromDomainToDto(
             competitionInstance.organizerType,
           ) as CompetitionOrganizerTypeDto)
         : undefined,

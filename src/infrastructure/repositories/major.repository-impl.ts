@@ -106,7 +106,7 @@ export class MajorRepositoryImpl implements MajorRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/majors',
-        MajorMapper.fromDomaintoDto(major),
+        MajorMapper.fromDomainToDto(major),
         {
           signal: abortSignal,
           headers: {
@@ -134,7 +134,7 @@ export class MajorRepositoryImpl implements MajorRepository {
     try {
       const response = await this.infinityApiDataSource.patch(
         `/majors/${id}`,
-        MajorMapper.fromDomaintoDto(major),
+        MajorMapper.fromDomainToDto(major),
         {
           signal: abortSignal,
           headers: {

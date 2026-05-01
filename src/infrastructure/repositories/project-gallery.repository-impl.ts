@@ -92,7 +92,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
     token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
-      const projectGalleryDto = ProjectGalleryMapper.fromDomaintoDto(projectGallery);
+      const projectGalleryDto = ProjectGalleryMapper.fromDomainToDto(projectGallery);
 
       const response = await this.infinityApiDataSource.postForm(
         '/project-galleries',
@@ -126,7 +126,7 @@ export class ProjectGalleryRepositoryImpl implements ProjectGalleryRepository {
     token?: string,
   ): Promise<Either<ProjectGallery, Error>> {
     try {
-      const projectGalleryDto = ProjectGalleryMapper.fromDomaintoDto(projectGallery);
+      const projectGalleryDto = ProjectGalleryMapper.fromDomainToDto(projectGallery);
 
       const response = await this.infinityApiDataSource.putForm(
         `/project-galleries/${id}`,

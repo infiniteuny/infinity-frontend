@@ -16,7 +16,7 @@ export interface MajorDto {
 }
 
 export class MajorMapper {
-  public static fromDomaintoDto(major: Partial<Major>): Partial<MajorDto> {
+  public static fromDomainToDto(major: Partial<Major>): Partial<MajorDto> {
     return {
       id: major.id,
       degree_id: major.degreeId,
@@ -25,9 +25,9 @@ export class MajorMapper {
       name: major.name,
       created_at: major.createdAt?.toISOString(),
       updated_at: major.updatedAt?.toISOString(),
-      degree: major.degree ? (DegreeMapper.fromDomaintoDto(major.degree) as DegreeDto) : undefined,
+      degree: major.degree ? (DegreeMapper.fromDomainToDto(major.degree) as DegreeDto) : undefined,
       faculty: major.faculty
-        ? (FacultyMapper.fromDomaintoDto(major.faculty) as FacultyDto)
+        ? (FacultyMapper.fromDomainToDto(major.faculty) as FacultyDto)
         : undefined,
     };
   }

@@ -32,7 +32,7 @@ export interface AchievementDto {
 }
 
 export class AchievementMapper {
-  public static fromDomaintoDto(achievement: Partial<Achievement>): Partial<AchievementDto> {
+  public static fromDomainToDto(achievement: Partial<Achievement>): Partial<AchievementDto> {
     return {
       id: achievement.id,
       team_id: achievement.teamId,
@@ -50,30 +50,30 @@ export class AchievementMapper {
       created_at: achievement.createdAt?.toISOString(),
       updated_at: achievement.updatedAt?.toISOString(),
       team: achievement.team
-        ? (TeamMapper.fromDomaintoDto(achievement.team) as TeamDto)
+        ? (TeamMapper.fromDomainToDto(achievement.team) as TeamDto)
         : undefined,
       competition_instance: achievement.competitionInstance
-        ? (CompetitionInstanceMapper.fromDomaintoDto(
+        ? (CompetitionInstanceMapper.fromDomainToDto(
             achievement.competitionInstance,
           ) as CompetitionInstanceDto)
         : undefined,
       competition_scale: achievement.competitionScale
-        ? (CompetitionScaleMapper.fromDomaintoDto(
+        ? (CompetitionScaleMapper.fromDomainToDto(
             achievement.competitionScale,
           ) as CompetitionScaleDto)
         : undefined,
       competition_time_range: achievement.competitionTimeRange
-        ? (CompetitionTimeRangeMapper.fromDomaintoDto(
+        ? (CompetitionTimeRangeMapper.fromDomainToDto(
             achievement.competitionTimeRange,
           ) as CompetitionTimeRangeDto)
         : undefined,
       competition_output: achievement.competitionOutput
-        ? (CompetitionOutputMapper.fromDomaintoDto(
+        ? (CompetitionOutputMapper.fromDomainToDto(
             achievement.competitionOutput,
           ) as CompetitionOutputDto)
         : undefined,
       competition_rank: achievement.competitionRank
-        ? (CompetitionRankMapper.fromDomaintoDto(achievement.competitionRank) as CompetitionRankDto)
+        ? (CompetitionRankMapper.fromDomainToDto(achievement.competitionRank) as CompetitionRankDto)
         : undefined,
     };
   }

@@ -128,7 +128,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
-      const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
+      const achievementDto = AchievementMapper.fromDomainToDto(achievement);
 
       const response = await this.infinityApiDataSource.postForm(
         '/achievements',
@@ -172,7 +172,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
     token?: string,
   ): Promise<Either<Achievement, Error>> {
     try {
-      const achievementDto = AchievementMapper.fromDomaintoDto(achievement);
+      const achievementDto = AchievementMapper.fromDomainToDto(achievement);
 
       const response = await this.infinityApiDataSource.putForm(
         `/achievements/${id}`,

@@ -8,7 +8,7 @@ export interface PaginationOptionsDto {
 }
 
 export class PaginationOptionsMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     paginationOptions: Partial<PaginationOptions>,
   ): Partial<PaginationOptionsDto> {
     return {

@@ -118,7 +118,7 @@ export class CompetitionInstanceRepositoryImpl implements CompetitionInstanceRep
     token?: string,
   ): Promise<Either<CompetitionInstance, Error>> {
     try {
-      const competitionInstanceDto = CompetitionInstanceMapper.fromDomaintoDto(competitionInstance);
+      const competitionInstanceDto = CompetitionInstanceMapper.fromDomainToDto(competitionInstance);
 
       const response = await this.infinityApiDataSource.postForm(
         '/competition-instances',
@@ -156,7 +156,7 @@ export class CompetitionInstanceRepositoryImpl implements CompetitionInstanceRep
     token?: string,
   ): Promise<Either<CompetitionInstance, Error>> {
     try {
-      const competitionInstanceDto = CompetitionInstanceMapper.fromDomaintoDto(competitionInstance);
+      const competitionInstanceDto = CompetitionInstanceMapper.fromDomainToDto(competitionInstance);
 
       const response = await this.infinityApiDataSource.putForm(
         `/competition-instances/${id}`,

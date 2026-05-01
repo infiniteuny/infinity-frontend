@@ -24,7 +24,7 @@ export interface FundApplicationDto {
 }
 
 export class FundApplicationMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     fundApplication: Partial<FundApplication>,
   ): Partial<FundApplicationDto> {
     return {
@@ -41,15 +41,15 @@ export class FundApplicationMapper {
       created_at: fundApplication.createdAt?.toISOString(),
       updated_at: fundApplication.updatedAt?.toISOString(),
       team: fundApplication.team
-        ? (TeamMapper.fromDomaintoDto(fundApplication.team) as TeamDto)
+        ? (TeamMapper.fromDomainToDto(fundApplication.team) as TeamDto)
         : undefined,
       competition_instance: fundApplication.competitionInstance
-        ? (CompetitionInstanceMapper.fromDomaintoDto(
+        ? (CompetitionInstanceMapper.fromDomainToDto(
             fundApplication.competitionInstance,
           ) as CompetitionInstanceDto)
         : undefined,
       competition_scale: fundApplication.competitionScale
-        ? (CompetitionScaleMapper.fromDomaintoDto(
+        ? (CompetitionScaleMapper.fromDomainToDto(
             fundApplication.competitionScale,
           ) as CompetitionScaleDto)
         : undefined,

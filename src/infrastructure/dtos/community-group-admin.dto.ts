@@ -10,7 +10,7 @@ export interface CommunityGroupAdminDto {
 }
 
 export class CommunityGroupAdminMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     communityGroupAdmin: Partial<CommunityGroupAdmin>,
   ): Partial<CommunityGroupAdminDto> {
     return {

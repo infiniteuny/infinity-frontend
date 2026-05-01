@@ -85,7 +85,7 @@ export class GroupRepositoryImpl implements GroupRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/groups',
-        GroupMapper.fromDomaintoDto(group),
+        GroupMapper.fromDomainToDto(group),
         {
           signal: abortSignal,
           headers: {
@@ -111,7 +111,7 @@ export class GroupRepositoryImpl implements GroupRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/groups/${id}`,
-        GroupMapper.fromDomaintoDto(group),
+        GroupMapper.fromDomainToDto(group),
         {
           signal: abortSignal,
           headers: {

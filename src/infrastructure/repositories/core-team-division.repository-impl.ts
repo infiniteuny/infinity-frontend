@@ -93,7 +93,7 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
     try {
       const response = await this.infinityApiDataSource.post(
         '/core-team-divisions',
-        CoreTeamDivisionMapper.fromDomaintoDto(coreTeamDivision),
+        CoreTeamDivisionMapper.fromDomainToDto(coreTeamDivision),
         {
           signal: abortSignal,
           headers: {
@@ -121,7 +121,7 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
     try {
       const response = await this.infinityApiDataSource.put(
         `/core-team-divisions/${id}`,
-        CoreTeamDivisionMapper.fromDomaintoDto(coreTeamDivision),
+        CoreTeamDivisionMapper.fromDomainToDto(coreTeamDivision),
         {
           signal: abortSignal,
           headers: {

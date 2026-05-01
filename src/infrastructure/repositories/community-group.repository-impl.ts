@@ -95,7 +95,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/community-groups',
-        CommunityGroupMapper.fromDomaintoDto(communityGroup),
+        CommunityGroupMapper.fromDomainToDto(communityGroup),
         {
           signal: abortSignal,
           headers: {
@@ -123,7 +123,7 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/community-groups/${id}`,
-        CommunityGroupMapper.fromDomaintoDto(communityGroup),
+        CommunityGroupMapper.fromDomainToDto(communityGroup),
         {
           signal: abortSignal,
           headers: {

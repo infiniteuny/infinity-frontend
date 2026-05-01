@@ -93,7 +93,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
     try {
       const response = await this.infinityApiDataSource.post(
         '/competition-organizer-types',
-        CompetitionOrganizerTypeMapper.fromDomaintoDto(competitionOrganizerType),
+        CompetitionOrganizerTypeMapper.fromDomainToDto(competitionOrganizerType),
         {
           signal: abortSignal,
           headers: {
@@ -123,7 +123,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
     try {
       const response = await this.infinityApiDataSource.put(
         `/competition-organizer-types/${id}`,
-        CompetitionOrganizerTypeMapper.fromDomaintoDto(competitionOrganizerType),
+        CompetitionOrganizerTypeMapper.fromDomainToDto(competitionOrganizerType),
         {
           signal: abortSignal,
           headers: {

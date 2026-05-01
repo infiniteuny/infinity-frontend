@@ -117,7 +117,7 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/users',
-        UserMapper.fromDomaintoDto(user),
+        UserMapper.fromDomainToDto(user),
         {
           signal: abortSignal,
           headers: {
@@ -143,7 +143,7 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       const response = await this.infinityApiDataSource.patch(
         `/users/${id}`,
-        UserMapper.fromDomaintoDto(user),
+        UserMapper.fromDomainToDto(user),
         {
           signal: abortSignal,
           headers: {

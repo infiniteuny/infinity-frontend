@@ -93,7 +93,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
     try {
       const response = await this.infinityApiDataSource.post(
         '/competition-outputs',
-        CompetitionOutputMapper.fromDomaintoDto(competitionOutput),
+        CompetitionOutputMapper.fromDomainToDto(competitionOutput),
         {
           signal: abortSignal,
           headers: {
@@ -121,7 +121,7 @@ export class CompetitionOutputRepositoryImpl implements CompetitionOutputReposit
     try {
       const response = await this.infinityApiDataSource.put(
         `/competition-outputs/${id}`,
-        CompetitionOutputMapper.fromDomaintoDto(competitionOutput),
+        CompetitionOutputMapper.fromDomainToDto(competitionOutput),
         {
           signal: abortSignal,
           headers: {

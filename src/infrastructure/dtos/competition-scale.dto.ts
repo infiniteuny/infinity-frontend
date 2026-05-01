@@ -10,7 +10,7 @@ export interface CompetitionScaleDto {
 }
 
 export class CompetitionScaleMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     competitionScale: Partial<CompetitionScale>,
   ): Partial<CompetitionScaleDto> {
     return {

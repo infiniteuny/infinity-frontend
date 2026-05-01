@@ -102,7 +102,7 @@ export class TeamRepositoryImpl implements TeamRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/teams',
-        TeamMapper.fromDomaintoDto(team),
+        TeamMapper.fromDomainToDto(team),
         {
           signal: abortSignal,
           headers: {
@@ -128,7 +128,7 @@ export class TeamRepositoryImpl implements TeamRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/teams/${id}`,
-        TeamMapper.fromDomaintoDto(team),
+        TeamMapper.fromDomainToDto(team),
         {
           signal: abortSignal,
           headers: {

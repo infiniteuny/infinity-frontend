@@ -85,7 +85,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
     token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
-      const testimonialDto = TestimonialMapper.fromDomaintoDto(testimonial);
+      const testimonialDto = TestimonialMapper.fromDomainToDto(testimonial);
 
       const response = await this.infinityApiDataSource.postForm(
         '/testimonials',
@@ -116,7 +116,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
     token?: string,
   ): Promise<Either<Testimonial, Error>> {
     try {
-      const testimonialDto = TestimonialMapper.fromDomaintoDto(testimonial);
+      const testimonialDto = TestimonialMapper.fromDomainToDto(testimonial);
 
       const response = await this.infinityApiDataSource.putForm(
         `/testimonials/${id}`,

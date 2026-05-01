@@ -89,7 +89,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/faculties',
-        FacultyMapper.fromDomaintoDto(faculty),
+        FacultyMapper.fromDomainToDto(faculty),
         {
           signal: abortSignal,
           headers: {
@@ -117,7 +117,7 @@ export class FacultyRepositoryImpl implements FacultyRepository {
     try {
       const response = await this.infinityApiDataSource.patch(
         `/faculties/${id}`,
-        FacultyMapper.fromDomaintoDto(faculty),
+        FacultyMapper.fromDomainToDto(faculty),
         {
           signal: abortSignal,
           headers: {

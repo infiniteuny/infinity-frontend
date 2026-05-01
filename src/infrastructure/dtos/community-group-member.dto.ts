@@ -31,7 +31,7 @@ export interface CommunityGroupMemberDto {
 }
 
 export class CommunityGroupMemberMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     member: Partial<CommunityGroupMember>,
   ): Partial<CommunityGroupMemberDto> {
     return {
@@ -50,7 +50,7 @@ export class CommunityGroupMemberMapper {
       is_active: member.isActive,
       created_at: member.createdAt?.toISOString(),
       updated_at: member.updatedAt?.toISOString(),
-      major: member.major ? (MajorMapper.fromDomaintoDto(member.major) as MajorDto) : undefined,
+      major: member.major ? (MajorMapper.fromDomainToDto(member.major) as MajorDto) : undefined,
       membership: member.membership
         ? {
             id: member.membership.id,

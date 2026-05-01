@@ -12,7 +12,7 @@ export interface PersonaDto {
 }
 
 export class PersonaMapper {
-  public static fromDomaintoDto(persona: Partial<Persona>): Partial<PersonaDto> {
+  public static fromDomainToDto(persona: Partial<Persona>): Partial<PersonaDto> {
     return {
       id: persona.id,
       name: persona.name,

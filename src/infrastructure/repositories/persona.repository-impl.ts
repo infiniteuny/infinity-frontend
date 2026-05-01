@@ -86,7 +86,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/personas',
-        PersonaMapper.fromDomaintoDto(persona),
+        PersonaMapper.fromDomainToDto(persona),
         {
           signal: abortSignal,
           headers: {
@@ -112,7 +112,7 @@ export class PersonaRepositoryImpl implements PersonaRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/personas/${id}`,
-        PersonaMapper.fromDomaintoDto(persona),
+        PersonaMapper.fromDomainToDto(persona),
         {
           signal: abortSignal,
           headers: {

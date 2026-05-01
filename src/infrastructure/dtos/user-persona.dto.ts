@@ -15,9 +15,9 @@ export interface UserPersonaDto extends PersonaDto {
 }
 
 export class UserPersonaMapper {
-  public static fromDomaintoDto(userPersona: Partial<UserPersona>): Partial<UserPersonaDto> {
+  public static fromDomainToDto(userPersona: Partial<UserPersona>): Partial<UserPersonaDto> {
     return {
-      ...PersonaMapper.fromDomaintoDto(userPersona),
+      ...PersonaMapper.fromDomainToDto(userPersona),
       membership: userPersona.membership
         ? {
             id: userPersona.membership.id,

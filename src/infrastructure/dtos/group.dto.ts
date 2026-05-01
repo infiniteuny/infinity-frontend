@@ -10,7 +10,7 @@ export interface GroupDto {
 }
 
 export class GroupMapper {
-  public static fromDomaintoDto(group: Partial<Group>): Partial<GroupDto> {
+  public static fromDomainToDto(group: Partial<Group>): Partial<GroupDto> {
     return {
       id: group.id,
       name: group.name,

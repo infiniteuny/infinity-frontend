@@ -15,9 +15,9 @@ export interface UserGroupDto extends GroupDto {
 }
 
 export class UserGroupMapper {
-  public static fromDomaintoDto(userGroup: Partial<UserGroup>): Partial<UserGroupDto> {
+  public static fromDomainToDto(userGroup: Partial<UserGroup>): Partial<UserGroupDto> {
     return {
-      ...GroupMapper.fromDomaintoDto(userGroup),
+      ...GroupMapper.fromDomainToDto(userGroup),
       membership: userGroup.membership
         ? {
             id: userGroup.membership.id,

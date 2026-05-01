@@ -12,7 +12,7 @@ export interface ProjectGalleryDto {
 }
 
 export class ProjectGalleryMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     projectGallery: Partial<ProjectGallery>,
   ): Partial<ProjectGalleryDto> {
     return {

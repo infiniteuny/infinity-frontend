@@ -10,7 +10,7 @@ export interface CompetitionOrganizerTypeDto {
 }
 
 export class CompetitionOrganizerTypeMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     competitionOrganizerType: Partial<CompetitionOrganizerType>,
   ): Partial<CompetitionOrganizerTypeDto> {
     return {

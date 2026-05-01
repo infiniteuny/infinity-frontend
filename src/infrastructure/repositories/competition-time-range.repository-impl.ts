@@ -93,7 +93,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
     try {
       const response = await this.infinityApiDataSource.post(
         '/competition-time-ranges',
-        CompetitionTimeRangeMapper.fromDomaintoDto(competitionTimeRange),
+        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange),
         {
           signal: abortSignal,
           headers: {
@@ -121,7 +121,7 @@ export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeR
     try {
       const response = await this.infinityApiDataSource.put(
         `/competition-time-ranges/${id}`,
-        CompetitionTimeRangeMapper.fromDomaintoDto(competitionTimeRange),
+        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange),
         {
           signal: abortSignal,
           headers: {

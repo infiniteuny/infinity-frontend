@@ -13,7 +13,7 @@ export interface GroupPermissionDto extends PermissionDto {
 }
 
 export class GroupPermissionMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     groupPermission: Partial<GroupPermission>,
   ): Partial<GroupPermissionDto> {
     return {

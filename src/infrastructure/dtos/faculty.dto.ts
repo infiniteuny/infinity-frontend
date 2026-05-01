@@ -10,7 +10,7 @@ export interface FacultyDto {
 }
 
 export class FacultyMapper {
-  public static fromDomaintoDto(major: Partial<Faculty>): Partial<FacultyDto> {
+  public static fromDomainToDto(major: Partial<Faculty>): Partial<FacultyDto> {
     return {
       id: major.id,
       code: major.code,

@@ -85,7 +85,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/core-teams',
-        CoreTeamMapper.fromDomaintoDto(coreTeam),
+        CoreTeamMapper.fromDomainToDto(coreTeam),
         {
           signal: abortSignal,
           headers: {
@@ -111,7 +111,7 @@ export class CoreTeamRepositoryImpl implements CoreTeamRepository {
     try {
       const response = await this.infinityApiDataSource.put(
         `/core-teams/${id}`,
-        CoreTeamMapper.fromDomaintoDto(coreTeam),
+        CoreTeamMapper.fromDomainToDto(coreTeam),
         {
           signal: abortSignal,
           headers: {

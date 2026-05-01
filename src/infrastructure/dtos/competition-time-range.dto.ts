@@ -10,7 +10,7 @@ export interface CompetitionTimeRangeDto {
 }
 
 export class CompetitionTimeRangeMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     competitionTimeRange: Partial<CompetitionTimeRange>,
   ): Partial<CompetitionTimeRangeDto> {
     return {

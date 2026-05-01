@@ -29,6 +29,7 @@ export * from './team-member.dto';
 export * from './team.dto';
 export * from './testimonial.dto';
 export * from './user-group.dto';
+export * from './user-community-group.dto';
 export * from './user-permission.dto';
 export * from './user-persona.dto';
 export * from './user.dto';

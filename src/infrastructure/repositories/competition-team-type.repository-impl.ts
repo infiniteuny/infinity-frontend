@@ -93,7 +93,7 @@ export class CompetitionTeamTypeRepositoryImpl implements CompetitionTeamTypeRep
     try {
       const response = await this.infinityApiDataSource.post(
         '/competition-team-types',
-        CompetitionTeamTypeMapper.fromDomaintoDto(competitionTeamType),
+        CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType),
         {
           signal: abortSignal,
           headers: {
@@ -121,7 +121,7 @@ export class CompetitionTeamTypeRepositoryImpl implements CompetitionTeamTypeRep
     try {
       const response = await this.infinityApiDataSource.put(
         `/competition-team-types/${id}`,
-        CompetitionTeamTypeMapper.fromDomaintoDto(competitionTeamType),
+        CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType),
         {
           signal: abortSignal,
           headers: {

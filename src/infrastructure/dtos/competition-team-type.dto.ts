@@ -10,7 +10,7 @@ export interface CompetitionTeamTypeDto {
 }
 
 export class CompetitionTeamTypeMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     competitionTeamType: Partial<CompetitionTeamType>,
   ): Partial<CompetitionTeamTypeDto> {
     return {

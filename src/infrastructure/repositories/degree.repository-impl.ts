@@ -89,7 +89,7 @@ export class DegreeRepositoryImpl implements DegreeRepository {
     try {
       const response = await this.infinityApiDataSource.post(
         '/degrees',
-        DegreeMapper.fromDomaintoDto(degree),
+        DegreeMapper.fromDomainToDto(degree),
         {
           signal: abortSignal,
           headers: {
@@ -117,7 +117,7 @@ export class DegreeRepositoryImpl implements DegreeRepository {
     try {
       const response = await this.infinityApiDataSource.patch(
         `/degrees/${id}`,
-        DegreeMapper.fromDomaintoDto(degree),
+        DegreeMapper.fromDomainToDto(degree),
         {
           signal: abortSignal,
           headers: {

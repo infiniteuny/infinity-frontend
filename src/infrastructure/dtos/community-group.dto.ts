@@ -13,7 +13,7 @@ export interface CommunityGroupDto {
 }
 
 export class CommunityGroupMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     communityGroup: Partial<CommunityGroup>,
   ): Partial<CommunityGroupDto> {
     return {

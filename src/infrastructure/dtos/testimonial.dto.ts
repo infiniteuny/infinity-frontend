@@ -12,7 +12,7 @@ export interface TestimonialDto {
 }
 
 export class TestimonialMapper {
-  public static fromDomaintoDto(testimonial: Partial<Testimonial>): Partial<TestimonialDto> {
+  public static fromDomainToDto(testimonial: Partial<Testimonial>): Partial<TestimonialDto> {
     return {
       id: testimonial.id,
       name: testimonial.name,

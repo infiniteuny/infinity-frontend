@@ -32,7 +32,7 @@ export interface TeamMemberDto {
 }
 
 export class TeamMemberMapper {
-  public static fromDomaintoDto(member: Partial<TeamMember>): Partial<TeamMemberDto> {
+  public static fromDomainToDto(member: Partial<TeamMember>): Partial<TeamMemberDto> {
     return {
       id: member.id,
       name: member.name,
@@ -49,7 +49,7 @@ export class TeamMemberMapper {
       is_active: member.isActive,
       created_at: member.createdAt?.toISOString(),
       updated_at: member.updatedAt?.toISOString(),
-      major: member.major ? (MajorMapper.fromDomaintoDto(member.major) as MajorDto) : undefined,
+      major: member.major ? (MajorMapper.fromDomainToDto(member.major) as MajorDto) : undefined,
       membership: member.membership
         ? {
             id: member.membership.id,

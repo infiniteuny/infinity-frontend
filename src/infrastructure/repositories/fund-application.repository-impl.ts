@@ -118,7 +118,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
-      const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
+      const fundApplicationDto = FundApplicationMapper.fromDomainToDto(fundApplication);
 
       const response = await this.infinityApiDataSource.postForm(
         '/fund-applications',
@@ -163,7 +163,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
     token?: string,
   ): Promise<Either<FundApplication, Error>> {
     try {
-      const fundApplicationDto = FundApplicationMapper.fromDomaintoDto(fundApplication);
+      const fundApplicationDto = FundApplicationMapper.fromDomainToDto(fundApplication);
 
       const response = await this.infinityApiDataSource.putForm(
         `/fund-applications/${id}`,
