@@ -18,6 +18,8 @@ export class CoreTeamMember extends User {
     coreTeamId: string;
     coreTeamDivisionId: string;
     position: string;
+    photo: string | File;
+    animation?: string | File;
     createdAt: Date;
     updatedAt: Date;
     coreTeamDivision?: CoreTeamDivision;
@@ -45,6 +47,8 @@ export class CoreTeamMember extends User {
       coreTeamId: string;
       coreTeamDivisionId: string;
       position: string;
+      photo: string | File;
+      animation?: string | File;
       createdAt: Date;
       updatedAt: Date;
       coreTeamDivision?: CoreTeamDivision;

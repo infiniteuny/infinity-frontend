@@ -6,7 +6,7 @@ export interface CommunityGroupDto {
   name: string;
   description: string;
   priority: number;
-  logo: string;
+  logo: string | File;
   is_active: boolean;
   created_at: string;
   updated_at: string;

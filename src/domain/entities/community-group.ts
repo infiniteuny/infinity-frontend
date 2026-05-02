@@ -25,7 +25,7 @@ export class CommunityGroup {
   public name: string;
   public description: string;
   public priority: number;
-  public logo: string;
+  public logo: string | File;
   public isActive: boolean;
   public createdAt: Date;
   public updatedAt: Date;
@@ -35,7 +35,7 @@ export class CommunityGroup {
     name: string,
     description: string,
     priority: number,
-    logo: string,
+    logo: string | File,
     isActive: boolean,
     createdAt: Date,
     updatedAt: Date,

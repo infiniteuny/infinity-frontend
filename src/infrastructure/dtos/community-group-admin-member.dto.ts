@@ -7,8 +7,8 @@ interface CommunityGroupAdminMemberMembershipDto {
   user_id: string;
   community_group_admin_id: string;
   community_group_id: string;
-  photo: string;
-  animation: string;
+  photo: string | File;
+  animation?: string | File;
   created_at: string;
   updated_at: string;
 }

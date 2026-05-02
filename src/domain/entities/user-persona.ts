@@ -18,7 +18,7 @@ export class UserPersona extends Persona {
     name: string,
     priority: number,
     description: string,
-    logo: string,
+    logo: string | File,
     createdAt: Date,
     updatedAt: Date,
     entitlement: {

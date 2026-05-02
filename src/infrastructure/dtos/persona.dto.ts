@@ -6,7 +6,7 @@ export interface PersonaDto {
   name: string;
   priority: number;
   description: string;
-  logo: string;
+  logo: string | File;
   created_at: string;
   updated_at: string;
 }

@@ -23,7 +23,7 @@ export class Persona {
   public name: string;
   public priority: number;
   public description: string;
-  public logo: string;
+  public logo: string | File;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -32,7 +32,7 @@ export class Persona {
     name: string,
     priority: number,
     description: string,
-    logo: string,
+    logo: string | File,
     createdAt: Date,
     updatedAt: Date,
   ) {

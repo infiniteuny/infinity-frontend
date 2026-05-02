@@ -8,6 +8,8 @@ interface CoreTeamMemberMembershipDto {
   core_team_id: string;
   core_team_division_id: string;
   position: string;
+  photo: string | File;
+  animation?: string | File;
   created_at: string;
   updated_at: string;
 }
@@ -58,6 +60,8 @@ export class CoreTeamMemberMapper {
             core_team_id: member.membership.coreTeamId,
             core_team_division_id: member.membership.coreTeamDivisionId,
             position: member.membership.position,
+            photo: member.membership.photo,
+            animation: member.membership.animation,
             created_at: member.membership.createdAt.toISOString(),
             updated_at: member.membership.updatedAt.toISOString(),
           }
@@ -88,6 +92,8 @@ export class CoreTeamMemberMapper {
         coreTeamId: dto.membership.core_team_id,
         coreTeamDivisionId: dto.membership.core_team_division_id,
         position: dto.membership.position,
+        photo: dto.membership.photo,
+        animation: dto.membership.animation,
         createdAt: DateTime.fromISO(dto.membership.created_at).toJSDate(),
         updatedAt: DateTime.fromISO(dto.membership.updated_at).toJSDate(),
       },

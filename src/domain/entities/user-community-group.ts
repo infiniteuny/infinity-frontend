@@ -22,7 +22,7 @@ export class UserCommunityGroup extends CommunityGroup {
     name: string,
     description: string,
     priority: number,
-    logo: string,
+    logo: string | File,
     isActive: boolean,
     createdAt: Date,
     updatedAt: Date,
