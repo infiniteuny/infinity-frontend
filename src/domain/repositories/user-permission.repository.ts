@@ -35,13 +35,6 @@ export interface UserPermissionRepository {
     token?: string,
   ): Promise<Either<UserPermission, Error>>;
 
-  updateUserPermission(
-    id: string,
-    userPermission: { permissionId: string },
-    abortSignal?: AbortSignal,
-    token?: string,
-  ): Promise<Either<UserPermission, Error>>;
-
   deleteUserPermission(
     id: string,
     abortSignal?: AbortSignal,

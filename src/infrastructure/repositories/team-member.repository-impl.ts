@@ -111,7 +111,7 @@ export class TeamMemberRepositoryImpl implements TeamMemberRepository {
 
   public async createTeamMember(
     teamId: string,
-    teamMember: { userId: string; role: string },
+    teamMember: { userId: string },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<TeamMember, Error>> {
@@ -120,35 +120,6 @@ export class TeamMemberRepositoryImpl implements TeamMemberRepository {
         `/teams/${teamId}/members`,
         {
           user_id: teamMember.userId,
-          role: teamMember.role,
-        },
-        {
-          signal: abortSignal,
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        },
-      );
-
-      const teamMemberResponse = TeamMemberMapper.fromDtoToDomain(response.data.data.team_member);
-
-      return right(teamMemberResponse);
-    } catch (error) {
-      return left(handleAxiosError(error));
-    }
-  }
-
-  public async updateTeamMember(
-    id: string,
-    teamMember: { role?: string },
-    abortSignal?: AbortSignal,
-    token?: string,
-  ): Promise<Either<TeamMember, Error>> {
-    try {
-      const response = await this.infinityApiDataSource.put(
-        `/team-members/${id}`,
-        {
-          ...(teamMember.role ? { role: teamMember.role } : {}),
         },
         {
           signal: abortSignal,

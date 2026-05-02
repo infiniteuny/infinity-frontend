@@ -25,7 +25,24 @@ export interface CommunityGroupAdminMemberRepository {
 
   createCommunityGroupAdminMember(
     communityGroupAdminId: string,
-    communityGroupAdminMember: { userId: string },
+    communityGroupAdminMember: {
+      userId: string;
+      communityGroupId: string;
+      photo: File;
+      animation?: File;
+    },
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>>;
+
+  updateCommunityGroupAdminMember(
+    id: string,
+    communityGroupAdminMember: {
+      userId?: string;
+      communityGroupId?: string;
+      photo?: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CommunityGroupAdminMember, Error>>;

@@ -84,9 +84,13 @@ export class PersonaRepositoryImpl implements PersonaRepository {
     token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const personaDto = PersonaMapper.fromDomainToDto(persona);
+      const response = await this.infinityApiDataSource.postForm(
         '/personas',
-        PersonaMapper.fromDomainToDto(persona),
+        {
+          ...personaDto,
+          logo: personaDto.logo instanceof File ? personaDto.logo : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -110,9 +114,13 @@ export class PersonaRepositoryImpl implements PersonaRepository {
     token?: string,
   ): Promise<Either<Persona, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const personaDto = PersonaMapper.fromDomainToDto(persona);
+      const response = await this.infinityApiDataSource.putForm(
         `/personas/${id}`,
-        PersonaMapper.fromDomainToDto(persona),
+        {
+          ...personaDto,
+          logo: personaDto.logo instanceof File ? personaDto.logo : undefined,
+        },
         {
           signal: abortSignal,
           headers: {

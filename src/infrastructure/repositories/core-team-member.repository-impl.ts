@@ -113,17 +113,24 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
 
   public async createCoreTeamMember(
     coreTeamId: string,
-    coreTeamMember: { userId: string; coreTeamDivisionId: string; position: string },
+    coreTeamMember: {
+      userId: string;
+      coreTeamDivisionId: string;
+      photo: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const response = await this.infinityApiDataSource.postForm(
         `/core-teams/${coreTeamId}/members`,
         {
           user_id: coreTeamMember.userId,
           core_team_division_id: coreTeamMember.coreTeamDivisionId,
-          position: coreTeamMember.position,
+          photo: coreTeamMember.photo instanceof File,
+          animation:
+            coreTeamMember.animation instanceof File ? coreTeamMember.animation : undefined,
         },
         {
           signal: abortSignal,
@@ -145,18 +152,24 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
 
   public async updateCoreTeamMember(
     id: string,
-    coreTeamMember: { coreTeamDivisionId?: string; position?: string },
+    coreTeamMember: {
+      userId?: string;
+      coreTeamDivisionId?: string;
+      photo?: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const response = await this.infinityApiDataSource.putForm(
         `/core-team-members/${id}`,
         {
-          ...(coreTeamMember.coreTeamDivisionId
-            ? { core_team_division_id: coreTeamMember.coreTeamDivisionId }
-            : {}),
-          ...(coreTeamMember.position ? { position: coreTeamMember.position } : {}),
+          user_id: coreTeamMember.userId,
+          core_team_division_id: coreTeamMember.coreTeamDivisionId,
+          photo: coreTeamMember.photo instanceof File ? coreTeamMember.photo : undefined,
+          animation:
+            coreTeamMember.animation instanceof File ? coreTeamMember.animation : undefined,
         },
         {
           signal: abortSignal,

@@ -25,14 +25,24 @@ export interface CoreTeamMemberRepository {
 
   createCoreTeamMember(
     coreTeamId: string,
-    coreTeamMember: { userId: string; coreTeamDivisionId: string; position: string },
+    coreTeamMember: {
+      userId: string;
+      coreTeamDivisionId: string;
+      photo: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>>;
 
   updateCoreTeamMember(
     id: string,
-    coreTeamMember: { coreTeamDivisionId?: string; position?: string },
+    coreTeamMember: {
+      userId?: string;
+      coreTeamDivisionId?: string;
+      photo?: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CoreTeamMember, Error>>;

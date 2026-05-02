@@ -120,15 +120,70 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
 
   public async createCommunityGroupAdminMember(
     communityGroupAdminId: string,
-    communityGroupAdminMember: { userId: string },
+    communityGroupAdminMember: {
+      userId: string;
+      communityGroupId: string;
+      photo: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<CommunityGroupAdminMember, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const response = await this.infinityApiDataSource.postForm(
         `/community-group-admins/${communityGroupAdminId}/members`,
         {
           user_id: communityGroupAdminMember.userId,
+          community_group_id: communityGroupAdminMember.communityGroupId,
+          photo: communityGroupAdminMember.photo instanceof File,
+          animation:
+            communityGroupAdminMember.animation instanceof File
+              ? communityGroupAdminMember.animation
+              : undefined,
+        },
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const communityGroupAdminMemberResponse = CommunityGroupAdminMemberMapper.fromDtoToDomain(
+        response.data.data.community_group_admin_member,
+      );
+
+      return right(communityGroupAdminMemberResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async updateCommunityGroupAdminMember(
+    id: string,
+    communityGroupAdminMember: {
+      userId?: string;
+      communityGroupId?: string;
+      photo?: File;
+      animation?: File;
+    },
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.putForm(
+        `/community-group-admin-members/${id}`,
+        {
+          user_id: communityGroupAdminMember.userId,
+          community_group_id: communityGroupAdminMember.communityGroupId,
+          photo:
+            communityGroupAdminMember.photo instanceof File
+              ? communityGroupAdminMember.photo
+              : undefined,
+          animation:
+            communityGroupAdminMember.animation instanceof File
+              ? communityGroupAdminMember.animation
+              : undefined,
         },
         {
           signal: abortSignal,

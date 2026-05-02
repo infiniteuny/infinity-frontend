@@ -93,9 +93,13 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
     token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
-      const response = await this.infinityApiDataSource.post(
+      const communityGroupDto = CommunityGroupMapper.fromDomainToDto(communityGroup);
+      const response = await this.infinityApiDataSource.postForm(
         '/community-groups',
-        CommunityGroupMapper.fromDomainToDto(communityGroup),
+        {
+          ...communityGroupDto,
+          logo: communityGroupDto.logo instanceof File ? communityGroupDto.logo : undefined,
+        },
         {
           signal: abortSignal,
           headers: {
@@ -121,9 +125,13 @@ export class CommunityGroupRepositoryImpl implements CommunityGroupRepository {
     token?: string,
   ): Promise<Either<CommunityGroup, Error>> {
     try {
-      const response = await this.infinityApiDataSource.put(
+      const communityGroupDto = CommunityGroupMapper.fromDomainToDto(communityGroup);
+      const response = await this.infinityApiDataSource.putForm(
         `/community-groups/${id}`,
-        CommunityGroupMapper.fromDomainToDto(communityGroup),
+        {
+          ...communityGroupDto,
+          logo: communityGroupDto.logo instanceof File ? communityGroupDto.logo : undefined,
+        },
         {
           signal: abortSignal,
           headers: {

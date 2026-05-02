@@ -25,14 +25,7 @@ export interface TeamMemberRepository {
 
   createTeamMember(
     teamId: string,
-    teamMember: { userId: string; role: string },
-    abortSignal?: AbortSignal,
-    token?: string,
-  ): Promise<Either<TeamMember, Error>>;
-
-  updateTeamMember(
-    id: string,
-    teamMember: { role?: string },
+    teamMember: { userId: string },
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<TeamMember, Error>>;

@@ -149,36 +149,6 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
     }
   }
 
-  public async updateUserPermission(
-    id: string,
-    userPermission: { permissionId: string },
-    abortSignal?: AbortSignal,
-    token?: string,
-  ): Promise<Either<UserPermission, Error>> {
-    try {
-      const response = await this.infinityApiDataSource.put(
-        `/user-permissions/${id}`,
-        {
-          permission_id: userPermission.permissionId,
-        },
-        {
-          signal: abortSignal,
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        },
-      );
-
-      const userPermissionResponse = UserPermissionMapper.fromDtoToDomain(
-        response.data.data.user_permission,
-      );
-
-      return right(userPermissionResponse);
-    } catch (error) {
-      return left(handleAxiosError(error));
-    }
-  }
-
   public async deleteUserPermission(
     id: string,
     abortSignal?: AbortSignal,
