@@ -7,7 +7,12 @@ import { CoreTeamMember } from '@app/domain/entities';
 
 export type CreateCoreTeamMemberParams = [
   coreTeamId: string,
-  coreTeamMember: { userId: string; coreTeamDivisionId: string; position: string },
+  coreTeamMember: {
+    userId: string;
+    coreTeamDivisionId: string;
+    photo: File;
+    animation?: File;
+  },
   abortSignal?: AbortSignal,
 ];
 
@@ -31,7 +36,12 @@ export class CreateCoreTeamMember implements UseCase<
 
   public async execute(
     coreTeamId: string,
-    coreTeamMember: { userId: string; coreTeamDivisionId: string; position: string },
+    coreTeamMember: {
+      userId: string;
+      coreTeamDivisionId: string;
+      photo: File;
+      animation?: File;
+    },
     abortSignal?: AbortSignal,
   ): Promise<Either<CoreTeamMember, Error>> {
     const accessTokenResult = await this.authRepository.getAccessToken();

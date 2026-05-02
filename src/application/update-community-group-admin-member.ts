@@ -5,21 +5,21 @@ import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import { CommunityGroupAdminMember } from '@app/domain/entities';
 
-export type CreateCommunityGroupAdminMemberParams = [
-  communityGroupAdminId: string,
+export type UpdateCommunityGroupAdminMemberParams = [
+  id: string,
   communityGroupAdminMember: {
-    userId: string;
-    communityGroupId: string;
-    photo: File;
+    userId?: string;
+    communityGroupId?: string;
+    photo?: File;
     animation?: File;
   },
   abortSignal?: AbortSignal,
 ];
 
 @injectable()
-export class CreateCommunityGroupAdminMember implements UseCase<
+export class UpdateCommunityGroupAdminMember implements UseCase<
   Promise<Either<CommunityGroupAdminMember, Error>>,
-  CreateCommunityGroupAdminMemberParams
+  UpdateCommunityGroupAdminMemberParams
 > {
   private readonly communityGroupAdminMemberRepository: CommunityGroupAdminMemberRepository;
   private readonly authRepository: AuthRepository;
@@ -35,11 +35,11 @@ export class CreateCommunityGroupAdminMember implements UseCase<
   }
 
   public async execute(
-    communityGroupAdminId: string,
+    id: string,
     communityGroupAdminMember: {
-      userId: string;
-      communityGroupId: string;
-      photo: File;
+      userId?: string;
+      communityGroupId?: string;
+      photo?: File;
       animation?: File;
     },
     abortSignal?: AbortSignal,
@@ -47,8 +47,8 @@ export class CreateCommunityGroupAdminMember implements UseCase<
     const accessTokenResult = await this.authRepository.getAccessToken();
 
     if (isRight(accessTokenResult)) {
-      return await this.communityGroupAdminMemberRepository.createCommunityGroupAdminMember(
-        communityGroupAdminId,
+      return await this.communityGroupAdminMemberRepository.updateCommunityGroupAdminMember(
+        id,
         communityGroupAdminMember,
         abortSignal,
         accessTokenResult.right,

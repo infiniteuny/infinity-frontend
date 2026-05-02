@@ -7,7 +7,7 @@ import { TeamMember } from '@app/domain/entities';
 
 export type CreateTeamMemberParams = [
   teamId: string,
-  teamMember: { userId: string; role: string },
+  teamMember: { userId: string },
   abortSignal?: AbortSignal,
 ];
 
@@ -31,7 +31,7 @@ export class CreateTeamMember implements UseCase<
 
   public async execute(
     teamId: string,
-    teamMember: { userId: string; role: string },
+    teamMember: { userId: string },
     abortSignal?: AbortSignal,
   ): Promise<Either<TeamMember, Error>> {
     const accessTokenResult = await this.authRepository.getAccessToken();
