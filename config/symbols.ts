@@ -125,6 +125,7 @@ export const SYMBOLS = {
   UpdateCoreTeamDivision: Symbol.for('UpdateCoreTeamDivision'),
   UpdateCoreTeam: Symbol.for('UpdateCoreTeam'),
   UpdateCoreTeamMember: Symbol.for('UpdateCoreTeamMember'),
+  UpdateCommunityGroupAdminMember: Symbol.for('UpdateCommunityGroupAdminMember'),
   UpdateDegree: Symbol.for('UpdateDegree'),
   UpdateFaculty: Symbol.for('UpdateFaculty'),
   UpdateFundApplication: Symbol.for('UpdateFundApplication'),

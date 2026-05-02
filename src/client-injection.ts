@@ -77,6 +77,8 @@ import {
   CreateAchievement,
   CreateCommunityGroup,
   CreateCommunityGroupAdmin,
+  CreateCommunityGroupAdminMember,
+  CreateCommunityGroupMember,
   CreateCompetition,
   CreateCompetitionInstance,
   CreateCompetitionOrganizerType,
@@ -87,17 +89,21 @@ import {
   CreateCompetitionTimeRange,
   CreateCoreTeamDivision,
   CreateCoreTeam,
+  CreateCoreTeamMember,
   CreateDegree,
   CreateFaculty,
   CreateFundApplication,
   CreateGroup,
+  CreateGroupPermission,
   CreateMajor,
   CreatePermission,
   CreatePersona,
   CreateProjectGallery,
   CreateTeam,
+  CreateTeamMember,
   CreateTestimonial,
   CreateUser,
+  CreateUserGroup,
   CreateUserPermission,
   CreateUserPersona,
   DeleteCompetition,
@@ -154,6 +160,7 @@ import {
   UpdateAchievement,
   UpdateCommunityGroup,
   UpdateCommunityGroupAdmin,
+  UpdateCommunityGroupAdminMember,
   UpdateCompetition,
   UpdateCompetitionInstance,
   UpdateCompetitionOrganizerType,
@@ -164,6 +171,7 @@ import {
   UpdateCompetitionTimeRange,
   UpdateCoreTeamDivision,
   UpdateCoreTeam,
+  UpdateCoreTeamMember,
   UpdateDegree,
   UpdateFaculty,
   UpdateFundApplication,
@@ -242,6 +250,18 @@ clientContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTest
 clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
 clientContainer.bind<CreateUserPermission>(SYMBOLS.CreateUserPermission).to(CreateUserPermission);
 clientContainer.bind<CreateUserPersona>(SYMBOLS.CreateUserPersona).to(CreateUserPersona);
+clientContainer
+  .bind<CreateCommunityGroupAdminMember>(SYMBOLS.CreateCommunityGroupAdminMember)
+  .to(CreateCommunityGroupAdminMember);
+clientContainer
+  .bind<CreateCommunityGroupMember>(SYMBOLS.CreateCommunityGroupMember)
+  .to(CreateCommunityGroupMember);
+clientContainer.bind<CreateCoreTeamMember>(SYMBOLS.CreateCoreTeamMember).to(CreateCoreTeamMember);
+clientContainer
+  .bind<CreateGroupPermission>(SYMBOLS.CreateGroupPermission)
+  .to(CreateGroupPermission);
+clientContainer.bind<CreateTeamMember>(SYMBOLS.CreateTeamMember).to(CreateTeamMember);
+clientContainer.bind<CreateUserGroup>(SYMBOLS.CreateUserGroup).to(CreateUserGroup);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
 clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
 clientContainer
@@ -365,6 +385,10 @@ clientContainer
   .bind<UpdateCoreTeamDivision>(SYMBOLS.UpdateCoreTeamDivision)
   .to(UpdateCoreTeamDivision);
 clientContainer.bind<UpdateCoreTeam>(SYMBOLS.UpdateCoreTeam).to(UpdateCoreTeam);
+clientContainer.bind<UpdateCoreTeamMember>(SYMBOLS.UpdateCoreTeamMember).to(UpdateCoreTeamMember);
+clientContainer
+  .bind<UpdateCommunityGroupAdminMember>(SYMBOLS.UpdateCommunityGroupAdminMember)
+  .to(UpdateCommunityGroupAdminMember);
 clientContainer.bind<UpdateDegree>(SYMBOLS.UpdateDegree).to(UpdateDegree);
 clientContainer.bind<UpdateFaculty>(SYMBOLS.UpdateFaculty).to(UpdateFaculty);
 clientContainer
