@@ -20,9 +20,11 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
     const logout = serverContainer.get<Logout>(SYMBOLS.Logout);
     await logout.execute(req);
 
-    const callbackUrl = encodeURIComponent(req.nextUrl.toString());
+    const origin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
+    const sanitizedUrl = new URL(req.nextUrl.pathname + req.nextUrl.search, origin);
+    const callbackUrl = encodeURIComponent(sanitizedUrl.toString());
 
-    return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, req.nextUrl.origin));
+    return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, origin));
   }
 
   return NextResponse.next();
