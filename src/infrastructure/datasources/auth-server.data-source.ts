@@ -72,7 +72,7 @@ export const authServerDataSourceImpl = (
   return betterAuth({
     ...additionalOptions,
     secret: isCIBuild ? 'some-ci-default-secret-please-change' : process.env.BETTER_AUTH_SECRET!,
-    baseURL: process.env.BETTER_AUTH_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
     basePath: '/auth',
     secondaryStorage: isCIBuild
       ? undefined
