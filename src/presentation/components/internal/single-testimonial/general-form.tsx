@@ -96,7 +96,7 @@ export function GeneralForm({
               fullWidth
               margin="none"
               multiline
-              rows={4}
+              minRows={4}
               helperText={errors.content?.message}
               error={!!errors.content}
               disabled={isSubmitting}
