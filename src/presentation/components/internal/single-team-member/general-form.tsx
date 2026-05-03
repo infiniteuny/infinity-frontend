@@ -1,5 +1,3 @@
-'use client';
-
 import { TeamMemberInput } from './team-member-form';
 import { Autocomplete, Box, Container, Grid, TextField, Toolbar, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';

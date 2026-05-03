@@ -1,5 +1,3 @@
-'use client';
-
 import { UserCommunityGroupInput } from './user-community-group-form';
 import { Autocomplete, Box, Container, Grid, TextField, Toolbar, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
