@@ -30,7 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build Next.js application
 RUN npm run build
 
-FROM oven/bun:1.3.12 AS runner
+FROM oven/bun:1.3.13 AS runner
 
 # Set working directory
 WORKDIR /app
