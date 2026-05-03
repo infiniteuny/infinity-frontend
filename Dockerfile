@@ -28,7 +28,8 @@ ENV CI=1
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build Next.js application
-RUN npm run build
+RUN --mount=type=cache,target=/app/.next/cache \
+  npm run build
 
 FROM oven/bun:1.3.13 AS runner
 
