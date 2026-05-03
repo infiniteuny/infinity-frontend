@@ -129,7 +129,7 @@ export function CoreTeamMembersList({
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/core-teams/${coreTeamId}/members/${params.row.id}`);
+    router.push(`/core-teams/${coreTeamId}/members/${params.row.membershipId}`);
   };
 
   return (
@@ -238,6 +238,7 @@ export function CoreTeamMembersList({
             isMember: member.isMember,
             isExtraordinary: member.isExtraordinary,
             isActive: member.isActive,
+            membershipId: member.membership.id,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],

@@ -131,7 +131,9 @@ export function CommunityGroupAdminMembersList({
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/community-group-admins/${communityGroupAdminId}/members/${params.row.id}`);
+    router.push(
+      `/community-group-admins/${communityGroupAdminId}/members/${params.row.membershipId}`,
+    );
   };
 
   return (
@@ -240,6 +242,7 @@ export function CommunityGroupAdminMembersList({
             isMember: member.isMember,
             isExtraordinary: member.isExtraordinary,
             isActive: member.isActive,
+            membershipId: member.membership.id,
           }))}
           slots={{
             noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
