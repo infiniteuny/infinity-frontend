@@ -33,8 +33,8 @@ const competitionInstanceInputSchema = z
     logo: z.union([
       z
         .file('Logo must not be empty')
-        .max(5120 * 1024, 'Logo must be less than 5MB')
-        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file'),
+        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
+        .max(5120 * 1024, 'Logo must be less than 5MB'),
       z.string(),
     ]),
     startDate: z.date('Start date must be a valid date'),
@@ -81,19 +81,11 @@ export function CompetitionInstanceForm({
   const ref = useRef<HTMLFormElement>(null);
   const methods = useForm<CompetitionInstanceInput>({
     mode: 'all',
+    // Bug workaround for https://github.com/colinhacks/zod/issues/3537
     resolver: zodResolver(competitionInstanceInputSchema) as Resolver<CompetitionInstanceInput>,
     defaultValues: competitionInstance
       ? {
-          competitionId: competitionInstance.competitionId,
-          name: competitionInstance.name,
-          description: competitionInstance.description,
-          url: competitionInstance.url || '',
-          organizer: competitionInstance.organizer,
-          organizerTypeId: competitionInstance.organizerTypeId,
-          logo: competitionInstance.logo,
-          startDate: competitionInstance.startDate,
-          endDate: competitionInstance.endDate,
-          location: competitionInstance.location,
+          ...competitionInstance,
         }
       : {
           competitionId: competitionId,

@@ -19,7 +19,13 @@ const communityGroupInputSchema = z.object({
   name: z.string().min(1, 'Name must not be empty'),
   priority: z.number('Priority must be a number').min(0, 'Priority must be non-negative'),
   description: z.string().min(1, 'Description must not be empty'),
-  logo: z.string().min(1, 'Logo must not be empty'),
+  logo: z.union([
+    z
+      .file('Logo must not be empty')
+      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
+      .max(5120 * 1024, 'Logo must be less than 5MB'),
+    z.string(),
+  ]),
   isActive: z.boolean(),
 });
 
@@ -46,6 +52,7 @@ export function CommunityGroupForm({ initialCommunityGroup }: Props) {
   const ref = useRef<HTMLFormElement>(null);
   const methods = useForm<CommunityGroupInput>({
     mode: 'all',
+    // Bug workaround for https://github.com/colinhacks/zod/issues/3537
     resolver: zodResolver(communityGroupInputSchema) as Resolver<CommunityGroupInput>,
     defaultValues: communityGroup
       ? {
@@ -55,7 +62,7 @@ export function CommunityGroupForm({ initialCommunityGroup }: Props) {
           name: '',
           priority: 0,
           description: '',
-          logo: '',
+          logo: undefined,
           isActive: false,
         },
   });

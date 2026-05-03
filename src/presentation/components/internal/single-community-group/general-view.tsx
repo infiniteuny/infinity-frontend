@@ -1,8 +1,9 @@
-import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import Link from 'next/link';
+import { Box, Container, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
+import { ChevronRightRounded, DownloadRounded } from '@mui/icons-material';
 import { CommunityGroup } from '@app/domain/entities';
 import { SettingTile } from '@app/presentation/components/internal/settings';
 import { ViewTile } from '@app/presentation/components/internal/shared';
-import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
   communityGroup: CommunityGroup;
@@ -33,6 +34,60 @@ export function GeneralView({ communityGroup }: Props) {
               subtitle={communityGroup.isActive ? 'Yes' : 'No'}
               position="middle"
             />
+          </Grid>
+          <Grid size={12}>
+            <Container
+              maxWidth={false}
+              sx={{ bgcolor: 'surfaceContainerHigh.main' }}
+              className="rounded-md p-4"
+            >
+              <Typography variant="body1" component="p" className="font-medium">
+                Image
+              </Typography>
+              <Box
+                sx={{ borderColor: 'outline' }}
+                className="mt-2 w-full rounded-lg border border-solid p-4"
+              >
+                <Box className="flex flex-row items-center justify-between gap-2">
+                  <Typography
+                    variant="body2"
+                    color="onSurfaceVariant.main"
+                    className="font-semibold"
+                  >
+                    Image
+                  </Typography>
+                  <Stack direction="row" spacing={1}>
+                    {typeof communityGroup.logo === 'string' ? (
+                      <>
+                        <IconButton
+                          component="a"
+                          LinkComponent={Link}
+                          href={communityGroup.logo}
+                          download="logo.jpg"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Download logo"
+                          title="Download"
+                        >
+                          <DownloadRounded fontSize="small" />
+                        </IconButton>
+                      </>
+                    ) : null}
+                  </Stack>
+                </Box>
+              </Box>
+              <Box
+                component="img"
+                src={communityGroup.logo as string}
+                alt={communityGroup.name}
+                sx={{
+                  width: '100%',
+                  maxHeight: 280,
+                  objectFit: 'contain',
+                }}
+                className="mt-2"
+              />
+            </Container>
           </Grid>
           <Grid size={12}>
             <SettingTile
