@@ -1,5 +1,6 @@
-import { DateTime } from 'luxon';
+import { CoreTeamDivisionDto, CoreTeamDivisionMapper } from './core-team-division.dto';
 import { CoreTeamMember } from '@app/domain/entities';
+import { DateTime } from 'luxon';
 import { MajorDto, MajorMapper } from './major.dto';
 
 interface CoreTeamMemberMembershipDto {
@@ -11,6 +12,7 @@ interface CoreTeamMemberMembershipDto {
   animation?: string | File;
   created_at: string;
   updated_at: string;
+  core_team_division?: CoreTeamDivisionDto;
 }
 
 export interface CoreTeamMemberDto {
@@ -62,6 +64,11 @@ export class CoreTeamMemberMapper {
             animation: member.membership.animation,
             created_at: member.membership.createdAt.toISOString(),
             updated_at: member.membership.updatedAt.toISOString(),
+            core_team_division: member.membership.coreTeamDivision
+              ? (CoreTeamDivisionMapper.fromDomainToDto(
+                  member.membership.coreTeamDivision,
+                ) as CoreTeamDivisionDto)
+              : undefined,
           }
         : undefined,
     };
@@ -93,6 +100,9 @@ export class CoreTeamMemberMapper {
         animation: dto.membership.animation,
         createdAt: DateTime.fromISO(dto.membership.created_at).toJSDate(),
         updatedAt: DateTime.fromISO(dto.membership.updated_at).toJSDate(),
+        coreTeamDivision: dto.membership.core_team_division
+          ? CoreTeamDivisionMapper.fromDtoToDomain(dto.membership.core_team_division)
+          : undefined,
       },
       dto.major ? MajorMapper.fromDtoToDomain(dto.major) : undefined,
     );

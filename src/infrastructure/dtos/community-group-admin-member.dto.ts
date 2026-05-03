@@ -1,5 +1,6 @@
-import { DateTime } from 'luxon';
 import { CommunityGroupAdminMember } from '@app/domain/entities';
+import { CommunityGroupDto, CommunityGroupMapper } from './community-group.dto';
+import { DateTime } from 'luxon';
 import { MajorDto, MajorMapper } from './major.dto';
 
 interface CommunityGroupAdminMemberMembershipDto {
@@ -11,6 +12,7 @@ interface CommunityGroupAdminMemberMembershipDto {
   animation?: string | File;
   created_at: string;
   updated_at: string;
+  community_group?: CommunityGroupDto;
 }
 
 export interface CommunityGroupAdminMemberDto {
@@ -64,6 +66,11 @@ export class CommunityGroupAdminMemberMapper {
             animation: member.membership.animation,
             created_at: member.membership.createdAt.toISOString(),
             updated_at: member.membership.updatedAt.toISOString(),
+            community_group: member.membership.communityGroup
+              ? (CommunityGroupMapper.fromDomainToDto(
+                  member.membership.communityGroup,
+                ) as CommunityGroupDto)
+              : undefined,
           }
         : undefined,
     };
@@ -95,6 +102,9 @@ export class CommunityGroupAdminMemberMapper {
         animation: dto.membership.animation,
         createdAt: DateTime.fromISO(dto.membership.created_at).toJSDate(),
         updatedAt: DateTime.fromISO(dto.membership.updated_at).toJSDate(),
+        communityGroup: dto.membership.community_group
+          ? CommunityGroupMapper.fromDtoToDomain(dto.membership.community_group)
+          : undefined,
       },
       dto.major ? MajorMapper.fromDtoToDomain(dto.major) : undefined,
     );
