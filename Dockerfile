@@ -8,7 +8,7 @@ COPY package.json package-lock.json* ./
 
 # Install project dependencies with frozen lockfile for reproducible builds
 RUN --mount=type=cache,target=/root/.npm \
-  npm ci --no-audit --no-fund;
+    npm ci --no-audit --no-fund;
 
 FROM node:24.15.0-alpine AS builder
 
@@ -21,15 +21,25 @@ COPY --from=dependencies /app/node_modules ./node_modules
 # Copy application source code
 COPY . .
 
+# Accept NEXT_PUBLIC_ env vars as build args so they are baked in at build time
+ARG NEXT_PUBLIC_APP_URL \
+    NEXT_PUBLIC_BETTER_AUTH_URL \
+    NEXT_PUBLIC_INFINITY_API_URL \
+    NEXT_PUBLIC_INFINITY_API_TIMEOUT
+
 # Set build stage environment variables
-ENV NODE_ENV=production
-ENV CI=1
-# Disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production \
+    CI=1 \
+    # Disable telemetry during the build.
+    NEXT_TELEMETRY_DISABLED=1 \
+    NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL} \
+    NEXT_PUBLIC_BETTER_AUTH_URL=${NEXT_PUBLIC_BETTER_AUTH_URL} \
+    NEXT_PUBLIC_INFINITY_API_URL=${NEXT_PUBLIC_INFINITY_API_URL} \
+    NEXT_PUBLIC_INFINITY_API_TIMEOUT=${NEXT_PUBLIC_INFINITY_API_TIMEOUT}
 
 # Build Next.js application
 RUN --mount=type=cache,target=/app/.next/cache \
-  npm run build
+    npm run build
 
 FROM oven/bun:1.3.13 AS runner
 
@@ -37,11 +47,11 @@ FROM oven/bun:1.3.13 AS runner
 WORKDIR /app
 
 # Set production environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-# Disable telemetry during the run time.
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME="[::]" \
+    # Disable telemetry during the run time.
+    NEXT_TELEMETRY_DISABLED=1
 
 # Copy production assets
 COPY --from=builder --chown=bun:bun /app/public ./public
