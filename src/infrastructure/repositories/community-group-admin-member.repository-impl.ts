@@ -135,7 +135,7 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
         {
           user_id: communityGroupAdminMember.userId,
           community_group_id: communityGroupAdminMember.communityGroupId,
-          photo: communityGroupAdminMember.photo instanceof File,
+          photo: communityGroupAdminMember.photo,
           animation:
             communityGroupAdminMember.animation instanceof File
               ? communityGroupAdminMember.animation
@@ -165,7 +165,7 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
       userId?: string;
       communityGroupId?: string;
       photo?: File;
-      animation?: File;
+      animation?: File | null;
     },
     abortSignal?: AbortSignal,
     token?: string,
@@ -183,7 +183,9 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
           animation:
             communityGroupAdminMember.animation instanceof File
               ? communityGroupAdminMember.animation
-              : undefined,
+              : communityGroupAdminMember.animation === null
+                ? null
+                : undefined,
         },
         {
           signal: abortSignal,

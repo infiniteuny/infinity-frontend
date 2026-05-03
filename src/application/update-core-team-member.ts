@@ -7,7 +7,12 @@ import { CoreTeamMember } from '@app/domain/entities';
 
 export type UpdateCoreTeamMemberParams = [
   id: string,
-  coreTeamMember: { userId?: string; coreTeamDivisionId?: string; photo?: File; animation?: File },
+  coreTeamMember: {
+    userId?: string;
+    coreTeamDivisionId?: string;
+    photo?: File;
+    animation?: File | null;
+  },
   abortSignal?: AbortSignal,
 ];
 
@@ -35,7 +40,7 @@ export class UpdateCoreTeamMember implements UseCase<
       userId?: string;
       coreTeamDivisionId?: string;
       photo?: File;
-      animation?: File;
+      animation?: File | null;
     },
     abortSignal?: AbortSignal,
   ): Promise<Either<CoreTeamMember, Error>> {

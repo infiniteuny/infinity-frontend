@@ -128,7 +128,7 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
         {
           user_id: coreTeamMember.userId,
           core_team_division_id: coreTeamMember.coreTeamDivisionId,
-          photo: coreTeamMember.photo instanceof File,
+          photo: coreTeamMember.photo,
           animation:
             coreTeamMember.animation instanceof File ? coreTeamMember.animation : undefined,
         },
@@ -156,7 +156,7 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
       userId?: string;
       coreTeamDivisionId?: string;
       photo?: File;
-      animation?: File;
+      animation?: File | null;
     },
     abortSignal?: AbortSignal,
     token?: string,
@@ -169,7 +169,11 @@ export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
           core_team_division_id: coreTeamMember.coreTeamDivisionId,
           photo: coreTeamMember.photo instanceof File ? coreTeamMember.photo : undefined,
           animation:
-            coreTeamMember.animation instanceof File ? coreTeamMember.animation : undefined,
+            coreTeamMember.animation instanceof File
+              ? coreTeamMember.animation
+              : coreTeamMember.animation === null
+                ? null
+                : undefined,
         },
         {
           signal: abortSignal,
