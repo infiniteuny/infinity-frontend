@@ -30,12 +30,40 @@ const additionalOptions = {
   },
 } satisfies BetterAuthOptions;
 
-const redis = isCIBuild
-  ? undefined
-  : new Redis({
-      host: process.env.REDIS_HOST || 'localhost',
-      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+const createRedisClient = () => {
+  if (isCIBuild) return undefined;
+
+  const sentinelHosts = process.env.REDIS_SENTINEL_HOSTS;
+
+  if (sentinelHosts) {
+    const sentinels = sentinelHosts.split(',').map((host) => {
+      const [hostname, port] = host.trim().split(':');
+      return {
+        host: hostname,
+        port: port ? parseInt(port, 10) : 26379,
+      };
     });
+
+    return new Redis({
+      sentinels,
+      name: process.env.REDIS_SENTINEL_NAME || 'mymaster',
+      password: process.env.REDIS_PASSWORD,
+      sentinelPassword: process.env.REDIS_SENTINEL_PASSWORD,
+      role: 'master',
+      sentinelRetryStrategy: (times) => Math.min(times * 10, 1000),
+      sentinelReconnectStrategy: () => 60000,
+      failoverDetector: true,
+    });
+  }
+
+  return new Redis({
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379,
+    password: process.env.REDIS_PASSWORD,
+  });
+};
+
+const redis = createRedisClient();
 
 export const authServerDataSourceImpl = (
   getUsers: GetUsersWithToken,
