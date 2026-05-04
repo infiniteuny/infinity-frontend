@@ -73,6 +73,7 @@ docs/
 .gitlab-ci.yml
 .travis.yml
 .circleci/
+.renovaterc
 Jenkinsfile
 
 # Cache directories and temporary data
