@@ -1,9 +1,11 @@
-import { Icon } from '@app/presentation/components/shared';
-import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
-import { PathMenu } from '@app/domain/entities';
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { Icon } from '@app/presentation/components/shared';
+import { InternalStoreContext } from './store-provider';
+import { PathMenu } from '@app/domain/entities';
+import { useContext, useEffect, useState, useSyncExternalStore } from 'react';
+import { usePathname } from 'next/navigation';
+import { useShallow } from 'zustand/shallow';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
   menu: PathMenu;
@@ -12,10 +14,13 @@ type Props = {
 export function SidebarMenu({ menu }: Props) {
   const path = usePathname();
   const [active, setActive] = useState(false);
-  const [sidebarExtended, sidebarHovered] = useStore(
-    internalStore,
-    useShallow((s) => [s.sidebarExtended, s.sidebarHovered]),
+  const store = useContext(InternalStoreContext);
+  const sidebarExtended = useSyncExternalStore(
+    store!.subscribe,
+    () => store?.getState().sidebarExtended,
+    () => true,
   );
+  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   useEffect(() => {
     if (menu.path === path) {

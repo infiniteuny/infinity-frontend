@@ -5,26 +5,25 @@ import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 import { NavbarDropdownMenu } from './navbar-dropdown-menu';
 import { NavbarMenu } from './navbar-menu';
 import { LogoutRounded } from '@mui/icons-material';
-import { SessionDto, SessionMapper } from '@app/infrastructure/dtos';
 import { useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
 import { Logout } from '@app/application';
 import { SYMBOLS } from '@config';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/shallow';
 
 type Props = {
-  session: SessionDto;
   menus?: Required<
     PathMenu | UrlMenu | NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>
   >[];
 };
 
-export function InternalNavbar({ session, menus }: Props) {
+export function InternalNavbar({ menus }: Props) {
   const logout = useMemo(() => clientContainer.get<Logout>(SYMBOLS.Logout), []);
   const router = useRouter();
 
-  const parsedSession = SessionMapper.fromDtoToDomain(session);
-
+  const [session] = useInternalStore(useShallow((s) => [s.session]));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -103,7 +102,7 @@ export function InternalNavbar({ session, menus }: Props) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <Typography typography="h5" className="px-4 text-center">
-          Hi! {parsedSession.user.name || 'User'}
+          Hi! {session?.user.name || 'User'}
         </Typography>
         <Button
           variant="elevated"

@@ -11,10 +11,12 @@ import {
 } from '@mui/material';
 import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import { Icon } from '@app/presentation/components/shared';
-import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
-import { MouseEvent, useEffect, useMemo, useState } from 'react';
+import { InternalStoreContext } from './store-provider';
+import { MouseEvent, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
+import { useInternalStore } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
+import { useShallow } from 'zustand/shallow';
 
 type Props = {
   menu: NestedMenu<PathMenu>;
@@ -28,10 +30,13 @@ export function SidebarDropdownMenu({ menu }: Props) {
   const path = usePathname();
   const mediaQueryGreaterThanLg = useMediaQuery<Theme>((theme) => theme.breakpoints.up('lg'));
   const [expanded, setExpanded] = useState(false);
-  const [sidebarExtended, sidebarHovered] = useStore(
-    internalStore,
-    useShallow((s) => [s.sidebarExtended, s.sidebarHovered]),
+  const store = useContext(InternalStoreContext);
+  const sidebarExtended = useSyncExternalStore(
+    store!.subscribe,
+    () => store?.getState().sidebarExtended,
+    () => true,
   );
+  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   const active = useMemo(() => {
     return menu.items.some(
@@ -101,10 +106,13 @@ export function SidebarDropdownMenu({ menu }: Props) {
 
 function SidebarDropdownItemMenu({ menu }: ItemProps) {
   const path = usePathname();
-  const [sidebarExtended, sidebarHovered] = useStore(
-    internalStore,
-    useShallow((s) => [s.sidebarExtended, s.sidebarHovered]),
+  const store = useContext(InternalStoreContext);
+  const sidebarExtended = useSyncExternalStore(
+    store!.subscribe,
+    () => store?.getState().sidebarExtended,
+    () => true,
   );
+  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   const selected = useMemo(() => {
     return menu.path === path || (menu.matcher ? RegExp(menu.matcher).test(path) : false);

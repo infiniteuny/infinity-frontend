@@ -14,33 +14,36 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
+import { InternalStoreContext } from './store-provider';
 import { SidebarDropdownMenu } from './sidebar-dropdown-menu';
 import { SidebarMenu } from './sidebar-menu';
-import { useEffect } from 'react';
+import { useContext, useSyncExternalStore } from 'react';
+import { useInternalStore } from '@app/presentation/hooks';
+import { useShallow } from 'zustand/shallow';
 
 type Props = {
   menus: (PathMenu | NestedMenu<PathMenu>)[];
 };
 
 export function InternalSidebar({ menus }: Props) {
+  const store = useContext(InternalStoreContext);
+  const sidebarExtended = useSyncExternalStore(
+    store!.subscribe,
+    () => store?.getState().sidebarExtended,
+    () => true,
+  );
   const [
     sidebarOpened,
-    sidebarExtended,
     sidebarHovered,
     setSidebarOpenedState,
-    getSidebarExtendedState,
     setSidebarExtendedState,
     setSidebarHoveredState,
-  ] = useStore(
-    internalStore,
+  ] = useInternalStore(
     useShallow((s) => [
       s.sidebarOpened,
-      s.sidebarExtended,
       s.sidebarHovered,
       s.setSidebarOpenedState,
-      s.getSidebarExtendedState,
       s.setSidebarExtendedState,
       s.setSidebarHoveredState,
     ]),
@@ -50,11 +53,6 @@ export function InternalSidebar({ menus }: Props) {
   const handleExtend = () => setSidebarExtendedState(!sidebarExtended);
   const handleMouseEnter = () => setSidebarHoveredState(true);
   const handleMouseLeave = () => setSidebarHoveredState(false);
-
-  useEffect(() => {
-    getSidebarExtendedState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>

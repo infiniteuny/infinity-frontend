@@ -3,18 +3,13 @@
 import { APP } from '@config';
 import { AppBar, IconButton } from '@mui/material';
 import { InfiniteLogo } from '@app/presentation/components/shared';
-import { internalStore, useShallow, useStore } from '@app/presentation/hooks';
 import { InternalNavbar } from './navbar';
 import { MenuRounded } from '@mui/icons-material';
-import { SessionDto } from '@app/infrastructure/dtos';
+import { useInternalStore } from '@app/presentation/hooks';
+import { useShallow } from 'zustand/shallow';
 
-type Props = {
-  session: SessionDto;
-};
-
-export function InternalHeader({ session }: Props) {
-  const [sidebarOpened, setSidebarOpenedState] = useStore(
-    internalStore,
+export function InternalHeader() {
+  const [sidebarOpened, setSidebarOpenedState] = useInternalStore(
     useShallow((s) => [s.sidebarOpened, s.setSidebarOpenedState]),
   );
 
@@ -41,7 +36,7 @@ export function InternalHeader({ session }: Props) {
           className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto block lg:mx-auto"
         />
       </div>
-      <InternalNavbar session={session} menus={APP.internal.nav.menus} />
+      <InternalNavbar menus={APP.internal.nav.menus} />
     </AppBar>
   );
 }
