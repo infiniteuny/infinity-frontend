@@ -1,3 +1,1 @@
-import 'reflect-metadata';
-
-export * from './use-store';
+export * from './use-internal-store';
