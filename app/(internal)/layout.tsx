@@ -2,7 +2,11 @@ import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { GetSession } from '@app/application';
 import { InitColorSchemeScript } from '@mui/material';
-import { InternalFooter, InternalHeader } from '@app/presentation/components/internal/shared';
+import {
+  InternalFooter,
+  InternalHeader,
+  InternalStoreProvider,
+} from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';
@@ -46,10 +50,12 @@ export default async function InternalLayout({ children }: Props) {
       <body id="__next">
         <InitColorSchemeScript attribute="class" />
         <MuiSetup>
-          <SkipToContentButton />
-          <InternalHeader session={SessionMapper.fromDomainToDto(session) as SessionDto} />
-          {children}
-          <InternalFooter />
+          <InternalStoreProvider session={SessionMapper.fromDomainToDto(session) as SessionDto}>
+            <SkipToContentButton />
+            <InternalHeader />
+            {children}
+            <InternalFooter />
+          </InternalStoreProvider>
         </MuiSetup>
       </body>
     </html>
