@@ -52,7 +52,7 @@ export class User {
   public phoneNumber: string;
   public studentId: string;
   public majorId: string;
-  public links: Record<string, string>;
+  public links: Record<string, string | undefined>;
   public startDate: Date | null;
   public endDate: Date | null;
   public isMember: boolean;
@@ -70,7 +70,7 @@ export class User {
     phoneNumber: string,
     studentId: string,
     majorId: string,
-    links: Record<string, string>,
+    links: Record<string, string | undefined>,
     startDate: Date | null,
     endDate: Date | null,
     isMember: boolean,

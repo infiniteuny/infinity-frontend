@@ -46,6 +46,48 @@ export function ContactsForm({
               disabled={isSubmitting}
             />
           </Grid>
+          <Grid size={12}>
+            <TextField
+              {...register('linkedin')}
+              id="linkedin"
+              label="LinkedIn"
+              fullWidth
+              margin="none"
+              helperText={
+                errors.linkedin?.message ||
+                "Fill in the username only, e.g. 'john-doe' from URL 'https://www.linkedin.com/in/john-doe'"
+              }
+              error={!!errors.linkedin}
+              disabled={isSubmitting}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              {...register('github')}
+              id="github"
+              label="GitHub"
+              fullWidth
+              margin="none"
+              helperText={
+                errors.github?.message ||
+                "Fill in the username only, e.g. 'johndoe' from URL 'https://github.com/johndoe'"
+              }
+              error={!!errors.github}
+              disabled={isSubmitting}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
+              {...register('discord')}
+              id="discord"
+              label="Discord"
+              fullWidth
+              margin="none"
+              helperText={errors.discord?.message}
+              error={!!errors.discord}
+              disabled={isSubmitting}
+            />
+          </Grid>
         </Grid>
       </Container>
     </Box>

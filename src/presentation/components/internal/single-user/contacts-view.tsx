@@ -1,5 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { CheckRounded, ContentCopyRounded, OpenInNewRounded } from '@mui/icons-material';
+import { SettingTile } from '@app/presentation/components/internal/settings';
 import { User } from '@app/domain/entities';
+import { useState } from 'react';
 import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
@@ -7,6 +10,18 @@ type Props = {
 };
 
 export function ContactsView({ user }: Props) {
+  const [copied, setCopied] = useState(false);
+
+  const handleDiscordCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(user.links?.discord || '');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy Discord username: ', err);
+    }
+  };
+
   return (
     <Box component="section" className="mb-4 w-full px-6">
       <Container maxWidth={false} className="max-w-2xl p-0">
@@ -22,6 +37,39 @@ export function ContactsView({ user }: Props) {
           <Grid size={12}>
             <ViewTile title="Phone Number" subtitle={user.phoneNumber} position="bottom" />
           </Grid>
+          {user.links?.linkedin && (
+            <Grid size={12}>
+              <SettingTile
+                title="LinkedIn"
+                subtitle={user.links.linkedin}
+                trailingIcon={<OpenInNewRounded />}
+                position="bottom"
+                href={`https://www.linkedin.com/in/${user.links.linkedin}`}
+              />
+            </Grid>
+          )}
+          {user.links?.github && (
+            <Grid size={12}>
+              <SettingTile
+                title="GitHub"
+                subtitle={user.links.github}
+                trailingIcon={<OpenInNewRounded />}
+                position="bottom"
+                href={`https://github.com/${user.links.github}`}
+              />
+            </Grid>
+          )}
+          {user.links?.discord && (
+            <Grid size={12}>
+              <SettingTile
+                title="Discord"
+                subtitle={user.links.discord}
+                trailingIcon={copied ? <CheckRounded color="success" /> : <ContentCopyRounded />}
+                position="bottom"
+                onClick={handleDiscordCopy}
+              />
+            </Grid>
+          )}
         </Grid>
       </Container>
     </Box>
