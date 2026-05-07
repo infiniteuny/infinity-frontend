@@ -23,9 +23,12 @@ type Props = {
 export function MembershipForm({
   methods: {
     control,
+    watch,
     formState: { isSubmitting, errors },
   },
 }: Props) {
+  const isMember = watch('isMember');
+
   return (
     <Box component="section" className="mb-6 w-full px-6">
       <Container maxWidth={false} className="max-w-2xl p-0">
@@ -36,72 +39,12 @@ export function MembershipForm({
         </Toolbar>
         <Grid container spacing={2}>
           <Grid size={12}>
-            <Controller
-              name="startDate"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  disabled={isSubmitting}
-                  label="Start Date"
-                  format="dd/LL/yyyy"
-                  timezone="UTC"
-                  value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
-                  onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
-                  onAccept={field.onBlur}
-                  inputRef={field.ref}
-                  slotProps={{
-                    field: {
-                      clearable: true,
-                    },
-                    textField: {
-                      fullWidth: true,
-                      error: !!errors.startDate,
-                      helperText: errors.startDate?.message,
-                      onBlur: field.onBlur,
-                    },
-                  }}
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={12}>
-            <Controller
-              name="endDate"
-              control={control}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  disabled={isSubmitting}
-                  label="End Date"
-                  format="dd/LL/yyyy"
-                  timezone="UTC"
-                  value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
-                  onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
-                  onAccept={field.onBlur}
-                  inputRef={field.ref}
-                  slotProps={{
-                    field: {
-                      clearable: true,
-                    },
-                    textField: {
-                      fullWidth: true,
-                      error: !!errors.endDate,
-                      helperText: errors.endDate?.message,
-                      onBlur: field.onBlur,
-                    },
-                  }}
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={12}>
             <FormControl fullWidth margin="none" disabled={isSubmitting} className="px-3">
               <FormLabel component="legend" className="mb-1">
-                Extraordinary Member
+                Member
               </FormLabel>
               <Controller
-                name="isExtraordinary"
+                name="isMember"
                 control={control}
                 defaultValue={false}
                 render={({ field: { onChange, ...field } }) => (
@@ -111,11 +54,97 @@ export function MembershipForm({
                   </RadioGroup>
                 )}
               />
-              <FormHelperText error={!!errors.isExtraordinary}>
-                {errors.isExtraordinary?.message}
-              </FormHelperText>
+              <FormHelperText error={!!errors.isMember}>{errors.isMember?.message}</FormHelperText>
             </FormControl>
           </Grid>
+          {isMember ? (
+            <>
+              <Grid size={12}>
+                <Controller
+                  name="startDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      disabled={isSubmitting}
+                      label="Start Date"
+                      format="dd/LL/yyyy"
+                      timezone="UTC"
+                      value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
+                      onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
+                      onAccept={field.onBlur}
+                      inputRef={field.ref}
+                      slotProps={{
+                        field: {
+                          clearable: true,
+                        },
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.startDate,
+                          helperText: errors.startDate?.message,
+                          onBlur: field.onBlur,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={12}>
+                <Controller
+                  name="endDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      disabled={isSubmitting}
+                      label="End Date"
+                      format="dd/LL/yyyy"
+                      value={field.value ? DateTime.fromJSDate(field.value) : null}
+                      onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
+                      onAccept={field.onBlur}
+                      inputRef={field.ref}
+                      slotProps={{
+                        field: {
+                          clearable: true,
+                        },
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors.endDate,
+                          helperText: errors.endDate?.message,
+                          onBlur: field.onBlur,
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={12}>
+                <FormControl fullWidth margin="none" disabled={isSubmitting} className="px-3">
+                  <FormLabel component="legend" className="mb-1">
+                    Extraordinary Member
+                  </FormLabel>
+                  <Controller
+                    name="isExtraordinary"
+                    control={control}
+                    defaultValue={false}
+                    render={({ field: { onChange, ...field } }) => (
+                      <RadioGroup
+                        {...field}
+                        row
+                        onChange={(e) => onChange(e.target.value === 'true')}
+                      >
+                        <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                        <FormControlLabel value={false} control={<Radio />} label="No" />
+                      </RadioGroup>
+                    )}
+                  />
+                  <FormHelperText error={!!errors.isExtraordinary}>
+                    {errors.isExtraordinary?.message}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+            </>
+          ) : null}
         </Grid>
       </Container>
     </Box>

@@ -20,43 +20,52 @@ export function MembershipView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <ViewTile
-              title="Active Member"
-              subtitle={user.isActive ? 'Yes' : 'No'}
-              position="top"
-            />
+            <ViewTile title="Member" subtitle={user.isMember ? 'Yes' : 'No'} position="top" />
           </Grid>
-          {user.isActive ? (
+          {user.isMember ? (
             <>
               <Grid size={12}>
                 <ViewTile
-                  title="Start Date"
-                  subtitle={
-                    user.startDate
-                      ? DateTime.fromJSDate(user.startDate).toFormat('dd/LL/yyyy')
-                      : 'N/A'
-                  }
+                  title="Active Member"
+                  subtitle={user.isActive ? 'Yes' : 'No'}
                   position="middle"
                 />
               </Grid>
+              {user.isActive ? (
+                <>
+                  <Grid size={12}>
+                    <ViewTile
+                      title="Start Date"
+                      subtitle={
+                        user.startDate
+                          ? DateTime.fromJSDate(user.startDate).toFormat('dd/LL/yyyy')
+                          : 'N/A'
+                      }
+                      position="middle"
+                    />
+                  </Grid>
+                  <Grid size={12}>
+                    <ViewTile
+                      title="End Date"
+                      subtitle={
+                        user.endDate
+                          ? DateTime.fromJSDate(user.endDate).toFormat('dd/LL/yyyy')
+                          : 'N/A'
+                      }
+                      position="middle"
+                    />
+                  </Grid>
+                </>
+              ) : null}
               <Grid size={12}>
                 <ViewTile
-                  title="End Date"
-                  subtitle={
-                    user.endDate ? DateTime.fromJSDate(user.endDate).toFormat('dd/LL/yyyy') : 'N/A'
-                  }
+                  title="Extraordinary Member"
+                  subtitle={user.isExtraordinary ? 'Yes' : 'No'}
                   position="middle"
                 />
               </Grid>
             </>
           ) : null}
-          <Grid size={12}>
-            <ViewTile
-              title="Extraordinary Member"
-              subtitle={user.isExtraordinary ? 'Yes' : 'No'}
-              position="middle"
-            />
-          </Grid>
           <Grid size={12}>
             <SettingTile
               title="Personas"
