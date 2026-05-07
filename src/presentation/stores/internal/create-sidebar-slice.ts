@@ -1,6 +1,6 @@
+import type { InternalStates, InternalActions } from '@app/presentation/stores';
 import { clientContainer } from '@app/client-injection';
-import { GetSidebarExtendedState, SetSidebarExtendedState } from '@app/application';
-import { InternalActions, InternalStates } from '@app/presentation/stores';
+import { SetSidebarExtendedState } from '@app/application';
 import { StateCreator } from 'zustand';
 import { SYMBOLS } from '@config';
 
@@ -12,16 +12,15 @@ export interface InternalSidebarStates {
 
 export interface InternalSidebarActions {
   setSidebarOpenedState: (state: boolean) => void;
-  getSidebarExtendedState: () => void;
   setSidebarExtendedState: (state: boolean) => void;
   setSidebarHoveredState: (state: boolean) => void;
 }
 
 type InternalSidebarStateCreator = StateCreator<
-  InternalSidebarStates & InternalSidebarActions,
+  InternalStates & InternalActions,
+  [['zustand/immer', never]],
   [],
-  [],
-  InternalStates & InternalActions
+  InternalSidebarStates & InternalSidebarActions
 >;
 
 export function createInternalSidebarSlice(
@@ -33,13 +32,6 @@ export function createInternalSidebarSlice(
     sidebarHovered: false,
 
     setSidebarOpenedState: (state: boolean) => set(() => ({ sidebarOpened: state })),
-    getSidebarExtendedState: () => {
-      const getSidebarExtendedState = clientContainer.get<GetSidebarExtendedState>(
-        SYMBOLS.GetSidebarExtendedState,
-      );
-
-      set(() => ({ sidebarExtended: getSidebarExtendedState.execute() }));
-    },
     setSidebarExtendedState: (state: boolean) => {
       const setSidebarExtendedState = clientContainer.get<SetSidebarExtendedState>(
         SYMBOLS.SetSidebarExtendedState,

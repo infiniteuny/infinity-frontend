@@ -190,6 +190,7 @@ import {
   GetCommunityGroupAdminMembers,
   GetCommunityGroupAdminMember,
   GetCommunityGroupMembers,
+  GetSession,
 } from '@app/application';
 import {
   AuthClientDataSource,
@@ -336,6 +337,7 @@ clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
 clientContainer.bind<GetPersona>(SYMBOLS.GetPersona).to(GetPersona);
 clientContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+clientContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 clientContainer
   .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
   .to(GetSidebarExtendedState);
