@@ -8,6 +8,7 @@ import { Team } from './team';
 
 export type AchievementIncludeOptions = (
   | 'team'
+  | 'team.members'
   | 'competition_instance'
   | 'competition_scale'
   | 'competition_time_range'
