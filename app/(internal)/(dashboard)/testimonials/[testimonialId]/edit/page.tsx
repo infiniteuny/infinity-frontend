@@ -1,4 +1,4 @@
-import { GetTestimonial } from '@app/application';
+import { GetSession, GetTestimonial } from '@app/application';
 import { match } from 'effect/Either';
 import { TestimonialDto, TestimonialMapper } from '@app/infrastructure/dtos';
 import { TestimonialForm } from '@app/presentation/components/internal/single-testimonial';
@@ -14,24 +14,40 @@ type Props = {
 };
 
 export default async function SingleTestimonialEditPage({ params }: Props) {
-  const getTestimonial = serverContainer.get<GetTestimonial>(SYMBOLS.GetTestimonial);
-  const testimonialId = (await params).testimonialId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const testimonialResult = await getTestimonial.execute(testimonialId);
-  const testimonial = match(testimonialResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <TestimonialForm
-      initialTestimonial={TestimonialMapper.fromDomainToDto(testimonial) as TestimonialDto}
-    />
-  );
+  if (['update-testimonial'].some((p) => userPermissions.has(p))) {
+    const getTestimonial = serverContainer.get<GetTestimonial>(SYMBOLS.GetTestimonial);
+    const testimonialId = (await params).testimonialId;
+
+    const testimonialResult = await getTestimonial.execute(testimonialId);
+    const testimonial = match(testimonialResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <TestimonialForm
+        initialTestimonial={TestimonialMapper.fromDomainToDto(testimonial) as TestimonialDto}
+      />
+    );
+  } else {
+    notFound();
+  }
 }

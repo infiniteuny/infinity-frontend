@@ -4,7 +4,7 @@ import {
   TeamDto,
   TeamMapper,
 } from '@app/infrastructure/dtos';
-import { GetCompetitionTeamTypes, GetTeam } from '@app/application';
+import { GetCompetitionTeamTypes, GetSession, GetTeam } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,40 +19,63 @@ type Props = {
 };
 
 export default async function SingleTeamEditPage({ params }: Props) {
-  const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
-  const getCompetitionTeamTypes = serverContainer.get<GetCompetitionTeamTypes>(
-    SYMBOLS.GetCompetitionTeamTypes,
-  );
-  const teamId = (await params).teamId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const teamResult = await getTeam.execute(teamId, ['leader']);
-  const team = match(teamResult, {
-    onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
-    },
-    onRight: (data) => data,
-  });
+  const sessionResult = await getSession.execute();
 
-  const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, {
-    perPage: 10,
-  });
-  const [teamTypes] = match(teamTypesResult, {
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <TeamForm
-      initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto}
-      teamTypes={
-        teamTypes.map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
-      }
-    />
-  );
+  if (['update-team', 'update-own-team'].some((p) => userPermissions.has(p))) {
+    const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
+    const getCompetitionTeamTypes = serverContainer.get<GetCompetitionTeamTypes>(
+      SYMBOLS.GetCompetitionTeamTypes,
+    );
+    const teamId = (await params).teamId;
+
+    const teamResult = await getTeam.execute(teamId, ['leader']);
+    const team = match(teamResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    if (
+      !['update-team'].some((p) => userPermissions.has(p)) &&
+      !team?.members?.some((member) => member.id === session.user.id)
+    ) {
+      notFound();
+    }
+
+    const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, {
+      perPage: 10,
+    });
+    const [teamTypes] = match(teamTypesResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <TeamForm
+        initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto}
+        teamTypes={
+          teamTypes.map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

@@ -1,4 +1,4 @@
-import { GetFaculty } from '@app/application';
+import { GetFaculty, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,20 +14,36 @@ type Props = {
 };
 
 export default async function SingleFacultyEditPage({ params }: Props) {
-  const getFaculty = serverContainer.get<GetFaculty>(SYMBOLS.GetFaculty);
-  const facultyId = (await params).facultyId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const facultyResult = await getFaculty.execute(facultyId);
-  const faculty = match(facultyResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return <FacultyForm initialFaculty={FacultyMapper.fromDomainToDto(faculty) as FacultyDto} />;
+  if (['update-faculty'].some((p) => userPermissions.has(p))) {
+    const getFaculty = serverContainer.get<GetFaculty>(SYMBOLS.GetFaculty);
+    const facultyId = (await params).facultyId;
+
+    const facultyResult = await getFaculty.execute(facultyId);
+    const faculty = match(facultyResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return <FacultyForm initialFaculty={FacultyMapper.fromDomainToDto(faculty) as FacultyDto} />;
+  } else {
+    notFound();
+  }
 }

@@ -1,4 +1,4 @@
-import { GetCompetitionTeamType } from '@app/application';
+import { GetCompetitionTeamType, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,28 +14,44 @@ type Props = {
 };
 
 export default async function SingleCompetitionTeamTypeEditPage({ params }: Props) {
-  const getCompetitionTeamType = serverContainer.get<GetCompetitionTeamType>(
-    SYMBOLS.GetCompetitionTeamType,
-  );
-  const teamTypeId = (await params).teamTypeId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionTeamTypeResult = await getCompetitionTeamType.execute(teamTypeId);
-  const competitionTeamType = match(competitionTeamTypeResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionTeamTypeForm
-      initialCompetitionTeamType={
-        CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType) as CompetitionTeamTypeDto
-      }
-    />
-  );
+  if (['update-competition-team-type'].some((p) => userPermissions.has(p))) {
+    const getCompetitionTeamType = serverContainer.get<GetCompetitionTeamType>(
+      SYMBOLS.GetCompetitionTeamType,
+    );
+    const teamTypeId = (await params).teamTypeId;
+
+    const competitionTeamTypeResult = await getCompetitionTeamType.execute(teamTypeId);
+    const competitionTeamType = match(competitionTeamTypeResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionTeamTypeForm
+        initialCompetitionTeamType={
+          CompetitionTeamTypeMapper.fromDomainToDto(competitionTeamType) as CompetitionTeamTypeDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

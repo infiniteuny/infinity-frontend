@@ -1,4 +1,4 @@
-import { GetPersona } from '@app/application';
+import { GetPersona, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,20 +14,36 @@ type Props = {
 };
 
 export default async function SinglePersonaEditPage({ params }: Props) {
-  const getPersona = serverContainer.get<GetPersona>(SYMBOLS.GetPersona);
-  const personaId = (await params).personaId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const personaResult = await getPersona.execute(personaId);
-  const persona = match(personaResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return <PersonaForm initialPersona={PersonaMapper.fromDomainToDto(persona) as PersonaDto} />;
+  if (['update-persona'].some((p) => userPermissions.has(p))) {
+    const getPersona = serverContainer.get<GetPersona>(SYMBOLS.GetPersona);
+    const personaId = (await params).personaId;
+
+    const personaResult = await getPersona.execute(personaId);
+    const persona = match(personaResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return <PersonaForm initialPersona={PersonaMapper.fromDomainToDto(persona) as PersonaDto} />;
+  } else {
+    notFound();
+  }
 }

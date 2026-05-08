@@ -1,4 +1,4 @@
-import { GetCoreTeam } from '@app/application';
+import { GetCoreTeam, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { CoreTeamDto, CoreTeamMapper } from '@app/infrastructure/dtos';
 import { CoreTeamForm } from '@app/presentation/components/internal/single-core-team';
@@ -14,20 +14,38 @@ type Props = {
 };
 
 export default async function SingleCoreTeamEditPage({ params }: Props) {
-  const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
-  const coreTeamId = (await params).coreTeamId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const coreTeamResult = await getCoreTeam.execute(coreTeamId);
-  const coreTeam = match(coreTeamResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return <CoreTeamForm initialCoreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto} />;
+  if (['update-core-team'].some((p) => userPermissions.has(p))) {
+    const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
+    const coreTeamId = (await params).coreTeamId;
+
+    const coreTeamResult = await getCoreTeam.execute(coreTeamId);
+    const coreTeam = match(coreTeamResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CoreTeamForm initialCoreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto} />
+    );
+  } else {
+    notFound();
+  }
 }

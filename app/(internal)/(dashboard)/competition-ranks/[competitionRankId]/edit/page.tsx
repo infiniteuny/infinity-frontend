@@ -1,4 +1,4 @@
-import { GetCompetitionRank } from '@app/application';
+import { GetCompetitionRank, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,26 +14,42 @@ type Props = {
 };
 
 export default async function SingleCompetitionRankEditPage({ params }: Props) {
-  const getCompetitionRank = serverContainer.get<GetCompetitionRank>(SYMBOLS.GetCompetitionRank);
-  const competitionRankId = (await params).competitionRankId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionRankResult = await getCompetitionRank.execute(competitionRankId);
-  const competitionRank = match(competitionRankResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionRankForm
-      initialCompetitionRank={
-        CompetitionRankMapper.fromDomainToDto(competitionRank) as CompetitionRankDto
-      }
-    />
-  );
+  if (['update-competition-rank'].some((p) => userPermissions.has(p))) {
+    const getCompetitionRank = serverContainer.get<GetCompetitionRank>(SYMBOLS.GetCompetitionRank);
+    const competitionRankId = (await params).competitionRankId;
+
+    const competitionRankResult = await getCompetitionRank.execute(competitionRankId);
+    const competitionRank = match(competitionRankResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionRankForm
+        initialCompetitionRank={
+          CompetitionRankMapper.fromDomainToDto(competitionRank) as CompetitionRankDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

@@ -1,11 +1,11 @@
-import { GetCommunityGroupAdmin } from '@app/application';
-import { match } from 'effect/Either';
 import { CommunityGroupAdminDto, CommunityGroupAdminMapper } from '@app/infrastructure/dtos';
 import { CommunityGroupAdminForm } from '@app/presentation/components/internal/single-community-group-admin';
+import { GetCommunityGroupAdmin, GetSession } from '@app/application';
+import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { NotFoundError } from '@app/domain/errors';
-import { notFound } from 'next/navigation';
 
 type Props = {
   params: Promise<{
@@ -14,28 +14,43 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupAdminEditPage({ params }: Props) {
-  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
-    SYMBOLS.GetCommunityGroupAdmin,
-  );
-  const communityGroupAdminId = (await params).communityGroupAdminId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const communityGroupAdminResult = await getCommunityGroupAdmin.execute(communityGroupAdminId);
-  const communityGroupAdmin = match(communityGroupAdminResult, {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CommunityGroupAdminForm
-      initialCommunityGroupAdmin={
-        CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
-      }
-    />
-  );
+  if (!['update-community-group-admin'].some((p) => userPermissions.has(p))) {
+    notFound();
+  } else {
+    const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+      SYMBOLS.GetCommunityGroupAdmin,
+    );
+    const communityGroupAdminId = (await params).communityGroupAdminId;
+
+    const communityGroupAdminResult = await getCommunityGroupAdmin.execute(communityGroupAdminId);
+    const communityGroupAdmin = match(communityGroupAdminResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CommunityGroupAdminForm
+        initialCommunityGroupAdmin={
+          CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
+        }
+      />
+    );
+  }
 }

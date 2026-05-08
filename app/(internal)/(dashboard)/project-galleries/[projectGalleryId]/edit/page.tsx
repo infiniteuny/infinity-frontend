@@ -1,4 +1,4 @@
-import { GetProjectGallery } from '@app/application';
+import { GetProjectGallery, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { ProjectGalleryDto, ProjectGalleryMapper } from '@app/infrastructure/dtos';
 import { ProjectGalleryForm } from '@app/presentation/components/internal/single-project-gallery';
@@ -14,26 +14,42 @@ type Props = {
 };
 
 export default async function SingleProjectGalleryEditPage({ params }: Props) {
-  const getProjectGallery = serverContainer.get<GetProjectGallery>(SYMBOLS.GetProjectGallery);
-  const projectGalleryId = (await params).projectGalleryId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const projectGalleryResult = await getProjectGallery.execute(projectGalleryId);
-  const projectGallery = match(projectGalleryResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <ProjectGalleryForm
-      initialProjectGallery={
-        ProjectGalleryMapper.fromDomainToDto(projectGallery) as ProjectGalleryDto
-      }
-    />
-  );
+  if (['update-project-gallery'].some((p) => userPermissions.has(p))) {
+    const getProjectGallery = serverContainer.get<GetProjectGallery>(SYMBOLS.GetProjectGallery);
+    const projectGalleryId = (await params).projectGalleryId;
+
+    const projectGalleryResult = await getProjectGallery.execute(projectGalleryId);
+    const projectGallery = match(projectGalleryResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <ProjectGalleryForm
+        initialProjectGallery={
+          ProjectGalleryMapper.fromDomainToDto(projectGallery) as ProjectGalleryDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

@@ -1,4 +1,4 @@
-import { GetGroup } from '@app/application';
+import { GetGroup, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { GroupDto, GroupMapper } from '@app/infrastructure/dtos';
 import { GroupForm } from '@app/presentation/components/internal/single-group';
@@ -14,19 +14,36 @@ type Props = {
 };
 
 export default async function SingleGroupEditPage({ params }: Props) {
-  const getGroup = serverContainer.get<GetGroup>(SYMBOLS.GetGroup);
-  const groupId = (await params).groupId;
-  const groupResult = await getGroup.execute(groupId);
-  const group = match(groupResult, {
-    onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
-    },
-    onRight: (data) => data,
-  });
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  return <GroupForm initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />;
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (['update-group'].some((p) => userPermissions.has(p))) {
+    const getGroup = serverContainer.get<GetGroup>(SYMBOLS.GetGroup);
+    const groupId = (await params).groupId;
+
+    const groupResult = await getGroup.execute(groupId);
+    const group = match(groupResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return <GroupForm initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />;
+  } else {
+    notFound();
+  }
 }

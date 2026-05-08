@@ -1,4 +1,4 @@
-import { GetCommunityGroup } from '@app/application';
+import { GetCommunityGroup, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,26 +14,42 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupEditPage({ params }: Props) {
-  const getCommunityGroup = serverContainer.get<GetCommunityGroup>(SYMBOLS.GetCommunityGroup);
-  const communityGroupId = (await params).communityGroupId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const communityGroupResult = await getCommunityGroup.execute(communityGroupId);
-  const communityGroup = match(communityGroupResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CommunityGroupForm
-      initialCommunityGroup={
-        CommunityGroupMapper.fromDomainToDto(communityGroup) as CommunityGroupDto
-      }
-    />
-  );
+  if (['update-community-group'].some((p) => userPermissions.has(p))) {
+    const getCommunityGroup = serverContainer.get<GetCommunityGroup>(SYMBOLS.GetCommunityGroup);
+    const communityGroupId = (await params).communityGroupId;
+
+    const communityGroupResult = await getCommunityGroup.execute(communityGroupId);
+    const communityGroup = match(communityGroupResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CommunityGroupForm
+        initialCommunityGroup={
+          CommunityGroupMapper.fromDomainToDto(communityGroup) as CommunityGroupDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

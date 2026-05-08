@@ -1,4 +1,4 @@
-import { GetCompetition } from '@app/application';
+import { GetCompetition, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,24 +14,40 @@ type Props = {
 };
 
 export default async function SingleCompetitionEditPage({ params }: Props) {
-  const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
-  const competitionId = (await params).competitionId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionResult = await getCompetition.execute(competitionId);
-  const competition = match(competitionResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionForm
-      initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
-    />
-  );
+  if (['update-competition'].some((p) => userPermissions.has(p))) {
+    const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+    const competitionId = (await params).competitionId;
+
+    const competitionResult = await getCompetition.execute(competitionId);
+    const competition = match(competitionResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionForm
+        initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
+      />
+    );
+  } else {
+    notFound();
+  }
 }

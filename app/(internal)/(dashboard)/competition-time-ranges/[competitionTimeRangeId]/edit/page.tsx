@@ -1,4 +1,4 @@
-import { GetCompetitionTimeRange } from '@app/application';
+import { GetCompetitionTimeRange, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,28 +14,47 @@ type Props = {
 };
 
 export default async function SingleCompetitionTimeRangeEditPage({ params }: Props) {
-  const getCompetitionTimeRange = serverContainer.get<GetCompetitionTimeRange>(
-    SYMBOLS.GetCompetitionTimeRange,
-  );
-  const competitionTimeRangeId = (await params).competitionTimeRangeId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionTimeRangeResult = await getCompetitionTimeRange.execute(competitionTimeRangeId);
-  const competitionTimeRange = match(competitionTimeRangeResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionTimeRangeForm
-      initialCompetitionTimeRange={
-        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange) as CompetitionTimeRangeDto
-      }
-    />
-  );
+  if (['update-competition-time-range'].some((p) => userPermissions.has(p))) {
+    const getCompetitionTimeRange = serverContainer.get<GetCompetitionTimeRange>(
+      SYMBOLS.GetCompetitionTimeRange,
+    );
+    const competitionTimeRangeId = (await params).competitionTimeRangeId;
+
+    const competitionTimeRangeResult =
+      await getCompetitionTimeRange.execute(competitionTimeRangeId);
+    const competitionTimeRange = match(competitionTimeRangeResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionTimeRangeForm
+        initialCompetitionTimeRange={
+          CompetitionTimeRangeMapper.fromDomainToDto(
+            competitionTimeRange,
+          ) as CompetitionTimeRangeDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

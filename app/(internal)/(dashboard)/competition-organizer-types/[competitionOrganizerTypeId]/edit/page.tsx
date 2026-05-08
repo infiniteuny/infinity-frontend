@@ -1,4 +1,4 @@
-import { GetCompetitionOrganizerType } from '@app/application';
+import { GetCompetitionOrganizerType, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -17,32 +17,48 @@ type Props = {
 };
 
 export default async function SingleCompetitionOrganizerTypeEditPage({ params }: Props) {
-  const getCompetitionOrganizerType = serverContainer.get<GetCompetitionOrganizerType>(
-    SYMBOLS.GetCompetitionOrganizerType,
-  );
-  const competitionOrganizerTypeId = (await params).competitionOrganizerTypeId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionOrganizerTypeResult = await getCompetitionOrganizerType.execute(
-    competitionOrganizerTypeId,
-  );
-  const competitionOrganizerType = match(competitionOrganizerTypeResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionOrganizerTypeForm
-      initialCompetitionOrganizerType={
-        CompetitionOrganizerTypeMapper.fromDomainToDto(
-          competitionOrganizerType,
-        ) as CompetitionOrganizerTypeDto
-      }
-    />
-  );
+  if (['update-competition-organizer-type'].some((p) => userPermissions.has(p))) {
+    const getCompetitionOrganizerType = serverContainer.get<GetCompetitionOrganizerType>(
+      SYMBOLS.GetCompetitionOrganizerType,
+    );
+    const competitionOrganizerTypeId = (await params).competitionOrganizerTypeId;
+
+    const competitionOrganizerTypeResult = await getCompetitionOrganizerType.execute(
+      competitionOrganizerTypeId,
+    );
+    const competitionOrganizerType = match(competitionOrganizerTypeResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionOrganizerTypeForm
+        initialCompetitionOrganizerType={
+          CompetitionOrganizerTypeMapper.fromDomainToDto(
+            competitionOrganizerType,
+          ) as CompetitionOrganizerTypeDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

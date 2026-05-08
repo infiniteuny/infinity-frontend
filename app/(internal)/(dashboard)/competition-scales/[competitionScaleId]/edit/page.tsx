@@ -1,4 +1,4 @@
-import { GetCompetitionScale } from '@app/application';
+import { GetCompetitionScale, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -14,26 +14,44 @@ type Props = {
 };
 
 export default async function SingleCompetitionScaleEditPage({ params }: Props) {
-  const getCompetitionScale = serverContainer.get<GetCompetitionScale>(SYMBOLS.GetCompetitionScale);
-  const competitionScaleId = (await params).competitionScaleId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const competitionScaleResult = await getCompetitionScale.execute(competitionScaleId);
-  const competitionScale = match(competitionScaleResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
+      throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CompetitionScaleForm
-      initialCompetitionScale={
-        CompetitionScaleMapper.fromDomainToDto(competitionScale) as CompetitionScaleDto
-      }
-    />
-  );
+  if (['update-competition-scale'].some((p) => userPermissions.has(p))) {
+    const getCompetitionScale = serverContainer.get<GetCompetitionScale>(
+      SYMBOLS.GetCompetitionScale,
+    );
+    const competitionScaleId = (await params).competitionScaleId;
+
+    const competitionScaleResult = await getCompetitionScale.execute(competitionScaleId);
+    const competitionScale = match(competitionScaleResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CompetitionScaleForm
+        initialCompetitionScale={
+          CompetitionScaleMapper.fromDomainToDto(competitionScale) as CompetitionScaleDto
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

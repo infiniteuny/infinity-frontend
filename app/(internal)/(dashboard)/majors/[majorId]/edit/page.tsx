@@ -1,4 +1,4 @@
-import { GetDegrees, GetFaculties, GetMajor } from '@app/application';
+import { GetDegrees, GetFaculties, GetMajor, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -21,44 +21,61 @@ type Props = {
 };
 
 export default async function SingleMajorEditPage({ params }: Props) {
-  const getMajor = serverContainer.get<GetMajor>(SYMBOLS.GetMajor);
-  const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
-  const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
-  const majorId = (await params).majorId;
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const majorResult = await getMajor.execute(majorId, ['degree', 'faculty']);
-  const major = match(majorResult, {
+  const sessionResult = await getSession.execute();
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (['update-major'].some((p) => userPermissions.has(p))) {
+    const getMajor = serverContainer.get<GetMajor>(SYMBOLS.GetMajor);
+    const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
+    const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
+    const majorId = (await params).majorId;
+
+    const [majorResult, degreesResult, facultiesResult] = await Promise.all([
+      getMajor.execute(majorId, ['degree', 'faculty']),
+      getDegrees.execute(undefined, { perPage: 100 }),
+      getFaculties.execute(undefined, { perPage: 100 }),
+    ]);
+
+    const major = match(majorResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+    const [degrees] = match(degreesResult, {
+      onLeft: (error) => {
         throw error;
-      }
-    },
-    onRight: (data) => data,
-  });
+      },
+      onRight: (data) => data,
+    });
+    const [faculties] = match(facultiesResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
 
-  const degreesResult = await getDegrees.execute(undefined, { perPage: 100 });
-  const [degrees] = match(degreesResult, {
-    onLeft: (error) => {
-      throw error;
-    },
-    onRight: (data) => data,
-  });
-
-  const facultiesResult = await getFaculties.execute(undefined, { perPage: 100 });
-  const [faculties] = match(facultiesResult, {
-    onLeft: (error) => {
-      throw error;
-    },
-    onRight: (data) => data,
-  });
-
-  return (
-    <MajorForm
-      initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto}
-      degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
-      faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
-    />
-  );
+    return (
+      <MajorForm
+        initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto}
+        degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
+        faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
+      />
+    );
+  } else {
+    notFound();
+  }
 }
