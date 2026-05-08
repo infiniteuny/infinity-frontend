@@ -25,7 +25,7 @@ export class TeamMember extends User {
     phoneNumber: string,
     studentId: string,
     majorId: string,
-    links: Record<string, string>,
+    links: Record<string, string | undefined>,
     startDate: Date | null,
     endDate: Date | null,
     isMember: boolean,

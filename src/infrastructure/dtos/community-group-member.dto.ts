@@ -18,7 +18,7 @@ export interface CommunityGroupMemberDto {
   phone_number: string;
   student_id: string;
   major_id: string;
-  links: Record<string, string>;
+  links: Record<string, string | undefined>;
   start_date: string | null;
   end_date: string | null;
   is_member: boolean;
