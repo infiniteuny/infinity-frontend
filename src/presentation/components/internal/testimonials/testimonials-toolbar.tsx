@@ -10,7 +10,7 @@ export function TestimonialsToolbar() {
 
   return (
     <>
-      {['create-testimonal'].some((p) => userPermissions.has(p)) ? (
+      {['create-testimonial'].some((p) => userPermissions.has(p)) ? (
         <Box className="ml-auto">
           <Button
             variant="filled"

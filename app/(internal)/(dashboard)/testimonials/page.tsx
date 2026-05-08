@@ -29,7 +29,7 @@ export default async function TestimonialsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-testimonal'].some((p) => userPermissions.has(p))) {
+  if (!['read-testimonial'].some((p) => userPermissions.has(p))) {
     notFound();
   } else {
     const getTestimonials = serverContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials);
