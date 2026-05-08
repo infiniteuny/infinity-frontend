@@ -1,5 +1,7 @@
-import { GetUserPermissions } from '@app/application';
+import { GetSession, GetUser, GetUserPermissions } from '@app/application';
 import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -23,30 +25,67 @@ type Props = {
 };
 
 export default async function UserPermissionsPage({ params }: Props) {
-  const getUserPermissions = serverContainer.get<GetUserPermissions>(SYMBOLS.GetUserPermissions);
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
   const userId = (await params).userId;
-  const result = await getUserPermissions.execute(userId, undefined, { perPage: 25 });
-  const [userPermissions, paginationOptions] = match(result, {
+
+  const [userResult, sessionResult] = await Promise.all([
+    getUser.execute(userId),
+    getSession.execute(),
+  ]);
+
+  const user = match(userResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (user) => user,
+  });
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <>
-      <SectionHeader title="User Permissions">
-        <UserPermissionsToolbar userId={userId} />
-      </SectionHeader>
-      <UserPermissionsList
-        userId={userId}
-        initialUserPermissions={
-          userPermissions.map(UserPermissionMapper.fromDomainToDto) as UserPermissionDto[]
-        }
-        initialPaginationOptions={
-          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-        }
-      />
-    </>
-  );
+  if (
+    !(
+      ['read-user-permission'].some((p) => userPermissions.has(p)) ||
+      (['read-own-user-permission'].some((p) => userPermissions.has(p)) &&
+        user.id === session.user.id)
+    )
+  ) {
+    notFound();
+  } else {
+    const getUserPermissions = serverContainer.get<GetUserPermissions>(SYMBOLS.GetUserPermissions);
+
+    const result = await getUserPermissions.execute(userId, undefined, { perPage: 25 });
+    const [userPermissions, paginationOptions] = match(result, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <>
+        <SectionHeader title="User Permissions">
+          <UserPermissionsToolbar userId={userId} />
+        </SectionHeader>
+        <UserPermissionsList
+          userId={userId}
+          initialUserPermissions={
+            userPermissions.map(UserPermissionMapper.fromDomainToDto) as UserPermissionDto[]
+          }
+          initialPaginationOptions={
+            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+          }
+        />
+      </>
+    );
+  }
 }

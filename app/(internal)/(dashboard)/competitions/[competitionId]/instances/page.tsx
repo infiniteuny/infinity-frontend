@@ -1,20 +1,20 @@
-import { GetCompetition, GetCompetitionInstances } from '@app/application';
-import { match } from 'effect/Either';
 import {
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
-import { serverContainer } from '@app/server-injection';
-import { SYMBOLS } from '@config';
 import {
   CompetitionInstancesList,
   CompetitionInstancesToolbar,
 } from '@app/presentation/components/internal/competition-instances';
+import { GetCompetition, GetCompetitionInstances, GetSession } from '@app/application';
+import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
 
 type Props = {
   params: Promise<{
@@ -25,16 +25,13 @@ type Props = {
 export const dynamic = 'force-dynamic';
 
 export default async function CompetitionInstancesPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
   const competitionId = (await params).competitionId;
 
-  const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
-  const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
-    SYMBOLS.GetCompetitionInstances,
-  );
-
-  const [competitionResult, instancesResult] = await Promise.all([
+  const [competitionResult, sessionResult] = await Promise.all([
     getCompetition.execute(competitionId),
-    getCompetitionInstances.execute(['competition'], { competitionId }, { perPage: 25 }),
+    getSession.execute(),
   ]);
 
   const competition = match(competitionResult, {
@@ -45,32 +42,52 @@ export default async function CompetitionInstancesPage({ params }: Props) {
         throw error;
       }
     },
-    onRight: (data) => data,
+    onRight: (competition) => competition,
   });
-
-  const [competitionInstances, paginationOptions] = match(instancesResult, {
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <>
-      <SectionHeader title={`${competition.name} Instances`}>
-        <CompetitionInstancesToolbar competitionId={competitionId} />
-      </SectionHeader>
-      <CompetitionInstancesList
-        initialCompetitionInstances={
-          competitionInstances.map(
-            CompetitionInstanceMapper.fromDomainToDto,
-          ) as CompetitionInstanceDto[]
-        }
-        initialPaginationOptions={
-          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-        }
-        competitionId={competitionId}
-      />
-    </>
-  );
+  if (!['read-competition'].some((p) => userPermissions.has(p))) {
+    notFound();
+  } else {
+    const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
+      SYMBOLS.GetCompetitionInstances,
+    );
+
+    const result = await getCompetitionInstances.execute(
+      ['competition'],
+      { competitionId },
+      { perPage: 25 },
+    );
+    const [competitionInstances, paginationOptions] = match(result, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <>
+        <SectionHeader title={`${competition.name} Instances`}>
+          <CompetitionInstancesToolbar competitionId={competitionId} />
+        </SectionHeader>
+        <CompetitionInstancesList
+          initialCompetitionInstances={
+            competitionInstances.map(
+              CompetitionInstanceMapper.fromDomainToDto,
+            ) as CompetitionInstanceDto[]
+          }
+          initialPaginationOptions={
+            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+          }
+          competitionId={competitionId}
+        />
+      </>
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import { GetCommunityGroupAdmins } from '@app/application';
+import { GetCommunityGroupAdmins, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import {
   CommunityGroupAdminDto,
@@ -13,36 +13,53 @@ import {
   CommunityGroupAdminsList,
   CommunityGroupAdminsToolbar,
 } from '@app/presentation/components/internal/community-group-admins';
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CommunityGroupAdminsPage() {
-  const getCommunityGroupAdmins = serverContainer.get<GetCommunityGroupAdmins>(
-    SYMBOLS.GetCommunityGroupAdmins,
-  );
-  const result = await getCommunityGroupAdmins.execute(undefined, { perPage: 25 });
-  const [communityGroupAdmins, paginationOptions] = match(result, {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <>
-      <SectionHeader title="Community Group Administrators">
-        <CommunityGroupAdminsToolbar />
-      </SectionHeader>
-      <CommunityGroupAdminsList
-        initialCommunityGroupAdmins={
-          communityGroupAdmins.map(
-            CommunityGroupAdminMapper.fromDomainToDto,
-          ) as CommunityGroupAdminDto[]
-        }
-        initialPaginationOptions={
-          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-        }
-      />
-    </>
-  );
+  if (!['read-community-group-admin'].some((p) => userPermissions.has(p))) {
+    notFound();
+  } else {
+    const getCommunityGroupAdmins = serverContainer.get<GetCommunityGroupAdmins>(
+      SYMBOLS.GetCommunityGroupAdmins,
+    );
+
+    const result = await getCommunityGroupAdmins.execute(undefined, { perPage: 25 });
+    const [communityGroupAdmins, paginationOptions] = match(result, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <>
+        <SectionHeader title="Community Group Administrators">
+          <CommunityGroupAdminsToolbar />
+        </SectionHeader>
+        <CommunityGroupAdminsList
+          initialCommunityGroupAdmins={
+            communityGroupAdmins.map(
+              CommunityGroupAdminMapper.fromDomainToDto,
+            ) as CommunityGroupAdminDto[]
+          }
+          initialPaginationOptions={
+            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+          }
+        />
+      </>
+    );
+  }
 }

@@ -1,5 +1,7 @@
-import { GetTeam, GetTeamMembers } from '@app/application';
+import { GetSession, GetTeam, GetTeamMembers } from '@app/application';
 import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -25,42 +27,70 @@ type Props = {
 };
 
 export default async function TeamMembersPage({ params }: Props) {
-  const getTeamMembers = serverContainer.get<GetTeamMembers>(SYMBOLS.GetTeamMembers);
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
   const teamId = (await params).teamId;
 
-  const [teamResult, teamMembersResult] = await Promise.all([
+  const [teamResult, sessionResult] = await Promise.all([
     getTeam.execute(teamId),
-    getTeamMembers.execute(teamId, ['major', 'major.faculty'], undefined, {
-      perPage: 25,
-    }),
+    getSession.execute(),
   ]);
 
   const team = match(teamResult, {
     onLeft: (error) => {
-      throw error;
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
     },
     onRight: (data) => data,
   });
-  const [teamMembers, paginationOptions] = match(teamMembersResult, {
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <>
-      <SectionHeader title="Team Members">
-        <TeamMembersToolbar teamId={teamId} />
-      </SectionHeader>
-      <TeamMembersList
-        team={TeamMapper.fromDomainToDto(team) as TeamDto}
-        initialTeamMembers={teamMembers.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[]}
-        initialPaginationOptions={
-          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-        }
-      />
-    </>
-  );
+  if (
+    !(
+      ['read-team-member'].some((p) => userPermissions.has(p)) ||
+      (['read-own-team-member'].some((p) => userPermissions.has(p)) &&
+        team.leaderId === session.user.id)
+    )
+  ) {
+    notFound();
+  } else {
+    const getTeamMembers = serverContainer.get<GetTeamMembers>(SYMBOLS.GetTeamMembers);
+
+    const teamMembersResult = await getTeamMembers.execute(
+      teamId,
+      ['major', 'major.faculty'],
+      undefined,
+      { perPage: 25 },
+    );
+    const [teamMembers, paginationOptions] = match(teamMembersResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <>
+        <SectionHeader title="Team Members">
+          <TeamMembersToolbar teamId={teamId} />
+        </SectionHeader>
+        <TeamMembersList
+          team={TeamMapper.fromDomainToDto(team) as TeamDto}
+          initialTeamMembers={teamMembers.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[]}
+          initialPaginationOptions={
+            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+          }
+        />
+      </>
+    );
+  }
 }
