@@ -9,17 +9,21 @@ export function UsersToolbar() {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
-    <Box className="ml-auto">
-      <Button
-        variant="filled"
-        className="ml-4"
-        aria-label="Add user"
-        LinkComponent={Link}
-        href="/users/new"
-        startIcon={<AddRounded />}
-      >
-        Add
-      </Button>
-    </Box>
+    <>
+      {['create-user'].some((p) => userPermissions.has(p)) ? (
+        <Box className="ml-auto">
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Add user"
+            LinkComponent={Link}
+            href="/users/new"
+            startIcon={<AddRounded />}
+          >
+            Add
+          </Button>
+        </Box>
+      ) : null}
+    </>
   );
 }
