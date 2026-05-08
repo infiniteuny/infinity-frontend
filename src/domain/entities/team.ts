@@ -1,4 +1,6 @@
-import { CompetitionTeamType, FilterOperator } from '.';
+import { CompetitionTeamType } from './competition-team-type';
+import { FilterOperator } from '.';
+import { TeamMember } from './team-member';
 import { User } from './user';
 
 export type TeamIncludeOptions = (
@@ -39,6 +41,7 @@ export class Team {
   public createdAt: Date;
   public updatedAt: Date;
   public leader?: User;
+  public members?: TeamMember[];
   public teamType?: CompetitionTeamType;
 
   public constructor(
@@ -50,6 +53,7 @@ export class Team {
     createdAt: Date,
     updatedAt: Date,
     leader?: User,
+    members?: TeamMember[],
     teamType?: CompetitionTeamType,
   ) {
     this.id = id;
@@ -60,6 +64,7 @@ export class Team {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.leader = leader;
+    this.members = members;
     this.teamType = teamType;
   }
 }

@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon';
-import { Team } from '@app/domain/entities';
+import { Team, TeamMember } from '@app/domain/entities';
 import { UserDto, UserMapper } from './user.dto';
 import { CompetitionTeamTypeDto, CompetitionTeamTypeMapper } from './competition-team-type.dto';
+import { TeamMemberDto, TeamMemberMapper } from './team-member.dto';
 
 export interface TeamDto {
   id: string;
@@ -12,6 +13,7 @@ export interface TeamDto {
   created_at: string;
   updated_at: string;
   leader?: UserDto;
+  members?: TeamMemberDto[];
   team_type?: CompetitionTeamTypeDto;
 }
 
@@ -26,6 +28,9 @@ export class TeamMapper {
       created_at: team.createdAt?.toISOString(),
       updated_at: team.updatedAt?.toISOString(),
       leader: team.leader ? (UserMapper.fromDomainToDto(team.leader) as UserDto) : undefined,
+      members: team.members
+        ? (team.members.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[])
+        : [],
       team_type: team.teamType
         ? (CompetitionTeamTypeMapper.fromDomainToDto(team.teamType) as CompetitionTeamTypeDto)
         : undefined,
@@ -42,6 +47,7 @@ export class TeamMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.leader ? UserMapper.fromDtoToDomain(dto.leader) : undefined,
+      dto.members ? (dto.members.map(TeamMemberMapper.fromDtoToDomain) as TeamMember[]) : [],
       dto.team_type ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.team_type) : undefined,
     );
   }
