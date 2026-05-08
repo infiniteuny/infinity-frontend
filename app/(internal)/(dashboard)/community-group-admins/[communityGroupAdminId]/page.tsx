@@ -4,7 +4,7 @@ import {
   CommunityGroupAdminToolbar,
   CommunityGroupAdminView,
 } from '@app/presentation/components/internal/single-community-group-admin';
-import { GetCommunityGroupAdmin } from '@app/application';
+import { GetCommunityGroupAdmin, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupAdminPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const communityGroupAdminId = (await params).communityGroupAdminId;
 
-  if (communityGroupAdminId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    communityGroupAdminId !== 'new' &&
+    ['read-community-group-admin'].some((p) => userPermissions.has(p))
+  ) {
     const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
       SYMBOLS.GetCommunityGroupAdmin,
     );
@@ -49,7 +62,12 @@ export default async function SingleCommunityGroupAdminPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    communityGroupAdminId === 'new' &&
+    ['create-community-group-admin'].some((p) => userPermissions.has(p))
+  ) {
     return <CommunityGroupAdminForm />;
+  } else {
+    notFound();
   }
 }

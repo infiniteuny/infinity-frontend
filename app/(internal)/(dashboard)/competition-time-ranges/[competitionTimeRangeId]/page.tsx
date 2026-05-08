@@ -1,4 +1,4 @@
-import { GetCompetitionTimeRange } from '@app/application';
+import { GetCompetitionTimeRange, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCompetitionTimeRangePage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionTimeRangeId = (await params).competitionTimeRangeId;
 
-  if (competitionTimeRangeId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    competitionTimeRangeId !== 'new' &&
+    ['read-competition-time-range'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionTimeRange = serverContainer.get<GetCompetitionTimeRange>(
       SYMBOLS.GetCompetitionTimeRange,
     );
@@ -52,7 +65,12 @@ export default async function SingleCompetitionTimeRangePage({ params }: Props) 
         />
       </>
     );
-  } else {
+  } else if (
+    competitionTimeRangeId === 'new' &&
+    ['create-competition-time-range'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionTimeRangeForm />;
+  } else {
+    notFound();
   }
 }

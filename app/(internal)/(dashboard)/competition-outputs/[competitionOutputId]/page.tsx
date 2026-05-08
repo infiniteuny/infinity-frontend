@@ -1,4 +1,4 @@
-import { GetCompetitionOutput } from '@app/application';
+import { GetCompetitionOutput, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCompetitionOutputPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionOutputId = (await params).competitionOutputId;
 
-  if (competitionOutputId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    competitionOutputId !== 'new' &&
+    ['read-competition-output'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionOutput = serverContainer.get<GetCompetitionOutput>(
       SYMBOLS.GetCompetitionOutput,
     );
@@ -49,7 +62,12 @@ export default async function SingleCompetitionOutputPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    competitionOutputId === 'new' &&
+    ['create-competition-output'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionOutputForm />;
+  } else {
+    notFound();
   }
 }

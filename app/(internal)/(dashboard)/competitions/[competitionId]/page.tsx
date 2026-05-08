@@ -1,4 +1,4 @@
-import { GetCompetition } from '@app/application';
+import { GetCompetition, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleCompetitionPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionId = (await params).competitionId;
 
-  if (competitionId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (competitionId !== 'new' && ['read-competition'].some((p) => userPermissions.has(p))) {
     const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
     const competitionResult = await getCompetition.execute(competitionId);
     const competition = match(competitionResult, {
@@ -45,7 +55,12 @@ export default async function SingleCompetitionPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    competitionId === 'new' &&
+    ['create-competition'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionForm />;
+  } else {
+    notFound();
   }
 }

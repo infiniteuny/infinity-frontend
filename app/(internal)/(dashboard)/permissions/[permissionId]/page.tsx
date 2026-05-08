@@ -1,4 +1,4 @@
-import { GetPermission } from '@app/application';
+import { GetPermission, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SinglePermissionPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const permissionId = (await params).permissionId;
 
-  if (permissionId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (permissionId !== 'new' && ['read-permission'].some((p) => userPermissions.has(p))) {
     const getPermission = serverContainer.get<GetPermission>(SYMBOLS.GetPermission);
     const permissionResult = await getPermission.execute(permissionId);
     const permission = match(permissionResult, {
@@ -45,7 +55,9 @@ export default async function SinglePermissionPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (permissionId === 'new' && ['create-permission'].some((p) => userPermissions.has(p))) {
     return <PermissionForm />;
+  } else {
+    notFound();
   }
 }

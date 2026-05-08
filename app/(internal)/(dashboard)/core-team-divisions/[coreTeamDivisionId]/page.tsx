@@ -1,4 +1,4 @@
-import { GetCoreTeamDivision } from '@app/application';
+import { GetCoreTeamDivision, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCoreTeamDivisionPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const coreTeamDivisionId = (await params).coreTeamDivisionId;
 
-  if (coreTeamDivisionId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    coreTeamDivisionId !== 'new' &&
+    ['read-core-team-division'].some((p) => userPermissions.has(p))
+  ) {
     const getCoreTeamDivision = serverContainer.get<GetCoreTeamDivision>(
       SYMBOLS.GetCoreTeamDivision,
     );
@@ -49,7 +62,12 @@ export default async function SingleCoreTeamDivisionPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    coreTeamDivisionId === 'new' &&
+    ['create-core-team-division'].some((p) => userPermissions.has(p))
+  ) {
     return <CoreTeamDivisionForm />;
+  } else {
+    notFound();
   }
 }

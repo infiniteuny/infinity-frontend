@@ -1,4 +1,4 @@
-import { GetPersona } from '@app/application';
+import { GetPersona, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SinglePersonaPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const personaId = (await params).personaId;
 
-  if (personaId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (personaId !== 'new' && ['read-persona'].some((p) => userPermissions.has(p))) {
     const getPersona = serverContainer.get<GetPersona>(SYMBOLS.GetPersona);
     const personaResult = await getPersona.execute(personaId);
     const persona = match(personaResult, {
@@ -43,7 +53,9 @@ export default async function SinglePersonaPage({ params }: Props) {
         <PersonaView initialPersona={PersonaMapper.fromDomainToDto(persona) as PersonaDto} />
       </>
     );
-  } else {
+  } else if (personaId === 'new' && ['create-persona'].some((p) => userPermissions.has(p))) {
     return <PersonaForm />;
+  } else {
+    notFound();
   }
 }

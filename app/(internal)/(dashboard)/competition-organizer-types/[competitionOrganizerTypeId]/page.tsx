@@ -1,4 +1,4 @@
-import { GetCompetitionOrganizerType } from '@app/application';
+import { GetCompetitionOrganizerType, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -22,9 +22,22 @@ type Props = {
 };
 
 export default async function SingleCompetitionOrganizerTypePage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionOrganizerTypeId = (await params).competitionOrganizerTypeId;
 
-  if (competitionOrganizerTypeId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    competitionOrganizerTypeId !== 'new' &&
+    ['read-competition-organizer-type'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionOrganizerType = serverContainer.get<GetCompetitionOrganizerType>(
       SYMBOLS.GetCompetitionOrganizerType,
     );
@@ -58,7 +71,12 @@ export default async function SingleCompetitionOrganizerTypePage({ params }: Pro
         />
       </>
     );
-  } else {
+  } else if (
+    competitionOrganizerTypeId === 'new' &&
+    ['create-competition-organizer-type'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionOrganizerTypeForm />;
+  } else {
+    notFound();
   }
 }

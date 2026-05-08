@@ -4,6 +4,7 @@ import {
   GetCompetitionRanks,
   GetCompetitionScales,
   GetCompetitionTimeRanges,
+  GetSession,
 } from '@app/application';
 import { match } from 'effect/Either';
 import {
@@ -36,7 +37,17 @@ type Props = {
 };
 
 export default async function SingleAchievementPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const achievementId = (await params).achievementId;
+
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
 
   if (achievementId !== 'new') {
     const getAchievement = serverContainer.get<GetAchievement>(SYMBOLS.GetAchievement);
@@ -77,7 +88,10 @@ export default async function SingleAchievementPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    achievementId === 'new' &&
+    ['create-achievement', 'create-own-achievement'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionScales = serverContainer.get<GetCompetitionScales>(
       SYMBOLS.GetCompetitionScales,
     );
@@ -146,5 +160,7 @@ export default async function SingleAchievementPage({ params }: Props) {
         }
       />
     );
+  } else {
+    notFound();
   }
 }

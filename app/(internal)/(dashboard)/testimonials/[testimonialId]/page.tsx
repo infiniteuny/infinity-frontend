@@ -1,4 +1,4 @@
-import { GetTestimonial } from '@app/application';
+import { GetSession, GetTestimonial } from '@app/application';
 import { match } from 'effect/Either';
 import { NotFoundError } from '@app/domain/errors';
 import { notFound } from 'next/navigation';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleTestimonialPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const testimonialId = (await params).testimonialId;
 
-  if (testimonialId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (testimonialId !== 'new' && ['read-testimonial'].some((p) => userPermissions.has(p))) {
     const getTestimonial = serverContainer.get<GetTestimonial>(SYMBOLS.GetTestimonial);
     const testimonialResult = await getTestimonial.execute(testimonialId);
     const testimonial = match(testimonialResult, {
@@ -45,7 +55,12 @@ export default async function SingleTestimonialPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    testimonialId === 'new' &&
+    ['create-testimonial'].some((p) => userPermissions.has(p))
+  ) {
     return <TestimonialForm />;
+  } else {
+    notFound();
   }
 }

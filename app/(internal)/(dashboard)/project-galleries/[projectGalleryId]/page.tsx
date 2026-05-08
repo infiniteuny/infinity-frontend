@@ -1,4 +1,4 @@
-import { GetProjectGallery } from '@app/application';
+import { GetProjectGallery, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { NotFoundError } from '@app/domain/errors';
 import { notFound } from 'next/navigation';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleProjectGalleryPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const projectGalleryId = (await params).projectGalleryId;
 
-  if (projectGalleryId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (projectGalleryId !== 'new' && ['read-project-gallery'].some((p) => userPermissions.has(p))) {
     const getProjectGallery = serverContainer.get<GetProjectGallery>(SYMBOLS.GetProjectGallery);
     const projectGalleryResult = await getProjectGallery.execute(projectGalleryId);
     const projectGallery = match(projectGalleryResult, {
@@ -47,7 +57,12 @@ export default async function SingleProjectGalleryPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    projectGalleryId === 'new' &&
+    ['create-project-gallery'].some((p) => userPermissions.has(p))
+  ) {
     return <ProjectGalleryForm />;
+  } else {
+    notFound();
   }
 }

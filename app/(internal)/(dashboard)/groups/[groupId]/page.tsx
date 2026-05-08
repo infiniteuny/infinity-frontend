@@ -1,4 +1,4 @@
-import { GetGroup } from '@app/application';
+import { GetGroup, GetSession } from '@app/application';
 import { GroupDto, GroupMapper } from '@app/infrastructure/dtos';
 import {
   GroupForm,
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleGroupPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const groupId = (await params).groupId;
 
-  if (groupId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (groupId !== 'new' && ['read-group'].some((p) => userPermissions.has(p))) {
     const getGroup = serverContainer.get<GetGroup>(SYMBOLS.GetGroup);
     const groupResult = await getGroup.execute(groupId);
     const group = match(groupResult, {
@@ -43,7 +53,9 @@ export default async function SingleGroupPage({ params }: Props) {
         <GroupView initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />
       </>
     );
-  } else {
+  } else if (groupId === 'new' && ['create-group'].some((p) => userPermissions.has(p))) {
     return <GroupForm />;
+  } else {
+    notFound();
   }
 }

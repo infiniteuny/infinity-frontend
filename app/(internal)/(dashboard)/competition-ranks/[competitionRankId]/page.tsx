@@ -1,4 +1,4 @@
-import { GetCompetitionRank } from '@app/application';
+import { GetCompetitionRank, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCompetitionRankPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionRankId = (await params).competitionRankId;
 
-  if (competitionRankId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    competitionRankId !== 'new' &&
+    ['read-competition-rank'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionRank = serverContainer.get<GetCompetitionRank>(SYMBOLS.GetCompetitionRank);
     const competitionRankResult = await getCompetitionRank.execute(competitionRankId);
     const competitionRank = match(competitionRankResult, {
@@ -47,7 +60,12 @@ export default async function SingleCompetitionRankPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    competitionRankId === 'new' &&
+    ['create-competition-rank'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionRankForm />;
+  } else {
+    notFound();
   }
 }

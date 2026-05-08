@@ -1,16 +1,16 @@
-import { GetCompetitionTeamType } from '@app/application';
-import { match } from 'effect/Either';
-import { notFound } from 'next/navigation';
-import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
-import { serverContainer } from '@app/server-injection';
-import { SYMBOLS } from '@config';
 import { CompetitionTeamTypeDto, CompetitionTeamTypeMapper } from '@app/infrastructure/dtos';
 import {
   CompetitionTeamTypeForm,
   CompetitionTeamTypeToolbar,
   CompetitionTeamTypeView,
 } from '@app/presentation/components/internal/single-competition-team-type';
+import { GetCompetitionTeamType, GetSession } from '@app/application';
+import { match } from 'effect/Either';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@app/domain/errors';
+import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
 
 type Props = {
   params: Promise<{
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleCompetitionTeamTypePage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const teamTypeId = (await params).teamTypeId;
 
-  if (teamTypeId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (teamTypeId !== 'new' && ['read-competition-team-type'].some((p) => userPermissions.has(p))) {
     const getCompetitionTeamType = serverContainer.get<GetCompetitionTeamType>(
       SYMBOLS.GetCompetitionTeamType,
     );
@@ -49,7 +59,12 @@ export default async function SingleCompetitionTeamTypePage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    teamTypeId === 'new' &&
+    ['create-competition-team-type'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionTeamTypeForm />;
+  } else {
+    notFound();
   }
 }

@@ -4,7 +4,7 @@ import {
   CoreTeamToolbar,
   CoreTeamView,
 } from '@app/presentation/components/internal/single-core-team';
-import { GetCoreTeam } from '@app/application';
+import { GetCoreTeam, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleCoreTeamPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const coreTeamId = (await params).coreTeamId;
 
-  if (coreTeamId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (coreTeamId !== 'new' && ['read-core-team'].some((p) => userPermissions.has(p))) {
     const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
     const coreTeamResult = await getCoreTeam.execute(coreTeamId);
     const coreTeam = match(coreTeamResult, {
@@ -43,7 +53,9 @@ export default async function SingleCoreTeamPage({ params }: Props) {
         <CoreTeamView initialCoreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto} />
       </>
     );
-  } else {
+  } else if (coreTeamId === 'new' && ['create-core-team'].some((p) => userPermissions.has(p))) {
     return <CoreTeamForm />;
+  } else {
+    notFound();
   }
 }

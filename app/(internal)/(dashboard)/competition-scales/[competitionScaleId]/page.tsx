@@ -1,4 +1,4 @@
-import { GetCompetitionScale } from '@app/application';
+import { GetCompetitionScale, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,22 @@ type Props = {
 };
 
 export default async function SingleCompetitionScalePage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const competitionScaleId = (await params).competitionScaleId;
 
-  if (competitionScaleId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    competitionScaleId !== 'new' &&
+    ['read-competition-scale'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionScale = serverContainer.get<GetCompetitionScale>(
       SYMBOLS.GetCompetitionScale,
     );
@@ -49,7 +62,12 @@ export default async function SingleCompetitionScalePage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    competitionScaleId === 'new' &&
+    ['create-competition-scale'].some((p) => userPermissions.has(p))
+  ) {
     return <CompetitionScaleForm />;
+  } else {
+    notFound();
   }
 }

@@ -1,4 +1,4 @@
-import { GetCompetitionTeamTypes, GetTeam } from '@app/application';
+import { GetCompetitionTeamTypes, GetSession, GetTeam } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -20,9 +20,19 @@ type Props = {
 };
 
 export default async function SingleTeamPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const teamId = (await params).teamId;
 
-  if (teamId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (teamId !== 'new' && ['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
     const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
     const teamResult = await getTeam.execute(teamId, ['leader', 'team_type']);
     const team = match(teamResult, {
@@ -36,6 +46,13 @@ export default async function SingleTeamPage({ params }: Props) {
       onRight: (data) => data,
     });
 
+    if (
+      !['read-team'].some((p) => userPermissions.has(p)) &&
+      !team.members?.some((m) => m.id === session.user.id)
+    ) {
+      notFound();
+    }
+
     return (
       <>
         <SectionHeader title={team.name}>
@@ -44,7 +61,10 @@ export default async function SingleTeamPage({ params }: Props) {
         <TeamView initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto} />
       </>
     );
-  } else {
+  } else if (
+    teamId === 'new' &&
+    ['create-team', 'create-own-team'].some((p) => userPermissions.has(p))
+  ) {
     const getCompetitionTeamTypes = serverContainer.get<GetCompetitionTeamTypes>(
       SYMBOLS.GetCompetitionTeamTypes,
     );
@@ -65,5 +85,7 @@ export default async function SingleTeamPage({ params }: Props) {
         }
       />
     );
+  } else {
+    notFound();
   }
 }

@@ -1,4 +1,4 @@
-import { GetCommunityGroup } from '@app/application';
+import { GetCommunityGroup, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -19,9 +19,19 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const communityGroupId = (await params).communityGroupId;
 
-  if (communityGroupId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (communityGroupId !== 'new' && ['read-community-group'].some((p) => userPermissions.has(p))) {
     const getCommunityGroup = serverContainer.get<GetCommunityGroup>(SYMBOLS.GetCommunityGroup);
     const communityGroupResult = await getCommunityGroup.execute(communityGroupId);
     const communityGroup = match(communityGroupResult, {
@@ -47,7 +57,12 @@ export default async function SingleCommunityGroupPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    communityGroupId === 'new' &&
+    ['create-community-group'].some((p) => userPermissions.has(p))
+  ) {
     return <CommunityGroupForm />;
+  } else {
+    notFound();
   }
 }

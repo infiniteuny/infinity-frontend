@@ -1,4 +1,4 @@
-import { GetDegrees, GetFaculties, GetMajor } from '@app/application';
+import { GetDegrees, GetFaculties, GetMajor, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -26,9 +26,19 @@ type Props = {
 };
 
 export default async function SingleMajorPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const majorId = (await params).majorId;
 
-  if (majorId !== 'new') {
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (majorId !== 'new' && ['read-major'].some((p) => userPermissions.has(p))) {
     const getMajor = serverContainer.get<GetMajor>(SYMBOLS.GetMajor);
     const majorResult = await getMajor.execute(majorId, ['degree', 'faculty']);
     const major = match(majorResult, {
@@ -50,7 +60,7 @@ export default async function SingleMajorPage({ params }: Props) {
         <MajorView initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto} />
       </>
     );
-  } else {
+  } else if (majorId === 'new' && ['create-major'].some((p) => userPermissions.has(p))) {
     const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
 
@@ -76,5 +86,7 @@ export default async function SingleMajorPage({ params }: Props) {
         faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
       />
     );
+  } else {
+    notFound();
   }
 }
