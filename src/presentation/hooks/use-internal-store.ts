@@ -6,11 +6,11 @@ import { useStore } from 'zustand';
 export const useInternalStore = <T>(
   selector: (store: InternalStates & InternalActions) => T,
 ): T => {
-  const counterStoreContext = useContext(InternalStoreContext);
+  const internalStoreContext = useContext(InternalStoreContext);
 
-  if (!counterStoreContext) {
+  if (!internalStoreContext) {
     throw new Error(`useInternalStore must be used within InternalStoreProvider`);
   }
 
-  return useStore(counterStoreContext, selector);
+  return useStore(internalStoreContext, selector);
 };
