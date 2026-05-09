@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewUserCommunityGroupPage({ params }: Props) {
+export default async function SigleUserCommunityGroupNewPage({ params }: Props) {
   const userId = (await params).userId;
 
   return <UserCommunityGroupForm userId={userId} />;

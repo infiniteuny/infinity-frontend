@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewUserPersonaPage({ params }: Props) {
+export default async function SingleUserPersonaNewPage({ params }: Props) {
   const userId = (await params).userId;
 
   return <UserPersonaForm userId={userId} />;

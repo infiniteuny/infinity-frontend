@@ -19,7 +19,7 @@ type Props = {
   }>;
 };
 
-export default async function EditCommunityGroupAdminMemberPage({ params }: Props) {
+export default async function SingleCommunityGroupAdminMemberEditPage({ params }: Props) {
   const { communityGroupAdminId, memberId } = await params;
 
   const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(

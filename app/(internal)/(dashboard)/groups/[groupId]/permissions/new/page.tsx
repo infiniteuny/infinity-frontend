@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewGroupPermissionPage({ params }: Props) {
+export default async function SingleGroupPermissionNewPage({ params }: Props) {
   const groupId = (await params).groupId;
 
   return <GroupPermissionForm groupId={groupId} />;

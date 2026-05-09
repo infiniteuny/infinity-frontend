@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewCommunityGroupMemberPage({ params }: Props) {
+export default async function SingleCommunityGroupMemberNewPage({ params }: Props) {
   const communityGroupId = (await params).communityGroupId;
 
   return <CommunityGroupMemberForm communityGroupId={communityGroupId} />;

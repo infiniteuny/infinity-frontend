@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewUserPermissionPage({ params }: Props) {
+export default async function SingleUserPermissionNewPage({ params }: Props) {
   const userId = (await params).userId;
 
   return <UserPermissionForm userId={userId} />;

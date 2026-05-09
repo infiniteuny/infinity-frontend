@@ -19,7 +19,7 @@ type Props = {
   }>;
 };
 
-export default async function EditCoreTeamMemberPage({ params }: Props) {
+export default async function SingleCoreTeamMemberEditPage({ params }: Props) {
   const { coreTeamId, memberId } = await params;
 
   const getCoreTeamMember = serverContainer.get<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember);

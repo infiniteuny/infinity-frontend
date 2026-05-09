@@ -6,7 +6,7 @@ type Props = {
   }>;
 };
 
-export default async function NewTeamMemberPage({ params }: Props) {
+export default async function SingleTeamMemberNewPage({ params }: Props) {
   const teamId = (await params).teamId;
 
   return <TeamMemberForm teamId={teamId} />;
