@@ -5,8 +5,13 @@ import {
   CommunityGroupMapper,
 } from '@app/infrastructure/dtos';
 import { CommunityGroupAdminMemberForm } from '@app/presentation/components/internal/single-community-group-admin-member';
-import { GetCommunityGroupAdminMember, GetCommunityGroups } from '@app/application';
-import { match } from 'effect/Either';
+import {
+  GetCommunityGroupAdmin,
+  GetCommunityGroupAdminMember,
+  GetCommunityGroups,
+  GetSession,
+} from '@app/application';
+import { isLeft, match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
 import { serverContainer } from '@app/server-injection';
@@ -20,46 +25,77 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupAdminMemberEditPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
   const { communityGroupAdminId, memberId } = await params;
 
-  const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
-    SYMBOLS.GetCommunityGroupAdminMember,
-  );
-  const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
-
-  const [communityGroupAdminMemberResult, communityGroupsResult] = await Promise.all([
-    getCommunityGroupAdminMember.execute(memberId, ['membership.community_group']),
-    getCommunityGroups.execute(undefined, { perPage: 100 }),
+  const [communityGroupAdminResult, sessionResult] = await Promise.all([
+    getCommunityGroupAdmin.execute(communityGroupAdminId),
+    getSession.execute(),
   ]);
 
-  const [communityGroups] = match(communityGroupsResult, {
+  if (isLeft(communityGroupAdminResult)) {
+    const error = communityGroupAdminResult.left;
+
+    if (error instanceof NotFoundError) {
+      notFound();
+    } else {
+      throw error;
+    }
+  }
+
+  const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (data) => data,
+    onRight: (session) => session,
   });
-  const communityGroupAdminMember = match(communityGroupAdminMemberResult, {
-    onLeft: (error) => {
-      if (error instanceof NotFoundError) {
-        notFound();
-      } else {
-        throw error;
-      }
-    },
-    onRight: (data) => data,
-  });
+  const userPermissions = new Set(session.permissions);
 
-  return (
-    <CommunityGroupAdminMemberForm
-      communityGroupAdminId={communityGroupAdminId}
-      initialCommunityGroupAdminMember={
-        CommunityGroupAdminMemberMapper.fromDomainToDto(
-          communityGroupAdminMember,
-        ) as CommunityGroupAdminMemberDto
-      }
-      communityGroups={
-        communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]
-      }
-    />
-  );
+  if (['update-community-group-admin-member'].some((p) => userPermissions.has(p))) {
+    const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
+      SYMBOLS.GetCommunityGroupAdminMember,
+    );
+    const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
+
+    const [communityGroupAdminMemberResult, communityGroupsResult] = await Promise.all([
+      getCommunityGroupAdminMember.execute(memberId, ['membership.community_group']),
+      getCommunityGroups.execute(undefined, { perPage: 100 }),
+    ]);
+
+    const [communityGroups] = match(communityGroupsResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+    const communityGroupAdminMember = match(communityGroupAdminMemberResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <CommunityGroupAdminMemberForm
+        communityGroupAdminId={communityGroupAdminId}
+        initialCommunityGroupAdminMember={
+          CommunityGroupAdminMemberMapper.fromDomainToDto(
+            communityGroupAdminMember,
+          ) as CommunityGroupAdminMemberDto
+        }
+        communityGroups={
+          communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]
+        }
+      />
+    );
+  } else {
+    notFound();
+  }
 }

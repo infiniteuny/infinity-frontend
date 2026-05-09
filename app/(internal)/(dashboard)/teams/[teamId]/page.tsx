@@ -48,7 +48,7 @@ export default async function SingleTeamPage({ params }: Props) {
 
     if (
       !['read-team'].some((p) => userPermissions.has(p)) &&
-      !team.members?.some((m) => m.id === session.user.id)
+      !team.members?.some((member) => member.id === session.user.id)
     ) {
       notFound();
     }

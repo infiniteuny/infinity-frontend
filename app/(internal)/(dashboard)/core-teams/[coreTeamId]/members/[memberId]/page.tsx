@@ -9,8 +9,8 @@ import {
   CoreTeamMemberToolbar,
   CoreTeamMemberView,
 } from '@app/presentation/components/internal/single-core-team-member';
-import { GetCoreTeamDivisions, GetCoreTeamMember } from '@app/application';
-import { match } from 'effect/Either';
+import { GetCoreTeam, GetCoreTeamDivisions, GetCoreTeamMember, GetSession } from '@app/application';
+import { isLeft, match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -27,9 +27,34 @@ type Props = {
 };
 
 export default async function SingleCoreTeamMemberPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
   const { coreTeamId, memberId } = await params;
 
-  if (memberId !== 'new') {
+  const [coreTeamResult, sessionResult] = await Promise.all([
+    getCoreTeam.execute(coreTeamId),
+    getSession.execute(),
+  ]);
+
+  if (isLeft(coreTeamResult)) {
+    const error = coreTeamResult.left;
+
+    if (error instanceof NotFoundError) {
+      notFound();
+    } else {
+      throw error;
+    }
+  }
+
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (memberId !== 'new' && ['read-core-team-member'].some((p) => userPermissions.has(p))) {
     const getCoreTeamMember = serverContainer.get<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember);
     const coreTeamMemberResult = await getCoreTeamMember.execute(memberId, [
       'major',
@@ -59,7 +84,10 @@ export default async function SingleCoreTeamMemberPage({ params }: Props) {
         />
       </>
     );
-  } else {
+  } else if (
+    memberId === 'new' &&
+    ['create-core-team-member'].some((p) => userPermissions.has(p))
+  ) {
     const getCoreTeamDivisions = serverContainer.get<GetCoreTeamDivisions>(
       SYMBOLS.GetCoreTeamDivisions,
     );
@@ -81,5 +109,7 @@ export default async function SingleCoreTeamMemberPage({ params }: Props) {
         }
       />
     );
+  } else {
+    notFound();
   }
 }

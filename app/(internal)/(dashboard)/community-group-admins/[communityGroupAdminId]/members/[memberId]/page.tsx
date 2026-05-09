@@ -9,8 +9,13 @@ import {
   CommunityGroupAdminMemberToolbar,
   CommunityGroupAdminMemberView,
 } from '@app/presentation/components/internal/single-community-group-admin-member';
-import { GetCommunityGroupAdminMember, GetCommunityGroups } from '@app/application';
-import { match } from 'effect/Either';
+import {
+  GetCommunityGroupAdmin,
+  GetCommunityGroupAdminMember,
+  GetCommunityGroups,
+  GetSession,
+} from '@app/application';
+import { isLeft, match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -27,9 +32,39 @@ type Props = {
 };
 
 export default async function SingleCommunityGroupAdminMemberPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
   const { communityGroupAdminId, memberId } = await params;
 
-  if (memberId !== 'new') {
+  const [communityGroupAdminResult, sessionResult] = await Promise.all([
+    getCommunityGroupAdmin.execute(communityGroupAdminId),
+    getSession.execute(),
+  ]);
+
+  if (isLeft(communityGroupAdminResult)) {
+    const error = communityGroupAdminResult.left;
+
+    if (error instanceof NotFoundError) {
+      notFound();
+    } else {
+      throw error;
+    }
+  }
+
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    memberId !== 'new' &&
+    ['read-community-group-admin-member'].some((p) => userPermissions.has(p))
+  ) {
     const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
       SYMBOLS.GetCommunityGroupAdminMember,
     );
@@ -66,11 +101,13 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
         />
       </>
     );
-  } else {
+  } else if (
+    memberId === 'new' &&
+    ['create-community-group-admin-member'].some((p) => userPermissions.has(p))
+  ) {
     const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
 
     const communityGroupsResult = await getCommunityGroups.execute(undefined, { perPage: 100 });
-
     const [communityGroups] = match(communityGroupsResult, {
       onLeft: (error) => {
         throw error;
@@ -86,5 +123,7 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
         }
       />
     );
+  } else {
+    notFound();
   }
 }

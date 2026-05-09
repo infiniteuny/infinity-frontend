@@ -58,7 +58,7 @@ export default async function TeamMembersPage({ params }: Props) {
     !(
       ['read-team-member'].some((p) => userPermissions.has(p)) ||
       (['read-own-team-member'].some((p) => userPermissions.has(p)) &&
-        team.leaderId === session.user.id)
+        team.members?.some((member) => member.id === session.user.id))
     )
   ) {
     notFound();

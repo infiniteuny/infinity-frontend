@@ -59,7 +59,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
 
     if (
       !['read-fund-application'].some((p) => userPermissions.has(p)) &&
-      !fundApplication.team?.members?.some((m) => m.id === session.user.id)
+      !fundApplication.team?.members?.some((member) => member.id === session.user.id)
     ) {
       notFound();
     }
