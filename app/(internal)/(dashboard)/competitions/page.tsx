@@ -29,9 +29,7 @@ export default async function CompetitionsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition'].some((p) => userPermissions.has(p))) {
     const getCompetitions = serverContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions);
 
     const result = await getCompetitions.execute(undefined, { perPage: 25 });
@@ -57,5 +55,7 @@ export default async function CompetitionsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

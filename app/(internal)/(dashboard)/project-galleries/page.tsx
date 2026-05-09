@@ -29,9 +29,7 @@ export default async function ProjectGalleriesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-project-gallery'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-project-gallery'].some((p) => userPermissions.has(p))) {
     const getProjectGalleries = serverContainer.get<GetProjectGalleries>(
       SYMBOLS.GetProjectGalleries,
     );
@@ -59,5 +57,7 @@ export default async function ProjectGalleriesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

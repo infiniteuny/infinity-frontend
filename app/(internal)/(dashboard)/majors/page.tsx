@@ -26,9 +26,7 @@ export default async function MajorsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-major'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-major'].some((p) => userPermissions.has(p))) {
     const getMajors = serverContainer.get<GetMajors>(SYMBOLS.GetMajors);
 
     const result = await getMajors.execute(['degree', 'faculty'], undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function MajorsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

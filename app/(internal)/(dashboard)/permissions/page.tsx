@@ -29,9 +29,7 @@ export default async function PermissionsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-permission'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-permission'].some((p) => userPermissions.has(p))) {
     const getPermissions = serverContainer.get<GetPermissions>(SYMBOLS.GetPermissions);
 
     const result = await getPermissions.execute(undefined, { perPage: 25 });
@@ -55,5 +53,7 @@ export default async function PermissionsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

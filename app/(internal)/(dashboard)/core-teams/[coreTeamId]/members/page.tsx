@@ -52,9 +52,7 @@ export default async function CoreTeamMembersPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-core-team-member'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-core-team-member'].some((p) => userPermissions.has(p))) {
     const getCoreTeamMembers = serverContainer.get<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers);
 
     const result = await getCoreTeamMembers.execute(
@@ -86,5 +84,7 @@ export default async function CoreTeamMembersPage({ params }: Props) {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

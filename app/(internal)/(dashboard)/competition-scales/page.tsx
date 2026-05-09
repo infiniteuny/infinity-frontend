@@ -29,9 +29,7 @@ export default async function CompetitionScalesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-scale'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-scale'].some((p) => userPermissions.has(p))) {
     const getCompetitionScales = serverContainer.get<GetCompetitionScales>(
       SYMBOLS.GetCompetitionScales,
     );
@@ -59,5 +57,7 @@ export default async function CompetitionScalesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

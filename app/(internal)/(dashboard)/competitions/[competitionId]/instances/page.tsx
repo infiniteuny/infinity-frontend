@@ -52,9 +52,7 @@ export default async function CompetitionInstancesPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition'].some((p) => userPermissions.has(p))) {
     const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
       SYMBOLS.GetCompetitionInstances,
     );
@@ -89,5 +87,7 @@ export default async function CompetitionInstancesPage({ params }: Props) {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

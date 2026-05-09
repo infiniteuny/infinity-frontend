@@ -25,9 +25,7 @@ export default async function SingleCommunityGroupAdminEditPage({ params }: Prop
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['update-community-group-admin'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['update-community-group-admin'].some((p) => userPermissions.has(p))) {
     const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
       SYMBOLS.GetCommunityGroupAdmin,
     );
@@ -52,5 +50,7 @@ export default async function SingleCommunityGroupAdminEditPage({ params }: Prop
         }
       />
     );
+  } else {
+    notFound();
   }
 }

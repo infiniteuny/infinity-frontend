@@ -26,9 +26,7 @@ export default async function FacultiesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-faculty'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-faculty'].some((p) => userPermissions.has(p))) {
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
 
     const result = await getFaculties.execute(undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function FacultiesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

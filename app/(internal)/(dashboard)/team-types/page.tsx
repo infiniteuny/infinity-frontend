@@ -29,9 +29,7 @@ export default async function TeamTypesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-team-type'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-team-type'].some((p) => userPermissions.has(p))) {
     const getCompetitionTeamTypes = serverContainer.get<GetCompetitionTeamTypes>(
       SYMBOLS.GetCompetitionTeamTypes,
     );
@@ -61,5 +59,7 @@ export default async function TeamTypesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

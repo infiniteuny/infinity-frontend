@@ -29,9 +29,7 @@ export default async function FundApplicationsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-fund-application', 'read-own-fund-application'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-fund-application', 'read-own-fund-application'].some((p) => userPermissions.has(p))) {
     const getFundApplications = serverContainer.get<GetFundApplications>(
       SYMBOLS.GetFundApplications,
     );
@@ -63,5 +61,7 @@ export default async function FundApplicationsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

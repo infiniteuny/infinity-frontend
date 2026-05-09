@@ -26,9 +26,7 @@ export default async function DegreesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-degree'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-degree'].some((p) => userPermissions.has(p))) {
     const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
 
     const result = await getDegrees.execute(undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function DegreesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

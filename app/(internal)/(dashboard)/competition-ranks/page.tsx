@@ -29,9 +29,7 @@ export default async function CompetitionRanksPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-rank'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-rank'].some((p) => userPermissions.has(p))) {
     const getCompetitionRanks = serverContainer.get<GetCompetitionRanks>(
       SYMBOLS.GetCompetitionRanks,
     );
@@ -59,5 +57,7 @@ export default async function CompetitionRanksPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

@@ -29,9 +29,7 @@ export default async function CompetitionOrganizerTypesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-organizer-type'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-organizer-type'].some((p) => userPermissions.has(p))) {
     const getCompetitionOrganizerTypes = serverContainer.get<GetCompetitionOrganizerTypes>(
       SYMBOLS.GetCompetitionOrganizerTypes,
     );
@@ -61,5 +59,7 @@ export default async function CompetitionOrganizerTypesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

@@ -29,9 +29,7 @@ export default async function CompetitionTimeRangesPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-time-range'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-time-range'].some((p) => userPermissions.has(p))) {
     const getCompetitionTimeRanges = serverContainer.get<GetCompetitionTimeRanges>(
       SYMBOLS.GetCompetitionTimeRanges,
     );
@@ -61,5 +59,7 @@ export default async function CompetitionTimeRangesPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

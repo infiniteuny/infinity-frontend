@@ -26,9 +26,7 @@ export default async function TeamsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
     const getTeams = serverContainer.get<GetTeams>(SYMBOLS.GetTeams);
 
     const result = await getTeams.execute(['leader', 'team_type'], undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function TeamsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

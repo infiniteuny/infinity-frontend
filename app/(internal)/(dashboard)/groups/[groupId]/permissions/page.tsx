@@ -52,9 +52,7 @@ export default async function GroupPermissionsPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-group-permission'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-group-permission'].some((p) => userPermissions.has(p))) {
     const getGroupPermissions = serverContainer.get<GetGroupPermissions>(
       SYMBOLS.GetGroupPermissions,
     );
@@ -83,5 +81,7 @@ export default async function GroupPermissionsPage({ params }: Props) {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

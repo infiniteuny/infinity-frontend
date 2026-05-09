@@ -26,9 +26,7 @@ export default async function CoreTeamsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-core-team'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-core-team'].some((p) => userPermissions.has(p))) {
     const getCoreTeams = serverContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams);
 
     const result = await getCoreTeams.execute(undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function CoreTeamsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

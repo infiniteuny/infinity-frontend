@@ -26,9 +26,7 @@ export default async function GroupsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-group'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-group'].some((p) => userPermissions.has(p))) {
     const getGroups = serverContainer.get<GetGroups>(SYMBOLS.GetGroups);
 
     const result = await getGroups.execute(undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function GroupsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

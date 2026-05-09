@@ -29,9 +29,7 @@ export default async function CompetitionOutputsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-competition-output'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-competition-output'].some((p) => userPermissions.has(p))) {
     const getCompetitionOutputs = serverContainer.get<GetCompetitionOutputs>(
       SYMBOLS.GetCompetitionOutputs,
     );
@@ -61,5 +59,7 @@ export default async function CompetitionOutputsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

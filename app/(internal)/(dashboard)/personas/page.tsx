@@ -26,9 +26,7 @@ export default async function PersonasPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-persona'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-persona'].some((p) => userPermissions.has(p))) {
     const getPersonas = serverContainer.get<GetPersonas>(SYMBOLS.GetPersonas);
 
     const result = await getPersonas.execute(undefined, { perPage: 25 });
@@ -52,5 +50,7 @@ export default async function PersonasPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

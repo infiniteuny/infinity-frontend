@@ -29,9 +29,7 @@ export default async function CommunityGroupsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-community-group'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-community-group'].some((p) => userPermissions.has(p))) {
     const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
 
     const result = await getCommunityGroups.execute(undefined, { perPage: 25 });
@@ -57,5 +55,7 @@ export default async function CommunityGroupsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

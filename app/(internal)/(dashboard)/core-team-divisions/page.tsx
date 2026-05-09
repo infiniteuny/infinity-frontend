@@ -29,9 +29,7 @@ export default async function CoreTeamDivisionsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-core-team-division'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-core-team-division'].some((p) => userPermissions.has(p))) {
     const getCoreTeamDivisions = serverContainer.get<GetCoreTeamDivisions>(
       SYMBOLS.GetCoreTeamDivisions,
     );
@@ -59,5 +57,7 @@ export default async function CoreTeamDivisionsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

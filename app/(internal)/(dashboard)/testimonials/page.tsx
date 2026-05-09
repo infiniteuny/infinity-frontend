@@ -29,9 +29,7 @@ export default async function TestimonialsPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-testimonial'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-testimonial'].some((p) => userPermissions.has(p))) {
     const getTestimonials = serverContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials);
 
     const result = await getTestimonials.execute(undefined, { perPage: 25 });
@@ -57,5 +55,7 @@ export default async function TestimonialsPage() {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }

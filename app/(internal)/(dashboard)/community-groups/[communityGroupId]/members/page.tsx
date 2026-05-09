@@ -52,9 +52,7 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (!['read-community-group-member'].some((p) => userPermissions.has(p))) {
-    notFound();
-  } else {
+  if (['read-community-group-member'].some((p) => userPermissions.has(p))) {
     const getCommunityGroupMembers = serverContainer.get<GetCommunityGroupMembers>(
       SYMBOLS.GetCommunityGroupMembers,
     );
@@ -92,5 +90,7 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
         />
       </>
     );
+  } else {
+    notFound();
   }
 }
