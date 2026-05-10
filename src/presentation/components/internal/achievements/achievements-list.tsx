@@ -1,17 +1,20 @@
 'use client';
 
+import Link from 'next/link';
 import { Achievement, PaginationOptions } from '@app/domain/entities';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  GridActionsCell,
+  GridActionsCellItem,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetAchievements } from '@app/application';
+import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import { DeleteAchievement, GetAchievements } from '@app/application';
 import {
   AchievementDto,
   AchievementMapper,
@@ -22,6 +25,8 @@ import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 
 type Props = {
   initialAchievements: AchievementDto[];
@@ -33,9 +38,15 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     () => clientContainer.get<GetAchievements>(SYMBOLS.GetAchievements),
     [],
   );
+  const deleteAchievement = useMemo(
+    () => clientContainer.get<DeleteAchievement>(SYMBOLS.DeleteAchievement),
+    [],
+  );
   const initAchievements = initialAchievements.map(AchievementMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
+  const userSession = useInternalStore((s) => s.session);
+  const userPermissions = new Set(userSession?.permissions || []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Achievement[]>(initAchievements);
@@ -53,6 +64,10 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedAchievementId, setSelectedAchievementId] = useState<string | null>(null);
+  const [selectedAchievementName, setSelectedAchievementName] = useState<string | null>(null);
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
     const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
@@ -122,113 +137,215 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     router.push(`/achievements/${params.row.id}`);
   };
 
+  const handleDeleteClick = (achievementId: string, achievementName?: string) => {
+    setSelectedAchievementId(achievementId);
+    setSelectedAchievementName(achievementName || null);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteAccept = async () => {
+    if (!selectedAchievementId) {
+      console.error('No achievement selected for deletion');
+
+      return;
+    }
+
+    const result = await deleteAchievement.execute(selectedAchievementId);
+    match(result, {
+      onRight: () => {
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedAchievementId));
+      },
+      onLeft: (error) => {
+        console.error('Failed to delete achievement:', error);
+      },
+    });
+
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedAchievementId(null);
+      setSelectedAchievementName(null);
+    }, 1000);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedAchievementId(null);
+      setSelectedAchievementName(null);
+    }, 1000);
+  };
+
   return (
-    <Box component="section" className="mb-6 w-full px-6">
-      <NoSsr>
-        <DataGrid
-          sx={{
-            '.MuiTablePagination-displayedRows': { display: 'none' },
-            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-          }}
-          columns={[
-            {
-              field: 'id',
-              headerName: 'ID',
-              flex: 1,
-            },
-            {
-              field: 'team',
-              headerName: 'Team',
-              flex: 1,
-            },
-            {
-              field: 'competition',
-              headerName: 'Competition',
-              flex: 2,
-            },
-            {
-              field: 'competitionScale',
-              headerName: 'Scale',
-              flex: 1,
-            },
-            {
-              field: 'competitionTimeRange',
-              headerName: 'Time Range',
-              flex: 1,
-            },
-            {
-              field: 'competitionOutput',
-              headerName: 'Output',
-              flex: 1,
-            },
-            {
-              field: 'competitionRank',
-              headerName: 'Rank',
-              flex: 1,
-            },
-            {
-              field: 'competitionBranch',
-              headerName: 'Branch',
-              flex: 2,
-            },
-            {
-              field: 'competitionStartDate',
-              headerName: 'Start Date',
-              flex: 1,
-            },
-            {
-              field: 'competitionEndDate',
-              headerName: 'End Date',
-              flex: 1,
-            },
-            {
-              field: 'image',
-              headerName: 'Image',
-              flex: 0.5,
-            },
-            {
-              field: 'status',
-              headerName: 'Status',
-              flex: 1,
-            },
-          ]}
-          rows={rows.map((achievement) => ({
-            id: achievement.id,
-            team: achievement.team?.name || 'N/A',
-            competition: achievement.competitionInstance?.name || 'N/A',
-            competitionScale: achievement.competitionScale?.name || 'N/A',
-            competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
-            competitionOutput: achievement.competitionOutput?.name || 'N/A',
-            competitionRank: achievement.competitionRank?.name || 'N/A',
-            competitionBranch: achievement.competitionBranch,
-            competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
-            competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
-            status: achievement.status,
-          }))}
-          slots={{
-            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-          }}
-          slotProps={{
-            noRowsOverlay: { text: 'No achievements found.' },
-          }}
-          pageSizeOptions={[25, 50, 100]}
-          paginationMode="server"
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
+    <>
+      <AlertDialog
+        open={openDeleteDialog}
+        onAccept={handleDeleteAccept}
+        onCancel={handleDeleteCancel}
+        title="Permanently delete achievement?"
+        description={`Are you sure you want to permanently delete ${selectedAchievementName || 'this achievement'}? This action cannot be undone.`}
+        acceptText="Delete"
+        cancelText="Cancel"
+      />
+
+      <Box component="section" className="mb-6 w-full px-6">
+        <NoSsr>
+          <DataGrid
+            sx={{
+              '.MuiTablePagination-displayedRows': { display: 'none' },
+              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+            }}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
               },
-            },
-          }}
-          loading={isLoading}
-          rowCount={rowCount}
-          paginationMeta={paginationMeta}
-          paginationModel={paginationModel}
-          onPaginationModelChange={handlePaginationModelChange}
-          onRowClick={handleRowClick}
-          disableRowSelectionOnClick
-        />
-      </NoSsr>
-    </Box>
+              {
+                field: 'team',
+                headerName: 'Team',
+                flex: 1,
+              },
+              {
+                field: 'competition',
+                headerName: 'Competition',
+                flex: 2,
+              },
+              {
+                field: 'competitionScale',
+                headerName: 'Scale',
+                flex: 1,
+              },
+              {
+                field: 'competitionTimeRange',
+                headerName: 'Time Range',
+                flex: 1,
+              },
+              {
+                field: 'competitionOutput',
+                headerName: 'Output',
+                flex: 1,
+              },
+              {
+                field: 'competitionRank',
+                headerName: 'Rank',
+                flex: 1,
+              },
+              {
+                field: 'competitionBranch',
+                headerName: 'Branch',
+                flex: 2,
+              },
+              {
+                field: 'competitionStartDate',
+                headerName: 'Start Date',
+                flex: 1,
+              },
+              {
+                field: 'competitionEndDate',
+                headerName: 'End Date',
+                flex: 1,
+              },
+              {
+                field: 'image',
+                headerName: 'Image',
+                flex: 0.5,
+              },
+              {
+                field: 'status',
+                headerName: 'Status',
+                flex: 1,
+              },
+              {
+                field: 'actions',
+                type: 'actions',
+                headerName: '',
+                flex: 0.5,
+                minWidth: 50,
+                maxWidth: 50,
+                renderCell: (params) => (
+                  <GridActionsCell {...params}>
+                    <GridActionsCellItem
+                      key="view"
+                      showInMenu
+                      icon={<VisibilityRounded />}
+                      label="View"
+                      component={Link}
+                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                      href={`/achievements/${params.row.actions.id}`}
+                    />
+                    {['update-achievements'].some((p) => userPermissions.has(p)) ||
+                    (['update-own-achievements'].some((p) => userPermissions.has(p)) &&
+                      params.row.actions.team?.members?.some(
+                        (member) => member.id === userSession?.user?.id,
+                      )) ? (
+                      <GridActionsCellItem
+                        key="edit"
+                        showInMenu
+                        icon={<EditRounded />}
+                        label="Edit"
+                        component={Link}
+                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                        href={`/achievements/${params.row.actions.id}/edit`}
+                      />
+                    ) : null}
+                    {['delete-achievements'].some((p) => userPermissions.has(p)) ||
+                    (['delete-own-achievements'].some((p) => userPermissions.has(p)) &&
+                      params.row.actions.team?.members?.some(
+                        (member) => member.id === userSession?.user?.id,
+                      )) ? (
+                      <GridActionsCellItem
+                        key="delete"
+                        showInMenu
+                        icon={<DeleteRounded />}
+                        label="Delete"
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.team?.name)
+                        }
+                      />
+                    ) : null}
+                  </GridActionsCell>
+                ),
+              },
+            ]}
+            rows={rows.map((achievement) => ({
+              id: achievement.id,
+              team: achievement.team?.name || 'N/A',
+              competition: achievement.competitionInstance?.name || 'N/A',
+              competitionScale: achievement.competitionScale?.name || 'N/A',
+              competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
+              competitionOutput: achievement.competitionOutput?.name || 'N/A',
+              competitionRank: achievement.competitionRank?.name || 'N/A',
+              competitionBranch: achievement.competitionBranch,
+              competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
+              competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
+              status: achievement.status,
+              actions: achievement,
+            }))}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No achievements found.' },
+            }}
+            pageSizeOptions={[25, 50, 100]}
+            paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
+            loading={isLoading}
+            rowCount={rowCount}
+            paginationMeta={paginationMeta}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            onRowClick={handleRowClick}
+            disableRowSelectionOnClick
+          />
+        </NoSsr>
+      </Box>
+    </>
   );
 }
