@@ -11,7 +11,7 @@ type Props = {
   }>;
 };
 
-export default async function SigleUserCommunityGroupNewPage({ params }: Props) {
+export default async function SingleUserCommunityGroupNewPage({ params }: Props) {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const userId = (await params).userId;
 
