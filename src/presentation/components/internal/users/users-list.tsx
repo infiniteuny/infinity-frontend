@@ -34,10 +34,10 @@ type Props = {
 };
 
 export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
   const deleteUser = useMemo(() => clientContainer.get<DeleteUser>(SYMBOLS.DeleteUser), []);
+  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
+  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
@@ -300,14 +300,14 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={
-                        params.row.id === userSession?.user?.id
+                        params.row.actions.id === userSession?.user?.id
                           ? '/settings/profile'
-                          : `/users/${params.row.id}`
+                          : `/users/${params.row.actions.id}`
                       }
                     />
                     {['update-user'].some((p) => userPermissions.has(p)) ||
                     (['update-own-user'].some((p) => userPermissions.has(p)) &&
-                      params.row.id === userSession?.user?.id) ? (
+                      params.row.actions.id === userSession?.user?.id) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -316,24 +316,26 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={
-                          params.row.id === userSession?.user?.id
+                          params.row.actions.id === userSession?.user?.id
                             ? '/settings/profile/edit'
-                            : `/users/${params.row.id}/edit`
+                            : `/users/${params.row.actions.id}/edit`
                         }
                       />
                     ) : null}
                     {['delete-user'].some((p) => userPermissions.has(p)) &&
-                    params.row.id !== userSession?.user?.id ? (
+                    params.row.actions.id !== userSession?.user?.id ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
                         icon={<DeleteRounded />}
                         label="Delete"
-                        onClick={() => handleDeleteClick(params.row.id, params.row.name)}
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                        }
                       />
                     ) : null}
                     {['delete-own-user'].some((p) => userPermissions.has(p)) &&
-                    params.row.id === userSession?.user?.id ? (
+                    params.row.actions.id === userSession?.user?.id ? (
                       <GridActionsCellItem
                         key="delete-own"
                         showInMenu
@@ -362,6 +364,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
               isMember: user.isMember,
               isExtraordinary: user.isExtraordinary,
               isActive: user.isActive,
+              actions: user,
             }))}
             slots={{
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
