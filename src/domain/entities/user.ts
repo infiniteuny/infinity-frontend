@@ -13,6 +13,7 @@ export type UserIncludeOptions = (
 export interface UserFilterOptions {
   ssoId?: string;
   name?: string;
+  username?: string;
   emailAddress?: string;
   phoneNumber?: string;
   studentId?: string;
@@ -32,6 +33,7 @@ export interface UserFilterOptions {
 export interface UserSortOptions {
   id?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
+  username?: 'ASC' | 'DESC';
   emailAddress?: 'ASC' | 'DESC';
   phoneNumber?: 'ASC' | 'DESC';
   studentId?: 'ASC' | 'DESC';
