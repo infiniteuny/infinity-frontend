@@ -105,8 +105,28 @@ import {
   CreateTestimonial,
   CreateUserPermission,
   CreateUserPersona,
+  DeleteCommunityGroup,
+  DeleteCommunityGroupAdmin,
   DeleteCompetition,
   DeleteCompetitionInstance,
+  DeleteCompetitionOrganizerType,
+  DeleteCompetitionOutput,
+  DeleteCompetitionRank,
+  DeleteCompetitionScale,
+  DeleteCompetitionTeamType,
+  DeleteCompetitionTimeRange,
+  DeleteCoreTeam,
+  DeleteCoreTeamDivision,
+  DeleteDegree,
+  DeleteFaculty,
+  DeleteFundApplication,
+  DeleteGroup,
+  DeleteMajor,
+  DeletePermission,
+  DeletePersona,
+  DeleteProjectGallery,
+  DeleteTeam,
+  DeleteTestimonial,
   DeleteUserPermission,
   DeleteUserPersona,
   GetCommunityGroup,
@@ -345,6 +365,44 @@ serverContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteComp
 serverContainer
   .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
   .to(DeleteCompetitionInstance);
+serverContainer
+  .bind<DeleteCompetitionOrganizerType>(SYMBOLS.DeleteCompetitionOrganizerType)
+  .to(DeleteCompetitionOrganizerType);
+serverContainer
+  .bind<DeleteCompetitionOutput>(SYMBOLS.DeleteCompetitionOutput)
+  .to(DeleteCompetitionOutput);
+serverContainer
+  .bind<DeleteCompetitionRank>(SYMBOLS.DeleteCompetitionRank)
+  .to(DeleteCompetitionRank);
+serverContainer
+  .bind<DeleteCompetitionScale>(SYMBOLS.DeleteCompetitionScale)
+  .to(DeleteCompetitionScale);
+serverContainer
+  .bind<DeleteCompetitionTeamType>(SYMBOLS.DeleteCompetitionTeamType)
+  .to(DeleteCompetitionTeamType);
+serverContainer
+  .bind<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange)
+  .to(DeleteCompetitionTimeRange);
+serverContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(DeleteCommunityGroup);
+serverContainer
+  .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
+  .to(DeleteCommunityGroupAdmin);
+serverContainer.bind<DeleteCoreTeam>(SYMBOLS.DeleteCoreTeam).to(DeleteCoreTeam);
+serverContainer
+  .bind<DeleteCoreTeamDivision>(SYMBOLS.DeleteCoreTeamDivision)
+  .to(DeleteCoreTeamDivision);
+serverContainer.bind<DeleteDegree>(SYMBOLS.DeleteDegree).to(DeleteDegree);
+serverContainer.bind<DeleteFaculty>(SYMBOLS.DeleteFaculty).to(DeleteFaculty);
+serverContainer
+  .bind<DeleteFundApplication>(SYMBOLS.DeleteFundApplication)
+  .to(DeleteFundApplication);
+serverContainer.bind<DeleteGroup>(SYMBOLS.DeleteGroup).to(DeleteGroup);
+serverContainer.bind<DeleteMajor>(SYMBOLS.DeleteMajor).to(DeleteMajor);
+serverContainer.bind<DeletePermission>(SYMBOLS.DeletePermission).to(DeletePermission);
+serverContainer.bind<DeletePersona>(SYMBOLS.DeletePersona).to(DeletePersona);
+serverContainer.bind<DeleteProjectGallery>(SYMBOLS.DeleteProjectGallery).to(DeleteProjectGallery);
+serverContainer.bind<DeleteTeam>(SYMBOLS.DeleteTeam).to(DeleteTeam);
+serverContainer.bind<DeleteTestimonial>(SYMBOLS.DeleteTestimonial).to(DeleteTestimonial);
 serverContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
 serverContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
 serverContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
