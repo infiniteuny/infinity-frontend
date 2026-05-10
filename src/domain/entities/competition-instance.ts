@@ -7,6 +7,7 @@ export type CompetitionInstanceIncludeOptions = ('competition' | 'organizer_type
 export interface CompetitionInstanceFilterOptions {
   competitionId?: string;
   name?: string;
+  shortname?: string;
   description?: string;
   url?: string;
   organizer?: string;
@@ -26,6 +27,7 @@ export interface CompetitionInstanceSortOptions {
   id?: 'ASC' | 'DESC';
   competitionId?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
+  shortname?: 'ASC' | 'DESC';
   organizer?: 'ASC' | 'DESC';
   organizerTypeId?: 'ASC' | 'DESC';
   startDate?: 'ASC' | 'DESC';
@@ -39,6 +41,7 @@ export class CompetitionInstance {
   public id: string;
   public competitionId: string;
   public name: string;
+  public shortname: string | null;
   public description: string;
   public url: string | null;
   public organizer: string;
@@ -56,6 +59,7 @@ export class CompetitionInstance {
     id: string,
     competitionId: string,
     name: string,
+    shortname: string | null,
     description: string,
     url: string | null,
     organizer: string,
@@ -72,6 +76,7 @@ export class CompetitionInstance {
     this.id = id;
     this.competitionId = competitionId;
     this.name = name;
+    this.shortname = shortname;
     this.description = description;
     this.url = url;
     this.organizer = organizer;

@@ -21,6 +21,11 @@ export function GeneralView({ competition }: Props) {
           <Grid size={12}>
             <ViewTile title="Name" subtitle={competition.name} position="top" />
           </Grid>
+          {competition.shortname ? (
+            <Grid size={12}>
+              <ViewTile title="Shortname" subtitle={competition.shortname} position="middle" />
+            </Grid>
+          ) : null}
           <Grid size={12}>
             <ViewTile title="Description" subtitle={competition.description} position="middle" />
           </Grid>

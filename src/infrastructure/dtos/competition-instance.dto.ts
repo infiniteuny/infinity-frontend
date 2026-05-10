@@ -10,6 +10,7 @@ export interface CompetitionInstanceDto {
   id: string;
   competition_id: string;
   name: string;
+  shortname: string | null;
   description: string;
   url: string | null;
   organizer: string;
@@ -32,6 +33,7 @@ export class CompetitionInstanceMapper {
       id: competitionInstance.id,
       competition_id: competitionInstance.competitionId,
       name: competitionInstance.name,
+      shortname: competitionInstance.shortname,
       description: competitionInstance.description,
       url: competitionInstance.url,
       organizer: competitionInstance.organizer,
@@ -58,6 +60,7 @@ export class CompetitionInstanceMapper {
       dto.id,
       dto.competition_id,
       dto.name,
+      dto.shortname,
       dto.description,
       dto.url,
       dto.organizer,

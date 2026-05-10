@@ -214,6 +214,7 @@ export function CompetitionInstancesList({
             columns={[
               { field: 'id', headerName: 'ID', flex: 1 },
               { field: 'name', headerName: 'Name', flex: 2 },
+              { field: 'shortname', headerName: 'Shortname', flex: 1 },
               { field: 'organizer', headerName: 'Organizer', flex: 2 },
               { field: 'location', headerName: 'Location', flex: 2 },
               { field: 'startDate', headerName: 'Start Date', flex: 1 },
@@ -265,6 +266,7 @@ export function CompetitionInstancesList({
             rows={rows.map((instance) => ({
               id: instance.id,
               name: instance.name,
+              shortname: instance.shortname,
               organizer: instance.organizer,
               location: instance.location,
               startDate: instance.startDate.toLocaleDateString(),

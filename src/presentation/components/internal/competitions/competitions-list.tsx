@@ -195,6 +195,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
             columns={[
               { field: 'id', headerName: 'ID', flex: 1 },
               { field: 'name', headerName: 'Name', flex: 2 },
+              { field: 'shortname', headerName: 'Shortname', flex: 1 },
               { field: 'description', headerName: 'Description', flex: 3 },
               {
                 field: 'actions',
@@ -243,6 +244,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
             rows={rows.map((competition) => ({
               id: competition.id,
               name: competition.name,
+              shortname: competition.shortname,
               description: competition.description,
               actions: competition,
             }))}

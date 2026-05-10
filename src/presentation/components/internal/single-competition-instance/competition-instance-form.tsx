@@ -26,8 +26,9 @@ const competitionInstanceInputSchema = z
   .object({
     competitionId: z.uuidv7('Competition must be selected'),
     name: z.string().min(1, 'Name must not be empty'),
+    shortname: z.string().min(2, 'Shortname must be at least 2 characters').nullable(),
     description: z.string().min(1, 'Description must not be empty'),
-    url: z.url('URL must be a valid URL').nullable().or(z.literal('')),
+    url: z.url('URL must be a valid URL').nullable(),
     organizer: z.string().min(1, 'Organizer must not be empty'),
     organizerTypeId: z.uuidv7('Organizer type must be selected'),
     logo: z.union([
@@ -90,6 +91,7 @@ export function CompetitionInstanceForm({
       : {
           competitionId: competitionId,
           name: '',
+          shortname: '',
           description: '',
           url: '',
           organizer: '',
@@ -108,13 +110,12 @@ export function CompetitionInstanceForm({
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {
       try {
-        const payload = {
-          ...data,
-          url: data.url || null,
-        };
-
         if (!competitionInstance) {
-          const result = await createCompetitionInstance.execute(payload);
+          const result = await createCompetitionInstance.execute({
+            ...data,
+            url: data.url || null,
+            shortname: data.shortname || null,
+          });
 
           match(result, {
             onLeft: (error) => {
@@ -125,7 +126,11 @@ export function CompetitionInstanceForm({
             },
           });
         } else {
-          const result = await updateCompetitionInstance.execute(competitionInstance.id, payload);
+          const result = await updateCompetitionInstance.execute(competitionInstance.id, {
+            ...data,
+            url: data.url || null,
+            shortname: data.shortname || null,
+          });
 
           match(result, {
             onLeft: (error) => {

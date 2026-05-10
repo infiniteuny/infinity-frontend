@@ -35,6 +35,18 @@ export function GeneralForm({
           </Grid>
           <Grid size={12}>
             <TextField
+              {...register('shortname')}
+              id="shortname"
+              label="Shortname"
+              fullWidth
+              margin="none"
+              helperText={errors.shortname?.message}
+              error={!!errors.shortname}
+              disabled={isSubmitting}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField
               {...register('description')}
               id="description"
               label="Description"
