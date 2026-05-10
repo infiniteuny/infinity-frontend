@@ -521,14 +521,14 @@ export function GeneralForm({
                         })}
                         className="pointer-events-none"
                       >
-                        Allowed file types: PNG, JPEG, or WebP. Allowed size: up to 5MB.
+                        Allowed file types: GIF, APNG, or WebP. Allowed size: up to 5MB.
                       </Typography>
                       <Input
                         {...field}
                         id="animation"
                         type="file"
                         inputProps={{
-                          accept: 'image/png,image/jpeg,image/webp',
+                          accept: 'image/gif,image/apng,image/webp',
                         }}
                         inputRef={(element) => {
                           ref(element);

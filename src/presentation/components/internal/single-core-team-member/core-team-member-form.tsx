@@ -34,8 +34,8 @@ const coreTeamMemberInputSchema = z.object({
       z
         .file('Animation must not be empty')
         .mime(
-          ['image/png', 'image/jpeg', 'image/webp'],
-          'Animation must be a PNG, JPEG, or WebP file',
+          ['image/gif', 'image/apng', 'image/webp'],
+          'Animation must be a GIF, APNG, or WebP file',
         )
         .max(5120 * 1024, 'Animation must be less than 5MB'),
       z.string(),
