@@ -30,7 +30,7 @@ export class TeamMapper {
       leader: team.leader ? (UserMapper.fromDomainToDto(team.leader) as UserDto) : undefined,
       members: team.members
         ? (team.members.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[])
-        : [],
+        : undefined,
       team_type: team.teamType
         ? (CompetitionTeamTypeMapper.fromDomainToDto(team.teamType) as CompetitionTeamTypeDto)
         : undefined,
@@ -47,7 +47,7 @@ export class TeamMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.leader ? UserMapper.fromDtoToDomain(dto.leader) : undefined,
-      dto.members ? (dto.members.map(TeamMemberMapper.fromDtoToDomain) as TeamMember[]) : [],
+      dto.members ? (dto.members.map(TeamMemberMapper.fromDtoToDomain) as TeamMember[]) : undefined,
       dto.team_type ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.team_type) : undefined,
     );
   }
