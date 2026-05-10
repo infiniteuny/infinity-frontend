@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
+export * from './alert-dialog';
 export * from './empty-row-overlay';
 export * from './footer';
 export * from './header';
