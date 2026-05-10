@@ -30,6 +30,7 @@ export * from './create-team-member';
 export * from './create-user-group';
 export * from './create-user-permission';
 export * from './create-user-persona';
+export * from './delete-achievement';
 export * from './delete-competition';
 export * from './delete-competition-instance';
 export * from './delete-user-permission';
