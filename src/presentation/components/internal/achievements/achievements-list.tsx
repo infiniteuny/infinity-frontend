@@ -2,6 +2,13 @@
 
 import Link from 'next/link';
 import { Achievement, PaginationOptions } from '@app/domain/entities';
+import {
+  AchievementDto,
+  AchievementMapper,
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+} from '@app/infrastructure/dtos';
+import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
@@ -13,20 +20,13 @@ import {
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { DeleteAchievement, GetAchievements } from '@app/application';
-import {
-  AchievementDto,
-  AchievementMapper,
-  PaginationOptionsDto,
-  PaginationOptionsMapper,
-} from '@app/infrastructure/dtos';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
-import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 
 type Props = {
   initialAchievements: AchievementDto[];
@@ -181,12 +181,11 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
-        title="Permanently delete achievement?"
+        title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedAchievementName || 'this achievement'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
-
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid

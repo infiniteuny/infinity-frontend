@@ -116,6 +116,8 @@ import {
   DeleteCompetitionTimeRange,
   DeleteCommunityGroup,
   DeleteCommunityGroupAdmin,
+  DeleteCommunityGroupAdminMember,
+  DeleteCommunityGroupMember,
   DeleteCoreTeam,
   DeleteCoreTeamDivision,
   DeleteDegree,
@@ -127,8 +129,10 @@ import {
   DeletePersona,
   DeleteProjectGallery,
   DeleteTeam,
+  DeleteTeamMember,
   DeleteTestimonial,
   DeleteUser,
+  DeleteUserGroup,
   DeleteUserPermission,
   DeleteUserPersona,
   GetAchievements,
@@ -284,6 +288,7 @@ clientContainer
 clientContainer.bind<CreateTeamMember>(SYMBOLS.CreateTeamMember).to(CreateTeamMember);
 clientContainer.bind<CreateUserGroup>(SYMBOLS.CreateUserGroup).to(CreateUserGroup);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
+clientContainer.bind<DeleteUserGroup>(SYMBOLS.DeleteUserGroup).to(DeleteUserGroup);
 clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
 clientContainer
   .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
@@ -310,6 +315,12 @@ clientContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(Dele
 clientContainer
   .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
   .to(DeleteCommunityGroupAdmin);
+clientContainer
+  .bind<DeleteCommunityGroupAdminMember>(SYMBOLS.DeleteCommunityGroupAdminMember)
+  .to(DeleteCommunityGroupAdminMember);
+clientContainer
+  .bind<DeleteCommunityGroupMember>(SYMBOLS.DeleteCommunityGroupMember)
+  .to(DeleteCommunityGroupMember);
 clientContainer.bind<DeleteCoreTeam>(SYMBOLS.DeleteCoreTeam).to(DeleteCoreTeam);
 clientContainer
   .bind<DeleteCoreTeamDivision>(SYMBOLS.DeleteCoreTeamDivision)
@@ -325,6 +336,7 @@ clientContainer.bind<DeletePermission>(SYMBOLS.DeletePermission).to(DeletePermis
 clientContainer.bind<DeletePersona>(SYMBOLS.DeletePersona).to(DeletePersona);
 clientContainer.bind<DeleteProjectGallery>(SYMBOLS.DeleteProjectGallery).to(DeleteProjectGallery);
 clientContainer.bind<DeleteTeam>(SYMBOLS.DeleteTeam).to(DeleteTeam);
+clientContainer.bind<DeleteTeamMember>(SYMBOLS.DeleteTeamMember).to(DeleteTeamMember);
 clientContainer.bind<DeleteTestimonial>(SYMBOLS.DeleteTestimonial).to(DeleteTestimonial);
 clientContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
 clientContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);

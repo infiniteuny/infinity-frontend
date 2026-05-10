@@ -175,7 +175,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
-        title="Permanently delete user?"
+        title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedUserName || 'this user'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"

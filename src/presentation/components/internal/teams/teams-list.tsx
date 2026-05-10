@@ -1,17 +1,22 @@
 'use client';
 
+import Link from 'next/link';
+import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  GridActionsCell,
+  GridActionsCellItem,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
 } from '@mui/x-data-grid';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetTeams } from '@app/application';
-import { Team, PaginationOptions } from '@app/domain/entities';
+import { DeleteTeam, GetTeams } from '@app/application';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
+import { match } from 'effect/Either';
+import { PaginationOptions, Team } from '@app/domain/entities';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -19,7 +24,7 @@ import {
   TeamMapper,
 } from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -30,9 +35,12 @@ type Props = {
 
 export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
+  const deleteTeam = useMemo(() => clientContainer.get<DeleteTeam>(SYMBOLS.DeleteTeam), []);
   const initTeams = initialTeams.map(TeamMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
+  const userSession = useInternalStore((s) => s.session);
+  const userPermissions = new Set(userSession?.permissions || []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Team[]>(initTeams);
@@ -50,6 +58,10 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
+  const [selectedTeamName, setSelectedTeamName] = useState<string | null>(null);
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
     const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
@@ -77,7 +89,7 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     }
 
     try {
-      const result = await getTeams.execute(['leader', 'team_type'], undefined, {
+      const result = await getTeams.execute(['leader', 'members', 'team_type'], undefined, {
         perPage: normalizedPaginationModel.pageSize,
         cursor,
       });
@@ -115,78 +127,175 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     }
   };
 
+  const handleDeleteClick = (teamId: string, teamName?: string) => {
+    setSelectedTeamId(teamId);
+    setSelectedTeamName(teamName || null);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteAccept = async () => {
+    if (!selectedTeamId) {
+      console.error('No team selected for deletion');
+
+      return;
+    }
+
+    const result = await deleteTeam.execute(selectedTeamId);
+    match(result, {
+      onRight: () => {
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedTeamId));
+      },
+      onLeft: (error) => {
+        console.error('Failed to delete team:', error);
+      },
+    });
+
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedTeamId(null);
+      setSelectedTeamName(null);
+    }, 1000);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedTeamId(null);
+      setSelectedTeamName(null);
+    }, 1000);
+  };
+
   const handleRowClick = (params: GridRowParams) => {
     router.push(`/teams/${params.row.id}`);
   };
 
   return (
-    <Box component="section" className="mb-6 w-full px-6">
-      <NoSsr>
-        <DataGrid
-          sx={{
-            '.MuiTablePagination-displayedRows': { display: 'none' },
-            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-          }}
-          columns={[
-            {
-              field: 'id',
-              headerName: 'ID',
-              flex: 1,
-            },
-            {
-              field: 'name',
-              headerName: 'Name',
-              flex: 2,
-            },
-            {
-              field: 'leader',
-              headerName: 'Leader',
-              flex: 2,
-            },
-            {
-              field: 'team_type',
-              headerName: 'Team Type',
-              flex: 1,
-            },
-            {
-              field: 'isPersonal',
-              headerName: 'Personal',
-              type: 'boolean',
-              flex: 0.5,
-            },
-          ]}
-          rows={rows.map((team) => ({
-            id: team.id,
-            name: team.name,
-            leader: team.leader?.name || 'N/A',
-            team_type: team.teamType?.name || 'N/A',
-            isPersonal: team.isPersonal,
-          }))}
-          slots={{
-            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-          }}
-          slotProps={{
-            noRowsOverlay: { text: 'No teams found.' },
-          }}
-          pageSizeOptions={[25, 50, 100]}
-          paginationMode="server"
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
-                isPersonal: false,
+    <>
+      <AlertDialog
+        open={openDeleteDialog}
+        onAccept={handleDeleteAccept}
+        onCancel={handleDeleteCancel}
+        title="Permanently delete?"
+        description={`Are you sure you want to permanently delete ${selectedTeamName || 'this team'}? This action cannot be undone.`}
+        acceptText="Delete"
+        cancelText="Cancel"
+      />
+      <Box component="section" className="mb-6 w-full px-6">
+        <NoSsr>
+          <DataGrid
+            sx={{
+              '.MuiTablePagination-displayedRows': { display: 'none' },
+              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+            }}
+            columns={[
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
               },
-            },
-          }}
-          loading={isLoading}
-          rowCount={rowCount}
-          paginationMeta={paginationMeta}
-          paginationModel={paginationModel}
-          onPaginationModelChange={handlePaginationModelChange}
-          onRowClick={handleRowClick}
-          disableRowSelectionOnClick
-        />
-      </NoSsr>
-    </Box>
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 2,
+              },
+              {
+                field: 'leader',
+                headerName: 'Leader',
+                flex: 2,
+              },
+              {
+                field: 'team_type',
+                headerName: 'Team Type',
+                flex: 1,
+              },
+              {
+                field: 'isPersonal',
+                headerName: 'Personal',
+                type: 'boolean',
+                flex: 0.5,
+              },
+              {
+                field: 'actions',
+                type: 'actions',
+                headerName: '',
+                flex: 0.5,
+                minWidth: 50,
+                maxWidth: 50,
+                renderCell: (params) => (
+                  <GridActionsCell {...params}>
+                    <GridActionsCellItem
+                      key="view"
+                      showInMenu
+                      icon={<VisibilityRounded />}
+                      label="View"
+                      component={Link}
+                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                      href={`/teams/${params.row.actions.id}`}
+                    />
+                    {['update-team'].some((p) => userPermissions.has(p)) ||
+                    (['update-own-team'].some((p) => userPermissions.has(p)) &&
+                      params.row.actions.leader?.id === userSession?.user?.id) ? (
+                      <GridActionsCellItem
+                        key="edit"
+                        showInMenu
+                        icon={<EditRounded />}
+                        label="Edit"
+                        component={Link}
+                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                        href={`/teams/${params.row.actions.id}/edit`}
+                      />
+                    ) : null}
+                    {['delete-team'].some((p) => userPermissions.has(p)) ||
+                    (['delete-own-team'].some((p) => userPermissions.has(p)) &&
+                      params.row.actions.leader?.id === userSession?.user?.id) ? (
+                      <GridActionsCellItem
+                        key="delete"
+                        showInMenu
+                        icon={<DeleteRounded />}
+                        label="Delete"
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                        }
+                      />
+                    ) : null}
+                  </GridActionsCell>
+                ),
+              },
+            ]}
+            rows={rows.map((team) => ({
+              id: team.id,
+              name: team.name,
+              leader: team.leader?.name || 'N/A',
+              team_type: team.teamType?.name || 'N/A',
+              isPersonal: team.isPersonal,
+              actions: team,
+            }))}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No teams found.' },
+            }}
+            pageSizeOptions={[25, 50, 100]}
+            paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                  isPersonal: false,
+                },
+              },
+            }}
+            loading={isLoading}
+            rowCount={rowCount}
+            paginationMeta={paginationMeta}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            onRowClick={handleRowClick}
+            disableRowSelectionOnClick
+          />
+        </NoSsr>
+      </Box>
+    </>
   );
 }

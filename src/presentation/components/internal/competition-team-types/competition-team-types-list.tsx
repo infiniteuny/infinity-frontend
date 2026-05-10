@@ -1,25 +1,30 @@
 'use client';
 
+import Link from 'next/link';
+import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import {
-  DataGrid,
-  GridPaginationMeta,
-  GridPaginationModel,
-  GridRowParams,
-  GridSlots,
-} from '@mui/x-data-grid';
 import { CompetitionTeamType, PaginationOptions } from '@app/domain/entities';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetCompetitionTeamTypes } from '@app/application';
 import {
   CompetitionTeamTypeDto,
   CompetitionTeamTypeMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
+import {
+  DataGrid,
+  GridActionsCell,
+  GridActionsCellItem,
+  GridPaginationMeta,
+  GridPaginationModel,
+  GridRowParams,
+  GridSlots,
+} from '@mui/x-data-grid';
+import { DeleteCompetitionTeamType, GetCompetitionTeamTypes } from '@app/application';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -36,11 +41,17 @@ export function CompetitionTeamTypesList({
     () => clientContainer.get<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes),
     [],
   );
+  const deleteCompetitionTeamType = useMemo(
+    () => clientContainer.get<DeleteCompetitionTeamType>(SYMBOLS.DeleteCompetitionTeamType),
+    [],
+  );
   const initCompetitionTeamTypes = initialCompetitionTeamTypes.map(
     CompetitionTeamTypeMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
+  const userSession = useInternalStore((s) => s.session);
+  const userPermissions = new Set(userSession?.permissions || []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<CompetitionTeamType[]>(initCompetitionTeamTypes);
@@ -58,6 +69,10 @@ export function CompetitionTeamTypesList({
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedTeamTypeId, setSelectedTeamTypeId] = useState<string | null>(null);
+  const [selectedTeamTypeName, setSelectedTeamTypeName] = useState<string | null>(null);
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
     const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
@@ -127,48 +142,140 @@ export function CompetitionTeamTypesList({
     router.push(`/team-types/${params.row.id}`);
   };
 
+  const handleDeleteClick = (teamTypeId: string, teamTypeName?: string) => {
+    setSelectedTeamTypeId(teamTypeId);
+    setSelectedTeamTypeName(teamTypeName || null);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteAccept = async () => {
+    if (!selectedTeamTypeId) {
+      console.error('No team type selected for deletion');
+      return;
+    }
+
+    const result = await deleteCompetitionTeamType.execute(selectedTeamTypeId);
+    match(result, {
+      onRight: () => {
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedTeamTypeId));
+      },
+      onLeft: (error) => {
+        console.error('Failed to delete team type:', error);
+      },
+    });
+
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedTeamTypeId(null);
+      setSelectedTeamTypeName(null);
+    }, 1000);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedTeamTypeId(null);
+      setSelectedTeamTypeName(null);
+    }, 1000);
+  };
+
   return (
-    <Box component="section" className="mb-6 w-full px-6">
-      <NoSsr>
-        <DataGrid
-          sx={{
-            '.MuiTablePagination-displayedRows': { display: 'none' },
-            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-          }}
-          columns={[
-            { field: 'id', headerName: 'ID', flex: 1 },
-            { field: 'name', headerName: 'Name', flex: 2 },
-            { field: 'weight', headerName: 'Weight', flex: 1 },
-          ]}
-          rows={rows.map((teamType) => ({
-            id: teamType.id,
-            name: teamType.name,
-            weight: teamType.weight,
-          }))}
-          slots={{
-            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-          }}
-          slotProps={{
-            noRowsOverlay: { text: 'No team types found.' },
-          }}
-          pageSizeOptions={[25, 50, 100]}
-          paginationMode="server"
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
+    <>
+      <AlertDialog
+        open={openDeleteDialog}
+        onAccept={handleDeleteAccept}
+        onCancel={handleDeleteCancel}
+        title="Permanently delete?"
+        description={`Are you sure you want to permanently delete ${selectedTeamTypeName || 'this team type'}? This action cannot be undone.`}
+        acceptText="Delete"
+        cancelText="Cancel"
+      />
+      <Box component="section" className="mb-6 w-full px-6">
+        <NoSsr>
+          <DataGrid
+            sx={{
+              '.MuiTablePagination-displayedRows': { display: 'none' },
+              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+            }}
+            columns={[
+              { field: 'id', headerName: 'ID', flex: 1 },
+              { field: 'name', headerName: 'Name', flex: 2 },
+              { field: 'weight', headerName: 'Weight', flex: 1 },
+              {
+                field: 'actions',
+                type: 'actions',
+                headerName: '',
+                flex: 0.5,
+                minWidth: 50,
+                maxWidth: 50,
+                renderCell: (params) => (
+                  <GridActionsCell {...params}>
+                    <GridActionsCellItem
+                      key="view"
+                      showInMenu
+                      icon={<VisibilityRounded />}
+                      label="View"
+                      component={Link}
+                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                      href={`/team-types/${params.row.actions.id}`}
+                    />
+                    {['update-competition-team-type'].some((p) => userPermissions.has(p)) ? (
+                      <GridActionsCellItem
+                        key="edit"
+                        showInMenu
+                        icon={<EditRounded />}
+                        label="Edit"
+                        component={Link}
+                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                        href={`/team-types/${params.row.actions.id}/edit`}
+                      />
+                    ) : null}
+                    {['delete-competition-team-type'].some((p) => userPermissions.has(p)) ? (
+                      <GridActionsCellItem
+                        key="delete"
+                        showInMenu
+                        icon={<DeleteRounded />}
+                        label="Delete"
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                        }
+                      />
+                    ) : null}
+                  </GridActionsCell>
+                ),
               },
-            },
-          }}
-          loading={isLoading}
-          rowCount={rowCount}
-          paginationMeta={paginationMeta}
-          paginationModel={paginationModel}
-          onPaginationModelChange={handlePaginationModelChange}
-          onRowClick={handleRowClick}
-          disableRowSelectionOnClick
-        />
-      </NoSsr>
-    </Box>
+            ]}
+            rows={rows.map((teamType) => ({
+              id: teamType.id,
+              name: teamType.name,
+              weight: teamType.weight,
+              actions: teamType,
+            }))}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No team types found.' },
+            }}
+            pageSizeOptions={[25, 50, 100]}
+            paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
+            loading={isLoading}
+            rowCount={rowCount}
+            paginationMeta={paginationMeta}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            onRowClick={handleRowClick}
+            disableRowSelectionOnClick
+          />
+        </NoSsr>
+      </Box>
+    </>
   );
 }

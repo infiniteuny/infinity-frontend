@@ -1,25 +1,30 @@
 'use client';
 
+import Link from 'next/link';
+import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import {
-  DataGrid,
-  GridPaginationMeta,
-  GridPaginationModel,
-  GridRowParams,
-  GridSlots,
-} from '@mui/x-data-grid';
 import { CompetitionScale, PaginationOptions } from '@app/domain/entities';
-import { EmptyRowOverlay } from '@app/presentation/components/internal/shared';
-import { GetCompetitionScales } from '@app/application';
 import {
   CompetitionScaleDto,
   CompetitionScaleMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
+import {
+  DataGrid,
+  GridActionsCell,
+  GridActionsCellItem,
+  GridPaginationMeta,
+  GridPaginationModel,
+  GridRowParams,
+  GridSlots,
+} from '@mui/x-data-grid';
+import { DeleteCompetitionScale, GetCompetitionScales } from '@app/application';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -36,11 +41,17 @@ export function CompetitionScalesList({
     () => clientContainer.get<GetCompetitionScales>(SYMBOLS.GetCompetitionScales),
     [],
   );
+  const deleteCompetitionScale = useMemo(
+    () => clientContainer.get<DeleteCompetitionScale>(SYMBOLS.DeleteCompetitionScale),
+    [],
+  );
   const initCompetitionScales = initialCompetitionScales.map(
     CompetitionScaleMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
+  const userSession = useInternalStore((s) => s.session);
+  const userPermissions = new Set(userSession?.permissions || []);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<CompetitionScale[]>(initCompetitionScales);
@@ -58,6 +69,10 @@ export function CompetitionScalesList({
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedScaleId, setSelectedScaleId] = useState<string | null>(null);
+  const [selectedScaleName, setSelectedScaleName] = useState<string | null>(null);
 
   const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
     const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
@@ -127,48 +142,140 @@ export function CompetitionScalesList({
     router.push(`/competition-scales/${params.row.id}`);
   };
 
+  const handleDeleteClick = (scaleId: string, scaleName?: string) => {
+    setSelectedScaleId(scaleId);
+    setSelectedScaleName(scaleName || null);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteAccept = async () => {
+    if (!selectedScaleId) {
+      console.error('No scale selected for deletion');
+      return;
+    }
+
+    const result = await deleteCompetitionScale.execute(selectedScaleId);
+    match(result, {
+      onRight: () => {
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedScaleId));
+      },
+      onLeft: (error) => {
+        console.error('Failed to delete scale:', error);
+      },
+    });
+
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedScaleId(null);
+      setSelectedScaleName(null);
+    }, 1000);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeleteDialog(false);
+    setTimeout(function () {
+      setSelectedScaleId(null);
+      setSelectedScaleName(null);
+    }, 1000);
+  };
+
   return (
-    <Box component="section" className="mb-6 w-full px-6">
-      <NoSsr>
-        <DataGrid
-          sx={{
-            '.MuiTablePagination-displayedRows': { display: 'none' },
-            '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-          }}
-          columns={[
-            { field: 'id', headerName: 'ID', flex: 1 },
-            { field: 'name', headerName: 'Name', flex: 2 },
-            { field: 'weight', headerName: 'Weight', flex: 1 },
-          ]}
-          rows={rows.map((scale) => ({
-            id: scale.id,
-            name: scale.name,
-            weight: scale.weight,
-          }))}
-          slots={{
-            noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-          }}
-          slotProps={{
-            noRowsOverlay: { text: 'No competition scales found.' },
-          }}
-          pageSizeOptions={[25, 50, 100]}
-          paginationMode="server"
-          initialState={{
-            columns: {
-              columnVisibilityModel: {
-                id: false,
+    <>
+      <AlertDialog
+        open={openDeleteDialog}
+        onAccept={handleDeleteAccept}
+        onCancel={handleDeleteCancel}
+        title="Permanently delete?"
+        description={`Are you sure you want to permanently delete ${selectedScaleName || 'this scale'}? This action cannot be undone.`}
+        acceptText="Delete"
+        cancelText="Cancel"
+      />
+      <Box component="section" className="mb-6 w-full px-6">
+        <NoSsr>
+          <DataGrid
+            sx={{
+              '.MuiTablePagination-displayedRows': { display: 'none' },
+              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+            }}
+            columns={[
+              { field: 'id', headerName: 'ID', flex: 1 },
+              { field: 'name', headerName: 'Name', flex: 2 },
+              { field: 'weight', headerName: 'Weight', flex: 1 },
+              {
+                field: 'actions',
+                type: 'actions',
+                headerName: '',
+                flex: 0.5,
+                minWidth: 50,
+                maxWidth: 50,
+                renderCell: (params) => (
+                  <GridActionsCell {...params}>
+                    <GridActionsCellItem
+                      key="view"
+                      showInMenu
+                      icon={<VisibilityRounded />}
+                      label="View"
+                      component={Link}
+                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                      href={`/competition-scales/${params.row.actions.id}`}
+                    />
+                    {['update-competition-scale'].some((p) => userPermissions.has(p)) ? (
+                      <GridActionsCellItem
+                        key="edit"
+                        showInMenu
+                        icon={<EditRounded />}
+                        label="Edit"
+                        component={Link}
+                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
+                        href={`/competition-scales/${params.row.actions.id}/edit`}
+                      />
+                    ) : null}
+                    {['delete-competition-scale'].some((p) => userPermissions.has(p)) ? (
+                      <GridActionsCellItem
+                        key="delete"
+                        showInMenu
+                        icon={<DeleteRounded />}
+                        label="Delete"
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                        }
+                      />
+                    ) : null}
+                  </GridActionsCell>
+                ),
               },
-            },
-          }}
-          loading={isLoading}
-          rowCount={rowCount}
-          paginationMeta={paginationMeta}
-          paginationModel={paginationModel}
-          onPaginationModelChange={handlePaginationModelChange}
-          onRowClick={handleRowClick}
-          disableRowSelectionOnClick
-        />
-      </NoSsr>
-    </Box>
+            ]}
+            rows={rows.map((scale) => ({
+              id: scale.id,
+              name: scale.name,
+              weight: scale.weight,
+              actions: scale,
+            }))}
+            slots={{
+              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+            }}
+            slotProps={{
+              noRowsOverlay: { text: 'No competition scales found.' },
+            }}
+            pageSizeOptions={[25, 50, 100]}
+            paginationMode="server"
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  id: false,
+                },
+              },
+            }}
+            loading={isLoading}
+            rowCount={rowCount}
+            paginationMeta={paginationMeta}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            onRowClick={handleRowClick}
+            disableRowSelectionOnClick
+          />
+        </NoSsr>
+      </Box>
+    </>
   );
 }
