@@ -51,8 +51,16 @@ export function InternalSidebar({ menus }: Props) {
 
   const handleBackdrop = () => setSidebarOpenedState(false);
   const handleExtend = () => setSidebarExtendedState(!sidebarExtended);
-  const handleMouseEnter = () => setSidebarHoveredState(true);
-  const handleMouseLeave = () => setSidebarHoveredState(false);
+  const handleMouseEnter = () => {
+    if (!sidebarExtended) {
+      setSidebarHoveredState(true);
+    }
+  };
+  const handleMouseLeave = () => {
+    if (!sidebarExtended) {
+      setSidebarHoveredState(false);
+    }
+  };
 
   return (
     <>
