@@ -16,9 +16,10 @@ import {
 } from '@mui/material';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
 import { InternalStoreContext } from './store-provider';
+import { sanitizeMenus } from '@app/utils';
 import { SidebarDropdownMenu } from './sidebar-dropdown-menu';
 import { SidebarMenu } from './sidebar-menu';
-import { useContext, useSyncExternalStore } from 'react';
+import { useContext, useMemo, useSyncExternalStore } from 'react';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
@@ -47,6 +48,11 @@ export function InternalSidebar({ menus }: Props) {
       s.setSidebarExtendedState,
       s.setSidebarHoveredState,
     ]),
+  );
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const sanitizedMenus = useMemo(
+    () => sanitizeMenus(menus, userPermissions),
+    [menus, userPermissions],
   );
 
   const handleBackdrop = () => setSidebarOpenedState(false);
@@ -78,8 +84,8 @@ export function InternalSidebar({ menus }: Props) {
       >
         <Box className="flex min-h-full flex-col justify-between">
           <List>
-            {menus
-              ? menus.map((menu, i) => {
+            {sanitizedMenus
+              ? sanitizedMenus.map((menu, i) => {
                   if (menu.hasOwnProperty('path')) {
                     return <SidebarMenu key={i} menu={menu as PathMenu} />;
                   } else if (menu.hasOwnProperty('items')) {
