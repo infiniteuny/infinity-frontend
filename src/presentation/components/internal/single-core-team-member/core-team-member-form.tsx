@@ -101,7 +101,7 @@ export function CoreTeamMemberForm({
           userId: data.userId,
           coreTeamDivisionId: data.coreTeamDivisionId,
           photo: data.photo as File,
-          animation: data.animation as File | undefined,
+          animation: data.animation ? (data.animation as File) : null,
         });
 
         match(result, {

@@ -17,7 +17,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 const competitionInputSchema = z.object({
   name: z.string().min(1, 'Name must not be empty'),
-  shortname: z.string().min(2, 'Shortname must be at least 2 characters').nullable(),
+  shortname: z.union([
+    z.string().min(2, 'Shortname must be at least 2 characters'),
+    z.literal('').nullable(),
+  ]),
   description: z.string().min(1, 'Description must not be empty'),
 });
 
@@ -66,7 +69,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
         if (!competition) {
           const competitionResult = await createCompetition.execute({
             ...data,
-            shortname: data.shortname || null,
+            shortname: data.shortname ?? null,
           });
 
           match(competitionResult, {
@@ -80,7 +83,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
         } else {
           const competitionResult = await updateCompetition.execute(competition.id, {
             ...data,
-            shortname: data.shortname || null,
+            shortname: data.shortname ?? null,
           });
 
           match(competitionResult, {

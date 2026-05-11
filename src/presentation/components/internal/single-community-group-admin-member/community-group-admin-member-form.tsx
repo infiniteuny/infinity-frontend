@@ -105,7 +105,7 @@ export function CommunityGroupAdminMemberForm({
           userId: data.userId,
           communityGroupId: data.communityGroupId,
           photo: data.photo as File,
-          animation: data.animation as File | undefined,
+          animation: data.animation ? (data.animation as File) : null,
         });
 
         match(result, {

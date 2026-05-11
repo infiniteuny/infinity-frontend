@@ -42,9 +42,9 @@ const userInputSchema = z
     endDate: z.date('End date must be a valid date').nullable(),
     isMember: z.boolean(),
     isExtraordinary: z.boolean(),
-    linkedin: z.string('LinkedIn username must be valid').optional(),
-    github: z.string('GitHub username must be valid').optional(),
-    discord: z.string('Discord username must be valid').optional(),
+    linkedin: z.string('LinkedIn username must be valid').nullable(),
+    github: z.string('GitHub username must be valid').nullable(),
+    discord: z.string('Discord username must be valid').nullable(),
   })
   .refine((data) => !data.startDate || !data.endDate || data.startDate < data.endDate, {
     message: 'Start date must be earlier than end date.',
