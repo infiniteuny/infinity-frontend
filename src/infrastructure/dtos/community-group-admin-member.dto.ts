@@ -9,7 +9,7 @@ interface CommunityGroupAdminMemberMembershipDto {
   community_group_admin_id: string;
   community_group_id: string;
   photo: string | File;
-  animation?: string | File;
+  animation: string | File | null;
   created_at: string;
   updated_at: string;
   community_group?: CommunityGroupDto;

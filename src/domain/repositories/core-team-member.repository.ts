@@ -29,7 +29,7 @@ export interface CoreTeamMemberRepository {
       userId: string;
       coreTeamDivisionId: string;
       photo: File;
-      animation?: File;
+      animation: File | null;
     },
     abortSignal?: AbortSignal,
     token?: string,

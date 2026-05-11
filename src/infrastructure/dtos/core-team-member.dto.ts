@@ -9,7 +9,7 @@ interface CoreTeamMemberMembershipDto {
   core_team_id: string;
   core_team_division_id: string;
   photo: string | File;
-  animation?: string | File;
+  animation: string | File | null;
   created_at: string;
   updated_at: string;
   core_team_division?: CoreTeamDivisionDto;

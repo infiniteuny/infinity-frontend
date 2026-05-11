@@ -11,7 +11,7 @@ export type CreateCoreTeamMemberParams = [
     userId: string;
     coreTeamDivisionId: string;
     photo: File;
-    animation?: File;
+    animation: File | null;
   },
   abortSignal?: AbortSignal,
 ];
@@ -40,7 +40,7 @@ export class CreateCoreTeamMember implements UseCase<
       userId: string;
       coreTeamDivisionId: string;
       photo: File;
-      animation?: File;
+      animation: File | null;
     },
     abortSignal?: AbortSignal,
   ): Promise<Either<CoreTeamMember, Error>> {

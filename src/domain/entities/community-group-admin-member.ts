@@ -18,7 +18,7 @@ export class CommunityGroupAdminMember extends User {
     communityGroupAdminId: string;
     communityGroupId: string;
     photo: string | File;
-    animation?: string | File;
+    animation: string | File | null;
     createdAt: Date;
     updatedAt: Date;
     communityGroup?: CommunityGroup;
@@ -46,7 +46,7 @@ export class CommunityGroupAdminMember extends User {
       communityGroupAdminId: string;
       communityGroupId: string;
       photo: string | File;
-      animation?: string | File;
+      animation: string | File | null;
       createdAt: Date;
       updatedAt: Date;
       communityGroup?: CommunityGroup;

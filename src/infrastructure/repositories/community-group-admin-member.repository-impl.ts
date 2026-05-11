@@ -124,7 +124,7 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
       userId: string;
       communityGroupId: string;
       photo: File;
-      animation?: File;
+      animation: File | null;
     },
     abortSignal?: AbortSignal,
     token?: string,
@@ -139,7 +139,7 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
           animation:
             communityGroupAdminMember.animation instanceof File
               ? communityGroupAdminMember.animation
-              : undefined,
+              : null,
         },
         {
           signal: abortSignal,

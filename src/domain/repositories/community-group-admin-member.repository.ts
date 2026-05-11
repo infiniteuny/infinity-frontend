@@ -29,7 +29,7 @@ export interface CommunityGroupAdminMemberRepository {
       userId: string;
       communityGroupId: string;
       photo: File;
-      animation?: File;
+      animation: File | null;
     },
     abortSignal?: AbortSignal,
     token?: string,

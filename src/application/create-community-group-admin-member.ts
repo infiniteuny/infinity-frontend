@@ -11,7 +11,7 @@ export type CreateCommunityGroupAdminMemberParams = [
     userId: string;
     communityGroupId: string;
     photo: File;
-    animation?: File;
+    animation: File | null;
   },
   abortSignal?: AbortSignal,
 ];
@@ -40,7 +40,7 @@ export class CreateCommunityGroupAdminMember implements UseCase<
       userId: string;
       communityGroupId: string;
       photo: File;
-      animation?: File;
+      animation: File | null;
     },
     abortSignal?: AbortSignal,
   ): Promise<Either<CommunityGroupAdminMember, Error>> {
