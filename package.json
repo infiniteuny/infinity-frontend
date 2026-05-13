@@ -27,7 +27,7 @@
     "inversify": "8.1.0",
     "ioredis": "5.10.1",
     "luxon": "3.7.2",
-    "next": "16.2.3",
+    "next": "16.2.6",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "react-hook-form": "7.72.1",
