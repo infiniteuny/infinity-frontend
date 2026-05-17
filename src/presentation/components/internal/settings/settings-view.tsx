@@ -51,7 +51,7 @@ export function SettingsView() {
               <Grid size={12}>
                 <ClickableViewTile
                   title="System Configurations"
-                  subtitle="General system-wide settings and configurations"
+                  subtitle="View and manage system-wide configurations"
                   position="bottom"
                   icon={<TuneRounded />}
                   trailingIcon={<ChevronRightRounded />}
