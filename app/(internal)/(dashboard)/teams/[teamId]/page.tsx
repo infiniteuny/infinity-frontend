@@ -34,7 +34,7 @@ export default async function SingleTeamPage({ params }: Props) {
 
   if (teamId !== 'new' && ['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
     const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
-    const teamResult = await getTeam.execute(teamId, ['leader', 'team_type']);
+    const teamResult = await getTeam.execute(teamId, ['leader', 'members', 'team_type']);
     const team = match(teamResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {

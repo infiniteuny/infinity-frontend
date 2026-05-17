@@ -31,7 +31,7 @@ export function GeneralView({ competition }: Props) {
           <Grid size={12}>
             <ClickableViewTile
               title="Instances"
-              subtitle="Manage instances of this competition"
+              subtitle="View and manage instances of this competition"
               position="bottom"
               trailingIcon={<ChevronRightRounded />}
               href={`/competitions/${competition.id}/instances`}

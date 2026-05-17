@@ -91,7 +91,7 @@ export function GeneralView({ communityGroup }: Props) {
           <Grid size={12}>
             <ClickableViewTile
               title="Members"
-              subtitle="Manage community group members"
+              subtitle="View and manage community group members"
               trailingIcon={<ChevronRightRounded />}
               href={`/community-groups/${communityGroup.id}/members`}
               position="bottom"

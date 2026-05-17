@@ -16,9 +16,9 @@ export function GeneralView({ coreTeam }: Props) {
             General
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+        <Grid container spacing={0.5}>
           <Grid size={12}>
-            <ViewTile title="Year" subtitle={coreTeam.year} position="middle" />
+            <ViewTile title="Year" subtitle={coreTeam.year} position="top" />
           </Grid>
           <Grid size={12}>
             <ViewTile
@@ -30,10 +30,10 @@ export function GeneralView({ coreTeam }: Props) {
           <Grid size={12}>
             <ClickableViewTile
               title="Members"
-              subtitle="Manage core team members"
+              subtitle="View and manage core team members"
               trailingIcon={<ChevronRightRounded />}
               href={`/core-teams/${coreTeam.id}/members`}
-              position="middle"
+              position="bottom"
             />
           </Grid>
         </Grid>

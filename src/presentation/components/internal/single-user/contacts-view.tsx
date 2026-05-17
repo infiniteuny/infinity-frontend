@@ -35,7 +35,7 @@ export function ContactsView({ user }: Props) {
               title="Email Address"
               subtitle={user.emailAddress}
               trailingIcon={<OpenInNewRounded />}
-              position="middle"
+              position="top"
               href={`mailto:${user.emailAddress}`}
               target="_blank"
             />
@@ -73,7 +73,7 @@ export function ContactsView({ user }: Props) {
                 title="Discord"
                 subtitle={user.links.discord}
                 trailingIcon={copied ? <CheckRounded color="success" /> : <ContentCopyRounded />}
-                position="middle"
+                position="bottom"
                 onClick={handleDiscordCopy}
               />
             </Grid>
