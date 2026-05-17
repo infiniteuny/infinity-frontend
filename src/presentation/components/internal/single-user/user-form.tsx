@@ -61,9 +61,10 @@ type Props = {
   initialUser?: UserDto;
   faculties: FacultyDto[];
   majors?: MajorDto[];
+  isProfileForm?: boolean;
 };
 
-export function UserForm({ initialUser, faculties, majors }: Props) {
+export function UserForm({ initialUser, faculties, majors, isProfileForm }: Props) {
   const createUser = useMemo(() => clientContainer.get<CreateUser>(SYMBOLS.CreateUser), []);
   const updateUser = useMemo(() => clientContainer.get<UpdateUser>(SYMBOLS.UpdateUser), []);
   const router = useRouter();
@@ -162,7 +163,7 @@ export function UserForm({ initialUser, faculties, majors }: Props) {
 
   return (
     <>
-      <SectionHeader title={user ? name : 'Create User'}>
+      <SectionHeader title={isProfileForm ? 'Edit Profile' : user ? name : 'Create User'}>
         <UserToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
