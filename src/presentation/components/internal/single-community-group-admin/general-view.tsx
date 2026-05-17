@@ -17,9 +17,9 @@ export function GeneralView({ communityGroupAdmin }: Props) {
             General
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <ViewTile title="Year" subtitle={communityGroupAdmin.year} position="top" />
+            <ViewTile title="Year" subtitle={communityGroupAdmin.year} position="middle" />
           </Grid>
           <Grid size={12}>
             <ViewTile
@@ -34,7 +34,7 @@ export function GeneralView({ communityGroupAdmin }: Props) {
               subtitle="Manage community group administrator members"
               trailingIcon={<ChevronRightRounded />}
               href={`/community-group-admins/${communityGroupAdmin.id}/members`}
-              position="bottom"
+              position="middle"
             />
           </Grid>
         </Grid>

@@ -17,9 +17,9 @@ export function GeneralView({ group }: Props) {
             General
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <ViewTile title="Name" subtitle={group.name} position="top" />
+            <ViewTile title="Name" subtitle={group.name} position="middle" />
           </Grid>
           <Grid size={12}>
             <ViewTile title="Guard Name" subtitle={group.guardName} position="middle" />
@@ -30,7 +30,7 @@ export function GeneralView({ group }: Props) {
               subtitle="Manage permission assignments"
               trailingIcon={<ChevronRightRounded />}
               href={`/groups/${group.id}/permissions`}
-              position="bottom"
+              position="middle"
             />
           </Grid>
         </Grid>

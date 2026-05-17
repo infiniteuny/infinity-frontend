@@ -132,4 +132,16 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .tiles-rounded-dynamic > .MuiGrid-root:first-child > .MuiContainer-root,
+  .tiles-rounded-dynamic > .MuiGrid-root:first-child > .MuiButtonBase-root {
+    border-top-right-radius: var(--radius-2xl) !important;
+    border-top-left-radius: var(--radius-2xl) !important;
+  }
+
+  .tiles-rounded-dynamic > .MuiGrid-root:last-child > .MuiContainer-root,
+  .tiles-rounded-dynamic > .MuiGrid-root:last-child > .MuiButtonBase-root {
+    border-bottom-right-radius: var(--radius-2xl) !important;
+    border-bottom-left-radius: var(--radius-2xl) !important;
+  }
 }

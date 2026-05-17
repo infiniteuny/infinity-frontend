@@ -18,9 +18,9 @@ export function MembershipView({ user }: Props) {
             Membership
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <ViewTile title="Member" subtitle={user.isMember ? 'Yes' : 'No'} position="top" />
+            <ViewTile title="Member" subtitle={user.isMember ? 'Yes' : 'No'} position="middle" />
           </Grid>
           {user.isMember ? (
             <>
@@ -81,7 +81,7 @@ export function MembershipView({ user }: Props) {
               subtitle="Manage community groups membership"
               trailingIcon={<ChevronRightRounded />}
               href={`/users/${user.id}/community-groups`}
-              position="bottom"
+              position="middle"
             />
           </Grid>
         </Grid>

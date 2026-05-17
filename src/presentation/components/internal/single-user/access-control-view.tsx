@@ -16,14 +16,14 @@ export function AccessControlView({ user }: Props) {
             Access Control
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
             <SettingTile
               title="Permissions"
               subtitle="Manage permission assignments"
               trailingIcon={<ChevronRightRounded />}
               href={`/users/${user.id}/permissions`}
-              position="top"
+              position="middle"
             />
           </Grid>
           <Grid size={12}>
@@ -32,7 +32,7 @@ export function AccessControlView({ user }: Props) {
               subtitle="Manage group memberships"
               trailingIcon={<ChevronRightRounded />}
               href={`/users/${user.id}/groups`}
-              position="bottom"
+              position="middle"
             />
           </Grid>
         </Grid>

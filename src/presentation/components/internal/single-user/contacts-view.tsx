@@ -30,12 +30,12 @@ export function ContactsView({ user }: Props) {
             Contacts
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <ViewTile title="Email Address" subtitle={user.emailAddress} position="top" />
+            <ViewTile title="Email Address" subtitle={user.emailAddress} position="middle" />
           </Grid>
           <Grid size={12}>
-            <ViewTile title="Phone Number" subtitle={user.phoneNumber} position="bottom" />
+            <ViewTile title="Phone Number" subtitle={user.phoneNumber} position="middle" />
           </Grid>
           {user.links?.linkedin && (
             <Grid size={12}>
@@ -43,7 +43,7 @@ export function ContactsView({ user }: Props) {
                 title="LinkedIn"
                 subtitle={user.links.linkedin}
                 trailingIcon={<OpenInNewRounded />}
-                position="bottom"
+                position="middle"
                 href={`https://www.linkedin.com/in/${user.links.linkedin}`}
               />
             </Grid>
@@ -54,7 +54,7 @@ export function ContactsView({ user }: Props) {
                 title="GitHub"
                 subtitle={user.links.github}
                 trailingIcon={<OpenInNewRounded />}
-                position="bottom"
+                position="middle"
                 href={`https://github.com/${user.links.github}`}
               />
             </Grid>
@@ -65,7 +65,7 @@ export function ContactsView({ user }: Props) {
                 title="Discord"
                 subtitle={user.links.discord}
                 trailingIcon={copied ? <CheckRounded color="success" /> : <ContentCopyRounded />}
-                position="bottom"
+                position="middle"
                 onClick={handleDiscordCopy}
               />
             </Grid>
