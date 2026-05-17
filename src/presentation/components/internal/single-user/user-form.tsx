@@ -11,6 +11,7 @@ import { GeneralForm } from './general-form';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { MembershipForm } from './membership-form';
+import { ProfileToolbar } from '@app/presentation/components/internal/profile';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
@@ -164,7 +165,11 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
   return (
     <>
       <SectionHeader title={isProfileForm ? 'Edit Profile' : user ? name : 'Create User'}>
-        <UserToolbar ref={ref} methods={methods} />
+        {isProfileForm ? (
+          <ProfileToolbar ref={ref} methods={methods} />
+        ) : (
+          <UserToolbar ref={ref} methods={methods} />
+        )}
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

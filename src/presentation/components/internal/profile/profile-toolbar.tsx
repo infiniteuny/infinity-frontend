@@ -53,7 +53,7 @@ export function ProfileToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormP
         <Button
           variant="filled"
           className="ml-4"
-          aria-label="Save user"
+          aria-label="Save profile"
           startIcon={<SaveRounded />}
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}
