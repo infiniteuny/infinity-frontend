@@ -10,6 +10,7 @@ import {
   EmojiEventsRounded,
   Groups3Rounded,
   GroupsRounded,
+  PersonRounded,
   SchoolRounded,
   SquareFootRounded,
   StairsRounded,
@@ -33,7 +34,17 @@ export function SettingsView() {
               General
             </Typography>
           </Toolbar>
-          <Grid container spacing={0.5}>
+          <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+            <Grid size={12}>
+              <ClickableViewTile
+                title="Profile"
+                subtitle="View and manage your profile information"
+                position="top"
+                icon={<PersonRounded />}
+                trailingIcon={<ChevronRightRounded />}
+                href="/settings/profile"
+              />
+            </Grid>
             {['create-config', 'update-config', 'delete-config'].some((p) =>
               userPermissions.has(p),
             ) ? (
@@ -41,6 +52,7 @@ export function SettingsView() {
                 <ClickableViewTile
                   title="System Configurations"
                   subtitle="General system-wide settings and configurations"
+                  position="bottom"
                   icon={<TuneRounded />}
                   trailingIcon={<ChevronRightRounded />}
                   href="/settings/system"
