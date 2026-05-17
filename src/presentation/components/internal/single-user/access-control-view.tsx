@@ -12,7 +12,9 @@ export function AccessControlView({ user }: Props) {
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
 
-  return (
+  return ['read-user-permission', 'read-user-group'].some((p) => userPermissions.has(p)) ||
+    (['read-own-user-permission', 'read-own-user-group'].some((p) => userPermissions.has(p)) &&
+      user.id === userSession?.user.id) ? (
     <Box component="section" className="mb-4 w-full px-6">
       <Container maxWidth={false} className="max-w-2xl p-0">
         <Toolbar component="header" className="h-auto min-h-10 p-3">
@@ -50,5 +52,5 @@ export function AccessControlView({ user }: Props) {
         </Grid>
       </Container>
     </Box>
-  );
+  ) : null;
 }
