@@ -31,7 +31,7 @@ export default async function SingleCommunityGroupPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (communityGroupId !== 'new' && ['read-community-group'].some((p) => userPermissions.has(p))) {
+  if (communityGroupId !== 'new') {
     const getCommunityGroup = serverContainer.get<GetCommunityGroup>(SYMBOLS.GetCommunityGroup);
     const communityGroupResult = await getCommunityGroup.execute(communityGroupId);
     const communityGroup = match(communityGroupResult, {

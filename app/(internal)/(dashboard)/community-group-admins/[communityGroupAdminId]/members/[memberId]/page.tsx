@@ -61,10 +61,7 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
   });
   const userPermissions = new Set(session.permissions);
 
-  if (
-    memberId !== 'new' &&
-    ['read-community-group-admin-member'].some((p) => userPermissions.has(p))
-  ) {
+  if (memberId !== 'new') {
     const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
       SYMBOLS.GetCommunityGroupAdminMember,
     );

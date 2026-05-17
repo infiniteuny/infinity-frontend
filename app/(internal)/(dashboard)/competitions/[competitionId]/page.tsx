@@ -31,7 +31,7 @@ export default async function SingleCompetitionPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (competitionId !== 'new' && ['read-competition'].some((p) => userPermissions.has(p))) {
+  if (competitionId !== 'new') {
     const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
     const competitionResult = await getCompetition.execute(competitionId);
     const competition = match(competitionResult, {

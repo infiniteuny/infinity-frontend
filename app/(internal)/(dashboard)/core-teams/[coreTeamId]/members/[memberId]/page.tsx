@@ -54,7 +54,7 @@ export default async function SingleCoreTeamMemberPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (memberId !== 'new' && ['read-core-team-member'].some((p) => userPermissions.has(p))) {
+  if (memberId !== 'new') {
     const getCoreTeamMember = serverContainer.get<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember);
     const coreTeamMemberResult = await getCoreTeamMember.execute(memberId, [
       'major',

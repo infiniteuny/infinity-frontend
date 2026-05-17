@@ -1,6 +1,5 @@
-import { GetProjectGalleries, GetSession } from '@app/application';
+import { GetProjectGalleries } from '@app/application';
 import { match } from 'effect/Either';
-import { notFound } from 'next/navigation';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -18,46 +17,29 @@ import { SYMBOLS } from '@config';
 export const dynamic = 'force-dynamic';
 
 export default async function ProjectGalleriesPage() {
-  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getProjectGalleries = serverContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries);
 
-  const sessionResult = await getSession.execute();
-  const session = match(sessionResult, {
+  const result = await getProjectGalleries.execute(undefined, { perPage: 25 });
+  const [projectGalleries, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (session) => session,
+    onRight: (data) => data,
   });
-  const userPermissions = new Set(session.permissions);
 
-  if (['read-project-gallery'].some((p) => userPermissions.has(p))) {
-    const getProjectGalleries = serverContainer.get<GetProjectGalleries>(
-      SYMBOLS.GetProjectGalleries,
-    );
-
-    const result = await getProjectGalleries.execute(undefined, { perPage: 25 });
-    const [projectGalleries, paginationOptions] = match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: (data) => data,
-    });
-
-    return (
-      <>
-        <SectionHeader title="Project Galleries">
-          <ProjectGalleriesToolbar />
-        </SectionHeader>
-        <ProjectGalleriesList
-          initialProjectGalleries={
-            projectGalleries.map(ProjectGalleryMapper.fromDomainToDto) as ProjectGalleryDto[]
-          }
-          initialPaginationOptions={
-            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-          }
-        />
-      </>
-    );
-  } else {
-    notFound();
-  }
+  return (
+    <>
+      <SectionHeader title="Project Galleries">
+        <ProjectGalleriesToolbar />
+      </SectionHeader>
+      <ProjectGalleriesList
+        initialProjectGalleries={
+          projectGalleries.map(ProjectGalleryMapper.fromDomainToDto) as ProjectGalleryDto[]
+        }
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
+    </>
+  );
 }

@@ -8,7 +8,7 @@ import {
   CommunityGroupMembersList,
   CommunityGroupMembersToolbar,
 } from '@app/presentation/components/internal/community-group-members';
-import { GetCommunityGroup, GetCommunityGroupMembers, GetSession } from '@app/application';
+import { GetCommunityGroup, GetCommunityGroupMembers } from '@app/application';
 import { isLeft, match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -25,13 +25,17 @@ type Props = {
 };
 
 export default async function CommunityGroupMembersPage({ params }: Props) {
-  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const getCommunityGroup = serverContainer.get<GetCommunityGroup>(SYMBOLS.GetCommunityGroup);
+  const getCommunityGroupMembers = serverContainer.get<GetCommunityGroupMembers>(
+    SYMBOLS.GetCommunityGroupMembers,
+  );
   const communityGroupId = (await params).communityGroupId;
 
-  const [communityGroupResult, sessionResult] = await Promise.all([
+  const [communityGroupResult, communityGroupMembersResult] = await Promise.all([
     getCommunityGroup.execute(communityGroupId),
-    getSession.execute(),
+    getCommunityGroupMembers.execute(communityGroupId, ['major', 'major.faculty'], undefined, {
+      perPage: 25,
+    }),
   ]);
 
   if (isLeft(communityGroupResult)) {
@@ -44,53 +48,29 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
     }
   }
 
-  const session = match(sessionResult, {
+  const [communityGroupMembers, paginationOptions] = match(communityGroupMembersResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (session) => session,
+    onRight: (data) => data,
   });
-  const userPermissions = new Set(session.permissions);
 
-  if (['read-community-group-member'].some((p) => userPermissions.has(p))) {
-    const getCommunityGroupMembers = serverContainer.get<GetCommunityGroupMembers>(
-      SYMBOLS.GetCommunityGroupMembers,
-    );
-
-    const result = await getCommunityGroupMembers.execute(
-      communityGroupId,
-      ['major', 'major.faculty'],
-      undefined,
-      {
-        perPage: 25,
-      },
-    );
-    const [communityGroupMembers, paginationOptions] = match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: (data) => data,
-    });
-
-    return (
-      <>
-        <SectionHeader title="Community Group Members">
-          <CommunityGroupMembersToolbar communityGroupId={communityGroupId} />
-        </SectionHeader>
-        <CommunityGroupMembersList
-          communityGroupId={communityGroupId}
-          initialCommunityGroupMembers={
-            communityGroupMembers.map(
-              CommunityGroupMemberMapper.fromDomainToDto,
-            ) as CommunityGroupMemberDto[]
-          }
-          initialPaginationOptions={
-            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-          }
-        />
-      </>
-    );
-  } else {
-    notFound();
-  }
+  return (
+    <>
+      <SectionHeader title="Community Group Members">
+        <CommunityGroupMembersToolbar communityGroupId={communityGroupId} />
+      </SectionHeader>
+      <CommunityGroupMembersList
+        communityGroupId={communityGroupId}
+        initialCommunityGroupMembers={
+          communityGroupMembers.map(
+            CommunityGroupMemberMapper.fromDomainToDto,
+          ) as CommunityGroupMemberDto[]
+        }
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
+    </>
+  );
 }

@@ -31,7 +31,7 @@ export default async function SingleCoreTeamPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (coreTeamId !== 'new' && ['read-core-team'].some((p) => userPermissions.has(p))) {
+  if (coreTeamId !== 'new') {
     const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
     const coreTeamResult = await getCoreTeam.execute(coreTeamId);
     const coreTeam = match(coreTeamResult, {

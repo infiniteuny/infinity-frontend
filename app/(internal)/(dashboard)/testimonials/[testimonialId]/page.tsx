@@ -31,7 +31,7 @@ export default async function SingleTestimonialPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (testimonialId !== 'new' && ['read-testimonial'].some((p) => userPermissions.has(p))) {
+  if (testimonialId !== 'new') {
     const getTestimonial = serverContainer.get<GetTestimonial>(SYMBOLS.GetTestimonial);
     const testimonialResult = await getTestimonial.execute(testimonialId);
     const testimonial = match(testimonialResult, {

@@ -50,13 +50,9 @@ export function SettingsView() {
           </Grid>
         </Container>
       </Box>
-      {[
-        'read-degree',
-        'read-faculty',
-        'read-major',
-        'read-persona',
-        'read-competition-team-type',
-      ].some((p) => userPermissions.has(p)) ? (
+      {['read-degree', 'read-faculty', 'read-major', 'read-competition-team-type'].some((p) =>
+        userPermissions.has(p),
+      ) ? (
         <Box component="section" className="mb-4 w-full px-6">
           <Container maxWidth={false} className="max-w-2xl p-0">
             <Toolbar component="header" className="h-auto min-h-10 p-3">
@@ -101,18 +97,16 @@ export function SettingsView() {
                   />
                 </Grid>
               ) : null}
-              {['read-persona'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Personas"
-                    subtitle="User personas"
-                    position="middle"
-                    icon={<AssignmentIndRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/personas"
-                  />
-                </Grid>
-              ) : null}
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Personas"
+                  subtitle="User personas"
+                  position="middle"
+                  icon={<AssignmentIndRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/personas"
+                />
+              </Grid>
               {['read-competition-team-type'].some((p) => userPermissions.has(p)) ? (
                 <Grid size={12}>
                   <ClickableViewTile

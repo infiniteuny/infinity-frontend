@@ -8,7 +8,7 @@ import {
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
 } from '@app/infrastructure/dtos';
-import { GetCoreTeam, GetCoreTeamMembers, GetSession } from '@app/application';
+import { GetCoreTeam, GetCoreTeamMembers } from '@app/application';
 import { isLeft, match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -25,13 +25,18 @@ type Props = {
 };
 
 export default async function CoreTeamMembersPage({ params }: Props) {
-  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
+  const getCoreTeamMembers = serverContainer.get<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers);
   const coreTeamId = (await params).coreTeamId;
 
-  const [coreTeamResult, sessionResult] = await Promise.all([
+  const [coreTeamResult, coreTeamMembersResult] = await Promise.all([
     getCoreTeam.execute(coreTeamId),
-    getSession.execute(),
+    getCoreTeamMembers.execute(
+      coreTeamId,
+      ['major', 'major.faculty', 'membership.core_team_division'],
+      undefined,
+      { perPage: 25 },
+    ),
   ]);
 
   if (isLeft(coreTeamResult)) {
@@ -44,47 +49,27 @@ export default async function CoreTeamMembersPage({ params }: Props) {
     }
   }
 
-  const session = match(sessionResult, {
+  const [coreTeamMembers, paginationOptions] = match(coreTeamMembersResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (session) => session,
+    onRight: (data) => data,
   });
-  const userPermissions = new Set(session.permissions);
 
-  if (['read-core-team-member'].some((p) => userPermissions.has(p))) {
-    const getCoreTeamMembers = serverContainer.get<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers);
-
-    const result = await getCoreTeamMembers.execute(
-      coreTeamId,
-      ['major', 'major.faculty', 'membership.core_team_division'],
-      undefined,
-      { perPage: 25 },
-    );
-    const [coreTeamMembers, paginationOptions] = match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: (data) => data,
-    });
-
-    return (
-      <>
-        <SectionHeader title="Core Team Members">
-          <CoreTeamMembersToolbar coreTeamId={coreTeamId} />
-        </SectionHeader>
-        <CoreTeamMembersList
-          coreTeamId={coreTeamId}
-          initialCoreTeamMembers={
-            coreTeamMembers.map(CoreTeamMemberMapper.fromDomainToDto) as CoreTeamMemberDto[]
-          }
-          initialPaginationOptions={
-            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-          }
-        />
-      </>
-    );
-  } else {
-    notFound();
-  }
+  return (
+    <>
+      <SectionHeader title="Core Team Members">
+        <CoreTeamMembersToolbar coreTeamId={coreTeamId} />
+      </SectionHeader>
+      <CoreTeamMembersList
+        coreTeamId={coreTeamId}
+        initialCoreTeamMembers={
+          coreTeamMembers.map(CoreTeamMemberMapper.fromDomainToDto) as CoreTeamMemberDto[]
+        }
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
+    </>
+  );
 }

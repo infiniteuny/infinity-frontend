@@ -31,7 +31,7 @@ export default async function SingleProjectGalleryPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (projectGalleryId !== 'new' && ['read-project-gallery'].some((p) => userPermissions.has(p))) {
+  if (projectGalleryId !== 'new') {
     const getProjectGallery = serverContainer.get<GetProjectGallery>(SYMBOLS.GetProjectGallery);
     const projectGalleryResult = await getProjectGallery.execute(projectGalleryId);
     const projectGallery = match(projectGalleryResult, {

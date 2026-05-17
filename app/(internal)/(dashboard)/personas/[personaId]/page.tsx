@@ -31,7 +31,7 @@ export default async function SinglePersonaPage({ params }: Props) {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (personaId !== 'new' && ['read-persona'].some((p) => userPermissions.has(p))) {
+  if (personaId !== 'new') {
     const getPersona = serverContainer.get<GetPersona>(SYMBOLS.GetPersona);
     const personaResult = await getPersona.execute(personaId);
     const persona = match(personaResult, {

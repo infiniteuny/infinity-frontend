@@ -8,7 +8,7 @@ import {
   CompetitionInstancesList,
   CompetitionInstancesToolbar,
 } from '@app/presentation/components/internal/competition-instances';
-import { GetCompetition, GetCompetitionInstances, GetSession } from '@app/application';
+import { GetCompetition, GetCompetitionInstances } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
@@ -25,13 +25,15 @@ type Props = {
 export const dynamic = 'force-dynamic';
 
 export default async function CompetitionInstancesPage({ params }: Props) {
-  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+  const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
+    SYMBOLS.GetCompetitionInstances,
+  );
   const competitionId = (await params).competitionId;
 
-  const [competitionResult, sessionResult] = await Promise.all([
+  const [competitionResult, competitionInstancesResult] = await Promise.all([
     getCompetition.execute(competitionId),
-    getSession.execute(),
+    getCompetitionInstances.execute(['competition'], { competitionId }, { perPage: 25 }),
   ]);
 
   const competition = match(competitionResult, {
@@ -44,50 +46,30 @@ export default async function CompetitionInstancesPage({ params }: Props) {
     },
     onRight: (competition) => competition,
   });
-  const session = match(sessionResult, {
+
+  const [competitionInstances, paginationOptions] = match(competitionInstancesResult, {
     onLeft: (error) => {
       throw error;
     },
-    onRight: (session) => session,
+    onRight: (data) => data,
   });
-  const userPermissions = new Set(session.permissions);
 
-  if (['read-competition'].some((p) => userPermissions.has(p))) {
-    const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
-      SYMBOLS.GetCompetitionInstances,
-    );
-
-    const result = await getCompetitionInstances.execute(
-      ['competition'],
-      { competitionId },
-      { perPage: 25 },
-    );
-    const [competitionInstances, paginationOptions] = match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: (data) => data,
-    });
-
-    return (
-      <>
-        <SectionHeader title={`${competition.name} Instances`}>
-          <CompetitionInstancesToolbar competitionId={competitionId} />
-        </SectionHeader>
-        <CompetitionInstancesList
-          initialCompetitionInstances={
-            competitionInstances.map(
-              CompetitionInstanceMapper.fromDomainToDto,
-            ) as CompetitionInstanceDto[]
-          }
-          initialPaginationOptions={
-            PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
-          }
-          competitionId={competitionId}
-        />
-      </>
-    );
-  } else {
-    notFound();
-  }
+  return (
+    <>
+      <SectionHeader title={`${competition.name} Instances`}>
+        <CompetitionInstancesToolbar competitionId={competitionId} />
+      </SectionHeader>
+      <CompetitionInstancesList
+        initialCompetitionInstances={
+          competitionInstances.map(
+            CompetitionInstanceMapper.fromDomainToDto,
+          ) as CompetitionInstanceDto[]
+        }
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+        competitionId={competitionId}
+      />
+    </>
+  );
 }
