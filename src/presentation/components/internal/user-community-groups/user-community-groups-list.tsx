@@ -261,7 +261,10 @@ export function UserCommunityGroupsList({
                         icon={<DeleteRounded />}
                         label="Delete"
                         onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                          handleDeleteClick(
+                            params.row.actions.membership.id,
+                            params.row.actions.name,
+                          )
                         }
                       />
                     ) : null}

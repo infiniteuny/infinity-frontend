@@ -234,7 +234,10 @@ export function UserGroupsList({ initialUserGroups, initialPaginationOptions, us
                         icon={<DeleteRounded />}
                         label="Delete"
                         onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                          handleDeleteClick(
+                            params.row.actions.entitlement.id,
+                            params.row.actions.name,
+                          )
                         }
                       />
                     ) : null}
