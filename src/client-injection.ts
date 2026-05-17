@@ -106,6 +106,7 @@ import {
   CreateUserGroup,
   CreateUserPermission,
   CreateUserPersona,
+  DeleteAchievement,
   DeleteCompetition,
   DeleteCompetitionInstance,
   DeleteCompetitionOrganizerType,
@@ -119,11 +120,13 @@ import {
   DeleteCommunityGroupAdminMember,
   DeleteCommunityGroupMember,
   DeleteCoreTeam,
+  DeleteCoreTeamMember,
   DeleteCoreTeamDivision,
   DeleteDegree,
   DeleteFaculty,
   DeleteFundApplication,
   DeleteGroup,
+  DeleteGroupPermission,
   DeleteMajor,
   DeletePermission,
   DeletePersona,
@@ -287,6 +290,7 @@ clientContainer
   .to(CreateGroupPermission);
 clientContainer.bind<CreateTeamMember>(SYMBOLS.CreateTeamMember).to(CreateTeamMember);
 clientContainer.bind<CreateUserGroup>(SYMBOLS.CreateUserGroup).to(CreateUserGroup);
+clientContainer.bind<DeleteAchievement>(SYMBOLS.DeleteAchievement).to(DeleteAchievement);
 clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
 clientContainer.bind<DeleteUserGroup>(SYMBOLS.DeleteUserGroup).to(DeleteUserGroup);
 clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
@@ -322,6 +326,7 @@ clientContainer
   .bind<DeleteCommunityGroupMember>(SYMBOLS.DeleteCommunityGroupMember)
   .to(DeleteCommunityGroupMember);
 clientContainer.bind<DeleteCoreTeam>(SYMBOLS.DeleteCoreTeam).to(DeleteCoreTeam);
+clientContainer.bind<DeleteCoreTeamMember>(SYMBOLS.DeleteCoreTeamMember).to(DeleteCoreTeamMember);
 clientContainer
   .bind<DeleteCoreTeamDivision>(SYMBOLS.DeleteCoreTeamDivision)
   .to(DeleteCoreTeamDivision);
@@ -331,6 +336,9 @@ clientContainer
   .bind<DeleteFundApplication>(SYMBOLS.DeleteFundApplication)
   .to(DeleteFundApplication);
 clientContainer.bind<DeleteGroup>(SYMBOLS.DeleteGroup).to(DeleteGroup);
+clientContainer
+  .bind<DeleteGroupPermission>(SYMBOLS.DeleteGroupPermission)
+  .to(DeleteGroupPermission);
 clientContainer.bind<DeleteMajor>(SYMBOLS.DeleteMajor).to(DeleteMajor);
 clientContainer.bind<DeletePermission>(SYMBOLS.DeletePermission).to(DeletePermission);
 clientContainer.bind<DeletePersona>(SYMBOLS.DeletePersona).to(DeletePersona);
