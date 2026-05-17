@@ -1,9 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { User } from '@app/domain/entities';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 import { ChevronRightRounded } from '@mui/icons-material';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
@@ -67,7 +66,7 @@ export function MembershipView({ user }: Props) {
             </>
           ) : null}
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Personas"
               subtitle="Manage personas"
               trailingIcon={<ChevronRightRounded />}
@@ -76,7 +75,7 @@ export function MembershipView({ user }: Props) {
             />
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Community Groups"
               subtitle="Manage community groups membership"
               trailingIcon={<ChevronRightRounded />}

@@ -1,7 +1,5 @@
 'use client';
 
-import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
-import { SettingTile } from './setting-tile';
 import {
   AdjustRounded,
   AssignmentIndRounded,
@@ -19,6 +17,8 @@ import {
   TuneRounded,
   WorkspacePremiumRounded,
 } from '@mui/icons-material';
+import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { ClickableViewTile } from '@app/presentation/components/internal/shared';
 
 export function SettingsView() {
   return (
@@ -32,7 +32,7 @@ export function SettingsView() {
           </Toolbar>
           <Grid container spacing={0.5}>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="System Configurations"
                 subtitle="General system-wide settings and configurations"
                 icon={<TuneRounded />}
@@ -52,7 +52,7 @@ export function SettingsView() {
           </Toolbar>
           <Grid container spacing={0.5}>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Degrees"
                 subtitle="Academic degrees"
                 position="top"
@@ -62,7 +62,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Faculties"
                 subtitle="Academic faculties"
                 position="middle"
@@ -72,7 +72,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Majors"
                 subtitle="Academic majors"
                 position="middle"
@@ -82,7 +82,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Personas"
                 subtitle="User personas"
                 position="middle"
@@ -92,7 +92,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Team Types"
                 subtitle="Types of teams"
                 position="bottom"
@@ -113,7 +113,7 @@ export function SettingsView() {
           </Toolbar>
           <Grid container spacing={0.5}>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Core Team Divisions"
                 subtitle="Divisions within the core team"
                 position="top"
@@ -123,7 +123,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Community Groups"
                 subtitle="Groups within the community"
                 position="bottom"
@@ -144,7 +144,7 @@ export function SettingsView() {
           </Toolbar>
           <Grid container spacing={0.5}>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Competitions"
                 subtitle="List of competitions and their details"
                 position="top"
@@ -154,7 +154,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Organizer Types"
                 subtitle="Types of competition organizers"
                 position="middle"
@@ -164,7 +164,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Scales"
                 subtitle="Regional level of the competition"
                 position="middle"
@@ -174,7 +174,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Time Ranges"
                 subtitle="Duration of the competition"
                 position="middle"
@@ -184,7 +184,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Outputs"
                 subtitle="Types of outputs produced by the competition"
                 position="middle"
@@ -194,7 +194,7 @@ export function SettingsView() {
               />
             </Grid>
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Ranks"
                 subtitle="Winning ranks in the competition"
                 position="bottom"

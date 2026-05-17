@@ -1,8 +1,7 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { Team } from '@app/domain/entities';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 import { ChevronRightRounded } from '@mui/icons-material';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
+import { Team } from '@app/domain/entities';
 
 type Props = {
   team: Team;
@@ -35,7 +34,7 @@ export function GeneralView({ team }: Props) {
             />
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Members"
               subtitle="Manage team members"
               trailingIcon={<ChevronRightRounded />}

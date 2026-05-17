@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { User } from '@app/domain/entities';
 import { ChevronRightRounded } from '@mui/icons-material';
+import { ClickableViewTile } from '@app/presentation/components/internal/shared';
+import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
@@ -18,7 +18,7 @@ export function AccessControlView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Permissions"
               subtitle="Manage permission assignments"
               trailingIcon={<ChevronRightRounded />}
@@ -27,7 +27,7 @@ export function AccessControlView({ user }: Props) {
             />
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Groups"
               subtitle="Manage group memberships"
               trailingIcon={<ChevronRightRounded />}

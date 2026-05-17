@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { CommunityGroupAdmin } from '@app/domain/entities';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
@@ -29,7 +28,7 @@ export function GeneralView({ communityGroupAdmin }: Props) {
             />
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Members"
               subtitle="Manage community group administrator members"
               trailingIcon={<ChevronRightRounded />}

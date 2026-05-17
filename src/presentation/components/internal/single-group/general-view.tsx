@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { Group } from '@app/domain/entities';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 import { ChevronRightRounded } from '@mui/icons-material';
 
 type Props = {
@@ -25,7 +24,7 @@ export function GeneralView({ group }: Props) {
             <ViewTile title="Guard Name" subtitle={group.guardName} position="middle" />
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Permissions"
               subtitle="Manage permission assignments"
               trailingIcon={<ChevronRightRounded />}

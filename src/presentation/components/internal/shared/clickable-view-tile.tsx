@@ -11,20 +11,23 @@ type Props = {
 } & (
   | {
       href?: string;
+      target?: '_blank' | '_self' | '_parent' | '_top';
       onClick?: never;
     }
   | {
       href?: never;
+      target?: never;
       onClick?: MouseEventHandler<HTMLButtonElement>;
     }
 );
 
-export function SettingTile({
+export function ClickableViewTile({
   title,
   subtitle,
   icon,
   trailingIcon,
   href,
+  target,
   onClick,
   position = 'single',
 }: Props) {
@@ -53,6 +56,7 @@ export function SettingTile({
       component={href ? 'a' : 'button'}
       LinkComponent={href ? Link : undefined}
       href={href}
+      target={target}
       onClick={onClick}
     >
       {icon ? (

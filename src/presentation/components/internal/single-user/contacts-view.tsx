@@ -1,9 +1,8 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CheckRounded, ContentCopyRounded, OpenInNewRounded } from '@mui/icons-material';
-import { SettingTile } from '@app/presentation/components/internal/settings';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { User } from '@app/domain/entities';
 import { useState } from 'react';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   user: User;
@@ -32,36 +31,45 @@ export function ContactsView({ user }: Props) {
         </Toolbar>
         <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
-            <ViewTile title="Email Address" subtitle={user.emailAddress} position="middle" />
+            <ClickableViewTile
+              title="Email Address"
+              subtitle={user.emailAddress}
+              trailingIcon={<OpenInNewRounded />}
+              position="middle"
+              href={`mailto:${user.emailAddress}`}
+              target="_blank"
+            />
           </Grid>
           <Grid size={12}>
             <ViewTile title="Phone Number" subtitle={user.phoneNumber} position="middle" />
           </Grid>
           {user.links?.linkedin && (
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="LinkedIn"
                 subtitle={user.links.linkedin}
                 trailingIcon={<OpenInNewRounded />}
                 position="middle"
                 href={`https://www.linkedin.com/in/${user.links.linkedin}`}
+                target="_blank"
               />
             </Grid>
           )}
           {user.links?.github && (
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="GitHub"
                 subtitle={user.links.github}
                 trailingIcon={<OpenInNewRounded />}
                 position="middle"
                 href={`https://github.com/${user.links.github}`}
+                target="_blank"
               />
             </Grid>
           )}
           {user.links?.discord && (
             <Grid size={12}>
-              <SettingTile
+              <ClickableViewTile
                 title="Discord"
                 subtitle={user.links.discord}
                 trailingIcon={copied ? <CheckRounded color="success" /> : <ContentCopyRounded />}

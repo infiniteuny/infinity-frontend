@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import { Box, Container, Grid, IconButton, Stack, Toolbar, Typography } from '@mui/material';
 import { ChevronRightRounded, DownloadRounded } from '@mui/icons-material';
+import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { CommunityGroup } from '@app/domain/entities';
-import { SettingTile } from '@app/presentation/components/internal/settings';
-import { ViewTile } from '@app/presentation/components/internal/shared';
 
 type Props = {
   communityGroup: CommunityGroup;
@@ -90,7 +89,7 @@ export function GeneralView({ communityGroup }: Props) {
             </Container>
           </Grid>
           <Grid size={12}>
-            <SettingTile
+            <ClickableViewTile
               title="Members"
               subtitle="Manage community group members"
               trailingIcon={<ChevronRightRounded />}
