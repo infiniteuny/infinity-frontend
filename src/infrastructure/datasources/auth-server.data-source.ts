@@ -1,3 +1,4 @@
+import { APIError } from 'better-auth';
 import { betterAuth, BetterAuthOptions } from 'better-auth/minimal';
 import { customSession, genericOAuth } from 'better-auth/plugins';
 import { getAccountCookie } from 'better-auth/cookies';
@@ -115,7 +116,7 @@ export const authServerDataSourceImpl = (
               const email = accessTokenData.email;
 
               if (!email || email.trim() === '') {
-                throw new Error('Email not found in access token');
+                throw new APIError('UNAUTHORIZED', { message: 'Email not found in access token' });
               }
 
               const usersResult = await getUsers.execute(
@@ -127,7 +128,10 @@ export const authServerDataSourceImpl = (
 
               const [users] = match(usersResult, {
                 onLeft: (error) => {
-                  throw error;
+                  throw new APIError('UNAUTHORIZED', {
+                    message: 'Failed to fetch user with email from access token',
+                    cause: error,
+                  });
                 },
                 onRight: (result) => result,
               });
@@ -141,15 +145,18 @@ export const authServerDataSourceImpl = (
 
               const userPermissions = match(userPermissionsResult, {
                 onLeft: (error) => {
-                  throw error;
+                  throw new APIError('UNAUTHORIZED', {
+                    message: 'Failed to fetch user permissions',
+                    cause: error,
+                  });
                 },
                 onRight: (result) => result,
               });
 
               if (users.length !== 1) {
-                throw new Error(
-                  `Expected to find exactly one user with email ${email}, but found ${users.length} user(s).`,
-                );
+                throw new APIError('UNAUTHORIZED', {
+                  message: `Expected to find exactly one user with email ${email}, but found ${users.length} user(s).`,
+                });
               }
 
               return {
