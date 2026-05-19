@@ -45,9 +45,7 @@ export function SettingsView() {
                 href="/settings/profile"
               />
             </Grid>
-            {['create-config', 'update-config', 'delete-config'].some((p) =>
-              userPermissions.has(p),
-            ) ? (
+            {['create-config', 'update-config'].some((p) => userPermissions.has(p)) ? (
               <Grid size={12}>
                 <ClickableViewTile
                   title="System Configurations"
