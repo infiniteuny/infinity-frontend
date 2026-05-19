@@ -2,6 +2,7 @@ import { Container } from 'inversify';
 import {
   AchievementRepository,
   AuthRepository,
+  ConfigRepository,
   CommunityGroupAdminMemberRepository,
   CommunityGroupAdminRepository,
   CommunityGroupMemberRepository,
@@ -39,6 +40,7 @@ import {
 import {
   AchievementRepositoryImpl,
   AuthRepositoryImpl,
+  ConfigRepositoryImpl,
   CommunityGroupAdminMemberRepositoryImpl,
   CommunityGroupAdminRepositoryImpl,
   CommunityGroupMemberRepositoryImpl,
@@ -87,6 +89,7 @@ import {
   CreateCompetitionScale,
   CreateCompetitionTeamType,
   CreateCompetitionTimeRange,
+  CreateConfig,
   CreateCoreTeamDivision,
   CreateCoreTeam,
   CreateCoreTeamMember,
@@ -115,6 +118,7 @@ import {
   DeleteCompetitionScale,
   DeleteCompetitionTeamType,
   DeleteCompetitionTimeRange,
+  DeleteConfig,
   DeleteCommunityGroup,
   DeleteCommunityGroupAdmin,
   DeleteCommunityGroupAdminMember,
@@ -158,6 +162,8 @@ import {
   GetCompetitionTeamTypes,
   GetCompetitionTimeRange,
   GetCompetitionTimeRanges,
+  GetConfig,
+  GetConfigs,
   GetCoreTeamDivision,
   GetCoreTeamDivisions,
   GetCoreTeams,
@@ -196,6 +202,7 @@ import {
   UpdateCompetitionScale,
   UpdateCompetitionTeamType,
   UpdateCompetitionTimeRange,
+  UpdateConfig,
   UpdateCoreTeamDivision,
   UpdateCoreTeam,
   UpdateCoreTeamMember,
@@ -259,6 +266,7 @@ clientContainer
 clientContainer
   .bind<CreateCompetitionTimeRange>(SYMBOLS.CreateCompetitionTimeRange)
   .to(CreateCompetitionTimeRange);
+clientContainer.bind<CreateConfig>(SYMBOLS.CreateConfig).to(CreateConfig);
 clientContainer
   .bind<CreateCoreTeamDivision>(SYMBOLS.CreateCoreTeamDivision)
   .to(CreateCoreTeamDivision);
@@ -315,6 +323,7 @@ clientContainer
 clientContainer
   .bind<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange)
   .to(DeleteCompetitionTimeRange);
+clientContainer.bind<DeleteConfig>(SYMBOLS.DeleteConfig).to(DeleteConfig);
 clientContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(DeleteCommunityGroup);
 clientContainer
   .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
@@ -397,6 +406,8 @@ clientContainer
 clientContainer
   .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
   .to(GetCompetitionTimeRanges);
+clientContainer.bind<GetConfig>(SYMBOLS.GetConfig).to(GetConfig);
+clientContainer.bind<GetConfigs>(SYMBOLS.GetConfigs).to(GetConfigs);
 clientContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
 clientContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
 clientContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
@@ -461,6 +472,7 @@ clientContainer
 clientContainer
   .bind<UpdateCompetitionTimeRange>(SYMBOLS.UpdateCompetitionTimeRange)
   .to(UpdateCompetitionTimeRange);
+clientContainer.bind<UpdateConfig>(SYMBOLS.UpdateConfig).to(UpdateConfig);
 clientContainer
   .bind<UpdateCoreTeamDivision>(SYMBOLS.UpdateCoreTeamDivision)
   .to(UpdateCoreTeamDivision);
@@ -487,6 +499,7 @@ clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
 clientContainer
   .bind<AchievementRepository>(SYMBOLS.AchievementRepository)
   .to(AchievementRepositoryImpl);
+clientContainer.bind<ConfigRepository>(SYMBOLS.ConfigRepository).to(ConfigRepositoryImpl);
 clientContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
 clientContainer
   .bind<CommunityGroupAdminMemberRepository>(SYMBOLS.CommunityGroupAdminMemberRepository)

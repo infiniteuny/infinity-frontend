@@ -3,6 +3,7 @@ import { AuthController, AuthControllerImpl } from '@app/presentation/controller
 import {
   AchievementRepository,
   AuthRepository,
+  ConfigRepository,
   CommunityGroupAdminMemberRepository,
   CommunityGroupAdminRepository,
   CommunityGroupMemberRepository,
@@ -39,6 +40,7 @@ import {
 import {
   AchievementRepositoryImpl,
   AuthRepositoryImpl,
+  ConfigRepositoryImpl,
   CommunityGroupAdminMemberRepositoryImpl,
   CommunityGroupAdminRepositoryImpl,
   CommunityGroupMemberRepositoryImpl,
@@ -91,6 +93,7 @@ import {
   CreateCompetitionScale,
   CreateCompetitionTeamType,
   CreateCompetitionTimeRange,
+  CreateConfig,
   CreateCoreTeamDivision,
   CreateCoreTeam,
   CreateDegree,
@@ -115,6 +118,7 @@ import {
   DeleteCompetitionScale,
   DeleteCompetitionTeamType,
   DeleteCompetitionTimeRange,
+  DeleteConfig,
   DeleteCoreTeam,
   DeleteCoreTeamDivision,
   DeleteDegree,
@@ -151,6 +155,8 @@ import {
   GetCompetitionTeamTypes,
   GetCompetitionTimeRange,
   GetCompetitionTimeRanges,
+  GetConfig,
+  GetConfigs,
   GetCoreTeamDivision,
   GetCoreTeamDivisions,
   GetCoreTeam,
@@ -197,6 +203,7 @@ import {
   UpdateCompetitionScale,
   UpdateCompetitionTeamType,
   UpdateCompetitionTimeRange,
+  UpdateConfig,
   UpdateCoreTeamDivision,
   UpdateCoreTeam,
   UpdateDegree,
@@ -248,6 +255,7 @@ serverContainer
 serverContainer
   .bind<CreateCompetitionTimeRange>(SYMBOLS.CreateCompetitionTimeRange)
   .to(CreateCompetitionTimeRange);
+serverContainer.bind<CreateConfig>(SYMBOLS.CreateConfig).to(CreateConfig);
 serverContainer
   .bind<CreateCoreTeamDivision>(SYMBOLS.CreateCoreTeamDivision)
   .to(CreateCoreTeamDivision);
@@ -319,6 +327,8 @@ serverContainer
 serverContainer
   .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
   .to(GetCompetitionTimeRanges);
+serverContainer.bind<GetConfig>(SYMBOLS.GetConfig).to(GetConfig);
+serverContainer.bind<GetConfigs>(SYMBOLS.GetConfigs).to(GetConfigs);
 serverContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
 serverContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
 serverContainer.bind<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember).to(GetCoreTeamMember);
@@ -383,6 +393,7 @@ serverContainer
 serverContainer
   .bind<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange)
   .to(DeleteCompetitionTimeRange);
+serverContainer.bind<DeleteConfig>(SYMBOLS.DeleteConfig).to(DeleteConfig);
 serverContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(DeleteCommunityGroup);
 serverContainer
   .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
@@ -432,6 +443,7 @@ serverContainer
 serverContainer
   .bind<UpdateCompetitionTimeRange>(SYMBOLS.UpdateCompetitionTimeRange)
   .to(UpdateCompetitionTimeRange);
+serverContainer.bind<UpdateConfig>(SYMBOLS.UpdateConfig).to(UpdateConfig);
 serverContainer
   .bind<UpdateCoreTeamDivision>(SYMBOLS.UpdateCoreTeamDivision)
   .to(UpdateCoreTeamDivision);
@@ -456,6 +468,7 @@ serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerIm
 serverContainer
   .bind<AchievementRepository>(SYMBOLS.AchievementRepository)
   .to(AchievementRepositoryImpl);
+serverContainer.bind<ConfigRepository>(SYMBOLS.ConfigRepository).to(ConfigRepositoryImpl);
 serverContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
 serverContainer
   .bind<CommunityGroupAdminMemberRepository>(SYMBOLS.CommunityGroupAdminMemberRepository)
