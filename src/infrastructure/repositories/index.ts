@@ -1,4 +1,5 @@
 export * from './achievement.repository-impl';
+export * from './config.repository-impl';
 export * from './auth.repository-impl';
 export * from './community-group-admin-member.repository-impl';
 export * from './community-group-admin.repository-impl';
