@@ -1,4 +1,5 @@
 export * from './achievement.dto';
+export * from './config.dto';
 export * from './community-group-admin-member.dto';
 export * from './community-group-admin.dto';
 export * from './community-group-member.dto';
