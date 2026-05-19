@@ -104,6 +104,7 @@ export const authServerDataSourceImpl = (
             clientId: process.env.BETTER_AUTH_INFINITE_SSO_ID!,
             clientSecret: process.env.BETTER_AUTH_INFINITE_SSO_SECRET!,
             discoveryUrl: process.env.BETTER_AUTH_INFINITE_SSO_DISCOVERY_URL!,
+            accessType: 'offline',
             getUserInfo: async (tokens) => {
               const accessTokenPayload = Buffer.from(
                 tokens.accessToken?.split('.')[1] ?? '',
