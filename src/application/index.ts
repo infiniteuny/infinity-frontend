@@ -64,6 +64,7 @@ export * from './delete-team-member';
 export * from './delete-testimonial';
 export * from './delete-user';
 export * from './delete-user-group';
+export * from './extend-user-membership';
 export * from './get-achievement';
 export * from './get-achievements';
 export * from './get-community-group';

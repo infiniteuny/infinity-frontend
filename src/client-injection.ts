@@ -142,6 +142,7 @@ import {
   DeleteUserGroup,
   DeleteUserPermission,
   DeleteUserPersona,
+  ExtendUserMembership,
   GetAchievements,
   GetCommunityGroup,
   GetCommunityGroupAdmins,
@@ -357,6 +358,7 @@ clientContainer.bind<DeleteTeamMember>(SYMBOLS.DeleteTeamMember).to(DeleteTeamMe
 clientContainer.bind<DeleteTestimonial>(SYMBOLS.DeleteTestimonial).to(DeleteTestimonial);
 clientContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
 clientContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
+clientContainer.bind<ExtendUserMembership>(SYMBOLS.ExtendUserMembership).to(ExtendUserMembership);
 clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
 clientContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 clientContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
