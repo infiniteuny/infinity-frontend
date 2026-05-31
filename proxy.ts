@@ -12,9 +12,8 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
     onLeft: () => null,
     onRight: (data) => data,
   });
-  const isSessionExpired = session ? session.expiresAt < new Date() : true;
 
-  if ((!session || isSessionExpired) && req.nextUrl.pathname !== '/login') {
+  if (!session && req.nextUrl.pathname !== '/login') {
     // Workaround for the fact that account cookie not always invalidated
     // at the same time as session cookie.
     const logout = serverContainer.get<Logout>(SYMBOLS.Logout);
