@@ -2,6 +2,7 @@
 
 import {
   AdjustRounded,
+  AppRegistrationRounded,
   AssignmentIndRounded,
   BusinessRounded,
   CategoryRounded,
@@ -21,9 +22,15 @@ import {
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ClickableViewTile } from '@app/presentation/components/internal/shared';
 import { useInternalStore } from '@app/presentation/hooks';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 
-export function SettingsView() {
+type Props = {
+  user: UserDto;
+};
+
+export function SettingsView({ user }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const parsedUser = UserMapper.fromDtoToDomain(user);
 
   return (
     <>
@@ -45,6 +52,18 @@ export function SettingsView() {
                 href="/settings/profile"
               />
             </Grid>
+            {parsedUser.isMember ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Re-registration"
+                  subtitle="Extend your membership"
+                  position="middle"
+                  icon={<AppRegistrationRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/settings/reregistration"
+                />
+              </Grid>
+            ) : null}
             {['create-config', 'update-config'].some((p) => userPermissions.has(p)) ? (
               <Grid size={12}>
                 <ClickableViewTile

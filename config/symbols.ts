@@ -66,6 +66,7 @@ export const SYMBOLS = {
   DeleteUserGroup: Symbol.for('DeleteUserGroup'),
   DeleteUserPermission: Symbol.for('DeleteUserPermission'),
   DeleteUserPersona: Symbol.for('DeleteUserPersona'),
+  ExtendUserMembership: Symbol.for('ExtendUserMembership'),
   GetAchievement: Symbol.for('GetAchievement'),
   GetAchievements: Symbol.for('GetAchievements'),
   GetCommunityGroup: Symbol.for('GetCommunityGroup'),
