@@ -181,4 +181,25 @@ export class UserRepositoryImpl implements UserRepository {
       return left(handleAxiosError(error));
     }
   }
+
+  public async extendUserMembership(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<User, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.post(`/users/${id}/extend`, undefined, {
+        signal: abortSignal,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      const userResponse = UserMapper.fromDtoToDomain(response.data.data.user);
+
+      return right(userResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
 }

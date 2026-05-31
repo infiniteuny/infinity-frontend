@@ -39,4 +39,10 @@ export interface UserRepository {
   ): Promise<Either<User, Error>>;
 
   deleteUser(id: string, abortSignal?: AbortSignal, token?: string): Promise<Either<User, Error>>;
+
+  extendUserMembership(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<User, Error>>;
 }
