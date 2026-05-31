@@ -2,16 +2,18 @@ import type { AuthServerDataSource } from '@app/infrastructure/datasources/serve
 import type { AuthClientDataSource } from '@app/infrastructure/datasources/client';
 import { AuthRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { NextRequest } from 'next/server';
 import { Session } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class AuthRepositoryImpl implements AuthRepository {
+  private isServer = typeof window === 'undefined';
+
   public constructor(
     @inject(SYMBOLS.AuthDataSource)
     private authDataSource: AuthServerDataSource | AuthClientDataSource,
-    private isServer = typeof window === 'undefined',
   ) {}
 
   public async signIn(callbackUrl?: string): Promise<Either<void, Error>> {

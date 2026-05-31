@@ -8,9 +8,10 @@ import { CompetitionRankMapper } from '@app/infrastructure/dtos';
 import { CompetitionRankRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class CompetitionRankRepositoryImpl implements CompetitionRankRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

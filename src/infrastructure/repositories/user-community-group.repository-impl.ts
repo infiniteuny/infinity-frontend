@@ -1,7 +1,7 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
   UserCommunityGroup,
@@ -11,6 +11,7 @@ import { UserCommunityGroupMapper } from '@app/infrastructure/dtos';
 import { UserCommunityGroupRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class UserCommunityGroupRepositoryImpl implements UserCommunityGroupRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

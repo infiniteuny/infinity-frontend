@@ -4,9 +4,10 @@ import { Config, ConfigFilterOptions, PaginationOptions } from '@app/domain/enti
 import { ConfigMapper } from '@app/infrastructure/dtos';
 import { ConfigRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class ConfigRepositoryImpl implements ConfigRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

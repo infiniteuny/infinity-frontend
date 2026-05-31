@@ -8,9 +8,10 @@ import { CommunityGroupAdminMapper } from '@app/infrastructure/dtos';
 import { CommunityGroupAdminRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class CommunityGroupAdminRepositoryImpl implements CommunityGroupAdminRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

@@ -1,7 +1,7 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
   UserPermission,
@@ -12,6 +12,7 @@ import { UserPermissionMapper } from '@app/infrastructure/dtos';
 import { UserPermissionRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class UserPermissionRepositoryImpl implements UserPermissionRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

@@ -1,12 +1,13 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { PaginationOptions, UserGroup, UserGroupFilterOptions } from '@app/domain/entities';
 import { UserGroupMapper } from '@app/infrastructure/dtos';
 import { UserGroupRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class UserGroupRepositoryImpl implements UserGroupRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

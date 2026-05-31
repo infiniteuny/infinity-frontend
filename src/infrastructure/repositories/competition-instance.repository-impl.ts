@@ -3,7 +3,7 @@ import { CompetitionInstanceMapper } from '@app/infrastructure/dtos';
 import { CompetitionInstanceRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import {
   CompetitionInstance,
   CompetitionInstanceFilterOptions,
@@ -12,6 +12,7 @@ import {
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class CompetitionInstanceRepositoryImpl implements CompetitionInstanceRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

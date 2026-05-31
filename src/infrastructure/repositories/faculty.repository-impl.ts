@@ -4,9 +4,10 @@ import { Faculty, FacultyFilterOptions, PaginationOptions } from '@app/domain/en
 import { FacultyMapper } from '@app/infrastructure/dtos';
 import { FacultyRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class FacultyRepositoryImpl implements FacultyRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

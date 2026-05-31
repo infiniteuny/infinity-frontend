@@ -4,9 +4,10 @@ import { Group, GroupFilterOptions, PaginationOptions } from '@app/domain/entiti
 import { GroupMapper } from '@app/infrastructure/dtos';
 import { GroupRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class GroupRepositoryImpl implements GroupRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

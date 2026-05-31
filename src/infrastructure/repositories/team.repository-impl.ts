@@ -1,7 +1,7 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
   Team,
@@ -12,6 +12,7 @@ import { SYMBOLS } from '@config';
 import { TeamMapper } from '@app/infrastructure/dtos';
 import { TeamRepository } from '@app/domain/repositories';
 
+@injectable()
 export class TeamRepositoryImpl implements TeamRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

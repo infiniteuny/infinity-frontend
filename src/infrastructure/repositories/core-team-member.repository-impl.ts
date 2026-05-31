@@ -1,7 +1,7 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import {
   CoreTeamMember,
   CoreTeamMemberFilterOptions,
@@ -12,6 +12,7 @@ import { CoreTeamMemberMapper } from '@app/infrastructure/dtos';
 import { CoreTeamMemberRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class CoreTeamMemberRepositoryImpl implements CoreTeamMemberRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

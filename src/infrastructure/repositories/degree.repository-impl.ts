@@ -4,9 +4,10 @@ import { Degree, DegreeFilterOptions, PaginationOptions } from '@app/domain/enti
 import { DegreeMapper } from '@app/infrastructure/dtos';
 import { DegreeRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class DegreeRepositoryImpl implements DegreeRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

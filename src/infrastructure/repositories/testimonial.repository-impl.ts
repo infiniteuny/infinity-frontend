@@ -1,12 +1,13 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { TestimonialMapper } from '@app/infrastructure/dtos';
 import { TestimonialRepository } from '@app/domain/repositories';
 
+@injectable()
 export class TestimonialRepositoryImpl implements TestimonialRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)

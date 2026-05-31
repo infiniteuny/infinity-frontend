@@ -1,12 +1,13 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { PaginationOptions, Persona, PersonaFilterOptions } from '@app/domain/entities';
 import { PersonaMapper } from '@app/infrastructure/dtos';
 import { PersonaRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
 
+@injectable()
 export class PersonaRepositoryImpl implements PersonaRepository {
   public constructor(
     @inject(SYMBOLS.InfinityApiDataSource)
