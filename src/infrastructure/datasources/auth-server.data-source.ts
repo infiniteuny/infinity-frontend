@@ -82,7 +82,7 @@ export const authServerDataSourceImpl = (
           keyPrefix: 'auth:',
         }),
     session: {
-      expiresIn: 1 * 60 * 60, // 1 hour
+      expiresIn: 2 * 60 * 60, // 2 hours
       updateAge: 10 * 60, // 10 minutes
       cookieCache: {
         enabled: false,
