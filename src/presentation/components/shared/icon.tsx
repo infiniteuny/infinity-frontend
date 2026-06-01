@@ -41,6 +41,8 @@ import {
   ReviewsRounded,
   SettingsOutlined,
   SettingsRounded,
+  WebOutlined,
+  WebRounded,
   WorkspacesOutlined,
   WorkspacesRounded,
 } from '@mui/icons-material';
@@ -132,6 +134,10 @@ export function Icon({ name, ...props }: Props) {
       return <SettingsRounded {...props} />;
     case 'settings-outlined':
       return <SettingsOutlined {...props} />;
+    case 'web':
+      return <WebRounded {...props} />;
+    case 'web-outlined':
+      return <WebOutlined {...props} />;
     case 'workspaces':
       return <WorkspacesRounded {...props} />;
     case 'workspaces-outlined':

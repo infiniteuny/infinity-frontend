@@ -37,10 +37,10 @@ export const APP: {
     nav: {
       menus: [
         {
-          name: 'Home',
-          icon: 'home',
-          path: '/',
-          matcher: '\\/',
+          name: 'Landing',
+          icon: 'web',
+          path: 'https://www.infiniteuny.id',
+          matcher: '^https://www.infiniteuny.id$',
           permissions: [],
         },
       ],
