@@ -2,16 +2,15 @@
 
 import Image from 'next/image';
 import { Box, Container, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
-import { UserDto, UserMapper } from '@app/infrastructure/dtos';
-import { DateTime } from 'luxon';
+import { useMemo } from 'react';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
-  user: UserDto;
+  random: number;
 };
 
-export function OverviewView({ user }: Props) {
-  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
+export function OverviewView({ random }: Props) {
+  const user = useInternalStore((s) => s.session?.user);
   const greeting = useMemo(
     () => [
       'Sudah ngoding apa nih hari ini? 🤔',
@@ -36,12 +35,6 @@ export function OverviewView({ user }: Props) {
     ],
     [],
   );
-  // On initial render, show &nbsp; as placeholder to prevent layout shift
-  const [chosenGreeting, setChosenGreeting] = useState<string>(' ');
-
-  useEffect(() => {
-    setChosenGreeting(greeting[Math.floor(Math.random() * greeting.length)]);
-  }, [greeting]);
 
   return (
     <Box
@@ -58,16 +51,10 @@ export function OverviewView({ user }: Props) {
           className="mx-auto block"
         />
         <Typography variant="h4" component="h1" align="center" className="mt-8">
-          Hi, {parsedUser.name}!
+          Hi, {user?.name || 'there'}!
         </Typography>
-        {parsedUser.startDate && parsedUser.endDate ? (
-          <Typography variant="body1" color="text.secondary" align="center" className="mt-3">
-            Member since {DateTime.fromJSDate(parsedUser.startDate).toFormat('dd/LL/yyyy')},
-            expiring on {DateTime.fromJSDate(parsedUser.endDate).toFormat('dd/LL/yyyy')}.
-          </Typography>
-        ) : null}
         <Typography variant="h6" component="p" align="center" className="mt-1 font-normal">
-          {chosenGreeting}
+          {greeting[Math.floor(random * greeting.length)]}
         </Typography>
       </Container>
     </Box>
