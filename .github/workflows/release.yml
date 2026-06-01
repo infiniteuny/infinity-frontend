@@ -91,6 +91,18 @@ jobs:
       - name: Update app version
         run: 'sed -i "s/\"version\": \".*\",/\"version\": \"${{ steps.version.outputs.version }}\",/g" package.json'
 
+      - name: Generate changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-commit: "true"
+          skip-tag: "true"
+          skip-git-pull: "true"
+          skip-version-file: "true"
+          output-file: "CHANGELOG.md"
+          tag-prefix: "v"
+
       - name: Extract metadata for Container
         id: meta
         uses: docker/metadata-action@v6
@@ -160,3 +172,4 @@ jobs:
           target_commitish: ${{ github.ref_name }}
           prerelease: ${{ inputs.release_type != 'prod' }}
           make_latest: "${{ inputs.release_type == 'prod' }}"
+          body: ${{ steps.changelog.outputs.clean_changelog }}
