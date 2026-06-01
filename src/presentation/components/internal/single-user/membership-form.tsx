@@ -18,6 +18,7 @@ import { DateTime } from 'luxon';
 
 type Props = {
   methods: UseFormReturn<UserInput>;
+  className?: string;
 };
 
 export function MembershipForm({
@@ -26,11 +27,12 @@ export function MembershipForm({
     watch,
     formState: { isSubmitting, errors },
   },
+  className,
 }: Props) {
   const isMember = watch('isMember');
 
   return (
-    <Box component="section" className="mb-6 w-full px-6">
+    <Box component="section" className={`w-full px-6 ${className || ''}`}>
       <Container maxWidth={false} className="max-w-2xl p-0">
         <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">

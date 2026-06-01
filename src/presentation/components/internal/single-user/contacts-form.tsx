@@ -4,6 +4,7 @@ import { UserInput } from './user-form';
 
 type Props = {
   methods: UseFormReturn<UserInput>;
+  className?: string;
 };
 
 export function ContactsForm({
@@ -11,9 +12,10 @@ export function ContactsForm({
     register,
     formState: { isSubmitting, errors },
   },
+  className,
 }: Props) {
   return (
-    <Box component="section" className="mb-4 w-full px-6">
+    <Box component="section" className={`w-full px-6 ${className || ''}`}>
       <Container maxWidth={false} className="max-w-2xl p-0">
         <Toolbar component="header" className="h-auto min-h-10 p-3">
           <Typography component="h2" variant="h6" className="font-medium">

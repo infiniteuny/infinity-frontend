@@ -15,6 +15,7 @@ import { ProfileToolbar } from '@app/presentation/components/internal/profile';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { useInternalStore } from '@app/presentation/hooks';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserToolbar } from './user-toolbar';
@@ -69,6 +70,7 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
   const createUser = useMemo(() => clientContainer.get<CreateUser>(SYMBOLS.CreateUser), []);
   const updateUser = useMemo(() => clientContainer.get<UpdateUser>(SYMBOLS.UpdateUser), []);
   const router = useRouter();
+  const userPermission = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   const user = initialUser ? UserMapper.fromDtoToDomain(initialUser) : null;
   const ref = useRef<HTMLFormElement>(null);
@@ -174,8 +176,15 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
           <GeneralForm methods={methods} faculties={faculties} majors={majors} />
-          <ContactsForm methods={methods} />
-          <MembershipForm methods={methods} />
+          <ContactsForm
+            methods={methods}
+            className={
+              ['manage-user-membership'].some((p) => userPermission.has(p)) ? 'mb-4' : 'mb-6'
+            }
+          />
+          {['manage-user-membership'].some((p) => userPermission.has(p)) ? (
+            <MembershipForm methods={methods} className="mb-6" />
+          ) : null}
         </Box>
       </LocalizationProvider>
     </>
