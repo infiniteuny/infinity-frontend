@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { MouseEventHandler, ReactNode } from 'react';
+import { deepmerge } from '@mui/utils';
 
 type Props = {
   title: string;
   subtitle?: string;
   icon?: ReactNode;
   trailingIcon?: ReactNode;
+  className?: string;
+  sx?: Parameters<typeof ButtonBase>[0]['sx'];
   position?: 'top' | 'middle' | 'bottom' | 'single';
 } & (
   | {
@@ -29,6 +32,8 @@ export function ClickableViewTile({
   href,
   target,
   onClick,
+  className,
+  sx,
   position = 'single',
 }: Props) {
   let roundedClass;
@@ -50,8 +55,8 @@ export function ClickableViewTile({
 
   return (
     <ButtonBase
-      sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-      className={`w-full justify-start p-4 text-left select-text ${roundedClass}`}
+      sx={deepmerge({ bgcolor: 'surfaceContainerHigh.main' }, sx || {})}
+      className={`w-full justify-start p-4 text-left select-text ${roundedClass} ${className || ''}`}
       focusVisibleClassName="bg-(--m3-palette-action-focus)"
       component={href ? 'a' : 'button'}
       LinkComponent={href ? Link : undefined}
