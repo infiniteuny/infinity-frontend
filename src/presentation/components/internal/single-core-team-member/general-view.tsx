@@ -17,7 +17,7 @@ export function GeneralView({ coreTeamMember }: Props) {
             General
           </Typography>
         </Toolbar>
-        <Grid container spacing={0.5}>
+        <Grid container spacing={0.5} className="tiles-rounded-dynamic">
           <Grid size={12}>
             <ViewTile title="Name" subtitle={coreTeamMember.name} position="top" />
           </Grid>
@@ -32,7 +32,7 @@ export function GeneralView({ coreTeamMember }: Props) {
             <Container
               maxWidth={false}
               sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className={`${coreTeamMember.membership.animation ? 'rounded-md' : 'rounded-t-md rounded-b-2xl'} p-4`}
+              className="rounded-md p-4"
             >
               <Typography variant="body1" component="p" className="font-medium">
                 Photo
@@ -87,7 +87,7 @@ export function GeneralView({ coreTeamMember }: Props) {
               <Container
                 maxWidth={false}
                 sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-                className="rounded-md p-4"
+                className="rounded-t-md rounded-b-2xl p-4"
               >
                 <Typography variant="body1" component="p" className="font-medium">
                   Animation
@@ -126,8 +126,8 @@ export function GeneralView({ coreTeamMember }: Props) {
                 </Box>
                 <Box
                   component="img"
-                  src={coreTeamMember.membership.photo as string}
-                  alt={`${coreTeamMember.name}'s photo`}
+                  src={coreTeamMember.membership.animation as string}
+                  alt={`${coreTeamMember.name}'s animation`}
                   sx={{
                     width: '100%',
                     maxHeight: 280,

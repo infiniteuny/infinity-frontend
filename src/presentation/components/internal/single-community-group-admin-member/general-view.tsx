@@ -32,7 +32,7 @@ export function GeneralView({ communityGroupAdminMember }: Props) {
             <Container
               maxWidth={false}
               sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-              className={`${communityGroupAdminMember.membership.animation ? 'rounded-md' : 'rounded-t-md rounded-b-2xl'} p-4`}
+              className="rounded-md p-4"
             >
               <Typography variant="body1" component="p" className="font-medium">
                 Photo
@@ -87,7 +87,7 @@ export function GeneralView({ communityGroupAdminMember }: Props) {
               <Container
                 maxWidth={false}
                 sx={{ bgcolor: 'surfaceContainerHigh.main' }}
-                className="rounded-md p-4"
+                className="rounded-t-md rounded-b-2xl p-4"
               >
                 <Typography variant="body1" component="p" className="font-medium">
                   Animation
