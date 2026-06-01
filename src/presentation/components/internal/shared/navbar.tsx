@@ -4,7 +4,8 @@ import { Avatar, Button, IconButton, List, Popover, Typography } from '@mui/mate
 import { NestedMenu, PathMenu, UrlMenu } from '@app/domain/entities';
 import { NavbarDropdownMenu } from './navbar-dropdown-menu';
 import { NavbarMenu } from './navbar-menu';
-import { LogoutRounded } from '@mui/icons-material';
+import { CloseRounded, LogoutRounded, PersonRounded } from '@mui/icons-material';
+import { ClickableViewTile } from './clickable-view-tile';
 import { useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
 import { Logout } from '@app/application';
@@ -77,10 +78,12 @@ export function InternalNavbar({ menus }: Props) {
         onClick={handleClose}
         disableScrollLock
         keepMounted
+        marginThreshold={0}
         slotProps={{
           paper: {
             elevation: 0,
-            className: 'max-w-[100%] min-w-[200px] w-[350px] p-4 mt-3 rounded-2xl drop-shadow-md',
+            className:
+              'max-w-[100%] min-w-[200px] w-[350px] p-4 mt-3 rounded-2xl drop-shadow-md max-[450px]:flex! max-[450px]:flex-col! max-[450px]:w-full! max-[450px]:right-0! max-[450px]:left-0! max-[450px]:top-0! max-[450px]:bottom-0! max-[450px]:m-0! max-[450px]:h-screen! max-[450px]:max-h-screen! max-[450px]:rounded-none! max-[450px]:py-12! max-[450px]:px-6!',
             sx: [
               (theme) => ({
                 bgcolor: theme.vars?.palette.surfaceContainerHigh.main,
@@ -104,16 +107,31 @@ export function InternalNavbar({ menus }: Props) {
         <Typography typography="h5" className="px-4 text-center">
           Hi! {session?.user.name || 'User'}
         </Typography>
+        <ClickableViewTile
+          title="Profile"
+          position="single"
+          icon={<PersonRounded />}
+          href="/settings/profile"
+          className="mt-6"
+          sx={{ bgcolor: 'surfaceContainer.main' }}
+        />
         <Button
-          variant="elevated"
+          variant="tonal"
           fullWidth
-          className="mt-4"
+          className="mt-4 max-[450px]:mt-auto!"
           size="large"
           startIcon={<LogoutRounded fontSize="small" />}
           onClick={handleLogout}
         >
           Logout
         </Button>
+        <IconButton
+          onClick={handleClose}
+          className="absolute top-2 right-2 hidden max-[450px]:block!"
+          aria-label="Close"
+        >
+          <CloseRounded />
+        </IconButton>
       </Popover>
     </nav>
   );
