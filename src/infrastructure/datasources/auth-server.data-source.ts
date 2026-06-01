@@ -188,28 +188,6 @@ export const authServerDataSourceImpl = (
       }, additionalOptions),
     ],
     databaseHooks: {
-      // user: {
-      //   update: {
-      //     after: async (user, ctx) => {
-      //       const account = await getAccountCookie(ctx!);
-
-      //       const userPermissionsResult = await getUserPermissions.execute(
-      //         user.internalId as string,
-      //         undefined,
-      //         account?.accessToken ?? '',
-      //       );
-
-      //       const userPermissions = match(userPermissionsResult, {
-      //         onLeft: (error) => {
-      //           throw error;
-      //         },
-      //         onRight: (result) => result,
-      //       });
-
-      //       console.log(userPermissions);
-      //     },
-      //   },
-      // },
       account: {
         create: {
           before: async (account) => {
