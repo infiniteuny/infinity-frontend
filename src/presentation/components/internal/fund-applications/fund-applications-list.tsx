@@ -316,6 +316,10 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
             }}
             slotProps={{
               noRowsOverlay: { text: 'No fund applications found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

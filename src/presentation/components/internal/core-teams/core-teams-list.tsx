@@ -263,6 +263,10 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
             }}
             slotProps={{
               noRowsOverlay: { text: 'No core teams found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

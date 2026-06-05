@@ -284,6 +284,10 @@ export function UserCommunityGroupsList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No user community groups found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

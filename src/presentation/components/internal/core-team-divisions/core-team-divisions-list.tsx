@@ -260,6 +260,10 @@ export function CoreTeamDivisionsList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No core team divisions found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

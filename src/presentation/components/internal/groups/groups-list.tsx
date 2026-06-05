@@ -258,6 +258,10 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
             }}
             slotProps={{
               noRowsOverlay: { text: 'No groups found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

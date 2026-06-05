@@ -256,6 +256,10 @@ export function UserGroupsList({ initialUserGroups, initialPaginationOptions, us
             }}
             slotProps={{
               noRowsOverlay: { text: 'No user groups found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

@@ -257,6 +257,10 @@ export function CompetitionOrganizerTypesList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No competition organizer types found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

@@ -256,6 +256,10 @@ export function CompetitionTimeRangesList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No competition time ranges found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

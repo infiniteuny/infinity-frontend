@@ -256,6 +256,10 @@ export function CompetitionScalesList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No competition scales found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

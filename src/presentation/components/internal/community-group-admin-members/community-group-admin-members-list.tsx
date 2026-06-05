@@ -370,6 +370,10 @@ export function CommunityGroupAdminMembersList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No community group administrator members found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

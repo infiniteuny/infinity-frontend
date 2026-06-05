@@ -358,6 +358,10 @@ export function CommunityGroupMembersList({
             }}
             slotProps={{
               noRowsOverlay: { text: 'No community group members found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

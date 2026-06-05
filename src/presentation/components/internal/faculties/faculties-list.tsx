@@ -248,6 +248,10 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
             }}
             slotProps={{
               noRowsOverlay: { text: 'No faculties found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

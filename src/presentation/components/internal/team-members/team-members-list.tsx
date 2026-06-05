@@ -357,6 +357,10 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
             }}
             slotProps={{
               noRowsOverlay: { text: 'No team members found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

@@ -279,6 +279,10 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
             }}
             slotProps={{
               noRowsOverlay: { text: 'No project galleries found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"

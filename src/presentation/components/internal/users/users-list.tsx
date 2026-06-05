@@ -371,6 +371,10 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             }}
             slotProps={{
               noRowsOverlay: { text: 'No users found.' },
+              loadingOverlay: {
+                variant: 'skeleton',
+                noRowsVariant: 'skeleton',
+              },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
