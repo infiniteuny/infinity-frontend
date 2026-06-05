@@ -70,7 +70,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsLeaderLoading(true);
 
-      const usersResult = await getUsers.execute(undefined, { name: query }, { perPage: 10 });
+      const usersResult = await getUsers.execute(undefined, { name: query }, undefined, {
+        perPage: 10,
+      });
 
       if (!active) return;
 

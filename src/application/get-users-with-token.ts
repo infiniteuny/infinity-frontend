@@ -6,6 +6,7 @@ import {
   User,
   UserFilterOptions,
   UserIncludeOptions,
+  UserSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetUsersWithTokenParams = [
   includeOptions?: UserIncludeOptions,
   filterOptions?: UserFilterOptions,
+  sortOptions?: UserSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   token?: string,
@@ -35,6 +37,7 @@ export class GetUsersWithToken implements UseCase<
   public async execute(
     includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
+    sortOptions?: UserSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -42,6 +45,7 @@ export class GetUsersWithToken implements UseCase<
     return await this.userRepository.getUsers(
       includeOptions,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       token,

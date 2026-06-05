@@ -37,7 +37,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsUserLoading(true);
 
-      const usersResult = await getUsers.execute(undefined, { name: query }, { perPage: 100 });
+      const usersResult = await getUsers.execute(undefined, { name: query }, undefined, {
+        perPage: 100,
+      });
 
       if (!active) return;
 

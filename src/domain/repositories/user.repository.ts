@@ -3,6 +3,7 @@ import {
   User,
   UserFilterOptions,
   UserIncludeOptions,
+  UserSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
@@ -10,6 +11,7 @@ export interface UserRepository {
   getUsers(
     includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
+    sortOptions?: UserSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

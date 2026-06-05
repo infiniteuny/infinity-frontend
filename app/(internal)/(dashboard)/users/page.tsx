@@ -15,12 +15,9 @@ export const dynamic = 'force-dynamic';
 
 export default async function UsersPage() {
   const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
-  const result = await getUsers.execute(
-    ['major', 'major.faculty'],
-    undefined,
-    { perPage: 25 },
-    undefined,
-  );
+  const result = await getUsers.execute(['major', 'major.faculty'], undefined, undefined, {
+    perPage: 25,
+  });
   const [users, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;
