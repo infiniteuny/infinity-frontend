@@ -19,15 +19,15 @@ export interface UserFilterOptions {
   studentId?: string;
   majorId?: string;
   startDateOperator?: FilterOperator;
-  startDate?: Date;
+  startDate?: Date | null;
   endDateOperator?: FilterOperator;
-  endDate?: Date;
+  endDate?: Date | null;
   isMember?: boolean;
   isExtraordinary?: boolean;
   createdAtOperator?: FilterOperator;
-  createdAt?: Date;
+  createdAt?: Date | null;
   updatedAtOperator?: FilterOperator;
-  updatedAt?: Date;
+  updatedAt?: Date | null;
 }
 
 export interface UserSortOptions {
