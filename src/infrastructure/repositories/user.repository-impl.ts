@@ -7,6 +7,7 @@ import {
   User,
   UserFilterOptions,
   UserIncludeOptions,
+  UserSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UserMapper } from '@app/infrastructure/dtos';
@@ -22,6 +23,7 @@ export class UserRepositoryImpl implements UserRepository {
   public async getUsers(
     includeOptions?: UserIncludeOptions,
     filterOptions?: UserFilterOptions,
+    sortOptions?: UserSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -45,23 +47,24 @@ export class UserRepositoryImpl implements UserRepository {
           'filters[student_id]': filterOptions?.studentId,
           'filters[major_id]': filterOptions?.majorId,
           'filters[start_date]':
-            filterOptions?.startDate != null
-              ? (filterOptions.startDateOperator ?? '') + filterOptions.startDate.toISOString()
+            filterOptions?.startDate !== undefined
+              ? (filterOptions.startDateOperator ?? '') +
+                (filterOptions.startDate?.toISOString() ?? '')
               : undefined,
           'filters[end_date]':
-            filterOptions?.endDate != null
-              ? (filterOptions.endDateOperator ?? '') + filterOptions?.endDate?.toISOString()
+            filterOptions?.endDate !== undefined
+              ? (filterOptions.endDateOperator ?? '') + (filterOptions.endDate?.toISOString() ?? '')
               : undefined,
           'filters[is_member]': filterOptions?.isMember,
           'filters[is_extraordinary]': filterOptions?.isExtraordinary,
-          'filters[created_at]':
-            filterOptions?.createdAt != null
-              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
-              : undefined,
-          'filters[updated_at]':
-            filterOptions?.updatedAt != null
-              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
-              : undefined,
+          'filters[created_at]': filterOptions?.createdAt
+            ? (filterOptions.createdAtOperator ?? '') +
+              (filterOptions.createdAt?.toISOString() ?? '')
+            : undefined,
+          'filters[updated_at]': filterOptions?.updatedAt
+            ? (filterOptions.updatedAtOperator ?? '') +
+              (filterOptions.updatedAt?.toISOString() ?? '')
+            : undefined,
           sorts: sortOptions
             ? Object.entries(sortOptions)
                 .map((sortOption) => {
