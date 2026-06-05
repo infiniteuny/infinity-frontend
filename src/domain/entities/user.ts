@@ -25,9 +25,9 @@ export interface UserFilterOptions {
   isMember?: boolean;
   isExtraordinary?: boolean;
   createdAtOperator?: FilterOperator;
-  createdAt?: Date | null;
+  createdAt?: Date;
   updatedAtOperator?: FilterOperator;
-  updatedAt?: Date | null;
+  updatedAt?: Date;
 }
 
 export interface UserSortOptions {
