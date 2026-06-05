@@ -97,7 +97,6 @@ export const authServerDataSourceImpl = (
       },
     },
     plugins: [
-      nextCookies(),
       genericOAuth({
         config: [
           {
@@ -186,6 +185,7 @@ export const authServerDataSourceImpl = (
           account,
         };
       }, additionalOptions),
+      nextCookies(),
     ],
     databaseHooks: {
       account: {
