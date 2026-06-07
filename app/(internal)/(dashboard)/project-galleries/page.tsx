@@ -1,5 +1,7 @@
 import { GetProjectGalleries } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -10,11 +12,14 @@ import {
   ProjectGalleriesList,
   ProjectGalleriesToolbar,
 } from '@app/presentation/components/internal/project-galleries';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Project Galleries',
+};
 
 export default async function ProjectGalleriesPage() {
   const getProjectGalleries = serverContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries);
@@ -28,7 +33,12 @@ export default async function ProjectGalleriesPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Project Galleries', url: '/project-galleries' },
+      ]}
+    >
       <SectionHeader title="Project Galleries">
         <ProjectGalleriesToolbar />
       </SectionHeader>
@@ -40,6 +50,6 @@ export default async function ProjectGalleriesPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { GetGroup, GetGroupPermissions, GetSession } from '@app/application';
 import {
   GroupPermissionDto,
@@ -9,10 +10,11 @@ import {
   GroupPermissionsList,
   GroupPermissionsToolbar,
 } from '@app/presentation/components/internal/group-permissions';
-import { isLeft, match } from 'effect/Either';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -24,26 +26,63 @@ type Props = {
   }>;
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getGroup = serverContainer.get<GetGroup>(SYMBOLS.GetGroup);
+  const groupId = (await params).groupId;
+
+  const [groupResult, sessionResult] = await Promise.all([
+    cache(async () => await getGroup.execute(groupId))(),
+    cache(async () => await getSession.execute())(),
+  ]);
+
+  const group = match(groupResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (['read-group-permission'].some((p) => userPermissions.has(p))) {
+    return {
+      title: `${group.name}'s Permissions`,
+    };
+  } else {
+    notFound();
+  }
+}
+
 export default async function GroupPermissionsPage({ params }: Props) {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const getGroup = serverContainer.get<GetGroup>(SYMBOLS.GetGroup);
   const groupId = (await params).groupId;
 
   const [groupResult, sessionResult] = await Promise.all([
-    getGroup.execute(groupId),
-    getSession.execute(),
+    cache(async () => await getGroup.execute(groupId))(),
+    cache(async () => await getSession.execute())(),
   ]);
 
-  if (isLeft(groupResult)) {
-    const error = groupResult.left;
-
-    if (error instanceof NotFoundError) {
-      notFound();
-    } else {
-      throw error;
-    }
-  }
-
+  const group = match(groupResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
   const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
@@ -66,8 +105,15 @@ export default async function GroupPermissionsPage({ params }: Props) {
     });
 
     return (
-      <>
-        <SectionHeader title="Group Permissions">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Groups', url: '/groups' },
+          { label: group.name, url: `/groups/${groupId}` },
+          { label: 'Permissions', url: `/groups/${groupId}/permissions` },
+        ]}
+      >
+        <SectionHeader title={`${group.name}'s Permissions`} backUrl={`/groups/${groupId}`}>
           <GroupPermissionsToolbar groupId={groupId} />
         </SectionHeader>
         <GroupPermissionsList
@@ -79,7 +125,7 @@ export default async function GroupPermissionsPage({ params }: Props) {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

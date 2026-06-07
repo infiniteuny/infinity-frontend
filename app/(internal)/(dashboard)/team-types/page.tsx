@@ -9,13 +9,18 @@ import {
   CompetitionTeamTypesToolbar,
 } from '@app/presentation/components/internal/competition-team-types';
 import { GetCompetitionTeamTypes, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Team Types',
+};
 
 export default async function TeamTypesPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function TeamTypesPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Team Types">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Team Types', url: '/team-types' },
+        ]}
+      >
+        <SectionHeader title="Team Types" backUrl="/settings">
           <CompetitionTeamTypesToolbar />
         </SectionHeader>
         <CompetitionTeamTypesList
@@ -57,7 +68,7 @@ export default async function TeamTypesPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

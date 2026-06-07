@@ -15,7 +15,7 @@ export interface UserCommunityGroupDto extends CommunityGroupDto {
 }
 
 export class UserCommunityGroupMapper {
-  public static fromDomaintoDto(
+  public static fromDomainToDto(
     userCommunityGroup: Partial<UserCommunityGroup>,
   ): Partial<UserCommunityGroupDto> {
     return {

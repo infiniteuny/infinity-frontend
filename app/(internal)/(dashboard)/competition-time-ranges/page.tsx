@@ -10,12 +10,17 @@ import {
 } from '@app/infrastructure/dtos';
 import { GetCompetitionTimeRanges, GetSession } from '@app/application';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Competition Time Ranges',
+};
 
 export default async function CompetitionTimeRangesPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function CompetitionTimeRangesPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Competition Time Ranges">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Time Ranges', url: '/competition-time-ranges' },
+        ]}
+      >
+        <SectionHeader title="Competition Time Ranges" backUrl="/settings">
           <CompetitionTimeRangesToolbar />
         </SectionHeader>
         <CompetitionTimeRangesList
@@ -57,7 +68,7 @@ export default async function CompetitionTimeRangesPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

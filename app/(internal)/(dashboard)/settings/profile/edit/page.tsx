@@ -7,12 +7,18 @@ import {
   UserMapper,
 } from '@app/infrastructure/dtos';
 import { GetFaculties, GetMajors, GetSession, GetUser } from '@app/application';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UserForm } from '@app/presentation/components/internal/single-user';
+
+export const metadata: Metadata = {
+  title: 'Edit Profile',
+};
 
 export default async function ProfileEditPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -67,12 +73,21 @@ export default async function ProfileEditPage() {
     });
 
     return (
-      <UserForm
-        faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
-        majors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
-        initialUser={UserMapper.fromDomainToDto(user) as UserDto}
-        isProfileForm={true}
-      />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Profile', url: '/settings/profile' },
+          { label: 'Edit', url: '/settings/profile/edit' },
+        ]}
+      >
+        <UserForm
+          faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
+          majors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
+          initialUser={UserMapper.fromDomainToDto(user) as UserDto}
+          isProfileForm={true}
+        />
+      </InternalMain>
     );
   } else {
     notFound();

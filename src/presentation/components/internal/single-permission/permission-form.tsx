@@ -93,7 +93,10 @@ export function PermissionForm({ initialPermission }: Props) {
 
   return (
     <>
-      <SectionHeader title={permission ? name : 'Create Permission'}>
+      <SectionHeader
+        title={permission ? `Edit ${name}` : 'Create Permission'}
+        backUrl={permission ? `/permissions/${permission.id}` : '/permissions'}
+      >
         <PermissionToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

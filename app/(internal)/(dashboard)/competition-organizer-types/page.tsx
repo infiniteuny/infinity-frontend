@@ -9,13 +9,18 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCompetitionOrganizerTypes, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Competition Organizer Types',
+};
 
 export default async function CompetitionOrganizerTypesPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function CompetitionOrganizerTypesPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Competition Organizer Types">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Organizer Types', url: '/competition-organizer-types' },
+        ]}
+      >
+        <SectionHeader title="Competition Organizer Types" backUrl="/settings">
           <CompetitionOrganizerTypesToolbar />
         </SectionHeader>
         <CompetitionOrganizerTypesList
@@ -57,7 +68,7 @@ export default async function CompetitionOrganizerTypesPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

@@ -95,7 +95,14 @@ export function CompetitionOutputForm({ initialCompetitionOutput }: Props) {
 
   return (
     <>
-      <SectionHeader title={competitionOutput ? name : 'Create Competition Output'}>
+      <SectionHeader
+        title={competitionOutput ? `Edit ${name}` : 'Create Competition Output'}
+        backUrl={
+          competitionOutput
+            ? `/competition-outputs/${competitionOutput.id}`
+            : '/competition-outputs'
+        }
+      >
         <CompetitionOutputToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

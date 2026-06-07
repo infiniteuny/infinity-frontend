@@ -10,6 +10,7 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserCommunityGroupToolbar } from './user-community-group-toolbar';
 import { useMemo, useRef } from 'react';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,15 @@ const userCommunityGroupInputSchema = z.object({
 export type UserCommunityGroupInput = z.infer<typeof userCommunityGroupInputSchema>;
 
 type Props = {
-  userId: string;
+  user: UserDto;
 };
 
-export function UserCommunityGroupForm({ userId }: Props) {
+export function UserCommunityGroupForm({ user }: Props) {
   const createCommunityGroupMember = useMemo(
     () => clientContainer.get<CreateCommunityGroupMember>(SYMBOLS.CreateCommunityGroupMember),
     [],
   );
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -49,7 +51,7 @@ export function UserCommunityGroupForm({ userId }: Props) {
     }
 
     const result = await createCommunityGroupMember.execute(data.communityGroupId, {
-      userId,
+      userId: parsedUser.id,
     });
 
     match(result, {
@@ -57,14 +59,17 @@ export function UserCommunityGroupForm({ userId }: Props) {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${userId}/community-groups`);
+        router.push(`/users/${parsedUser.id}/community-groups`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add User Community Group">
+      <SectionHeader
+        title={`Add ${parsedUser.name}'s Community Group`}
+        backUrl={`/users/${parsedUser.id}/community-groups`}
+      >
         <UserCommunityGroupToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

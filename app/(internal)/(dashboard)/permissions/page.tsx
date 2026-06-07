@@ -1,5 +1,7 @@
 import { GetPermissions, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
   PaginationOptionsDto,
@@ -11,11 +13,14 @@ import {
   PermissionsList,
   PermissionsToolbar,
 } from '@app/presentation/components/internal/permissions';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Permissions',
+};
 
 export default async function PermissionsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -41,7 +46,12 @@ export default async function PermissionsPage() {
     });
 
     return (
-      <>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Permissions', url: '/permissions' },
+        ]}
+      >
         <SectionHeader title="Permissions">
           <PermissionsToolbar />
         </SectionHeader>
@@ -51,7 +61,7 @@ export default async function PermissionsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

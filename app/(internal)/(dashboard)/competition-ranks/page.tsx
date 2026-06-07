@@ -11,11 +11,16 @@ import {
 import { GetCompetitionRanks, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Competition Ranks',
+};
 
 export default async function CompetitionRanksPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function CompetitionRanksPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Competition Ranks">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Ranks', url: '/competition-ranks' },
+        ]}
+      >
+        <SectionHeader title="Competition Ranks" backUrl="/settings">
           <CompetitionRanksToolbar />
         </SectionHeader>
         <CompetitionRanksList
@@ -55,7 +66,7 @@ export default async function CompetitionRanksPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

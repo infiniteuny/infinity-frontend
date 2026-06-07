@@ -11,8 +11,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import {
+  CompetitionDto,
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
+  CompetitionMapper,
   CompetitionOrganizerTypeDto,
 } from '@app/infrastructure/dtos';
 import { CompetitionInstanceToolbar } from './competition-instance-toolbar';
@@ -57,15 +59,13 @@ const competitionInstanceInputSchema = z
 export type CompetitionInstanceInput = z.infer<typeof competitionInstanceInputSchema>;
 
 type Props = {
-  competitionId: string;
-  competitionName: string;
+  competition: CompetitionDto;
   initialCompetitionInstance?: CompetitionInstanceDto;
   competitionOrganizerTypes: CompetitionOrganizerTypeDto[];
 };
 
 export function CompetitionInstanceForm({
-  competitionId,
-  competitionName,
+  competition,
   initialCompetitionInstance,
   competitionOrganizerTypes,
 }: Props) {
@@ -76,6 +76,10 @@ export function CompetitionInstanceForm({
   const updateCompetitionInstance = useMemo(
     () => clientContainer.get<UpdateCompetitionInstance>(SYMBOLS.UpdateCompetitionInstance),
     [],
+  );
+  const parsedCompetition = useMemo(
+    () => CompetitionMapper.fromDomainToDto(competition),
+    [competition],
   );
   const router = useRouter();
 
@@ -92,7 +96,7 @@ export function CompetitionInstanceForm({
           ...competitionInstance,
         }
       : {
-          competitionId: competitionId,
+          competitionId: parsedCompetition.id,
           name: '',
           shortname: '',
           description: '',
@@ -109,6 +113,7 @@ export function CompetitionInstanceForm({
   const { handleSubmit: submit, control, formState } = methods;
 
   const name = useWatch({ name: 'name', control });
+  const shortname = useWatch({ name: 'shortname', control });
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {
@@ -125,7 +130,7 @@ export function CompetitionInstanceForm({
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${data.competitionId}/instances/${data.id}`);
+              router.push(`/competitions/${parsedCompetition.id}/instances/${data.id}`);
             },
           });
         } else {
@@ -140,7 +145,7 @@ export function CompetitionInstanceForm({
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${data.competitionId}/instances/${data.id}`);
+              router.push(`/competitions/${parsedCompetition.id}/instances/${data.id}`);
             },
           });
         }
@@ -152,7 +157,14 @@ export function CompetitionInstanceForm({
 
   return (
     <>
-      <SectionHeader title={competitionInstance ? name : `Create ${competitionName} Instance`}>
+      <SectionHeader
+        title={
+          competitionInstance
+            ? `Edit ${shortname || name}`
+            : `Add ${parsedCompetition.shortname || parsedCompetition.name}'s Instance`
+        }
+        backUrl={`/competitions/${parsedCompetition.id}/instances`}
+      >
         <CompetitionInstanceToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>

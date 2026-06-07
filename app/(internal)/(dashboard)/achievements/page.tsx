@@ -1,12 +1,13 @@
-import { GetAchievements } from '@app/application';
-import { match } from 'effect/Either';
 import {
   AchievementDto,
   AchievementMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { GetAchievements } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import {
@@ -16,8 +17,13 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+export const metadata: Metadata = {
+  title: 'Achievements',
+};
+
 export default async function AchievementsPage() {
   const getAchievements = serverContainer.get<GetAchievements>(SYMBOLS.GetAchievements);
+
   const result = await getAchievements.execute(
     [
       'team',
@@ -38,7 +44,12 @@ export default async function AchievementsPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Achievements', url: '/achievements' },
+      ]}
+    >
       <SectionHeader title="Achievements">
         <AchievementsToolbar />
       </SectionHeader>
@@ -50,6 +61,6 @@ export default async function AchievementsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

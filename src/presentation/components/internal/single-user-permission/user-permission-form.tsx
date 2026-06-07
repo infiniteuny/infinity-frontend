@@ -10,6 +10,7 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserPermissionToolbar } from './user-permission-toolbar';
 import { useMemo, useRef } from 'react';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,15 @@ const userPermissionInputSchema = z.object({
 export type UserPermissionInput = z.infer<typeof userPermissionInputSchema>;
 
 type Props = {
-  userId: string;
+  user: UserDto;
 };
 
-export function UserPermissionForm({ userId }: Props) {
+export function UserPermissionForm({ user }: Props) {
   const createUserPermission = useMemo(
     () => clientContainer.get<CreateUserPermission>(SYMBOLS.CreateUserPermission),
     [],
   );
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -48,21 +50,24 @@ export function UserPermissionForm({ userId }: Props) {
       return;
     }
 
-    const result = await createUserPermission.execute(userId, data);
+    const result = await createUserPermission.execute(parsedUser.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${userId}/permissions`);
+        router.push(`/users/${parsedUser.id}/permissions`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add User Permission">
+      <SectionHeader
+        title={`Add ${parsedUser.name}'s Permission`}
+        backUrl={`/users/${parsedUser.id}/permissions`}
+      >
         <UserPermissionToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

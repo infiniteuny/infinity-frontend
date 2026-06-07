@@ -1,12 +1,17 @@
 import { GetSession, GetUser } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SettingsView } from '@app/presentation/components/internal/settings';
 import { SYMBOLS } from '@config';
 import { UserDto, UserMapper } from '@app/infrastructure/dtos';
+
+export const metadata: Metadata = {
+  title: 'Settings',
+};
 
 export default async function SettingsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -37,9 +42,14 @@ export default async function SettingsPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Settings', url: '/settings' },
+      ]}
+    >
       <SectionHeader title="Settings" />
       <SettingsView user={UserMapper.fromDomainToDto(user) as UserDto} />
-    </>
+    </InternalMain>
   );
 }

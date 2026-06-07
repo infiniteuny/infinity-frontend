@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import {
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
@@ -9,12 +10,15 @@ import {
   CompetitionInstancesToolbar,
 } from '@app/presentation/components/internal/competition-instances';
 import { GetCompetition, GetCompetitionInstances } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
+
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{
@@ -22,7 +26,26 @@ type Props = {
   }>;
 };
 
-export const dynamic = 'force-dynamic';
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+  const competitionId = (await params).competitionId;
+
+  const competitionResult = await cache(async () => await getCompetition.execute(competitionId))();
+  const competition = match(competitionResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return {
+    title: `${competition.shortname || competition.name}'s Instances`,
+  };
+}
 
 export default async function CompetitionInstancesPage({ params }: Props) {
   const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
@@ -32,7 +55,7 @@ export default async function CompetitionInstancesPage({ params }: Props) {
   const competitionId = (await params).competitionId;
 
   const [competitionResult, competitionInstancesResult] = await Promise.all([
-    getCompetition.execute(competitionId),
+    cache(async () => await getCompetition.execute(competitionId))(),
     getCompetitionInstances.execute(['competition'], { competitionId }, { perPage: 25 }),
   ]);
 
@@ -46,7 +69,6 @@ export default async function CompetitionInstancesPage({ params }: Props) {
     },
     onRight: (competition) => competition,
   });
-
   const [competitionInstances, paginationOptions] = match(competitionInstancesResult, {
     onLeft: (error) => {
       throw error;
@@ -55,8 +77,19 @@ export default async function CompetitionInstancesPage({ params }: Props) {
   });
 
   return (
-    <>
-      <SectionHeader title={`${competition.name} Instances`}>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Settings', url: '/settings' },
+        { label: 'Competitions', url: '/competitions' },
+        { label: competition.name, url: `/competitions/${competitionId}` },
+        { label: 'Instances', url: `/competitions/${competitionId}/instances` },
+      ]}
+    >
+      <SectionHeader
+        title={`${competition.shortname || competition.name}'s Instances`}
+        backUrl={`/competitions/${competitionId}`}
+      >
         <CompetitionInstancesToolbar competitionId={competitionId} />
       </SectionHeader>
       <CompetitionInstancesList
@@ -70,6 +103,6 @@ export default async function CompetitionInstancesPage({ params }: Props) {
         }
         competitionId={competitionId}
       />
-    </>
+    </InternalMain>
   );
 }

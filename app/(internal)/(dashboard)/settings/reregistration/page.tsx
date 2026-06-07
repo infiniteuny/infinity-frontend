@@ -1,13 +1,18 @@
 import { DateTime } from 'luxon';
 import { GetConfig, GetSession, GetUser } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
 import { ReregistrationView } from '@app/presentation/components/internal/reregistration';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UserDto, UserMapper } from '@app/infrastructure/dtos';
+
+export const metadata: Metadata = {
+  title: 'Re-registration',
+};
 
 export default async function ReregistrationPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -73,8 +78,14 @@ export default async function ReregistrationPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Re-registration" />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Re-registration', url: '/settings/reregistration' },
+        ]}
+      >
+        <SectionHeader title="Re-registration" backUrl="/settings" />
         <ReregistrationView
           user={UserMapper.fromDomainToDto(user) as UserDto}
           allowReregistration={allowReregistration}
@@ -82,7 +93,7 @@ export default async function ReregistrationPage() {
           startReregistrationDate={startReregistrationDate}
           endReregistrationDate={endReregistrationDate}
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

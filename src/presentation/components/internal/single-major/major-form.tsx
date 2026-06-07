@@ -91,7 +91,10 @@ export function MajorForm({ initialMajor, degrees, faculties }: Props) {
 
   return (
     <>
-      <SectionHeader title={major ? name : 'Create Major'}>
+      <SectionHeader
+        title={major ? `Edit ${name}` : 'Create Major'}
+        backUrl={major ? `/majors/${major.id}` : '/majors'}
+      >
         <MajorToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

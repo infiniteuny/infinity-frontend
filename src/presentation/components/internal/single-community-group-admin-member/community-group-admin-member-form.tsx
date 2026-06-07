@@ -3,12 +3,15 @@
 import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
+  CommunityGroupAdminDto,
+  CommunityGroupAdminMapper,
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
   CommunityGroupDto,
 } from '@app/infrastructure/dtos';
 import { CommunityGroupAdminMemberToolbar } from './community-group-admin-member-toolbar';
 import { CreateCommunityGroupAdminMember, UpdateCommunityGroupAdminMember } from '@app/application';
+import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -17,7 +20,6 @@ import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GeneralForm } from './general-form';
 
 const communityGroupAdminMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),
@@ -46,13 +48,13 @@ const communityGroupAdminMemberInputSchema = z.object({
 export type CommunityGroupAdminMemberInput = z.infer<typeof communityGroupAdminMemberInputSchema>;
 
 type Props = {
-  communityGroupAdminId: string;
+  communityGroupAdmin: CommunityGroupAdminDto;
   initialCommunityGroupAdminMember?: CommunityGroupAdminMemberDto;
   communityGroups: CommunityGroupDto[];
 };
 
 export function CommunityGroupAdminMemberForm({
-  communityGroupAdminId,
+  communityGroupAdmin,
   initialCommunityGroupAdminMember,
   communityGroups,
 }: Props) {
@@ -65,6 +67,10 @@ export function CommunityGroupAdminMemberForm({
     () =>
       clientContainer.get<UpdateCommunityGroupAdminMember>(SYMBOLS.UpdateCommunityGroupAdminMember),
     [],
+  );
+  const parsedCommunityGroupAdmin = useMemo(
+    () => CommunityGroupAdminMapper.fromDtoToDomain(communityGroupAdmin),
+    [communityGroupAdmin],
   );
   const router = useRouter();
 
@@ -101,7 +107,7 @@ export function CommunityGroupAdminMemberForm({
 
     try {
       if (!communityGroupAdminMember) {
-        const result = await createCommunityGroupAdminMember.execute(communityGroupAdminId, {
+        const result = await createCommunityGroupAdminMember.execute(parsedCommunityGroupAdmin.id, {
           userId: data.userId,
           communityGroupId: data.communityGroupId,
           photo: data.photo as File,
@@ -113,7 +119,7 @@ export function CommunityGroupAdminMemberForm({
             throw error;
           },
           onRight: () => {
-            router.push(`/community-group-admins/${communityGroupAdminId}/members`);
+            router.push(`/community-group-admins/${parsedCommunityGroupAdmin.id}/members`);
           },
         });
       } else {
@@ -135,7 +141,7 @@ export function CommunityGroupAdminMemberForm({
           },
           onRight: () => {
             router.push(
-              `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.id}`,
+              `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.id}`,
             );
           },
         });
@@ -150,8 +156,13 @@ export function CommunityGroupAdminMemberForm({
       <SectionHeader
         title={
           communityGroupAdminMember
-            ? 'Edit Community Group Admin Member'
-            : 'Add Community Group Admin Member'
+            ? `Edit ${communityGroupAdminMember.name}`
+            : `Add ${communityGroupAdmin.year}'s Member`
+        }
+        backUrl={
+          communityGroupAdminMember
+            ? `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.id}`
+            : `/community-group-admins/${parsedCommunityGroupAdmin.id}/members`
         }
       >
         <CommunityGroupAdminMemberToolbar ref={ref} methods={methods} />

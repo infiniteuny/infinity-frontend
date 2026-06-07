@@ -3,16 +3,17 @@
 import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateTeamMember } from '@app/application';
+import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { TeamDto, TeamMapper } from '@app/infrastructure/dtos';
 import { TeamMemberToolbar } from './team-member-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GeneralForm } from './general-form';
 
 const teamMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),
@@ -21,14 +22,15 @@ const teamMemberInputSchema = z.object({
 export type TeamMemberInput = z.infer<typeof teamMemberInputSchema>;
 
 type Props = {
-  teamId: string;
+  team: TeamDto;
 };
 
-export function TeamMemberForm({ teamId }: Props) {
+export function TeamMemberForm({ team }: Props) {
   const createTeamMember = useMemo(
     () => clientContainer.get<CreateTeamMember>(SYMBOLS.CreateTeamMember),
     [],
   );
+  const parsedTeam = useMemo(() => TeamMapper.fromDtoToDomain(team), [team]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -48,21 +50,24 @@ export function TeamMemberForm({ teamId }: Props) {
       return;
     }
 
-    const result = await createTeamMember.execute(teamId, data);
+    const result = await createTeamMember.execute(parsedTeam.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/teams/${teamId}/members`);
+        router.push(`/teams/${parsedTeam.id}/members`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add Team Member">
+      <SectionHeader
+        title={`Add ${parsedTeam.name}'s Member`}
+        backUrl={`/teams/${team.id}/members`}
+      >
         <TeamMemberToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

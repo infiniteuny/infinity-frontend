@@ -103,7 +103,10 @@ export function CompetitionForm({ initialCompetition }: Props) {
 
   return (
     <>
-      <SectionHeader title={competition ? name : 'Create Competition'}>
+      <SectionHeader
+        title={competition ? `Edit ${name}` : 'Create Competition'}
+        backUrl={competition ? `/competitions/${competition.id}` : '/competitions'}
+      >
         <CompetitionToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

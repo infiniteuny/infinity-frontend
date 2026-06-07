@@ -9,12 +9,17 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCommunityGroups } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Community Groups',
+};
 
 export default async function CommunityGroupsPage() {
   const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
@@ -28,8 +33,14 @@ export default async function CommunityGroupsPage() {
   });
 
   return (
-    <>
-      <SectionHeader title="Community Groups">
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Settings', url: '/settings' },
+        { label: 'Community Groups', url: '/community-groups' },
+      ]}
+    >
+      <SectionHeader title="Community Groups" backUrl="/settings">
         <CommunityGroupsToolbar />
       </SectionHeader>
       <CommunityGroupsList
@@ -40,6 +51,6 @@ export default async function CommunityGroupsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

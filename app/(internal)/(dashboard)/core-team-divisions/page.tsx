@@ -9,13 +9,18 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCoreTeamDivisions, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Core Team Divisions',
+};
 
 export default async function CoreTeamDivisionsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function CoreTeamDivisionsPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Core Team Divisions">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Core Team Divisions', url: '/core-team-divisions' },
+        ]}
+      >
+        <SectionHeader title="Core Team Divisions" backUrl="/settings">
           <CoreTeamDivisionsToolbar />
         </SectionHeader>
         <CoreTeamDivisionsList
@@ -55,7 +66,7 @@ export default async function CoreTeamDivisionsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

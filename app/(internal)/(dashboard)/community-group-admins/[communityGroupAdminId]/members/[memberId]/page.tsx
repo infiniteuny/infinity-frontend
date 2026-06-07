@@ -1,4 +1,7 @@
+import { cache } from 'react';
 import {
+  CommunityGroupAdminDto,
+  CommunityGroupAdminMapper,
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
   CommunityGroupDto,
@@ -15,10 +18,11 @@ import {
   GetCommunityGroups,
   GetSession,
 } from '@app/application';
-import { isLeft, match } from 'effect/Either';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -31,28 +35,11 @@ type Props = {
   }>;
 };
 
-export default async function SingleCommunityGroupAdminMemberPage({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
-  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
-    SYMBOLS.GetCommunityGroupAdmin,
-  );
   const { communityGroupAdminId, memberId } = await params;
 
-  const [communityGroupAdminResult, sessionResult] = await Promise.all([
-    getCommunityGroupAdmin.execute(communityGroupAdminId),
-    getSession.execute(),
-  ]);
-
-  if (isLeft(communityGroupAdminResult)) {
-    const error = communityGroupAdminResult.left;
-
-    if (error instanceof NotFoundError) {
-      notFound();
-    } else {
-      throw error;
-    }
-  }
-
+  const sessionResult = await cache(async () => await getSession.execute())();
   const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
@@ -65,11 +52,101 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
     const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
       SYMBOLS.GetCommunityGroupAdminMember,
     );
-    const communityGroupAdminMemberResult = await getCommunityGroupAdminMember.execute(memberId, [
-      'major',
-      'major.faculty',
-      'membership.community_group',
-    ]);
+
+    const communityGroupAdminMemberResult = await cache(
+      async () =>
+        await getCommunityGroupAdminMember.execute(memberId, [
+          'major',
+          'major.faculty',
+          'membership.community_group',
+        ]),
+    )();
+    const communityGroupAdminMember = match(communityGroupAdminMemberResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return {
+      title: communityGroupAdminMember.name,
+    };
+  } else if (
+    memberId === 'new' &&
+    ['create-community-group-admin-member'].some((p) => userPermissions.has(p))
+  ) {
+    const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+      SYMBOLS.GetCommunityGroupAdmin,
+    );
+
+    const communityGroupAdminResult = await cache(
+      async () => await getCommunityGroupAdmin.execute(communityGroupAdminId),
+    )();
+    const communityGroupAdmin = match(communityGroupAdminResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return {
+      title: `Add ${communityGroupAdmin.year}'s Member`,
+    };
+  } else {
+    notFound();
+  }
+}
+
+export default async function SingleCommunityGroupAdminMemberPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
+  const { communityGroupAdminId, memberId } = await params;
+
+  const [communityGroupAdminResult, sessionResult] = await Promise.all([
+    cache(async () => await getCommunityGroupAdmin.execute(communityGroupAdminId))(),
+    cache(async () => await getSession.execute())(),
+  ]);
+
+  const communityGroupAdmin = match(communityGroupAdminResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (memberId !== 'new') {
+    const getCommunityGroupAdminMember = serverContainer.get<GetCommunityGroupAdminMember>(
+      SYMBOLS.GetCommunityGroupAdminMember,
+    );
+    const communityGroupAdminMemberResult = await cache(
+      async () =>
+        await getCommunityGroupAdminMember.execute(memberId, [
+          'major',
+          'major.faculty',
+          'membership.community_group',
+        ]),
+    )();
     const communityGroupAdminMember = match(communityGroupAdminMemberResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
@@ -82,8 +159,25 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
     });
 
     return (
-      <>
-        <SectionHeader title={communityGroupAdminMember.name}>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Community Group Administrators', url: '/community-group-admins' },
+          {
+            label: communityGroupAdmin.year.toString(),
+            url: `/community-group-admins/${communityGroupAdminId}`,
+          },
+          { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
+          {
+            label: communityGroupAdminMember.name,
+            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.id}`,
+          },
+        ]}
+      >
+        <SectionHeader
+          title={communityGroupAdminMember.name}
+          backUrl={`/community-group-admins/${communityGroupAdminId}/members`}
+        >
           <CommunityGroupAdminMemberToolbar
             communityGroupAdminId={communityGroupAdminId}
             communityGroupAdminMemberId={communityGroupAdminMember.id}
@@ -96,7 +190,7 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
             ) as CommunityGroupAdminMemberDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else if (
     memberId === 'new' &&
@@ -113,12 +207,30 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
     });
 
     return (
-      <CommunityGroupAdminMemberForm
-        communityGroupAdminId={communityGroupAdminId}
-        communityGroups={
-          communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]
-        }
-      />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Community Group Administrators', url: '/community-group-admins' },
+          {
+            label: communityGroupAdmin.year.toString(),
+            url: `/community-group-admins/${communityGroupAdminId}`,
+          },
+          { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
+          {
+            label: 'Add',
+            url: `/community-group-admins/${communityGroupAdminId}/members/new`,
+          },
+        ]}
+      >
+        <CommunityGroupAdminMemberForm
+          communityGroupAdmin={
+            CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
+          }
+          communityGroups={
+            communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]
+          }
+        />
+      </InternalMain>
     );
   } else {
     notFound();

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import {
   CoreTeamMembersList,
   CoreTeamMembersToolbar,
@@ -9,10 +10,11 @@ import {
   CoreTeamMemberMapper,
 } from '@app/infrastructure/dtos';
 import { GetCoreTeam, GetCoreTeamMembers } from '@app/application';
-import { isLeft, match } from 'effect/Either';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -24,13 +26,34 @@ type Props = {
   }>;
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
+  const coreTeamId = (await params).coreTeamId;
+
+  const coreTeamResult = await cache(async () => await getCoreTeam.execute(coreTeamId))();
+  const coreTeam = match(coreTeamResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return {
+    title: `${coreTeam.year}'s Members`,
+  };
+}
+
 export default async function CoreTeamMembersPage({ params }: Props) {
   const getCoreTeam = serverContainer.get<GetCoreTeam>(SYMBOLS.GetCoreTeam);
   const getCoreTeamMembers = serverContainer.get<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers);
   const coreTeamId = (await params).coreTeamId;
 
   const [coreTeamResult, coreTeamMembersResult] = await Promise.all([
-    getCoreTeam.execute(coreTeamId),
+    cache(async () => await getCoreTeam.execute(coreTeamId))(),
     getCoreTeamMembers.execute(
       coreTeamId,
       ['major', 'major.faculty', 'membership.core_team_division'],
@@ -39,16 +62,16 @@ export default async function CoreTeamMembersPage({ params }: Props) {
     ),
   ]);
 
-  if (isLeft(coreTeamResult)) {
-    const error = coreTeamResult.left;
-
-    if (error instanceof NotFoundError) {
-      notFound();
-    } else {
-      throw error;
-    }
-  }
-
+  const coreTeam = match(coreTeamResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
   const [coreTeamMembers, paginationOptions] = match(coreTeamMembersResult, {
     onLeft: (error) => {
       throw error;
@@ -57,8 +80,15 @@ export default async function CoreTeamMembersPage({ params }: Props) {
   });
 
   return (
-    <>
-      <SectionHeader title="Core Team Members">
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Core Teams', url: '/core-teams' },
+        { label: coreTeam.year.toString(), url: `/core-teams/${coreTeamId}` },
+        { label: 'Members', url: `/core-teams/${coreTeamId}/members` },
+      ]}
+    >
+      <SectionHeader title={`${coreTeam.year}'s Members`} backUrl={`/core-teams/${coreTeamId}`}>
         <CoreTeamMembersToolbar coreTeamId={coreTeamId} />
       </SectionHeader>
       <CoreTeamMembersList
@@ -70,6 +100,6 @@ export default async function CoreTeamMembersPage({ params }: Props) {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

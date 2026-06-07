@@ -6,13 +6,18 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GroupsList, GroupsToolbar } from '@app/presentation/components/internal/groups';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Groups',
+};
 
 export default async function GroupsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -38,7 +43,12 @@ export default async function GroupsPage() {
     });
 
     return (
-      <>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Groups', url: '/groups' },
+        ]}
+      >
         <SectionHeader title="Groups">
           <GroupsToolbar />
         </SectionHeader>
@@ -48,7 +58,7 @@ export default async function GroupsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

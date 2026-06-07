@@ -166,7 +166,10 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
 
   return (
     <>
-      <SectionHeader title={isProfileForm ? 'Edit Profile' : user ? name : 'Create User'}>
+      <SectionHeader
+        title={isProfileForm ? 'Edit Profile' : user ? `Edit ${name}` : 'Create User'}
+        backUrl={isProfileForm ? '/settings/profile' : user ? `/users/${user.id}` : '/users'}
+      >
         {isProfileForm ? (
           <ProfileToolbar ref={ref} methods={methods} />
         ) : (

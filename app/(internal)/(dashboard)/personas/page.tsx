@@ -1,5 +1,7 @@
 import { GetPersonas } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -7,11 +9,14 @@ import {
   PersonaMapper,
 } from '@app/infrastructure/dtos';
 import { PersonasList, PersonasToolbar } from '@app/presentation/components/internal/personas';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Personas',
+};
 
 export default async function PersonasPage() {
   const getPersonas = serverContainer.get<GetPersonas>(SYMBOLS.GetPersonas);
@@ -25,8 +30,14 @@ export default async function PersonasPage() {
   });
 
   return (
-    <>
-      <SectionHeader title="Personas">
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Settings', url: '/settings' },
+        { label: 'Personas', url: '/personas' },
+      ]}
+    >
+      <SectionHeader title="Personas" backUrl="/settings">
         <PersonasToolbar />
       </SectionHeader>
       <PersonasList
@@ -35,6 +46,6 @@ export default async function PersonasPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

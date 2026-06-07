@@ -6,12 +6,17 @@ import {
 } from '@app/infrastructure/dtos';
 import { CoreTeamsList, CoreTeamsToolbar } from '@app/presentation/components/internal/core-teams';
 import { GetCoreTeams } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Core Teams',
+};
 
 export default async function CoreTeamsPage() {
   const getCoreTeams = serverContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams);
@@ -25,7 +30,12 @@ export default async function CoreTeamsPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Core Teams', url: '/core-teams' },
+      ]}
+    >
       <SectionHeader title="Core Teams">
         <CoreTeamsToolbar />
       </SectionHeader>
@@ -35,6 +45,6 @@ export default async function CoreTeamsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

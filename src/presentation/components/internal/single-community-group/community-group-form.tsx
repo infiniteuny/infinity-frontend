@@ -105,7 +105,10 @@ export function CommunityGroupForm({ initialCommunityGroup }: Props) {
 
   return (
     <>
-      <SectionHeader title={communityGroup ? name : 'Create Community Group'}>
+      <SectionHeader
+        title={communityGroup ? `Edit ${name}` : 'Create Community Group'}
+        backUrl={communityGroup ? `/community-groups/${communityGroup.id}` : '/community-groups'}
+      >
         <CommunityGroupToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

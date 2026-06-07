@@ -1,4 +1,5 @@
 import { GetMajors, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import {
   MajorDto,
   MajorMapper,
@@ -7,12 +8,16 @@ import {
 } from '@app/infrastructure/dtos';
 import { MajorsList, MajorsToolbar } from '@app/presentation/components/internal/majors';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Majors',
+};
 
 export default async function MajorsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -38,8 +43,14 @@ export default async function MajorsPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Majors">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Majors', url: '/majors' },
+        ]}
+      >
+        <SectionHeader title="Majors" backUrl="/settings">
           <MajorsToolbar />
         </SectionHeader>
         <MajorsList
@@ -48,7 +59,7 @@ export default async function MajorsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

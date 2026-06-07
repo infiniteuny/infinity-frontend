@@ -1,20 +1,26 @@
 import { GetUsers } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
   UserDto,
   UserMapper,
 } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UsersList, UsersToolbar } from '@app/presentation/components/internal/users';
 
 export const dynamic = 'force-dynamic';
 
+export const metadata: Metadata = {
+  title: 'Users',
+};
+
 export default async function UsersPage() {
   const getUsers = serverContainer.get<GetUsers>(SYMBOLS.GetUsers);
+
   const result = await getUsers.execute(['major', 'major.faculty'], undefined, undefined, {
     perPage: 25,
   });
@@ -26,7 +32,12 @@ export default async function UsersPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Users', url: '/users' },
+      ]}
+    >
       <SectionHeader title="Users">
         <UsersToolbar />
       </SectionHeader>
@@ -36,6 +47,6 @@ export default async function UsersPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

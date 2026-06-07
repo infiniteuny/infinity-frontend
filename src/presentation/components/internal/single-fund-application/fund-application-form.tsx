@@ -162,7 +162,15 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
 
   return (
     <>
-      <SectionHeader title={fundApplication ? 'Edit Fund Application' : 'Create Fund Application'}>
+      <SectionHeader
+        title={
+          fundApplication
+            ? fundApplication.competitionInstance?.name
+              ? `Edit ${fundApplication.competitionInstance.shortname || fundApplication.competitionInstance.name} ${fundApplication.competitionBranch}`
+              : 'Edit Fund Application'
+            : 'Create Fund Application'
+        }
+      >
         <FundApplicationToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>

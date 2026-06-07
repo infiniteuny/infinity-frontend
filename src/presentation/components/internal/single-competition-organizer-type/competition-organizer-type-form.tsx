@@ -102,7 +102,14 @@ export function CompetitionOrganizerTypeForm({ initialCompetitionOrganizerType }
 
   return (
     <>
-      <SectionHeader title={competitionOrganizerType ? name : 'Create Competition Organizer Type'}>
+      <SectionHeader
+        title={competitionOrganizerType ? `Edit ${name}` : 'Create Competition Organizer Type'}
+        backUrl={
+          competitionOrganizerType
+            ? `/competition-organizer-types/${competitionOrganizerType.id}`
+            : '/competition-organizer-types'
+        }
+      >
         <CompetitionOrganizerTypeToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

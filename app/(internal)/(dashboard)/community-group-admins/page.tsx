@@ -9,12 +9,17 @@ import {
   CommunityGroupAdminsToolbar,
 } from '@app/presentation/components/internal/community-group-admins';
 import { GetCommunityGroupAdmins } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Community Group Administrators',
+};
 
 export default async function CommunityGroupAdminsPage() {
   const getCommunityGroupAdmins = serverContainer.get<GetCommunityGroupAdmins>(
@@ -30,7 +35,12 @@ export default async function CommunityGroupAdminsPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Community Group Administrators', url: '/community-group-admins' },
+      ]}
+    >
       <SectionHeader title="Community Group Administrators">
         <CommunityGroupAdminsToolbar />
       </SectionHeader>
@@ -44,6 +54,6 @@ export default async function CommunityGroupAdminsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

@@ -1,5 +1,7 @@
+import { cache } from 'react';
 import { GetCompetitionScales, GetFundApplication, GetSession } from '@app/application';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import {
   CompetitionScaleDto,
   CompetitionScaleMapper,
@@ -7,6 +9,7 @@ import {
   FundApplicationMapper,
 } from '@app/infrastructure/dtos';
 import { FundApplicationForm } from '@app/presentation/components/internal/single-fund-application';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { NotFoundError } from '@app/domain/errors';
@@ -18,11 +21,59 @@ type Props = {
   }>;
 };
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const fundApplicationId = (await params).fundApplicationId;
+
+  const sessionResult = await cache(async () => await getSession.execute())();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (
+    ['update-fund-application', 'update-own-fund-application'].some((p) => userPermissions.has(p))
+  ) {
+    const getFundApplication = serverContainer.get<GetFundApplication>(SYMBOLS.GetFundApplication);
+
+    const fundApplicationResult = await cache(
+      async () => await getFundApplication.execute(fundApplicationId),
+    )();
+    const fundApplication = match(fundApplicationResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    if (
+      !['update-fund-application'].some((p) => userPermissions.has(p)) &&
+      !fundApplication.team?.members?.some((member) => member.id === session.user.id)
+    ) {
+      notFound();
+    }
+
+    return {
+      title: fundApplication.competitionInstance?.name
+        ? `Edit ${fundApplication.competitionInstance.shortname || fundApplication.competitionInstance.name} ${fundApplication.competitionBranch}`
+        : 'Edit Fund Application',
+    };
+  } else {
+    notFound();
+  }
+}
+
 export default async function SingleFundApplicationEditPage({ params }: Props) {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
 
-  const sessionResult = await getSession.execute();
-
+  const sessionResult = await cache(async () => await getSession.execute())();
   const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
@@ -40,10 +91,10 @@ export default async function SingleFundApplicationEditPage({ params }: Props) {
     );
     const fundApplicationId = (await params).fundApplicationId;
 
-    const fundApplicationResult = await getFundApplication.execute(fundApplicationId, [
-      'team',
-      'competition_instance',
-    ]);
+    const fundApplicationResult = await cache(
+      async () =>
+        await getFundApplication.execute(fundApplicationId, ['team', 'competition_instance']),
+    )();
     const fundApplication = match(fundApplicationResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
@@ -73,14 +124,29 @@ export default async function SingleFundApplicationEditPage({ params }: Props) {
     });
 
     return (
-      <FundApplicationForm
-        competitionScales={
-          competitionScales.map(CompetitionScaleMapper.fromDomainToDto) as CompetitionScaleDto[]
-        }
-        initialFundApplication={
-          FundApplicationMapper.fromDomainToDto(fundApplication) as FundApplicationDto
-        }
-      />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Fund Applications', url: '/fund-applications' },
+          {
+            label:
+              fundApplication.competitionInstance?.name ??
+              fundApplication.competitionBranch ??
+              'Fund Application',
+            url: `/fund-applications/${fundApplication.id}`,
+          },
+          { label: 'Edit', url: `/fund-applications/${fundApplication.id}/edit` },
+        ]}
+      >
+        <FundApplicationForm
+          competitionScales={
+            competitionScales.map(CompetitionScaleMapper.fromDomainToDto) as CompetitionScaleDto[]
+          }
+          initialFundApplication={
+            FundApplicationMapper.fromDomainToDto(fundApplication) as FundApplicationDto
+          }
+        />
+      </InternalMain>
     );
   } else {
     notFound();

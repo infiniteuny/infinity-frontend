@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GeneralForm } from './general-form';
+import { CommunityGroupDto, CommunityGroupMapper } from '@app/infrastructure/dtos';
 
 const communityGroupMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),
@@ -21,13 +22,17 @@ const communityGroupMemberInputSchema = z.object({
 export type CommunityGroupMemberInput = z.infer<typeof communityGroupMemberInputSchema>;
 
 type Props = {
-  communityGroupId: string;
+  communityGroup: CommunityGroupDto;
 };
 
-export function CommunityGroupMemberForm({ communityGroupId }: Props) {
+export function CommunityGroupMemberForm({ communityGroup }: Props) {
   const createCommunityGroupMember = useMemo(
     () => clientContainer.get<CreateCommunityGroupMember>(SYMBOLS.CreateCommunityGroupMember),
     [],
+  );
+  const parsedCommunityGroup = useMemo(
+    () => CommunityGroupMapper.fromDtoToDomain(communityGroup),
+    [communityGroup],
   );
   const router = useRouter();
 
@@ -48,21 +53,24 @@ export function CommunityGroupMemberForm({ communityGroupId }: Props) {
       return;
     }
 
-    const result = await createCommunityGroupMember.execute(communityGroupId, data);
+    const result = await createCommunityGroupMember.execute(parsedCommunityGroup.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/community-groups/${communityGroupId}/members`);
+        router.push(`/community-groups/${parsedCommunityGroup.id}/members`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add Community Group Member">
+      <SectionHeader
+        title={`Add ${parsedCommunityGroup.name} Member`}
+        backUrl={`/community-groups/${parsedCommunityGroup.id}/members`}
+      >
         <CommunityGroupMemberToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

@@ -6,13 +6,18 @@ import {
 } from '@app/infrastructure/dtos';
 import { DegreesList, DegreesToolbar } from '@app/presentation/components/internal/degrees';
 import { GetDegrees, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Degrees',
+};
 
 export default async function DegreesPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -38,8 +43,14 @@ export default async function DegreesPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Degrees">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Degrees', url: '/degrees' },
+        ]}
+      >
+        <SectionHeader title="Degrees" backUrl="/settings">
           <DegreesToolbar />
         </SectionHeader>
         <DegreesList
@@ -48,7 +59,7 @@ export default async function DegreesPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

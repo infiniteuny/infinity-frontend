@@ -9,13 +9,18 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCompetitionScales, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Competition Scales',
+};
 
 export default async function CompetitionScalesPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -43,8 +48,14 @@ export default async function CompetitionScalesPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="Competition Scales">
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Scales', url: '/competition-scales' },
+        ]}
+      >
+        <SectionHeader title="Competition Scales" backUrl="/settings">
           <CompetitionScalesToolbar />
         </SectionHeader>
         <CompetitionScalesList
@@ -55,7 +66,7 @@ export default async function CompetitionScalesPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

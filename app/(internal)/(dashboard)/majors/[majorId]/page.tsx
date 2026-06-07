@@ -1,8 +1,10 @@
+import { cache } from 'react';
 import { GetDegrees, GetFaculties, GetMajor, GetSession } from '@app/application';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import {
@@ -25,11 +27,11 @@ type Props = {
   }>;
 };
 
-export default async function SingleMajorPage({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
   const majorId = (await params).majorId;
 
-  const sessionResult = await getSession.execute();
+  const sessionResult = await cache(async () => await getSession.execute())();
   const session = match(sessionResult, {
     onLeft: (error) => {
       throw error;
@@ -40,7 +42,49 @@ export default async function SingleMajorPage({ params }: Props) {
 
   if (majorId !== 'new' && ['read-major'].some((p) => userPermissions.has(p))) {
     const getMajor = serverContainer.get<GetMajor>(SYMBOLS.GetMajor);
-    const majorResult = await getMajor.execute(majorId, ['degree', 'faculty']);
+
+    const majorResult = await cache(async () => await getMajor.execute(majorId))();
+    const major = match(majorResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return {
+      title: major.name,
+    };
+  } else if (majorId === 'new' && ['create-major'].some((p) => userPermissions.has(p))) {
+    return {
+      title: 'Create Major',
+    };
+  } else {
+    notFound();
+  }
+}
+
+export default async function SingleMajorPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const majorId = (await params).majorId;
+
+  const sessionResult = await cache(async () => await getSession.execute())();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (majorId !== 'new' && ['read-major'].some((p) => userPermissions.has(p))) {
+    const getMajor = serverContainer.get<GetMajor>(SYMBOLS.GetMajor);
+    const majorResult = await cache(
+      async () => await getMajor.execute(majorId, ['degree', 'faculty']),
+    )();
     const major = match(majorResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
@@ -53,12 +97,19 @@ export default async function SingleMajorPage({ params }: Props) {
     });
 
     return (
-      <>
-        <SectionHeader title={major.name}>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Majors', url: '/majors' },
+          { label: major.name, url: `/majors/${major.id}` },
+        ]}
+      >
+        <SectionHeader title={major.name} backUrl="/majors">
           <MajorToolbar majorId={major.id} />
         </SectionHeader>
         <MajorView initialMajor={MajorMapper.fromDomainToDto(major) as MajorDto} />
-      </>
+      </InternalMain>
     );
   } else if (majorId === 'new' && ['create-major'].some((p) => userPermissions.has(p))) {
     const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
@@ -81,10 +132,19 @@ export default async function SingleMajorPage({ params }: Props) {
     });
 
     return (
-      <MajorForm
-        degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
-        faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
-      />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Majors', url: '/majors' },
+          { label: 'Create Major', url: `/majors/new` },
+        ]}
+      >
+        <MajorForm
+          degrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
+          faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
+        />
+      </InternalMain>
     );
   } else {
     notFound();

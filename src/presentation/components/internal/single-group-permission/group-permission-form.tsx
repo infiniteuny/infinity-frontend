@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateGroupPermission } from '@app/application';
 import { GeneralForm } from './general-form';
+import { GroupDto, GroupMapper } from '@app/infrastructure/dtos';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -21,14 +22,15 @@ const groupPermissionInputSchema = z.object({
 export type GroupPermissionInput = z.infer<typeof groupPermissionInputSchema>;
 
 type Props = {
-  groupId: string;
+  group: GroupDto;
 };
 
-export function GroupPermissionForm({ groupId }: Props) {
+export function GroupPermissionForm({ group }: Props) {
   const createGroupPermission = useMemo(
     () => clientContainer.get<CreateGroupPermission>(SYMBOLS.CreateGroupPermission),
     [],
   );
+  const parsedGroup = useMemo(() => GroupMapper.fromDtoToDomain(group), [group]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -48,21 +50,24 @@ export function GroupPermissionForm({ groupId }: Props) {
       return;
     }
 
-    const result = await createGroupPermission.execute(groupId, data);
+    const result = await createGroupPermission.execute(parsedGroup.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/groups/${groupId}/permissions`);
+        router.push(`/groups/${parsedGroup.id}/permissions`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add Group Permission">
+      <SectionHeader
+        title={`Add ${parsedGroup.name}'s Permission`}
+        backUrl={`/groups/${parsedGroup.id}/permissions`}
+      >
         <GroupPermissionToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

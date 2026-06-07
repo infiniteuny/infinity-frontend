@@ -95,7 +95,12 @@ export function CompetitionScaleForm({ initialCompetitionScale }: Props) {
 
   return (
     <>
-      <SectionHeader title={competitionScale ? name : 'Create Competition Scale'}>
+      <SectionHeader
+        title={competitionScale ? `Edit ${name}` : 'Create Competition Scale'}
+        backUrl={
+          competitionScale ? `/competition-scales/${competitionScale.id}` : '/competition-scales'
+        }
+      >
         <CompetitionScaleToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

@@ -1,11 +1,5 @@
 'use client';
 
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { Box } from '@mui/material';
-import { CompetitionForm } from './competition-form';
-import { clientContainer } from '@app/client-injection';
-import { CreateAchievement, UpdateAchievement } from '@app/application';
-import { DocumentsForm } from './documents-form';
 import {
   AchievementDto,
   AchievementMapper,
@@ -15,11 +9,17 @@ import {
   CompetitionTimeRangeDto,
 } from '@app/infrastructure/dtos';
 import { AchievementToolbar } from './achievement-toolbar';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { Box } from '@mui/material';
+import { CompetitionForm } from './competition-form';
+import { clientContainer } from '@app/client-injection';
+import { CreateAchievement, UpdateAchievement } from '@app/application';
+import { DocumentsForm } from './documents-form';
 import { GeneralForm } from './general-form';
 import { LocalizationProvider } from '@mui/x-date-pickers';
+import { match } from 'effect/Either';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -166,9 +166,12 @@ export function AchievementForm({
       <SectionHeader
         title={
           achievement
-            ? (achievement.competitionInstance?.name ?? achievement.competitionBranch)
+            ? achievement.competitionRank?.name && achievement.competitionInstance?.name
+              ? `Edit ${achievement.competitionRank.name} ${achievement.competitionInstance.shortname || achievement.competitionInstance.name} ${achievement.competitionBranch}`
+              : 'Edit Achievement'
             : 'Create Achievement'
         }
+        backUrl={achievement ? `/achievements/${achievement.id}` : '/achievements'}
       >
         <AchievementToolbar ref={ref} methods={methods} />
       </SectionHeader>

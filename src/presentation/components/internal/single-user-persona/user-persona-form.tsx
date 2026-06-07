@@ -10,6 +10,7 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserPersonaToolbar } from './user-persona-toolbar';
 import { useMemo, useRef } from 'react';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,15 @@ const userPersonaInputSchema = z.object({
 export type UserPersonaInput = z.infer<typeof userPersonaInputSchema>;
 
 type Props = {
-  userId: string;
+  user: UserDto;
 };
 
-export function UserPersonaForm({ userId }: Props) {
+export function UserPersonaForm({ user }: Props) {
   const createUserPersona = useMemo(
     () => clientContainer.get<CreateUserPersona>(SYMBOLS.CreateUserPersona),
     [],
   );
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -48,21 +50,24 @@ export function UserPersonaForm({ userId }: Props) {
       return;
     }
 
-    const result = await createUserPersona.execute(userId, data);
+    const result = await createUserPersona.execute(parsedUser.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${userId}/personas`);
+        router.push(`/users/${parsedUser.id}/personas`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add User Persona">
+      <SectionHeader
+        title={`Add ${parsedUser.name}'s Persona`}
+        backUrl={`/users/${parsedUser.id}/personas`}
+      >
         <UserPersonaToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

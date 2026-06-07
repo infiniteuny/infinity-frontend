@@ -95,7 +95,14 @@ export function CompetitionTimeRangeForm({ initialCompetitionTimeRange }: Props)
 
   return (
     <>
-      <SectionHeader title={competitionTimeRange ? name : 'Create Competition Time Range'}>
+      <SectionHeader
+        title={competitionTimeRange ? `Edit ${name}` : 'Create Competition Time Range'}
+        backUrl={
+          competitionTimeRange
+            ? `/competition-time-ranges/${competitionTimeRange.id}`
+            : '/competition-time-ranges'
+        }
+      >
         <CompetitionTimeRangeToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

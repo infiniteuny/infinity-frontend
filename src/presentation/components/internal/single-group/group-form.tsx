@@ -87,7 +87,10 @@ export function GroupForm({ initialGroup }: Props) {
 
   return (
     <>
-      <SectionHeader title={group ? name : 'Create Group'}>
+      <SectionHeader
+        title={group ? `Edit ${name}` : 'Create Group'}
+        backUrl={group ? `/groups/${group.id}` : '/groups'}
+      >
         <GroupToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

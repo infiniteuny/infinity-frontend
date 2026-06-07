@@ -1,5 +1,7 @@
 import { GetSession, GetTeams } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import {
   PaginationOptionsDto,
@@ -7,12 +9,15 @@ import {
   TeamDto,
   TeamMapper,
 } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { TeamsList, TeamsToolbar } from '@app/presentation/components/internal/teams';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Teams',
+};
 
 export default async function TeamsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -38,7 +43,12 @@ export default async function TeamsPage() {
     });
 
     return (
-      <>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Teams', url: '/teams' },
+        ]}
+      >
         <SectionHeader title="Teams">
           <TeamsToolbar />
         </SectionHeader>
@@ -48,7 +58,7 @@ export default async function TeamsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

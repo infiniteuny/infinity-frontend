@@ -109,7 +109,10 @@ export function TestimonialForm({ initialTestimonial }: Props) {
 
   return (
     <>
-      <SectionHeader title={testimonial ? name : 'Create Testimonial'}>
+      <SectionHeader
+        title={testimonial ? `Edit ${name}` : 'Create Testimonial'}
+        backUrl={testimonial ? `/testimonials/${testimonial.id}` : '/testimonials'}
+      >
         <TestimonialToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

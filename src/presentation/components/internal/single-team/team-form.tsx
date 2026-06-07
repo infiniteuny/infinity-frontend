@@ -93,7 +93,10 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
 
   return (
     <>
-      <SectionHeader title={team ? name : 'Create Team'}>
+      <SectionHeader
+        title={team ? `Edit ${name}` : 'Create Team'}
+        backUrl={team ? `/teams/${team.id}` : '/teams'}
+      >
         <TeamToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

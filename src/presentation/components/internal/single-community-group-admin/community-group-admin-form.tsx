@@ -113,7 +113,12 @@ export function CommunityGroupAdminForm({ initialCommunityGroupAdmin }: Props) {
   return (
     <>
       <SectionHeader
-        title={communityGroupAdmin ? name.toString() : 'Create Community Group Administrator'}
+        title={communityGroupAdmin ? `Edit ${name}` : 'Create Community Group Administrator'}
+        backUrl={
+          communityGroupAdmin
+            ? `/community-group-admins/${communityGroupAdmin.id}`
+            : '/community-group-admins'
+        }
       >
         <CommunityGroupAdminToolbar ref={ref} methods={methods} />
       </SectionHeader>

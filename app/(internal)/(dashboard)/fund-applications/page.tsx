@@ -9,13 +9,18 @@ import {
   FundApplicationsToolbar,
 } from '@app/presentation/components/internal/fund-applications';
 import { GetFundApplications, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Fund Applications',
+};
 
 export default async function FundApplicationsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -47,7 +52,12 @@ export default async function FundApplicationsPage() {
     });
 
     return (
-      <>
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Fund Applications', url: '/fund-applications' },
+        ]}
+      >
         <SectionHeader title="Fund Applications">
           <FundApplicationsToolbar />
         </SectionHeader>
@@ -59,7 +69,7 @@ export default async function FundApplicationsPage() {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
         />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

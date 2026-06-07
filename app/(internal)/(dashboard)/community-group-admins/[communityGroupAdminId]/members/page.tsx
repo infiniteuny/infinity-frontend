@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import {
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
@@ -9,10 +10,11 @@ import {
   CommunityGroupAdminMembersToolbar,
 } from '@app/presentation/components/internal/community-group-admin-members';
 import { GetCommunityGroupAdmin, GetCommunityGroupAdminMembers } from '@app/application';
-import { isLeft, match } from 'effect/Either';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@app/domain/errors';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -23,6 +25,31 @@ type Props = {
     communityGroupAdminId: string;
   }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
+  const communityGroupAdminId = (await params).communityGroupAdminId;
+
+  const communityGroupAdminResult = await cache(
+    async () => await getCommunityGroupAdmin.execute(communityGroupAdminId),
+  )();
+  const communityGroupAdmin = match(communityGroupAdminResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return {
+    title: `${communityGroupAdmin.year}'s Members`,
+  };
+}
 
 export default async function CommunityGroupAdminMembersPage({ params }: Props) {
   const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
@@ -43,16 +70,16 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
     ),
   ]);
 
-  if (isLeft(communityGroupAdminResult)) {
-    const error = communityGroupAdminResult.left;
-
-    if (error instanceof NotFoundError) {
-      notFound();
-    } else {
-      throw error;
-    }
-  }
-
+  const communityGroupAdmin = match(communityGroupAdminResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
   const [communityGroupAdminMembers, paginationOptions] = match(communityGroupAdminMembersResult, {
     onLeft: (error) => {
       throw error;
@@ -61,8 +88,21 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
   });
 
   return (
-    <>
-      <SectionHeader title="Community Group Admin Members">
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Community Group Administrators', url: '/community-group-admins' },
+        {
+          label: communityGroupAdmin.year.toString(),
+          url: `/community-group-admins/${communityGroupAdminId}`,
+        },
+        { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
+      ]}
+    >
+      <SectionHeader
+        title={`${communityGroupAdmin.year} Members`}
+        backUrl={`/community-group-admins/${communityGroupAdminId}`}
+      >
         <CommunityGroupAdminMembersToolbar communityGroupAdminId={communityGroupAdminId} />
       </SectionHeader>
       <CommunityGroupAdminMembersList
@@ -76,6 +116,6 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

@@ -3,13 +3,13 @@
 import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateDegree, UpdateDegree } from '@app/application';
+import { DegreeDto, DegreeMapper } from '@app/infrastructure/dtos';
+import { DegreeToolbar } from './degree-toolbar';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { DegreeDto, DegreeMapper } from '@app/infrastructure/dtos';
-import { DegreeToolbar } from './degree-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -84,7 +84,10 @@ export function DegreeForm({ initialDegree }: Props) {
 
   return (
     <>
-      <SectionHeader title={degree ? name : 'Create Degree'}>
+      <SectionHeader
+        title={degree ? `Edit ${name}` : 'Create Degree'}
+        backUrl={degree ? `/degrees/${degree.id}` : '/degrees'}
+      >
         <DegreeToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

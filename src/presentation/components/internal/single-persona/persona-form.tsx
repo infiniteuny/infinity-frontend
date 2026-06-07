@@ -101,7 +101,10 @@ export function PersonaForm({ initialPersona }: Props) {
 
   return (
     <>
-      <SectionHeader title={persona ? name : 'Create Persona'}>
+      <SectionHeader
+        title={persona ? `Edit Persona: ${name}` : 'Create Persona'}
+        backUrl={persona ? `/personas/${persona.id}` : '/personas'}
+      >
         <PersonaToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

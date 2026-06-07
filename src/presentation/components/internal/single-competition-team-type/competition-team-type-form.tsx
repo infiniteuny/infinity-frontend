@@ -95,7 +95,10 @@ export function CompetitionTeamTypeForm({ initialCompetitionTeamType }: Props) {
 
   return (
     <>
-      <SectionHeader title={competitionTeamType ? name : 'Create Competition Team Type'}>
+      <SectionHeader
+        title={competitionTeamType ? `Edit ${name}` : 'Create Competition Team Type'}
+        backUrl={competitionTeamType ? `/team-types/${competitionTeamType.id}` : '/team-types'}
+      >
         <CompetitionTeamTypeToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

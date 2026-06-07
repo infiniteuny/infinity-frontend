@@ -1,12 +1,13 @@
 import { GetTestimonials } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
+import { Metadata } from 'next';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
   TestimonialDto,
   TestimonialMapper,
 } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import {
@@ -15,6 +16,10 @@ import {
 } from '@app/presentation/components/internal/testimonials';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Testimonials',
+};
 
 export default async function TestimonialsPage() {
   const getTestimonials = serverContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials);
@@ -28,7 +33,12 @@ export default async function TestimonialsPage() {
   });
 
   return (
-    <>
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Testimonials', url: '/testimonials' },
+      ]}
+    >
       <SectionHeader title="Testimonials">
         <TestimonialsToolbar />
       </SectionHeader>
@@ -40,6 +50,6 @@ export default async function TestimonialsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
       />
-    </>
+    </InternalMain>
   );
 }

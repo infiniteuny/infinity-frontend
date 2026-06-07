@@ -90,7 +90,10 @@ export function FacultyForm({ initialFaculty }: Props) {
 
   return (
     <>
-      <SectionHeader title={faculty ? name : 'Create Faculty'}>
+      <SectionHeader
+        title={faculty ? `Edit ${name}` : 'Create Faculty'}
+        backUrl={faculty ? `/faculties/${faculty.id}` : '/faculties'}
+      >
         <FacultyToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

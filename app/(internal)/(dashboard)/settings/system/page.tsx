@@ -1,11 +1,16 @@
-import { GetConfigs, GetSession } from '@app/application';
 import { ConfigDto, ConfigMapper } from '@app/infrastructure/dtos';
-import { SectionHeader } from '@app/presentation/components/internal/shared';
-import { SystemSettingsView } from '@app/presentation/components/internal/system-settings';
+import { GetConfigs, GetSession } from '@app/application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { notFound } from 'next/navigation';
+import { SystemSettingsView } from '@app/presentation/components/internal/system-settings';
+
+export const metadata: Metadata = {
+  title: 'System Settings',
+};
 
 export default async function SystemSettingsPage() {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
@@ -31,10 +36,16 @@ export default async function SystemSettingsPage() {
     });
 
     return (
-      <>
-        <SectionHeader title="System Settings" />
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'System Settings', url: '/settings/system' },
+        ]}
+      >
+        <SectionHeader title="System Settings" backUrl="/settings" />
         <SystemSettingsView configs={configs.map(ConfigMapper.fromDomainToDto) as ConfigDto[]} />
-      </>
+      </InternalMain>
     );
   } else {
     notFound();

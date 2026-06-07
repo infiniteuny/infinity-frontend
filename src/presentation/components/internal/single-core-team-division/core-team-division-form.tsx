@@ -95,7 +95,12 @@ export function CoreTeamDivisionForm({ initialCoreTeamDivision }: Props) {
 
   return (
     <>
-      <SectionHeader title={coreTeamDivision ? name : 'Create Core Team Division'}>
+      <SectionHeader
+        title={coreTeamDivision ? `Edit ${name}` : 'Create Core Team Division'}
+        backUrl={
+          coreTeamDivision ? `/core-team-divisions/${coreTeamDivision.id}` : '/core-team-divisions'
+        }
+      >
         <CoreTeamDivisionToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

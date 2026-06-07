@@ -95,7 +95,12 @@ export function CompetitionRankForm({ initialCompetitionRank }: Props) {
 
   return (
     <>
-      <SectionHeader title={competitionRank ? name : 'Create Competition Rank'}>
+      <SectionHeader
+        title={competitionRank ? `Edit ${name}` : 'Create Competition Rank'}
+        backUrl={
+          competitionRank ? `/competition-ranks/${competitionRank.id}` : '/competition-ranks'
+        }
+      >
         <CompetitionRankToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

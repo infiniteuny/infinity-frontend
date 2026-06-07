@@ -4,11 +4,14 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   CoreTeamDivisionDto,
+  CoreTeamDto,
+  CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
 } from '@app/infrastructure/dtos';
 import { CoreTeamMemberToolbar } from './core-team-member-toolbar';
 import { CreateCoreTeamMember, UpdateCoreTeamMember } from '@app/application';
+import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
@@ -17,7 +20,6 @@ import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GeneralForm } from './general-form';
 
 const coreTeamMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),
@@ -46,16 +48,12 @@ const coreTeamMemberInputSchema = z.object({
 export type CoreTeamMemberInput = z.infer<typeof coreTeamMemberInputSchema>;
 
 type Props = {
-  coreTeamId: string;
+  coreTeam: CoreTeamDto;
   initialCoreTeamMember?: CoreTeamMemberDto;
   coreTeamDivisions: CoreTeamDivisionDto[];
 };
 
-export function CoreTeamMemberForm({
-  coreTeamId,
-  initialCoreTeamMember,
-  coreTeamDivisions,
-}: Props) {
+export function CoreTeamMemberForm({ coreTeam, initialCoreTeamMember, coreTeamDivisions }: Props) {
   const createCoreTeamMember = useMemo(
     () => clientContainer.get<CreateCoreTeamMember>(SYMBOLS.CreateCoreTeamMember),
     [],
@@ -64,6 +62,7 @@ export function CoreTeamMemberForm({
     () => clientContainer.get<UpdateCoreTeamMember>(SYMBOLS.UpdateCoreTeamMember),
     [],
   );
+  const parsedCoreTeam = useMemo(() => CoreTeamMapper.fromDtoToDomain(coreTeam), [coreTeam]);
   const router = useRouter();
 
   const coreTeamMember = initialCoreTeamMember
@@ -97,7 +96,7 @@ export function CoreTeamMemberForm({
 
     try {
       if (!coreTeamMember) {
-        const result = await createCoreTeamMember.execute(coreTeamId, {
+        const result = await createCoreTeamMember.execute(parsedCoreTeam.id, {
           userId: data.userId,
           coreTeamDivisionId: data.coreTeamDivisionId,
           photo: data.photo as File,
@@ -109,7 +108,7 @@ export function CoreTeamMemberForm({
             throw error;
           },
           onRight: () => {
-            router.push(`/core-teams/${coreTeamId}/members`);
+            router.push(`/core-teams/${parsedCoreTeam.id}/members`);
           },
         });
       } else {
@@ -130,7 +129,7 @@ export function CoreTeamMemberForm({
             throw error;
           },
           onRight: () => {
-            router.push(`/core-teams/${coreTeamId}/members/${coreTeamMember.id}`);
+            router.push(`/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.id}`);
           },
         });
       }
@@ -141,7 +140,16 @@ export function CoreTeamMemberForm({
 
   return (
     <>
-      <SectionHeader title={coreTeamMember ? 'Edit Core Team Member' : 'Add Core Team Member'}>
+      <SectionHeader
+        title={
+          coreTeamMember ? `Edit ${coreTeamMember.name}` : `Add ${parsedCoreTeam.year}'s Member`
+        }
+        backUrl={
+          coreTeamMember
+            ? `/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.id}`
+            : `/core-teams/${parsedCoreTeam.id}/members`
+        }
+      >
         <CoreTeamMemberToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

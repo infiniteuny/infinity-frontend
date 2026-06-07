@@ -10,6 +10,7 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserGroupToolbar } from './user-group-toolbar';
 import { useMemo, useRef } from 'react';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,15 @@ const userGroupInputSchema = z.object({
 export type UserGroupInput = z.infer<typeof userGroupInputSchema>;
 
 type Props = {
-  userId: string;
+  user: UserDto;
 };
 
-export function UserGroupForm({ userId }: Props) {
+export function UserGroupForm({ user }: Props) {
   const createUserGroup = useMemo(
     () => clientContainer.get<CreateUserGroup>(SYMBOLS.CreateUserGroup),
     [],
   );
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
 
   const ref = useRef<HTMLFormElement>(null);
@@ -48,21 +50,24 @@ export function UserGroupForm({ userId }: Props) {
       return;
     }
 
-    const result = await createUserGroup.execute(userId, data);
+    const result = await createUserGroup.execute(parsedUser.id, data);
 
     match(result, {
       onLeft: (error) => {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${userId}/groups`);
+        router.push(`/users/${parsedUser.id}/groups`);
       },
     });
   });
 
   return (
     <>
-      <SectionHeader title="Add User Group">
+      <SectionHeader
+        title={`Add ${parsedUser.name}'s Group`}
+        backUrl={`/users/${parsedUser.id}/groups`}
+      >
         <UserGroupToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>

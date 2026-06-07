@@ -6,6 +6,7 @@ import { CreateProjectGallery, UpdateProjectGallery } from '@app/application';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
 import { ProjectGalleryDto, ProjectGalleryMapper } from '@app/infrastructure/dtos';
+import { ProjectGalleryToolbar } from './project-gallery-toolbar';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
@@ -13,7 +14,6 @@ import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ProjectGalleryToolbar } from './project-gallery-toolbar';
 
 const projectGalleryInputSchema = z.object({
   title: z.string().min(1, 'Title must not be empty'),
@@ -109,7 +109,10 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
 
   return (
     <>
-      <SectionHeader title={projectGallery ? name : 'Create Project Gallery'}>
+      <SectionHeader
+        title={projectGallery ? `Edit ${name}` : 'Create Project Gallery'}
+        backUrl={projectGallery ? `/project-galleries/${projectGallery.id}` : '/project-galleries'}
+      >
         <ProjectGalleryToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
