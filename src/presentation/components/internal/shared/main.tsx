@@ -24,10 +24,9 @@ export function InternalMain({ breadcrumbs, children }: Props) {
 
   return (
     <Container
-      component="main"
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
-      className={`h-full min-h-[calc(100vh-8.625rem)] w-full overflow-auto pr-4 ${
+      className={`flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col overflow-auto pr-4 ${
         sidebarExtended ? 'lg:pl-65' : 'lg:pl-20'
       }`}
     >
@@ -36,7 +35,7 @@ export function InternalMain({ breadcrumbs, children }: Props) {
           separator={<NavigateNextRounded fontSize="small" />}
           maxItems={3}
           aria-label="breadcrumb"
-          className="my-2 px-4"
+          className="my-2 flex min-h-6 px-5"
         >
           {breadcrumbs.map((breadcrumb, index) =>
             index === breadcrumbs.length - 1 ? (
@@ -59,8 +58,9 @@ export function InternalMain({ breadcrumbs, children }: Props) {
       ) : null}
       <Box
         id="content"
+        component="main"
         sx={{ bgcolor: 'surfaceContainerLow.main' }}
-        className="flow-root h-full min-h-[calc(100vh-8.625rem)] w-full rounded-2xl"
+        className="flow-root h-full w-full grow rounded-2xl"
       >
         {children}
       </Box>
