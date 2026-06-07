@@ -58,8 +58,7 @@ export function ClickableViewTile({
       sx={deepmerge({ bgcolor: 'surfaceContainerHigh.main' }, sx || {})}
       className={`w-full justify-start p-4 text-left select-text ${roundedClass} ${className || ''}`}
       focusVisibleClassName="bg-(--m3-palette-action-focus)"
-      component={href ? 'a' : 'button'}
-      LinkComponent={href ? Link : undefined}
+      component={href ? Link : 'button'}
       href={href}
       target={target}
       onClick={onClick}
