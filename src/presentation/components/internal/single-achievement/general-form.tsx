@@ -21,6 +21,7 @@ import { SYMBOLS } from '@config';
 import { Team } from '@app/domain/entities';
 import { TeamDto, TeamMapper } from '@app/infrastructure/dtos';
 import { useEffect, useMemo, useState } from 'react';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
   methods: UseFormReturn<AchievementInput>;
@@ -37,6 +38,7 @@ export function GeneralForm({
 }: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
   const parsedTeams = useMemo(() => teams?.map(TeamMapper.fromDtoToDomain) ?? [], [teams]);
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   const [teamInput, setTeamInput] = useState(parsedTeams[0]?.name ?? '');
   const [teamOptions, setTeamOptions] = useState<Team[]>(parsedTeams);
@@ -129,32 +131,39 @@ export function GeneralForm({
               )}
             />
           </Grid>
-          <Grid size={12}>
-            <FormControl fullWidth margin="none" disabled={isSubmitting}>
-              <InputLabel id="status-label" error={!!errors.status}>
-                Status
-              </InputLabel>
-              <Controller
-                name="status"
-                control={control}
-                defaultValue={'PENDING'}
-                render={({ field }) => (
-                  <Select labelId="status-label" label="Status" error={!!errors.status} {...field}>
-                    <MenuItem key="pending" value="PENDING">
-                      Pending
-                    </MenuItem>
-                    <MenuItem key="rejected" value="REJECTED">
-                      Rejected
-                    </MenuItem>
-                    <MenuItem key="accepted" value="ACCEPTED">
-                      Accepted
-                    </MenuItem>
-                  </Select>
-                )}
-              />
-              <FormHelperText error={!!errors.status}>{errors.status?.message}</FormHelperText>
-            </FormControl>
-          </Grid>
+          {userPermissions.includes('approve-achievement') ? (
+            <Grid size={12}>
+              <FormControl fullWidth margin="none" disabled={isSubmitting}>
+                <InputLabel id="status-label" error={!!errors.status}>
+                  Status
+                </InputLabel>
+                <Controller
+                  name="status"
+                  control={control}
+                  defaultValue={'PENDING'}
+                  render={({ field }) => (
+                    <Select
+                      labelId="status-label"
+                      label="Status"
+                      error={!!errors.status}
+                      {...field}
+                    >
+                      <MenuItem key="pending" value="PENDING">
+                        Pending
+                      </MenuItem>
+                      <MenuItem key="rejected" value="REJECTED">
+                        Rejected
+                      </MenuItem>
+                      <MenuItem key="accepted" value="ACCEPTED">
+                        Accepted
+                      </MenuItem>
+                    </Select>
+                  )}
+                />
+                <FormHelperText error={!!errors.status}>{errors.status?.message}</FormHelperText>
+              </FormControl>
+            </Grid>
+          ) : null}
           <Grid size={12}>
             <TextField
               {...register('description')}
