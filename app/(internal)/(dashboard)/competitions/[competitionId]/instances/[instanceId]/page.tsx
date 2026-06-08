@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
 
     return {
-      title: competitionInstance.name,
+      title: competitionInstance.shortname || competitionInstance.name,
     };
   } else if (instanceId === 'new' && ['create-competition'].some((p) => userPermissions.has(p))) {
     const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
@@ -154,7 +154,7 @@ export default async function SingleCompetitionInstancePage({ params }: Props) {
           },
           { label: 'Instances', url: `/competitions/${competitionId}/instances` },
           {
-            label: competitionInstance.name,
+            label: competitionInstance.shortname || competitionInstance.name,
             url: `/competitions/${competitionId}/instances/${competitionInstance.id}`,
           },
         ]}

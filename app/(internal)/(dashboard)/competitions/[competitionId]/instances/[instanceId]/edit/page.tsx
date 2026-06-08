@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
 
     return {
-      title: `Edit ${competitionInstance.name}`,
+      title: `Edit ${competitionInstance.shortname || competitionInstance.name}`,
     };
   } else {
     notFound();

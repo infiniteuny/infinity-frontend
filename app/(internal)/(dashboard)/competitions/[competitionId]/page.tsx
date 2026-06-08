@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
 
     return {
-      title: competition.name,
+      title: competition.shortname || competition.name,
     };
   } else if (
     competitionId === 'new' &&
@@ -101,10 +101,13 @@ export default async function SingleCompetitionPage({ params }: Props) {
           { label: 'Overview', url: '/' },
           { label: 'Settings', url: '/settings' },
           { label: 'Competitions', url: '/competitions' },
-          { label: competition.name, url: `/competitions/${competition.id}` },
+          {
+            label: competition.shortname || competition.name,
+            url: `/competitions/${competition.id}`,
+          },
         ]}
       >
-        <SectionHeader title={competition.name} backUrl="/competitions">
+        <SectionHeader title={competition.shortname || competition.name} backUrl="/competitions">
           <CompetitionToolbar competitionId={competition.id} />
         </SectionHeader>
         <CompetitionView

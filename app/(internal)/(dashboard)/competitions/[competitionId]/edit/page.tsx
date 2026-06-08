@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
 
     return {
-      title: `Edit ${competition.name}`,
+      title: `Edit ${competition.shortname || competition.name}`,
     };
   } else {
     return {
@@ -92,7 +92,10 @@ export default async function SingleCompetitionEditPage({ params }: Props) {
           { label: 'Overview', url: '/' },
           { label: 'Settings', url: '/settings' },
           { label: 'Competitions', url: '/competitions' },
-          { label: competition.name, url: `/competitions/${competition.id}` },
+          {
+            label: competition.shortname || competition.name,
+            url: `/competitions/${competition.id}`,
+          },
           { label: 'Edit', url: `/competitions/${competition.id}/edit` },
         ]}
       >

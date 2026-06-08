@@ -62,6 +62,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
   const { handleSubmit: submit, control, formState } = methods;
 
   const name = useWatch({ name: 'name', control });
+  const shortname = useWatch({ name: 'shortname', control });
 
   const handleSubmit = submit(async (data) => {
     if (formState.isDirty) {
@@ -104,7 +105,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
   return (
     <>
       <SectionHeader
-        title={competition ? `Edit ${name}` : 'Create Competition'}
+        title={competition ? `Edit ${shortname || name}` : 'Create Competition'}
         backUrl={competition ? `/competitions/${competition.id}` : '/competitions'}
       >
         <CompetitionToolbar ref={ref} methods={methods} />
