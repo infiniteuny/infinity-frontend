@@ -1,9 +1,9 @@
-# 0.1.0 (2026-06-01)
+# 0.1.0 (2026-06-08)
 
 
-### Features
+### Bug Fixes
 
-* **workflow:** Add changelog generation step to release workflow ([87977cc](https://github.com/infiniteuny/infinity-frontend/commit/87977cc0eb284df0d3a4ea342db938ac1fefeb91))
+* **component:** Hide status field on achievement and fund app form based on user permission ([dfecf32](https://github.com/infiniteuny/infinity-frontend/commit/dfecf32efa4db5d2f0262ae60101a6a8849b2808))
 
 
 
