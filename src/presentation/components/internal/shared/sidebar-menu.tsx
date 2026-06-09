@@ -43,7 +43,7 @@ export function SidebarMenu({ menu }: Props) {
           </ListItemIcon>
         ) : null}
         <ListItemText
-          className={`transition-all ${sidebarExtended || sidebarHovered ? '' : 'lg:opacity-0'}`}
+          className={`transition-opacity ${sidebarExtended || sidebarHovered ? '' : 'lg:opacity-0'}`}
         >
           {menu.name}
         </ListItemText>

@@ -34,12 +34,12 @@ export function SidebarMenu({ menu }: Props) {
   return (
     <Link
       href={(menu as PathMenu).path}
-      className={`mr-2 rounded-r-full transition-all ${
+      className={`mr-2 rounded-r-full transition-[width] ${
         sidebarExtended || sidebarHovered ? '' : 'lg:mr-0 lg:rounded-r-none lg:pr-0'
       }`}
     >
       <li
-        className={`text-infinite-green flex items-center rounded-r-full py-2 pr-4 text-base transition-all ${
+        className={`text-infinite-green flex items-center rounded-r-full py-2 pr-4 text-base transition-[width] ${
           active ? 'bg-infinite-green text-white' : 'hover:bg-infinite-green/10'
         } ${sidebarExtended || sidebarHovered ? '' : 'lg:rounded-r-none lg:pr-0'}`}
       >

@@ -77,7 +77,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
             </ListItemIcon>
           ) : null}
           <ListItemText
-            className={`mr-8 transition-all ${
+            className={`mr-8 transition-opacity ${
               sidebarExtended || sidebarHovered ? '' : 'lg:opacity-0'
             }`}
           >
