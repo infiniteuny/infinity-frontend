@@ -26,7 +26,11 @@ export function InternalHeader() {
       ]}
       className="sticky flex h-18.5 w-full flex-row items-center p-4 shadow-none lg:pl-0"
     >
-      <IconButton className="lg:hidden" onClick={() => setSidebarOpenedState(!sidebarOpened)}>
+      <IconButton
+        aria-label="Toggle Sidebar"
+        className="lg:hidden"
+        onClick={() => setSidebarOpenedState(!sidebarOpened)}
+      >
         <MenuRounded />
       </IconButton>
       <div className="w-full md:w-51 lg:w-65">

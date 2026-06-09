@@ -58,6 +58,7 @@ export function InternalNavbar({ menus }: Props) {
         onClick={handleClick}
         size="small"
         className="p-1"
+        aria-label="INFINITE Account"
         aria-controls={open ? 'account-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
