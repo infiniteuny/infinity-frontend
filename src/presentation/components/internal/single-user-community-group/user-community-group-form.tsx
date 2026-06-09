@@ -23,9 +23,10 @@ export type UserCommunityGroupInput = z.infer<typeof userCommunityGroupInputSche
 
 type Props = {
   user: UserDto;
+  isProfileForm?: boolean;
 };
 
-export function UserCommunityGroupForm({ user }: Props) {
+export function UserCommunityGroupForm({ user, isProfileForm }: Props) {
   const createCommunityGroupMember = useMemo(
     () => clientContainer.get<CreateCommunityGroupMember>(SYMBOLS.CreateCommunityGroupMember),
     [],
@@ -59,7 +60,11 @@ export function UserCommunityGroupForm({ user }: Props) {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${parsedUser.id}/community-groups`);
+        router.push(
+          isProfileForm
+            ? `/settings/profile/community-groups`
+            : `/users/${parsedUser.id}/community-groups`,
+        );
       },
     });
   });
@@ -67,8 +72,12 @@ export function UserCommunityGroupForm({ user }: Props) {
   return (
     <>
       <SectionHeader
-        title={`Add ${parsedUser.name}'s Community Group`}
-        backUrl={`/users/${parsedUser.id}/community-groups`}
+        title={isProfileForm ? 'Add Community Group' : `Add ${parsedUser.name}'s Community Group`}
+        backUrl={
+          isProfileForm
+            ? `/settings/profile/community-groups`
+            : `/users/${parsedUser.id}/community-groups`
+        }
       >
         <UserCommunityGroupToolbar ref={ref} methods={methods} />
       </SectionHeader>

@@ -7,9 +7,10 @@ import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
   userId: string;
+  isProfileView?: boolean;
 };
 
-export function UserPersonasToolbar({ userId }: Props) {
+export function UserPersonasToolbar({ userId, isProfileView }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
@@ -21,7 +22,9 @@ export function UserPersonasToolbar({ userId }: Props) {
             className="ml-4"
             aria-label="Add user persona"
             LinkComponent={Link}
-            href={`/users/${userId}/personas/new`}
+            href={
+              isProfileView ? '/settings/profile/personas/new' : `/users/${userId}/personas/new`
+            }
             startIcon={<AddRounded />}
           >
             Add

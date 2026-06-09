@@ -23,9 +23,10 @@ export type UserGroupInput = z.infer<typeof userGroupInputSchema>;
 
 type Props = {
   user: UserDto;
+  isProfileForm?: boolean;
 };
 
-export function UserGroupForm({ user }: Props) {
+export function UserGroupForm({ user, isProfileForm }: Props) {
   const createUserGroup = useMemo(
     () => clientContainer.get<CreateUserGroup>(SYMBOLS.CreateUserGroup),
     [],
@@ -57,7 +58,7 @@ export function UserGroupForm({ user }: Props) {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${parsedUser.id}/groups`);
+        router.push(isProfileForm ? `/settings/profile/groups` : `/users/${parsedUser.id}/groups`);
       },
     });
   });
@@ -65,8 +66,8 @@ export function UserGroupForm({ user }: Props) {
   return (
     <>
       <SectionHeader
-        title={`Add ${parsedUser.name}'s Group`}
-        backUrl={`/users/${parsedUser.id}/groups`}
+        title={isProfileForm ? 'Add Group' : `Add ${parsedUser.name}'s Group`}
+        backUrl={isProfileForm ? `/settings/profile/groups` : `/users/${parsedUser.id}/groups`}
       >
         <UserGroupToolbar ref={ref} methods={methods} />
       </SectionHeader>

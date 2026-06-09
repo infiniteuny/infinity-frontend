@@ -153,7 +153,7 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
             },
             onRight: (data) => {
               // TODO: Add snackbar for success state
-              router.push(`/users/${data.id}`);
+              router.push(isProfileForm ? `/settings/profile` : `/users/${data.id}`);
             },
           });
         }
@@ -167,7 +167,7 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
   return (
     <>
       <SectionHeader
-        title={isProfileForm ? 'Edit Profile' : user ? `Edit ${name}` : 'Create User'}
+        title={isProfileForm ? 'Edit My Profile' : user ? `Edit ${name}` : 'Create User'}
         backUrl={isProfileForm ? '/settings/profile' : user ? `/users/${user.id}` : '/users'}
       >
         {isProfileForm ? (

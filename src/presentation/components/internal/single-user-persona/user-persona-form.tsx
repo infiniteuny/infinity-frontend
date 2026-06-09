@@ -23,9 +23,10 @@ export type UserPersonaInput = z.infer<typeof userPersonaInputSchema>;
 
 type Props = {
   user: UserDto;
+  isProfileForm?: boolean;
 };
 
-export function UserPersonaForm({ user }: Props) {
+export function UserPersonaForm({ user, isProfileForm }: Props) {
   const createUserPersona = useMemo(
     () => clientContainer.get<CreateUserPersona>(SYMBOLS.CreateUserPersona),
     [],
@@ -57,7 +58,9 @@ export function UserPersonaForm({ user }: Props) {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${parsedUser.id}/personas`);
+        router.push(
+          isProfileForm ? `/settings/profile/personas` : `/users/${parsedUser.id}/personas`,
+        );
       },
     });
   });
@@ -65,8 +68,8 @@ export function UserPersonaForm({ user }: Props) {
   return (
     <>
       <SectionHeader
-        title={`Add ${parsedUser.name}'s Persona`}
-        backUrl={`/users/${parsedUser.id}/personas`}
+        title={isProfileForm ? 'Add Persona' : `Add ${parsedUser.name}'s Persona`}
+        backUrl={isProfileForm ? `/settings/profile/personas` : `/users/${parsedUser.id}/personas`}
       >
         <UserPersonaToolbar ref={ref} methods={methods} />
       </SectionHeader>

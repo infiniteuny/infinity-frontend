@@ -7,9 +7,10 @@ import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
   userId: string;
+  isProfileView?: boolean;
 };
 
-export function UserPermissionsToolbar({ userId }: Props) {
+export function UserPermissionsToolbar({ userId, isProfileView }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
@@ -21,7 +22,11 @@ export function UserPermissionsToolbar({ userId }: Props) {
             className="ml-4"
             aria-label="Add user permission"
             LinkComponent={Link}
-            href={`/users/${userId}/permissions/new`}
+            href={
+              isProfileView
+                ? '/settings/profile/permissions/new'
+                : `/users/${userId}/permissions/new`
+            }
             startIcon={<AddRounded />}
           >
             Add

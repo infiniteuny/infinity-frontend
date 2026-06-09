@@ -23,9 +23,10 @@ export type UserPermissionInput = z.infer<typeof userPermissionInputSchema>;
 
 type Props = {
   user: UserDto;
+  isProfileForm?: boolean;
 };
 
-export function UserPermissionForm({ user }: Props) {
+export function UserPermissionForm({ user, isProfileForm }: Props) {
   const createUserPermission = useMemo(
     () => clientContainer.get<CreateUserPermission>(SYMBOLS.CreateUserPermission),
     [],
@@ -57,7 +58,9 @@ export function UserPermissionForm({ user }: Props) {
         throw error;
       },
       onRight: () => {
-        router.push(`/users/${parsedUser.id}/permissions`);
+        router.push(
+          isProfileForm ? `/settings/profile/permissions` : `/users/${parsedUser.id}/permissions`,
+        );
       },
     });
   });
@@ -65,8 +68,10 @@ export function UserPermissionForm({ user }: Props) {
   return (
     <>
       <SectionHeader
-        title={`Add ${parsedUser.name}'s Permission`}
-        backUrl={`/users/${parsedUser.id}/permissions`}
+        title={isProfileForm ? 'Add Permission' : `Add ${parsedUser.name}'s Permission`}
+        backUrl={
+          isProfileForm ? `/settings/profile/permissions` : `/users/${parsedUser.id}/permissions`
+        }
       >
         <UserPermissionToolbar ref={ref} methods={methods} />
       </SectionHeader>

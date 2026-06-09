@@ -6,9 +6,10 @@ import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
+  isProfileView?: boolean;
 };
 
-export function MembershipView({ user }: Props) {
+export function MembershipView({ user, isProfileView }: Props) {
   return (
     <Box component="section" className="mb-4 w-full px-6">
       <Container maxWidth={false} className="max-w-2xl p-0">
@@ -70,7 +71,7 @@ export function MembershipView({ user }: Props) {
               title="Personas"
               subtitle="View and manage personas"
               trailingIcon={<ChevronRightRounded />}
-              href={`/users/${user.id}/personas`}
+              href={isProfileView ? `/settings/profile/personas` : `/users/${user.id}/personas`}
               position="middle"
             />
           </Grid>
@@ -79,7 +80,11 @@ export function MembershipView({ user }: Props) {
               title="Community Groups"
               subtitle="View and manage community groups membership"
               trailingIcon={<ChevronRightRounded />}
-              href={`/users/${user.id}/community-groups`}
+              href={
+                isProfileView
+                  ? `/settings/profile/community-groups`
+                  : `/users/${user.id}/community-groups`
+              }
               position="bottom"
             />
           </Grid>

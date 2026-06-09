@@ -6,9 +6,10 @@ import { User } from '@app/domain/entities';
 
 type Props = {
   user: User;
+  isProfileView?: boolean;
 };
 
-export function AccessControlView({ user }: Props) {
+export function AccessControlView({ user, isProfileView }: Props) {
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
 
@@ -31,7 +32,9 @@ export function AccessControlView({ user }: Props) {
                 title="Permissions"
                 subtitle="View and manage permission assignments"
                 trailingIcon={<ChevronRightRounded />}
-                href={`/users/${user.id}/permissions`}
+                href={
+                  isProfileView ? `/settings/profile/permissions` : `/users/${user.id}/permissions`
+                }
                 position="middle"
               />
             </Grid>
@@ -44,7 +47,7 @@ export function AccessControlView({ user }: Props) {
                 title="Groups"
                 subtitle="View and manage group memberships"
                 trailingIcon={<ChevronRightRounded />}
-                href={`/users/${user.id}/groups`}
+                href={isProfileView ? `/settings/profile/groups` : `/users/${user.id}/groups`}
                 position="middle"
               />
             </Grid>

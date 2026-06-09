@@ -7,9 +7,10 @@ import { useInternalStore } from '@app/presentation/hooks';
 
 type Props = {
   userId: string;
+  isProfileView?: boolean;
 };
 
-export function UserGroupsToolbar({ userId }: Props) {
+export function UserGroupsToolbar({ userId, isProfileView }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
@@ -21,7 +22,7 @@ export function UserGroupsToolbar({ userId }: Props) {
             className="ml-4"
             aria-label="Add user group"
             LinkComponent={Link}
-            href={`/users/${userId}/groups/new`}
+            href={isProfileView ? '/settings/profile/groups/new' : `/users/${userId}/groups/new`}
             startIcon={<AddRounded />}
           >
             Add
