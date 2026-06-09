@@ -1,16 +1,22 @@
 'use client';
 
 import { APP } from '@config';
-import { AppBar, IconButton } from '@mui/material';
-import { InfiniteLogo } from '@app/presentation/components/shared';
+import { AppBar, IconButton, useMediaQuery } from '@mui/material';
+import { InfiniteLogo, InfiniteTextLogo } from '@app/presentation/components/shared';
 import { InternalNavbar } from './navbar';
 import { MenuRounded } from '@mui/icons-material';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
 export function InternalHeader() {
-  const [sidebarOpened, setSidebarOpenedState] = useInternalStore(
-    useShallow((s) => [s.sidebarOpened, s.setSidebarOpenedState]),
+  const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const [sidebarExtended, sidebarHovered, sidebarOpened, setSidebarOpenedState] = useInternalStore(
+    useShallow((s) => [
+      s.sidebarExtended,
+      s.sidebarHovered,
+      s.sidebarOpened,
+      s.setSidebarOpenedState,
+    ]),
   );
 
   return (
@@ -24,7 +30,7 @@ export function InternalHeader() {
           }),
         }),
       ]}
-      className="sticky flex h-18.5 w-full flex-row items-center p-4 shadow-none lg:pl-0"
+      className="sticky flex h-18.5 w-full flex-row items-center p-4 shadow-none transition-none lg:pl-0"
     >
       <IconButton
         aria-label="Toggle Sidebar"
@@ -33,12 +39,22 @@ export function InternalHeader() {
       >
         <MenuRounded />
       </IconButton>
-      <div className="w-full md:w-51 lg:w-65">
-        <InfiniteLogo
-          width={46}
-          height={46}
-          className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto block lg:mx-auto"
-        />
+      <div
+        className={`w-full transition-[width] md:w-51 md:pr-9 lg:pr-0 ${mediaQueryGreaterThanLg && (sidebarHovered || sidebarExtended) ? 'lg:w-65' : 'lg:w-20'}`}
+      >
+        {mediaQueryGreaterThanLg && sidebarExtended ? (
+          <InfiniteTextLogo
+            width={150}
+            height={46}
+            className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto block"
+          />
+        ) : (
+          <InfiniteLogo
+            width={46}
+            height={46}
+            className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto block"
+          />
+        )}
       </div>
       <InternalNavbar menus={APP.internal.nav.menus} />
     </AppBar>
