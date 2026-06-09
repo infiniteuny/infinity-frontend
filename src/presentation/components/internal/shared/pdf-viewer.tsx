@@ -232,12 +232,12 @@ export function PdfViewer({ file, title = 'PDF Document', height = 720, classNam
       }}
     >
       <Toolbar className="min-h-13 justify-between gap-1">
-        <Stack direction="row" spacing={1} alignItems="center" className="min-w-0 pr-2">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }} className="min-w-0 pr-2">
           <Typography variant="subtitle2" component="h3" noWrap>
             {title}
           </Typography>
         </Stack>
-        <Stack direction="row" spacing={0.5} alignItems="center">
+        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
           <Tooltip title="Zoom out" slotProps={tooltipSlotProps}>
             <span>
               <IconButton size="small" onClick={handleZoomOut} disabled={zoomScale <= 0.5}>
@@ -281,7 +281,7 @@ export function PdfViewer({ file, title = 'PDF Document', height = 720, classNam
           onLoadSuccess={onLoadSuccess}
           onLoadError={onLoadError}
           loading={
-            <Stack alignItems="center" justifyContent="center" className="py-12">
+            <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} className="py-12">
               <CircularProgress size={24} />
             </Stack>
           }

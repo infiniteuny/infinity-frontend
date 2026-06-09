@@ -104,7 +104,7 @@ export function InternalNavbar({ menus }: Props) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Typography typography="h5" className="px-4 text-center">
+        <Typography variant="h5" className="px-4 text-center">
           Hi! {session?.user.name || 'User'}
         </Typography>
         <ClickableViewTile
