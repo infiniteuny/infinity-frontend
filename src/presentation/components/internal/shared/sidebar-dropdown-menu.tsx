@@ -6,13 +6,12 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Theme,
   useMediaQuery,
 } from '@mui/material';
 import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import { Icon } from '@app/presentation/components/shared';
 import { InternalStoreContext } from './store-provider';
-import { MouseEvent, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { MouseEvent, useContext, useMemo, useState, useSyncExternalStore } from 'react';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
 import { useInternalStore } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
@@ -28,8 +27,8 @@ type ItemProps = {
 
 export function SidebarDropdownMenu({ menu }: Props) {
   const path = usePathname();
-  const mediaQueryGreaterThanLg = useMediaQuery<Theme>((theme) => theme.breakpoints.up('lg'));
-  const [expanded, setExpanded] = useState(false);
+  const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const [manualExpanded, setManualExpanded] = useState(false);
   const store = useContext(InternalStoreContext);
   const sidebarExtended = useSyncExternalStore(
     store!.subscribe,
@@ -44,15 +43,13 @@ export function SidebarDropdownMenu({ menu }: Props) {
     );
   }, [menu.items, path]);
 
-  useEffect(() => {
-    setExpanded(active);
-  }, [active]);
+  const expanded = active || manualExpanded;
 
   const handleExpand = (event: MouseEvent<HTMLButtonElement>) => {
     if (!active) {
       event.preventDefault();
       event.stopPropagation();
-      setExpanded((expanded) => !expanded);
+      setManualExpanded((prev) => !prev);
     }
   };
 
