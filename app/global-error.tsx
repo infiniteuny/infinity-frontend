@@ -33,10 +33,10 @@ export default function InternalGlobalError({ error, unstable_retry }: Props) {
   return (
     <html
       lang={APP.site.locale}
-      className={`${FONTS.sans.variable} ${FONTS.mono.variable} bg-(--m3-palette-surfaceContainer-main)`}
+      className={`${FONTS.sans.variable} ${FONTS.mono.variable}`}
       suppressHydrationWarning
     >
-      <body id="__next">
+      <body id="__next" className="bg-(--m3-palette-surfaceContainer-main)">
         <InitColorSchemeScript attribute="class" />
         <Box className="flex h-screen w-full flex-col items-center justify-center gap-6 p-8">
           <Typography variant="h4" className="font-medium">
