@@ -7,6 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   coreTeamId: string;
@@ -25,20 +26,23 @@ export function CoreTeamMemberToolbar({
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   if (coreTeamId && coreTeamMemberId) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit core team member"
-          LinkComponent={Link}
-          href={`/core-teams/${coreTeamId}/members/${coreTeamMemberId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {['update-core-team-member'].some((p) => userPermissions.includes(p)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit core team member"
+            LinkComponent={Link}
+            href={`/core-teams/${coreTeamId}/members/${coreTeamMemberId}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

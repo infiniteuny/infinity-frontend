@@ -1,15 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { AchievementDto, AchievementMapper } from '@app/infrastructure/dtos';
+import { AchievementInput } from './achievement-form';
 import { Box, Button } from '@mui/material';
 import { EditRounded, SaveRounded } from '@mui/icons-material';
-import { AchievementInput } from './achievement-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
-  achievementId: string;
+  achievement: AchievementDto;
 };
 
 type FormProps = {
@@ -17,22 +19,32 @@ type FormProps = {
   methods: UseFormReturn<AchievementInput>;
 };
 
-export function AchievementToolbar({ achievementId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+export function AchievementToolbar({ achievement, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const session = useInternalStore((s) => s.session);
+  const userPermissions = session?.permissions || [];
+  const parsedAchievement = useMemo(
+    () => (achievement ? AchievementMapper.fromDtoToDomain(achievement) : undefined),
+    [achievement],
+  );
 
-  if (achievementId) {
+  if (achievement && parsedAchievement) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit achievement"
-          LinkComponent={Link}
-          href={`/achievements/${achievementId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {userPermissions.includes('update-achievement') ||
+        (userPermissions.includes('update-own-achievement') &&
+          parsedAchievement.team?.members?.some((member) => member.id === session?.user.id)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit achievement"
+            LinkComponent={Link}
+            href={`/achievements/${parsedAchievement.id}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

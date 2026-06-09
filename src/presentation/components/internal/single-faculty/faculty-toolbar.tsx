@@ -7,6 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   facultyId: string;
@@ -19,20 +20,23 @@ type FormProps = {
 
 export function FacultyToolbar({ facultyId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   if (facultyId) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit faculty"
-          LinkComponent={Link}
-          href={`/faculties/${facultyId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {['update-faculty'].some((p) => userPermissions.includes(p)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit faculty"
+            LinkComponent={Link}
+            href={`/faculties/${facultyId}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

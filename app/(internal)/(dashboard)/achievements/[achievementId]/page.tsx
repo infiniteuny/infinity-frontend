@@ -58,6 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       async () =>
         await getAchievement.execute(achievementId, [
           'team',
+          'team.members',
           'competition_instance',
           'competition_scale',
           'competition_time_range',
@@ -114,6 +115,7 @@ export default async function SingleAchievementPage({ params }: Props) {
       async () =>
         await getAchievement.execute(achievementId, [
           'team',
+          'team.members',
           'competition_instance',
           'competition_scale',
           'competition_time_range',
@@ -146,7 +148,9 @@ export default async function SingleAchievementPage({ params }: Props) {
         ]}
       >
         <SectionHeader title={title} backUrl="/achievements">
-          <AchievementToolbar achievementId={achievement.id} />
+          <AchievementToolbar
+            achievement={AchievementMapper.fromDomainToDto(achievement) as AchievementDto}
+          />
         </SectionHeader>
         <AchievementView
           initialAchievement={AchievementMapper.fromDomainToDto(achievement) as AchievementDto}

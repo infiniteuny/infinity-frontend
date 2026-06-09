@@ -7,6 +7,7 @@ import { RefObject } from 'react';
 import { TestimonialInput } from './testimonial-form';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   testimonialId: string;
@@ -19,20 +20,23 @@ type FormProps = {
 
 export function TestimonialToolbar({ testimonialId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   if (testimonialId) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit testimonial"
-          LinkComponent={Link}
-          href={`/testimonials/${testimonialId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {['update-testimonial'].some((p) => userPermissions.includes(p)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit testimonial"
+            LinkComponent={Link}
+            href={`/testimonials/${testimonialId}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

@@ -97,7 +97,7 @@ export default async function SingleUserPage({ params }: Props) {
         ]}
       >
         <SectionHeader title={user.name} backUrl="/users">
-          <UserToolbar userId={user.id} />
+          <UserToolbar user={UserMapper.fromDomainToDto(user) as UserDto} />
         </SectionHeader>
         <UserView initialUser={UserMapper.fromDomainToDto(user) as UserDto} />
       </InternalMain>

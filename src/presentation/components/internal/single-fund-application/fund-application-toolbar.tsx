@@ -3,13 +3,15 @@
 import Link from 'next/link';
 import { Box, Button } from '@mui/material';
 import { EditRounded, SaveRounded } from '@mui/icons-material';
+import { FundApplicationDto, FundApplicationMapper } from '@app/infrastructure/dtos';
 import { FundApplicationInput } from './fund-application-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
-  fundApplicationId: string;
+  fundApplication: FundApplicationDto;
 };
 
 type FormProps = {
@@ -18,25 +20,35 @@ type FormProps = {
 };
 
 export function FundApplicationToolbar({
-  fundApplicationId,
+  fundApplication,
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const session = useInternalStore((s) => s.session);
+  const userPermissions = session?.permissions || [];
+  const parsedFundApplication = useMemo(
+    () => (fundApplication ? FundApplicationMapper.fromDtoToDomain(fundApplication) : undefined),
+    [fundApplication],
+  );
 
-  if (fundApplicationId) {
+  if (fundApplication && parsedFundApplication) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit fund application"
-          LinkComponent={Link}
-          href={`/fund-applications/${fundApplicationId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {userPermissions.includes('update-fund-application') ||
+        (userPermissions.includes('update-own-fund-application') &&
+          parsedFundApplication.team?.members?.some((member) => member.id === session?.user.id)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit fund application"
+            LinkComponent={Link}
+            href={`/fund-applications/${parsedFundApplication.id}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

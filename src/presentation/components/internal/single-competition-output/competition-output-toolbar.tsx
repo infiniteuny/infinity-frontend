@@ -7,6 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   competitionOutputId: string;
@@ -23,20 +24,23 @@ export function CompetitionOutputToolbar({
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   if (competitionOutputId) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit competition output"
-          LinkComponent={Link}
-          href={`/competition-outputs/${competitionOutputId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {['update-competition-output'].some((p) => userPermissions.includes(p)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit competition output"
+            LinkComponent={Link}
+            href={`/competition-outputs/${competitionOutputId}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

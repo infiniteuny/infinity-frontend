@@ -3,13 +3,15 @@
 import Link from 'next/link';
 import { Box, Button } from '@mui/material';
 import { EditRounded, SaveRounded } from '@mui/icons-material';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { UserInput } from './user-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
-  userId: string;
+  user: UserDto;
 };
 
 type FormProps = {
@@ -17,22 +19,28 @@ type FormProps = {
   methods: UseFormReturn<UserInput>;
 };
 
-export function UserToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+export function UserToolbar({ user, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const session = useInternalStore((s) => s.session);
+  const userPermissions = session?.permissions || [];
+  const parsedUser = useMemo(() => (user ? UserMapper.fromDtoToDomain(user) : undefined), [user]);
 
-  if (userId) {
+  if (user && parsedUser) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit user"
-          LinkComponent={Link}
-          href={`/users/${userId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {userPermissions.includes('update-user') ||
+        (userPermissions.includes('update-own-user') && parsedUser.id === session?.user.id) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit user"
+            LinkComponent={Link}
+            href={`/users/${parsedUser.id}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

@@ -7,6 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   competitionTimeRangeId: string;
@@ -23,20 +24,23 @@ export function CompetitionTimeRangeToolbar({
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
+  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
 
   if (competitionTimeRangeId) {
     return (
       <Box className="ml-auto">
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Edit competition time range"
-          LinkComponent={Link}
-          href={`/competition-time-ranges/${competitionTimeRangeId}/edit`}
-          startIcon={<EditRounded />}
-        >
-          Edit
-        </Button>
+        {['update-competition-time-range'].some((p) => userPermissions.includes(p)) ? (
+          <Button
+            variant="filled"
+            className="ml-4"
+            aria-label="Edit competition time range"
+            LinkComponent={Link}
+            href={`/competition-time-ranges/${competitionTimeRangeId}/edit`}
+            startIcon={<EditRounded />}
+          >
+            Edit
+          </Button>
+        ) : null}
       </Box>
     );
   } else if (ref && methods) {

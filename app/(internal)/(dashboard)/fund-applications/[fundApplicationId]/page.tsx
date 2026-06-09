@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       async () =>
         await getFundApplication.execute(fundApplicationId, [
           'team',
+          'team.members',
           'competition_instance',
           'competition_scale',
         ]),
@@ -109,6 +110,7 @@ export default async function SingleFundApplicationPage({ params }: Props) {
       async () =>
         await getFundApplication.execute(fundApplicationId, [
           'team',
+          'team.members',
           'competition_instance',
           'competition_scale',
         ]),
@@ -144,7 +146,11 @@ export default async function SingleFundApplicationPage({ params }: Props) {
         ]}
       >
         <SectionHeader title={title} backUrl="/fund-applications">
-          <FundApplicationToolbar fundApplicationId={fundApplication.id} />
+          <FundApplicationToolbar
+            fundApplication={
+              FundApplicationMapper.fromDomainToDto(fundApplication) as FundApplicationDto
+            }
+          />
         </SectionHeader>
         <FundApplicationView
           initialFundApplication={

@@ -110,7 +110,7 @@ export default async function SingleTeamPage({ params }: Props) {
         ]}
       >
         <SectionHeader title={team.name} backUrl="/teams">
-          <TeamToolbar teamId={team.id} />
+          <TeamToolbar team={TeamMapper.fromDomainToDto(team) as TeamDto} />
         </SectionHeader>
         <TeamView initialTeam={TeamMapper.fromDomainToDto(team) as TeamDto} />
       </InternalMain>
