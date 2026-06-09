@@ -17,7 +17,7 @@ import { SYMBOLS } from '@config';
 import { UserForm } from '@app/presentation/components/internal/single-user';
 
 export const metadata: Metadata = {
-  title: 'Edit Profile',
+  title: 'Edit My Profile',
 };
 
 export default async function ProfileEditPage() {
@@ -85,7 +85,7 @@ export default async function ProfileEditPage() {
           faculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
           majors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
           initialUser={UserMapper.fromDomainToDto(user) as UserDto}
-          isProfileForm={true}
+          isProfileForm
         />
       </InternalMain>
     );

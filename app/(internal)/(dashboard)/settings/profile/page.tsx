@@ -11,7 +11,7 @@ import { UserDto, UserMapper } from '@app/infrastructure/dtos';
 import { UserView } from '@app/presentation/components/internal/single-user';
 
 export const metadata: Metadata = {
-  title: 'Profile',
+  title: 'My Profile',
 };
 
 export default async function ProfilePage() {
@@ -50,10 +50,10 @@ export default async function ProfilePage() {
         { label: 'Profile', url: '/settings/profile' },
       ]}
     >
-      <SectionHeader title="Profile" backUrl="/settings">
+      <SectionHeader title="My Profile" backUrl="/settings">
         <ProfileToolbar userId={user.id} />
       </SectionHeader>
-      <UserView initialUser={UserMapper.fromDomainToDto(user) as UserDto} />
+      <UserView initialUser={UserMapper.fromDomainToDto(user) as UserDto} isProfileView />
     </InternalMain>
   );
 }
