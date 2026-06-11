@@ -1,9 +1,9 @@
 import type { AuthRepository } from '@app/domain/repositories';
+import { Either, left, match } from 'effect/Either';
 import { inject, injectable } from 'inversify';
+import { Session } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
-import { Either } from 'effect/Either';
-import { Session } from '@app/domain/entities';
 
 @injectable()
 export class GetSession implements UseCase<Promise<Either<Session, Error>>> {
@@ -17,6 +17,14 @@ export class GetSession implements UseCase<Promise<Either<Session, Error>>> {
   }
 
   public async execute(request?: Request): Promise<Either<Session, Error>> {
-    return await this.authRepository.getSession(request);
+    const tokenResult = await this.authRepository.getAccessToken(request);
+
+    return match(tokenResult, {
+      onLeft: (error) => left(error),
+      onRight: async () => {
+        const sessionResult = await this.authRepository.getSession(request);
+        return sessionResult;
+      },
+    });
   }
 }
