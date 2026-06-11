@@ -86,6 +86,7 @@ export const authServerDataSourceImpl = (
       updateAge: 10 * 60, // 10 minutes
       cookieCache: {
         enabled: false,
+        maxAge: 2 * 60 * 60,
         refreshCache: false,
       },
     },
