@@ -1,37 +1,45 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
-  DataGrid,
-  GridActionsCell,
-  GridActionsCellItem,
-  GridPaginationMeta,
-  GridPaginationModel,
-  GridRowParams,
-  GridSlots,
-} from '@mui/x-data-grid';
-import { DeleteGroup, GetGroups } from '@app/application';
-import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
-import { Group, PaginationOptions } from '@app/domain/entities';
+  Group,
+  GroupFilterOptions,
+  GroupSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import {
   GroupDto,
   GroupMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { match } from 'effect/Either';
+import {
+  DataGrid,
+  GridActionsCell,
+  GridActionsCellItem,
+  GridFilterModel,
+  GridPaginationMeta,
+  GridPaginationModel,
+  GridRowParams,
+  GridSlots,
+  GridSortModel,
+} from '@mui/x-data-grid';
+import { DeleteGroup, GetGroups } from '@app/application';
+import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
+import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type Props = {
-  initialGroups: GroupDto[];
-  initialPaginationOptions: PaginationOptionsDto;
-};
+type Props = { initialGroups: GroupDto[]; initialPaginationOptions: PaginationOptionsDto };
 
 export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
   const getGroups = useMemo(() => clientContainer.get<GetGroups>(SYMBOLS.GetGroups), []);
@@ -41,16 +49,17 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Group[]>(initGroups);
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initGroups.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -58,111 +67,122 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
-
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
-
-    setIsLoading(true);
-
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+  const convertSortModelToDomain = (model: GridSortModel): GroupSortOptions | undefined => {
+    if (model.length === 0) return undefined;
+    const fieldMap: Record<string, keyof GroupSortOptions> = { id: 'id', name: 'name' };
+    const sortOptions: GroupSortOptions = {};
+    for (const sortItem of model) {
+      const d = fieldMap[sortItem.field];
+      if (d) sortOptions[d] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
     }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
+  };
 
-    try {
-      const result = await getGroups.execute(undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
+  const convertFilterModelToDomain = (model: GridFilterModel): GroupFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+    const f: GroupFilterOptions = {};
+    for (const i of model.items) {
+      if (i.field === 'name' && i.value != null) f.name = String(i.value);
     }
+    return Object.keys(f).length > 0 ? f : undefined;
   };
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/groups/${params.row.id}`);
-  };
-
-  const handleDeleteClick = (groupId: string, groupName?: string) => {
-    setSelectedGroupId(groupId);
-    setSelectedGroupName(groupName || null);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleDeleteAccept = async () => {
-    if (!selectedGroupId) {
-      console.error('No group selected for deletion');
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       return;
     }
+    let cancelled = false;
+    (async () => {
+      setIsLoading(true);
+      try {
+        const result = await getGroups.execute(
+          convertFilterModelToDomain(filterModel),
+          convertSortModelToDomain(sortModel),
+          { perPage: paginationModel.pageSize, cursor },
+        );
+        if (cancelled) return;
+        match(result, {
+          onRight: ([newRows, next]) => {
+            const h = Boolean(next.nextCursor);
+            setRows(newRows);
+            setRowCount(h ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length);
+            setPaginationMeta({ hasNextPage: h });
+            setPaginationOptions(next);
+          },
+          onLeft: (e) => {
+            throw e;
+          },
+        });
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getGroups]);
 
-    const result = await deleteGroup.execute(selectedGroupId);
-    match(result, {
+  const handlePaginationModelChange = useCallback(
+    (m: GridPaginationModel) => {
+      const sz = m.pageSize !== paginationModel.pageSize;
+      const n = sz ? { ...m, page: 0 } : m;
+      let c: string | undefined;
+      if (sz) c = undefined;
+      else if (n.page > paginationModel.page && paginationOptions.nextCursor)
+        c = paginationOptions.nextCursor;
+      else if (n.page < paginationModel.page && paginationOptions.previousCursor)
+        c = paginationOptions.previousCursor;
+      else c = paginationOptions.cursor;
+      setCursor(c);
+      setPaginationModel(n);
+    },
+    [paginationModel, paginationOptions],
+  );
+  const handleSortModelChange = useCallback((m: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setSortModel(m);
+  }, []);
+  const handleFilterModelChange = useCallback((m: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setFilterModel(m);
+  }, []);
+  const handleRowClick = (p: GridRowParams) => {
+    router.push(`/groups/${p.row.id}`);
+  };
+  const handleDeleteClick = (id: string, name?: string) => {
+    setSelectedGroupId(id);
+    setSelectedGroupName(name || null);
+    setOpenDeleteDialog(true);
+  };
+  const handleDeleteAccept = async () => {
+    if (!selectedGroupId) return;
+    const r = await deleteGroup.execute(selectedGroupId);
+    match(r, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedGroupId));
+        setRows((p) => p.filter((x) => x.id !== selectedGroupId));
       },
-      onLeft: (error) => {
-        console.error('Failed to delete group:', error);
+      onLeft: (e) => {
+        console.error('Failed to delete group:', e);
       },
     });
-
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedGroupId(null);
       setSelectedGroupName(null);
     }, 1000);
   };
-
   const handleDeleteCancel = () => {
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedGroupId(null);
       setSelectedGroupName(null);
     }, 1000);
@@ -191,16 +211,26 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                 field: 'id',
                 headerName: 'ID',
                 flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
               },
               {
                 field: 'name',
                 headerName: 'Name',
                 flex: 3,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'guardName',
                 headerName: 'Guard Name',
                 flex: 1,
+                minWidth: 120,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'actions',
@@ -209,8 +239,8 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                 flex: 0.5,
                 minWidth: 50,
                 maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
+                renderCell: (p) => (
+                  <GridActionsCell {...p}>
                     <GridActionsCellItem
                       key="view"
                       showInMenu
@@ -218,9 +248,9 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/groups/${params.row.actions.id}`}
+                      href={`/groups/${p.row.actions.id}`}
                     />
-                    {['update-group'].some((p) => userPermissions.has(p)) ? (
+                    {['update-group'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -228,55 +258,48 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/groups/${params.row.actions.id}/edit`}
+                        href={`/groups/${p.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-group'].some((p) => userPermissions.has(p)) ? (
+                    {['delete-group'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
                         icon={<DeleteRounded />}
                         label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
-                        }
+                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
                       />
                     ) : null}
                   </GridActionsCell>
                 ),
               },
             ]}
-            rows={rows.map((group) => ({
-              id: group.id,
-              name: group.name,
-              guardName: group.guardName,
-              createdAt: group.createdAt.toLocaleDateString(),
-              actions: group,
+            rows={rows.map((x) => ({
+              id: x.id,
+              name: x.name,
+              guardName: x.guardName,
+              createdAt: x.createdAt.toLocaleDateString(),
+              actions: x,
             }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
+            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
             slotProps={{
               noRowsOverlay: { text: 'No groups found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
+              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            sortingMode="server"
+            filterMode="server"
+            initialState={{ columns: { columnVisibilityModel: { id: false } } }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />

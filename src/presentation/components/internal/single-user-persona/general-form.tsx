@@ -37,7 +37,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsPersonaLoading(true);
 
-      const personasResult = await getPersonas.execute({ name: query }, { perPage: 100 });
+      const personasResult = await getPersonas.execute({ name: query }, undefined, {
+        perPage: 100,
+      });
 
       if (!active) return;
 

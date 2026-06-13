@@ -1,31 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { Achievement, PaginationOptions } from '@app/domain/entities';
+import { Achievement, PaginationOptions, User } from '@app/domain/entities';
 import {
   AchievementDto,
   AchievementMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
   GridActionsCell,
   GridActionsCellItem,
+  GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { DeleteAchievement, GetAchievements } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
+import { AchievementFilterOptions, AchievementSortOptions } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -53,10 +60,12 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initAchievements.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -64,74 +73,156 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedAchievementId, setSelectedAchievementId] = useState<string | null>(null);
   const [selectedAchievementName, setSelectedAchievementName] = useState<string | null>(null);
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
+  const convertSortModelToDomain = (model: GridSortModel): AchievementSortOptions | undefined => {
+    if (model.length === 0) return undefined;
 
-    setIsLoading(true);
+    const fieldMap: Record<string, keyof AchievementSortOptions> = {
+      competitionBranch: 'competitionBranch',
+      status: 'status',
+    };
 
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+    const sortOptions: AchievementSortOptions = {};
+    for (const sortItem of model) {
+      const domainField = fieldMap[sortItem.field];
+      if (domainField) {
+        sortOptions[domainField] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
+      }
     }
 
-    try {
-      const result = await getAchievements.execute(undefined, undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
   };
+
+  const convertFilterModelToDomain = (
+    model: GridFilterModel,
+  ): AchievementFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+
+    const filterOptions: AchievementFilterOptions = {};
+
+    for (const filterItem of model.items) {
+      switch (filterItem.field) {
+        case 'competitionBranch':
+          if (filterItem.value != null) {
+            filterOptions.competitionBranch = String(filterItem.value);
+          }
+          break;
+        case 'status':
+          if (filterItem.value != null) {
+            filterOptions.status = String(filterItem.value) as 'PENDING' | 'REJECTED' | 'ACCEPTED';
+          }
+          break;
+      }
+    }
+
+    return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
+  };
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      setIsLoading(true);
+      const sortOptions = convertSortModelToDomain(sortModel);
+      const filterOptions = convertFilterModelToDomain(filterModel);
+
+      try {
+        const result = await getAchievements.execute(
+          [
+            'team',
+            'team.members',
+            'competition_instance',
+            'competition_scale',
+            'competition_time_range',
+            'competition_output',
+            'competition_rank',
+          ],
+          filterOptions,
+          sortOptions,
+          { perPage: paginationModel.pageSize, cursor },
+        );
+
+        if (cancelled) return;
+
+        match(result, {
+          onRight: ([newRows, nextPaginationOptions]) => {
+            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
+
+            setRows(newRows);
+            setRowCount(
+              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
+            );
+            setPaginationMeta({ hasNextPage });
+            setPaginationOptions(nextPaginationOptions);
+          },
+          onLeft: (error) => {
+            throw error;
+          },
+        });
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getAchievements]);
+
+  const handlePaginationModelChange = useCallback(
+    (newPaginationModel: GridPaginationModel) => {
+      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
+      const normalizedPaginationModel = isPageSizeChanged
+        ? { ...newPaginationModel, page: 0 }
+        : newPaginationModel;
+
+      let nextCursor: string | undefined;
+      if (isPageSizeChanged) {
+        nextCursor = undefined;
+      } else if (
+        normalizedPaginationModel.page > paginationModel.page &&
+        paginationOptions.nextCursor
+      ) {
+        nextCursor = paginationOptions.nextCursor;
+      } else if (
+        normalizedPaginationModel.page < paginationModel.page &&
+        paginationOptions.previousCursor
+      ) {
+        nextCursor = paginationOptions.previousCursor;
+      } else {
+        nextCursor = paginationOptions.cursor;
+      }
+
+      setCursor(nextCursor);
+      setPaginationModel(normalizedPaginationModel);
+    },
+    [paginationModel, paginationOptions],
+  );
+
+  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setSortModel(newSortModel);
+  }, []);
+
+  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setFilterModel(newFilterModel);
+  }, []);
 
   const handleRowClick = (params: GridRowParams) => {
     router.push(`/achievements/${params.row.id}`);
@@ -198,61 +289,99 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                 field: 'id',
                 headerName: 'ID',
                 flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
               },
               {
                 field: 'team',
                 headerName: 'Team',
                 flex: 1,
+                minWidth: 170,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competition',
                 headerName: 'Competition',
                 flex: 2,
+                minWidth: 200,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionScale',
                 headerName: 'Scale',
                 flex: 1,
+                minWidth: 170,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionTimeRange',
                 headerName: 'Time Range',
                 flex: 1,
+                minWidth: 170,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionOutput',
                 headerName: 'Output',
                 flex: 1,
+                minWidth: 170,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionRank',
                 headerName: 'Rank',
                 flex: 1,
+                minWidth: 170,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionBranch',
                 headerName: 'Branch',
                 flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'competitionStartDate',
                 headerName: 'Start Date',
                 flex: 1,
+                minWidth: 100,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'competitionEndDate',
                 headerName: 'End Date',
                 flex: 1,
+                minWidth: 100,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'image',
                 headerName: 'Image',
                 flex: 0.5,
+                minWidth: 100,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'status',
                 headerName: 'Status',
                 flex: 1,
+                minWidth: 120,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'actions',
@@ -275,7 +404,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                     {['update-achievements'].some((p) => userPermissions.has(p)) ||
                     (['update-own-achievements'].some((p) => userPermissions.has(p)) &&
                       params.row.actions.team?.members?.some(
-                        (member) => member.id === userSession?.user?.id,
+                        (member: User) => member.id === userSession?.user?.id,
                       )) ? (
                       <GridActionsCellItem
                         key="edit"
@@ -290,7 +419,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                     {['delete-achievements'].some((p) => userPermissions.has(p)) ||
                     (['delete-own-achievements'].some((p) => userPermissions.has(p)) &&
                       params.row.actions.team?.members?.some(
-                        (member) => member.id === userSession?.user?.id,
+                        (member: User) => member.id === userSession?.user?.id,
                       )) ? (
                       <GridActionsCellItem
                         key="delete"
@@ -332,6 +461,8 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            sortingMode="server"
+            filterMode="server"
             initialState={{
               columns: {
                 columnVisibilityModel: {
@@ -344,6 +475,10 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />

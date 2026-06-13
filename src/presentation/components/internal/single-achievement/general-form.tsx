@@ -57,7 +57,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsTeamLoading(true);
 
-      const teamsResult = await getTeams.execute(undefined, { name: query }, { perPage: 10 });
+      const teamsResult = await getTeams.execute(undefined, { name: query }, undefined, {
+        perPage: 10,
+      });
 
       if (!active) return;
 

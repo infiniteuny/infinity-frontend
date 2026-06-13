@@ -1,31 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
+import {
+  ProjectGallery,
+  ProjectGalleryFilterOptions,
+  ProjectGallerySortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import {
+  ProjectGalleryDto,
+  ProjectGalleryMapper,
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+} from '@app/infrastructure/dtos';
 import {
   DataGrid,
   GridActionsCell,
   GridActionsCellItem,
+  GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { DeleteProjectGallery, GetProjectGalleries } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
-import { match } from 'effect/Either';
-import { PaginationOptions, ProjectGallery } from '@app/domain/entities';
-import {
-  PaginationOptionsDto,
-  PaginationOptionsMapper,
-  ProjectGalleryDto,
-  ProjectGalleryMapper,
-} from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
+import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -34,36 +45,30 @@ type Props = {
 };
 
 export function ProjectGalleriesList({ initialProjectGalleries, initialPaginationOptions }: Props) {
-  const initProjectGalleries = initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const getProjectGalleries = useMemo(
     () => clientContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries),
     [],
   );
-  const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
-
   const deleteProjectGallery = useMemo(
     () => clientContainer.get<DeleteProjectGallery>(SYMBOLS.DeleteProjectGallery),
     [],
   );
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedProjectGalleryId, setSelectedProjectGalleryId] = useState<string | null>(null);
-  const [selectedProjectGalleryTitle, setSelectedProjectGalleryTitle] = useState<string | null>(
-    null,
-  );
-
+  const initProjectGalleries = initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain);
+  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const router = useRouter();
+  const userSession = useInternalStore((s) => s.session);
+  const userPermissions = new Set(userSession?.permissions || []);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<ProjectGallery[]>(initProjectGalleries);
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initProjectGalleries.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -71,108 +76,128 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedProjectGalleryId, setSelectedProjectGalleryId] = useState<string | null>(null);
+  const [selectedProjectGalleryTitle, setSelectedProjectGalleryTitle] = useState<string | null>(
+    null,
+  );
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
-
-    setIsLoading(true);
-
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+  const convertSortModelToDomain = (
+    model: GridSortModel,
+  ): ProjectGallerySortOptions | undefined => {
+    if (model.length === 0) return undefined;
+    const fieldMap: Record<string, keyof ProjectGallerySortOptions> = { id: 'id', title: 'title' };
+    const sortOptions: ProjectGallerySortOptions = {};
+    for (const sortItem of model) {
+      const d = fieldMap[sortItem.field];
+      if (d) sortOptions[d] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
     }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
+  };
 
-    try {
-      const result = await getProjectGalleries.execute(undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
+  const convertFilterModelToDomain = (
+    model: GridFilterModel,
+  ): ProjectGalleryFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+    const f: ProjectGalleryFilterOptions = {};
+    for (const i of model.items) {
+      if (i.field === 'title' && i.value != null) f.title = String(i.value);
     }
+    return Object.keys(f).length > 0 ? f : undefined;
   };
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/project-galleries/${params.row.id}`);
-  };
-
-  const handleDeleteClick = (projectGalleryId: string, projectGalleryTitle?: string) => {
-    setSelectedProjectGalleryId(projectGalleryId);
-    setSelectedProjectGalleryTitle(projectGalleryTitle || null);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleDeleteAccept = async () => {
-    if (!selectedProjectGalleryId) {
-      console.error('No project gallery selected for deletion');
-
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       return;
     }
+    let cancelled = false;
+    (async () => {
+      setIsLoading(true);
+      try {
+        const result = await getProjectGalleries.execute(
+          convertFilterModelToDomain(filterModel),
+          convertSortModelToDomain(sortModel),
+          { perPage: paginationModel.pageSize, cursor },
+        );
+        if (cancelled) return;
+        match(result, {
+          onRight: ([newRows, next]) => {
+            const h = Boolean(next.nextCursor);
+            setRows(newRows);
+            setRowCount(h ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length);
+            setPaginationMeta({ hasNextPage: h });
+            setPaginationOptions(next);
+          },
+          onLeft: (e) => {
+            throw e;
+          },
+        });
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getProjectGalleries]);
 
-    const result = await deleteProjectGallery.execute(selectedProjectGalleryId);
-    match(result, {
+  const handlePaginationModelChange = useCallback(
+    (m: GridPaginationModel) => {
+      const sz = m.pageSize !== paginationModel.pageSize;
+      const n = sz ? { ...m, page: 0 } : m;
+      let c: string | undefined;
+      if (sz) c = undefined;
+      else if (n.page > paginationModel.page && paginationOptions.nextCursor)
+        c = paginationOptions.nextCursor;
+      else if (n.page < paginationModel.page && paginationOptions.previousCursor)
+        c = paginationOptions.previousCursor;
+      else c = paginationOptions.cursor;
+      setCursor(c);
+      setPaginationModel(n);
+    },
+    [paginationModel, paginationOptions],
+  );
+  const handleSortModelChange = useCallback((m: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setSortModel(m);
+  }, []);
+  const handleFilterModelChange = useCallback((m: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setFilterModel(m);
+  }, []);
+  const handleRowClick = (p: GridRowParams) => {
+    router.push(`/project-galleries/${p.row.id}`);
+  };
+  const handleDeleteClick = (id: string, title?: string) => {
+    setSelectedProjectGalleryId(id);
+    setSelectedProjectGalleryTitle(title || null);
+    setOpenDeleteDialog(true);
+  };
+  const handleDeleteAccept = async () => {
+    if (!selectedProjectGalleryId) return;
+    const r = await deleteProjectGallery.execute(selectedProjectGalleryId);
+    match(r, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedProjectGalleryId));
+        setRows((p) => p.filter((x) => x.id !== selectedProjectGalleryId));
       },
-      onLeft: (error) => {
-        console.error('Failed to delete project gallery:', error);
+      onLeft: (e) => {
+        console.error('Failed to delete project gallery:', e);
       },
     });
-
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedProjectGalleryId(null);
       setSelectedProjectGalleryTitle(null);
     }, 1000);
   };
-
   const handleDeleteCancel = () => {
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedProjectGalleryId(null);
       setSelectedProjectGalleryTitle(null);
     }, 1000);
@@ -201,26 +226,42 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
                 field: 'id',
                 headerName: 'ID',
                 flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
               },
               {
                 field: 'title',
                 headerName: 'Title',
                 flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'description',
                 headerName: 'Description',
                 flex: 2,
+                minWidth: 400,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'url',
                 headerName: 'URL',
                 flex: 2,
+                minWidth: 300,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'image',
                 headerName: 'Image',
                 flex: 0.5,
+                minWidth: 100,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'actions',
@@ -229,8 +270,8 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
                 flex: 0.5,
                 minWidth: 50,
                 maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
+                renderCell: (p) => (
+                  <GridActionsCell {...p}>
                     <GridActionsCellItem
                       key="view"
                       showInMenu
@@ -238,9 +279,9 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/project-galleries/${params.row.actions.id}`}
+                      href={`/project-galleries/${p.row.actions.id}`}
                     />
-                    {['update-project-gallery'].some((p) => userPermissions.has(p)) ? (
+                    {['update-project-gallery'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -248,57 +289,49 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/project-galleries/${params.row.actions.id}/edit`}
+                        href={`/project-galleries/${p.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-project-gallery'].some((p) => userPermissions.has(p)) ? (
+                    {['delete-project-gallery'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
                         icon={<DeleteRounded />}
                         label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.title)
-                        }
+                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.title)}
                       />
                     ) : null}
                   </GridActionsCell>
                 ),
               },
             ]}
-            rows={rows.map((projectGallery) => ({
-              id: projectGallery.id,
-              title: projectGallery.title,
-              description: projectGallery.description,
-              url: projectGallery.url,
-              image: projectGallery.image,
-              actions: projectGallery,
+            rows={rows.map((x) => ({
+              id: x.id,
+              title: x.title,
+              description: x.description,
+              url: x.url,
+              image: x.image,
+              actions: x,
             }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
+            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
             slotProps={{
               noRowsOverlay: { text: 'No project galleries found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
+              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  description: false,
-                },
-              },
-            }}
+            sortingMode="server"
+            filterMode="server"
+            initialState={{ columns: { columnVisibilityModel: { id: false, description: false } } }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />

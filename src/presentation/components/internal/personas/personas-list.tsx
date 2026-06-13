@@ -1,37 +1,45 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
+import {
+  Persona,
+  PersonaFilterOptions,
+  PersonaSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
+import {
+  PersonaDto,
+  PersonaMapper,
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+} from '@app/infrastructure/dtos';
 import {
   DataGrid,
   GridActionsCell,
   GridActionsCellItem,
+  GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { DeletePersona, GetPersonas } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
-import { match } from 'effect/Either';
-import { PaginationOptions, Persona } from '@app/domain/entities';
-import {
-  PaginationOptionsDto,
-  PaginationOptionsMapper,
-  PersonaDto,
-  PersonaMapper,
-} from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
+import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type Props = {
-  initialPersonas: PersonaDto[];
-  initialPaginationOptions: PaginationOptionsDto;
-};
+type Props = { initialPersonas: PersonaDto[]; initialPaginationOptions: PaginationOptionsDto };
 
 export function PersonasList({ initialPersonas, initialPaginationOptions }: Props) {
   const getPersonas = useMemo(() => clientContainer.get<GetPersonas>(SYMBOLS.GetPersonas), []);
@@ -44,16 +52,17 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Persona[]>(initPersonas);
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initPersonas.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -61,111 +70,126 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
-
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [selectedPersonaName, setSelectedPersonaName] = useState<string | null>(null);
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
-
-    setIsLoading(true);
-
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+  const convertSortModelToDomain = (model: GridSortModel): PersonaSortOptions | undefined => {
+    if (model.length === 0) return undefined;
+    const fieldMap: Record<string, keyof PersonaSortOptions> = {
+      id: 'id',
+      name: 'name',
+      priority: 'priority',
+    };
+    const sortOptions: PersonaSortOptions = {};
+    for (const sortItem of model) {
+      const d = fieldMap[sortItem.field];
+      if (d) sortOptions[d] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
     }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
+  };
 
-    try {
-      const result = await getPersonas.execute(undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
+  const convertFilterModelToDomain = (model: GridFilterModel): PersonaFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+    const f: PersonaFilterOptions = {};
+    for (const i of model.items) {
+      if (i.field === 'name' && i.value != null) f.name = String(i.value);
     }
+    return Object.keys(f).length > 0 ? f : undefined;
   };
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/personas/${params.row.id}`);
-  };
-
-  const handleDeleteClick = (personaId: string, personaName?: string) => {
-    setSelectedPersonaId(personaId);
-    setSelectedPersonaName(personaName || null);
-    setOpenDeleteDialog(true);
-  };
-
-  const handleDeleteAccept = async () => {
-    if (!selectedPersonaId) {
-      console.error('No persona selected for deletion');
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
       return;
     }
+    let cancelled = false;
+    (async () => {
+      setIsLoading(true);
+      try {
+        const result = await getPersonas.execute(
+          convertFilterModelToDomain(filterModel),
+          convertSortModelToDomain(sortModel),
+          { perPage: paginationModel.pageSize, cursor },
+        );
+        if (cancelled) return;
+        match(result, {
+          onRight: ([newRows, next]) => {
+            const h = Boolean(next.nextCursor);
+            setRows(newRows);
+            setRowCount(h ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length);
+            setPaginationMeta({ hasNextPage: h });
+            setPaginationOptions(next);
+          },
+          onLeft: (e) => {
+            throw e;
+          },
+        });
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getPersonas]);
 
-    const result = await deletePersona.execute(selectedPersonaId);
-    match(result, {
+  const handlePaginationModelChange = useCallback(
+    (m: GridPaginationModel) => {
+      const sz = m.pageSize !== paginationModel.pageSize;
+      const n = sz ? { ...m, page: 0 } : m;
+      let c: string | undefined;
+      if (sz) c = undefined;
+      else if (n.page > paginationModel.page && paginationOptions.nextCursor)
+        c = paginationOptions.nextCursor;
+      else if (n.page < paginationModel.page && paginationOptions.previousCursor)
+        c = paginationOptions.previousCursor;
+      else c = paginationOptions.cursor;
+      setCursor(c);
+      setPaginationModel(n);
+    },
+    [paginationModel, paginationOptions],
+  );
+  const handleSortModelChange = useCallback((m: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setSortModel(m);
+  }, []);
+  const handleFilterModelChange = useCallback((m: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
+    setFilterModel(m);
+  }, []);
+  const handleRowClick = (p: GridRowParams) => {
+    router.push(`/personas/${p.row.id}`);
+  };
+  const handleDeleteClick = (id: string, name?: string) => {
+    setSelectedPersonaId(id);
+    setSelectedPersonaName(name || null);
+    setOpenDeleteDialog(true);
+  };
+  const handleDeleteAccept = async () => {
+    if (!selectedPersonaId) return;
+    const r = await deletePersona.execute(selectedPersonaId);
+    match(r, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedPersonaId));
+        setRows((p) => p.filter((x) => x.id !== selectedPersonaId));
       },
-      onLeft: (error) => {
-        console.error('Failed to delete persona:', error);
+      onLeft: (e) => {
+        console.error('Failed to delete persona:', e);
       },
     });
-
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedPersonaId(null);
       setSelectedPersonaName(null);
     }, 1000);
   };
-
   const handleDeleteCancel = () => {
     setOpenDeleteDialog(false);
-    setTimeout(function () {
+    setTimeout(() => {
       setSelectedPersonaId(null);
       setSelectedPersonaName(null);
     }, 1000);
@@ -190,10 +214,39 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
             columns={[
-              { field: 'id', headerName: 'ID', flex: 1 },
-              { field: 'name', headerName: 'Name', flex: 1.5 },
-              { field: 'priority', headerName: 'Priority', flex: 1 },
-              { field: 'description', headerName: 'Description', flex: 2.5 },
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
+              },
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 1.5,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'priority',
+                headerName: 'Priority',
+                flex: 1,
+                minWidth: 100,
+                filterable: false,
+                sortable: false,
+              },
+              {
+                field: 'description',
+                headerName: 'Description',
+                flex: 2.5,
+                minWidth: 400,
+                filterable: false,
+                sortable: false,
+              },
               {
                 field: 'actions',
                 type: 'actions',
@@ -201,8 +254,8 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
                 flex: 0.5,
                 minWidth: 50,
                 maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
+                renderCell: (p) => (
+                  <GridActionsCell {...p}>
                     <GridActionsCellItem
                       key="view"
                       showInMenu
@@ -210,9 +263,9 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/personas/${params.row.actions.id}`}
+                      href={`/personas/${p.row.actions.id}`}
                     />
-                    {['update-persona'].some((p) => userPermissions.has(p)) ? (
+                    {['update-persona'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -220,55 +273,48 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/personas/${params.row.actions.id}/edit`}
+                        href={`/personas/${p.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-persona'].some((p) => userPermissions.has(p)) ? (
+                    {['delete-persona'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
                         icon={<DeleteRounded />}
                         label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
-                        }
+                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
                       />
                     ) : null}
                   </GridActionsCell>
                 ),
               },
             ]}
-            rows={rows.map((persona) => ({
-              id: persona.id,
-              name: persona.name,
-              priority: persona.priority,
-              description: persona.description,
-              actions: persona,
+            rows={rows.map((x) => ({
+              id: x.id,
+              name: x.name,
+              priority: x.priority,
+              description: x.description,
+              actions: x,
             }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
+            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
             slotProps={{
               noRowsOverlay: { text: 'No personas found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
+              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            sortingMode="server"
+            filterMode="server"
+            initialState={{ columns: { columnVisibilityModel: { id: false } } }}
             loading={isLoading}
             rowCount={rowCount}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />

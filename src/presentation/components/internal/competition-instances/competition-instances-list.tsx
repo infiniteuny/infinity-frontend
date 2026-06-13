@@ -1,12 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  DateOperators,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   CompetitionInstance,
   CompetitionInstanceFilterOptions,
+  CompetitionInstanceSortOptions,
+  FilterOperator,
   PaginationOptions,
 } from '@app/domain/entities';
 import {
@@ -19,18 +26,21 @@ import {
   DataGrid,
   GridActionsCell,
   GridActionsCellItem,
+  GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionInstance, GetCompetitionInstances } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { convertDateFilterOperator } from '@app/utils';
 
 type Props = {
   initialCompetitionInstances: CompetitionInstanceDto[];
@@ -64,10 +74,12 @@ export function CompetitionInstancesList({
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initCompetitionInstances.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -75,6 +87,8 @@ export function CompetitionInstancesList({
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCompetitionInstanceId, setSelectedCompetitionInstanceId] = useState<string | null>(
@@ -84,72 +98,187 @@ export function CompetitionInstancesList({
     string | null
   >(null);
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
+  const convertSortModelToDomain = (
+    model: GridSortModel,
+  ): CompetitionInstanceSortOptions | undefined => {
+    if (model.length === 0) return undefined;
 
-    setIsLoading(true);
+    const fieldMap: Record<string, keyof CompetitionInstanceSortOptions> = {
+      name: 'name',
+      shortname: 'shortname',
+      organizer: 'organizer',
+      location: 'location',
+      startDate: 'startDate',
+      endDate: 'endDate',
+    };
 
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+    const sortOptions: CompetitionInstanceSortOptions = {};
+    for (const sortItem of model) {
+      const domainField = fieldMap[sortItem.field];
+      if (domainField) {
+        sortOptions[domainField] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
+      }
     }
 
-    try {
-      const filterOptions: CompetitionInstanceFilterOptions | undefined = competitionId
-        ? { competitionId }
-        : undefined;
-      const result = await getCompetitionInstances.execute(undefined, filterOptions, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
   };
+
+  const convertFilterModelToDomain = (
+    model: GridFilterModel,
+  ): CompetitionInstanceFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+
+    const filterOptions: CompetitionInstanceFilterOptions = {};
+
+    for (const filterItem of model.items) {
+      switch (filterItem.field) {
+        case 'name':
+          if (filterItem.value != null) {
+            filterOptions.name = String(filterItem.value);
+          }
+          break;
+        case 'shortname':
+          if (filterItem.value != null) {
+            filterOptions.shortname = String(filterItem.value);
+          }
+          break;
+        case 'organizer':
+          if (filterItem.value != null) {
+            filterOptions.organizer = String(filterItem.value);
+          }
+          break;
+        case 'location':
+          if (filterItem.value != null) {
+            filterOptions.location = String(filterItem.value);
+          }
+          break;
+        case 'startDate':
+          if (filterItem.operator === 'isEmpty') {
+            filterOptions.startDateOperator = FilterOperator.EQUAL;
+            filterOptions.startDate = undefined;
+          } else if (filterItem.operator === 'isNotEmpty') {
+            filterOptions.startDateOperator = FilterOperator.NOT_EQUAL;
+            filterOptions.startDate = undefined;
+          } else if (filterItem.value != null) {
+            filterOptions.startDate =
+              filterItem.value instanceof Date ? filterItem.value : new Date(filterItem.value);
+            filterOptions.startDateOperator = convertDateFilterOperator(filterItem.operator);
+          }
+          break;
+        case 'endDate':
+          if (filterItem.operator === 'isEmpty') {
+            filterOptions.endDateOperator = FilterOperator.EQUAL;
+            filterOptions.endDate = undefined;
+          } else if (filterItem.operator === 'isNotEmpty') {
+            filterOptions.endDateOperator = FilterOperator.NOT_EQUAL;
+            filterOptions.endDate = undefined;
+          } else if (filterItem.value != null) {
+            filterOptions.endDate =
+              filterItem.value instanceof Date ? filterItem.value : new Date(filterItem.value);
+            filterOptions.endDateOperator = convertDateFilterOperator(filterItem.operator);
+          }
+          break;
+      }
+    }
+
+    return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
+  };
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      setIsLoading(true);
+      const sortOptions = convertSortModelToDomain(sortModel);
+      const userFilterOptions = convertFilterModelToDomain(filterModel);
+      const baseFilterOptions: CompetitionInstanceFilterOptions = {
+        ...(competitionId ? { competitionId } : {}),
+        ...userFilterOptions,
+      };
+
+      try {
+        const result = await getCompetitionInstances.execute(
+          ['competition', 'organizer_type'],
+          Object.keys(baseFilterOptions).length > 0 ? baseFilterOptions : undefined,
+          sortOptions,
+          { perPage: paginationModel.pageSize, cursor },
+        );
+
+        if (cancelled) return;
+
+        match(result, {
+          onRight: ([newRows, nextPaginationOptions]) => {
+            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
+
+            setRows(newRows);
+            setRowCount(
+              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
+            );
+            setPaginationMeta({ hasNextPage });
+            setPaginationOptions(nextPaginationOptions);
+          },
+          onLeft: (error) => {
+            throw error;
+          },
+        });
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionInstances, competitionId]);
+
+  const handlePaginationModelChange = useCallback(
+    (newPaginationModel: GridPaginationModel) => {
+      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
+      const normalizedPaginationModel = isPageSizeChanged
+        ? { ...newPaginationModel, page: 0 }
+        : newPaginationModel;
+
+      let nextCursor: string | undefined;
+      if (isPageSizeChanged) {
+        nextCursor = undefined;
+      } else if (
+        normalizedPaginationModel.page > paginationModel.page &&
+        paginationOptions.nextCursor
+      ) {
+        nextCursor = paginationOptions.nextCursor;
+      } else if (
+        normalizedPaginationModel.page < paginationModel.page &&
+        paginationOptions.previousCursor
+      ) {
+        nextCursor = paginationOptions.previousCursor;
+      } else {
+        nextCursor = paginationOptions.cursor;
+      }
+
+      setCursor(nextCursor);
+      setPaginationModel(normalizedPaginationModel);
+    },
+    [paginationModel, paginationOptions],
+  );
+
+  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setSortModel(newSortModel);
+  }, []);
+
+  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setFilterModel(newFilterModel);
+  }, []);
 
   const handleRowClick = (params: GridRowParams) => {
     router.push(`/competitions/${competitionId}/instances/${params.row.id}`);
@@ -212,13 +341,88 @@ export function CompetitionInstancesList({
               '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
             }}
             columns={[
-              { field: 'id', headerName: 'ID', flex: 1 },
-              { field: 'name', headerName: 'Name', flex: 2 },
-              { field: 'shortname', headerName: 'Shortname', flex: 1 },
-              { field: 'organizer', headerName: 'Organizer', flex: 2 },
-              { field: 'location', headerName: 'Location', flex: 2 },
-              { field: 'startDate', headerName: 'Start Date', flex: 1 },
-              { field: 'endDate', headerName: 'End Date', flex: 1 },
+              {
+                field: 'id',
+                headerName: 'ID',
+                flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
+              },
+              {
+                field: 'name',
+                headerName: 'Name',
+                flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'shortname',
+                headerName: 'Shortname',
+                flex: 1,
+                minWidth: 120,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'organizer',
+                headerName: 'Organizer',
+                flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'location',
+                headerName: 'Location',
+                flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'startDate',
+                type: 'date',
+                headerName: 'Start Date',
+                flex: 1,
+                minWidth: 100,
+                filterable: true,
+                sortable: true,
+                filterOperators: [
+                  DateOperators.is,
+                  DateOperators.not,
+                  DateOperators.after,
+                  DateOperators.onOrAfter,
+                  DateOperators.before,
+                  DateOperators.onOrBefore,
+                  DateOperators.isEmpty,
+                  DateOperators.isNotEmpty,
+                ],
+              },
+              {
+                field: 'endDate',
+                type: 'date',
+                headerName: 'End Date',
+                flex: 1,
+                minWidth: 100,
+                filterable: true,
+                sortable: true,
+                filterOperators: [
+                  DateOperators.is,
+                  DateOperators.not,
+                  DateOperators.after,
+                  DateOperators.onOrAfter,
+                  DateOperators.before,
+                  DateOperators.onOrBefore,
+                  DateOperators.isEmpty,
+                  DateOperators.isNotEmpty,
+                ],
+              },
               {
                 field: 'actions',
                 type: 'actions',
@@ -269,8 +473,8 @@ export function CompetitionInstancesList({
               shortname: instance.shortname,
               organizer: instance.organizer,
               location: instance.location,
-              startDate: instance.startDate.toLocaleDateString(),
-              endDate: instance.endDate.toLocaleDateString(),
+              startDate: instance.startDate,
+              endDate: instance.endDate,
               actions: instance,
             }))}
             slots={{
@@ -285,6 +489,8 @@ export function CompetitionInstancesList({
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            sortingMode="server"
+            filterMode="server"
             initialState={{
               columns: {
                 columnVisibilityModel: {
@@ -297,6 +503,10 @@ export function CompetitionInstancesList({
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />

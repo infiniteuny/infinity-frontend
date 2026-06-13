@@ -48,7 +48,9 @@ export function GeneralForm({
     async (facultyId: string) => {
       setMajorDisabled(true);
 
-      const majorsResult = await getMajors.execute(['degree'], { facultyId }, { perPage: 100 });
+      const majorsResult = await getMajors.execute(['degree'], { facultyId }, undefined, {
+        perPage: 100,
+      });
 
       match(majorsResult, {
         onLeft: (error) => {

@@ -42,7 +42,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsPermissionLoading(true);
 
-      const permissionsResult = await getPermissions.execute({ name: query }, { perPage: 100 });
+      const permissionsResult = await getPermissions.execute({ name: query }, undefined, {
+        perPage: 100,
+      });
 
       if (!active) return;
 

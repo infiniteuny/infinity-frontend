@@ -6,6 +6,7 @@ import {
 
 export const StringOperators = {
   contains: getGridStringOperators().find((operator) => operator.value === 'contains')!,
+  equals: getGridStringOperators().find((operator) => operator.value === 'equals')!,
 };
 
 export const DateOperators = {

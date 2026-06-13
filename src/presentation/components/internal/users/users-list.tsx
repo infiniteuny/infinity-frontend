@@ -403,7 +403,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                 flex: 1.2,
                 minWidth: 170,
                 filterable: false,
-                sortable: false,
+                sortable: true,
               },
               {
                 field: 'faculty',

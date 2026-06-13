@@ -37,7 +37,7 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsGroupLoading(true);
 
-      const groupsResult = await getGroups.execute({ name: query }, { perPage: 100 });
+      const groupsResult = await getGroups.execute({ name: query }, undefined, { perPage: 100 });
 
       if (!active) return;
 

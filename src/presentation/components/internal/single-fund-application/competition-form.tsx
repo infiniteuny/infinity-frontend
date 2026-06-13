@@ -81,6 +81,7 @@ export function CompetitionForm({
       const competitionInstancesResult = await getCompetitionInstances.execute(
         undefined,
         { name: query },
+        undefined,
         { perPage: 10 },
       );
 

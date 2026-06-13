@@ -40,10 +40,9 @@ export function GeneralForm({
     const timeoutId = setTimeout(async () => {
       setIsCommunityGroupLoading(true);
 
-      const communityGroupsResult = await getCommunityGroups.execute(
-        { name: query },
-        { perPage: 100 },
-      );
+      const communityGroupsResult = await getCommunityGroups.execute({ name: query }, undefined, {
+        perPage: 100,
+      });
 
       if (!active) return;
 

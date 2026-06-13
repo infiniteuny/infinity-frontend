@@ -1,22 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertDialog, EmptyRowOverlay } from '@app/presentation/components/internal/shared';
+import {
+  AlertDialog,
+  EmptyRowOverlay,
+  StringOperators,
+} from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
   GridActionsCell,
   GridActionsCellItem,
+  GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
   GridRowParams,
   GridSlots,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { DeleteRounded, VisibilityRounded } from '@mui/icons-material';
 import { DeleteUserPermission, GetUserPermissions } from '@app/application';
 import { match } from 'effect/Either';
-import { PaginationOptions, UserPermission } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  PermissionFilterOptions,
+  PermissionSortOptions,
+  UserPermission,
+} from '@app/domain/entities';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -25,7 +36,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -58,10 +69,12 @@ export function UserPermissionsList({
   const [rowCount, setRowCount] = useState<number>(
     initPaginationOptions.nextCursor ? -1 : initUserPermissions.length,
   );
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: initPaginationOptions.previousCursor ? 1 : 0,
     pageSize: initPaginationOptions.perPage || 25,
   });
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
     hasNextPage: Boolean(initPaginationOptions.nextCursor),
   });
@@ -69,74 +82,141 @@ export function UserPermissionsList({
     useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
       initPaginationOptions,
     );
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const isInitialMount = useRef(true);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedUserPermissionId, setSelectedUserPermissionId] = useState<string | null>(null);
   const [selectedUserPermissionName, setSelectedUserPermissionName] = useState<string | null>(null);
 
-  const handlePaginationModelChange = async (newPaginationModel: GridPaginationModel) => {
-    const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-    const normalizedPaginationModel = isPageSizeChanged
-      ? { ...newPaginationModel, page: 0 }
-      : newPaginationModel;
+  const convertSortModelToDomain = (model: GridSortModel): PermissionSortOptions | undefined => {
+    if (model.length === 0) return undefined;
 
-    setIsLoading(true);
+    const fieldMap: Record<string, keyof PermissionSortOptions> = {
+      name: 'name',
+      guardName: 'guardName',
+    };
 
-    let cursor: string | undefined;
-    if (isPageSizeChanged) {
-      cursor = undefined;
-    } else if (
-      normalizedPaginationModel.page > paginationModel.page &&
-      paginationOptions.nextCursor
-    ) {
-      cursor = paginationOptions.nextCursor;
-    } else if (
-      normalizedPaginationModel.page < paginationModel.page &&
-      paginationOptions.previousCursor
-    ) {
-      cursor = paginationOptions.previousCursor;
-    } else {
-      cursor = paginationOptions.cursor;
+    const sortOptions: PermissionSortOptions = {};
+    for (const sortItem of model) {
+      const domainField = fieldMap[sortItem.field];
+      if (domainField) {
+        sortOptions[domainField] = sortItem.sort === 'asc' ? 'ASC' : 'DESC';
+      }
     }
 
-    try {
-      const result = await getUserPermissions.execute(userId, undefined, {
-        perPage: normalizedPaginationModel.pageSize,
-        cursor,
-      });
-
-      match(result, {
-        onRight: ([newRows, nextPaginationOptions]) => {
-          const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-          let page;
-          if (normalizedPaginationModel.page === 0 && nextPaginationOptions.previousCursor) {
-            page = 1;
-          } else if (
-            normalizedPaginationModel.page < paginationModel.page &&
-            !nextPaginationOptions.previousCursor
-          ) {
-            page = 0;
-          } else {
-            page = normalizedPaginationModel.page;
-          }
-
-          setRows(newRows);
-          setRowCount(
-            hasNextPage ? -1 : page * normalizedPaginationModel.pageSize + newRows.length,
-          );
-          setPaginationMeta({ hasNextPage });
-          setPaginationModel({ page, pageSize: normalizedPaginationModel.pageSize });
-          setPaginationOptions(nextPaginationOptions);
-        },
-        onLeft: (error) => {
-          throw error;
-        },
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
   };
+
+  const convertFilterModelToDomain = (
+    model: GridFilterModel,
+  ): PermissionFilterOptions | undefined => {
+    if (model.items.length === 0) return undefined;
+
+    const filterOptions: PermissionFilterOptions = {};
+
+    for (const filterItem of model.items) {
+      switch (filterItem.field) {
+        case 'name':
+          if (filterItem.value != null) {
+            filterOptions.name = String(filterItem.value);
+          }
+          break;
+      }
+    }
+
+    return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
+  };
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      setIsLoading(true);
+      const sortOptions = convertSortModelToDomain(sortModel);
+      const filterOptions = convertFilterModelToDomain(filterModel);
+
+      try {
+        const result = await getUserPermissions.execute(userId, filterOptions, sortOptions, {
+          perPage: paginationModel.pageSize,
+          cursor,
+        });
+
+        if (cancelled) return;
+
+        match(result, {
+          onRight: ([newRows, nextPaginationOptions]) => {
+            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
+
+            setRows(newRows);
+            setRowCount(
+              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
+            );
+            setPaginationMeta({ hasNextPage });
+            setPaginationOptions(nextPaginationOptions);
+          },
+          onLeft: (error) => {
+            throw error;
+          },
+        });
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [paginationModel, sortModel, filterModel, cursor, getUserPermissions, userId]);
+
+  const handlePaginationModelChange = useCallback(
+    (newPaginationModel: GridPaginationModel) => {
+      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
+      const normalizedPaginationModel = isPageSizeChanged
+        ? { ...newPaginationModel, page: 0 }
+        : newPaginationModel;
+
+      let nextCursor: string | undefined;
+      if (isPageSizeChanged) {
+        nextCursor = undefined;
+      } else if (
+        normalizedPaginationModel.page > paginationModel.page &&
+        paginationOptions.nextCursor
+      ) {
+        nextCursor = paginationOptions.nextCursor;
+      } else if (
+        normalizedPaginationModel.page < paginationModel.page &&
+        paginationOptions.previousCursor
+      ) {
+        nextCursor = paginationOptions.previousCursor;
+      } else {
+        nextCursor = paginationOptions.cursor;
+      }
+
+      setCursor(nextCursor);
+      setPaginationModel(normalizedPaginationModel);
+    },
+    [paginationModel, paginationOptions],
+  );
+
+  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setSortModel(newSortModel);
+  }, []);
+
+  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
+    setCursor(undefined);
+    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
+    setFilterModel(newFilterModel);
+  }, []);
 
   const handleRowClick = (params: GridRowParams) => {
     router.push(`/permissions/${params.row.id}`);
@@ -202,16 +282,26 @@ export function UserPermissionsList({
                 field: 'id',
                 headerName: 'ID',
                 flex: 1,
+                minWidth: 300,
+                filterable: false,
+                sortable: true,
               },
               {
                 field: 'name',
                 headerName: 'Name',
                 flex: 3,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'guardName',
                 headerName: 'Guard Name',
                 flex: 1,
+                minWidth: 120,
+                filterable: false,
+                sortable: false,
               },
               {
                 field: 'actions',
@@ -267,6 +357,8 @@ export function UserPermissionsList({
             }}
             pageSizeOptions={[25, 50, 100]}
             paginationMode="server"
+            sortingMode="server"
+            filterMode="server"
             initialState={{
               columns: {
                 columnVisibilityModel: {
@@ -279,6 +371,10 @@ export function UserPermissionsList({
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
+            sortModel={sortModel}
+            onSortModelChange={handleSortModelChange}
+            filterModel={filterModel}
+            onFilterModelChange={handleFilterModelChange}
             onRowClick={handleRowClick}
             disableRowSelectionOnClick
           />
