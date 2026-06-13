@@ -39,7 +39,7 @@ export default async function CompetitionTimeRangesPage() {
       SYMBOLS.GetCompetitionTimeRanges,
     );
 
-    const result = await getCompetitionTimeRanges.execute(undefined, { perPage: 25 });
+    const result = await getCompetitionTimeRanges.execute(undefined, undefined, { perPage: 25 });
     const [competitionTimeRanges, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

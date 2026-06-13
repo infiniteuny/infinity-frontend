@@ -1,9 +1,15 @@
-import { PaginationOptions, Permission, PermissionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Permission,
+  PermissionFilterOptions,
+  PermissionSortOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface PermissionRepository {
   getPermissions(
     filterOptions?: PermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

@@ -3,11 +3,13 @@ import {
   PaginationOptions,
   CompetitionTeamType,
   CompetitionTeamTypeFilterOptions,
+  CompetitionTeamTypeSortOptions,
 } from '@app/domain/entities';
 
 export interface CompetitionTeamTypeRepository {
   getCompetitionTeamTypes(
     filterOptions?: CompetitionTeamTypeFilterOptions,
+    sortOptions?: CompetitionTeamTypeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

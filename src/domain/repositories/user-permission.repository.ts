@@ -1,5 +1,6 @@
 import {
   PaginationOptions,
+  PermissionSortOptions,
   UserPermission,
   UserPermissionFilterOptions,
   UserPermissionIncludeOptions,
@@ -17,6 +18,7 @@ export interface UserPermissionRepository {
   getUserPermissions(
     userId: string,
     filterOptions?: UserPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

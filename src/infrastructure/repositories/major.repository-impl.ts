@@ -6,6 +6,7 @@ import {
   Major,
   MajorFilterOptions,
   MajorIncludeOptions,
+  MajorSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { MajorMapper } from '@app/infrastructure/dtos';
@@ -22,6 +23,7 @@ export class MajorRepositoryImpl implements MajorRepository {
   public async getMajors(
     includeOptions?: MajorIncludeOptions,
     filterOptions?: MajorFilterOptions,
+    sortOptions?: MajorSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -50,6 +52,18 @@ export class MajorRepositoryImpl implements MajorRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

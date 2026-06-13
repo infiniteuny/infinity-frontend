@@ -4,6 +4,7 @@ import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 import {
+  CommunityGroupSortOptions,
   PaginationOptions,
   UserCommunityGroup,
   UserCommunityGroupFilterOptions,
@@ -12,6 +13,7 @@ import {
 export type GetUserCommunityGroupsParams = [
   userId: string,
   filterOptions?: UserCommunityGroupFilterOptions,
+  sortOptions?: CommunityGroupSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -38,6 +40,7 @@ export class GetUserCommunityGroups implements UseCase<
   public async execute(
     userId: string,
     filterOptions?: UserCommunityGroupFilterOptions,
+    sortOptions?: CommunityGroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -57,6 +60,7 @@ export class GetUserCommunityGroups implements UseCase<
     return await this.userCommunityGroupRepository.getUserCommunityGroups(
       userId,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

@@ -3,11 +3,13 @@ import {
   PaginationOptions,
   CompetitionOutput,
   CompetitionOutputFilterOptions,
+  CompetitionOutputSortOptions,
 } from '@app/domain/entities';
 
 export interface CompetitionOutputRepository {
   getCompetitionOutputs(
     filterOptions?: CompetitionOutputFilterOptions,
+    sortOptions?: CompetitionOutputSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

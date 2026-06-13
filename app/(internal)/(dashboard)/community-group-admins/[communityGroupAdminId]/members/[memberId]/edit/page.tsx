@@ -128,7 +128,7 @@ export default async function SingleCommunityGroupAdminMemberEditPage({ params }
         async () =>
           await getCommunityGroupAdminMember.execute(memberId, ['membership.community_group']),
       )(),
-      getCommunityGroups.execute(undefined, { perPage: 100 }),
+      getCommunityGroups.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const [communityGroups] = match(communityGroupsResult, {

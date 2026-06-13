@@ -56,7 +56,7 @@ export default async function CompetitionInstancesPage({ params }: Props) {
 
   const [competitionResult, competitionInstancesResult] = await Promise.all([
     cache(async () => await getCompetition.execute(competitionId))(),
-    getCompetitionInstances.execute(['competition'], { competitionId }, { perPage: 25 }),
+    getCompetitionInstances.execute(['competition'], { competitionId }, undefined, { perPage: 25 }),
   ]);
 
   const competition = match(competitionResult, {

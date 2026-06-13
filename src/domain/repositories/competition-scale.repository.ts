@@ -3,11 +3,13 @@ import {
   PaginationOptions,
   CompetitionScale,
   CompetitionScaleFilterOptions,
+  CompetitionScaleSortOptions,
 } from '@app/domain/entities';
 
 export interface CompetitionScaleRepository {
   getCompetitionScales(
     filterOptions?: CompetitionScaleFilterOptions,
+    sortOptions?: CompetitionScaleSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

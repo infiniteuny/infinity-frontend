@@ -2,6 +2,7 @@ import type { CompetitionTimeRangeRepository, AuthRepository } from '@app/domain
 import {
   CompetitionTimeRange,
   CompetitionTimeRangeFilterOptions,
+  CompetitionTimeRangeSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { Either, left, isRight } from 'effect/Either';
@@ -11,6 +12,7 @@ import { UseCase } from '@app/application';
 
 export type GetCompetitionTimeRangesParams = [
   filterOptions?: CompetitionTimeRangeFilterOptions,
+  sortOptions?: CompetitionTimeRangeSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -35,6 +37,7 @@ export class GetCompetitionTimeRanges implements UseCase<
 
   public async execute(
     filterOptions?: CompetitionTimeRangeFilterOptions,
+    sortOptions?: CompetitionTimeRangeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>> {
@@ -43,6 +46,7 @@ export class GetCompetitionTimeRanges implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.competitionTimeRangeRepository.getCompetitionTimeRanges(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

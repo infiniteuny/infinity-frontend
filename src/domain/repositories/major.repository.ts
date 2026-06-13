@@ -3,6 +3,7 @@ import {
   Major,
   MajorFilterOptions,
   MajorIncludeOptions,
+  MajorSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
@@ -10,6 +11,7 @@ export interface MajorRepository {
   getMajors(
     includeOptions?: MajorIncludeOptions,
     filterOptions?: MajorFilterOptions,
+    sortOptions?: MajorSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

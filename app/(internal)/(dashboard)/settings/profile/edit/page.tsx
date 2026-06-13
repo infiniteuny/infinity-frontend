@@ -40,7 +40,7 @@ export default async function ProfileEditPage() {
 
     const [userResult, facultiesResult] = await Promise.all([
       getUser.execute(session.user.id, ['major', 'major.faculty']),
-      getFaculties.execute(undefined, { perPage: 100 }),
+      getFaculties.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const user = match(userResult, {
@@ -63,6 +63,7 @@ export default async function ProfileEditPage() {
     const majorsResult = await getMajors.execute(
       ['degree'],
       { facultyId: user.major?.facultyId },
+      undefined,
       { perPage: 100 },
     );
     const [majors] = match(majorsResult, {

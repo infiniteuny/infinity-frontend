@@ -4,7 +4,12 @@ import { CompetitionRepository } from '@app/domain/repositories';
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject, injectable } from 'inversify';
-import { Competition, CompetitionFilterOptions, PaginationOptions } from '@app/domain/entities';
+import {
+  Competition,
+  CompetitionFilterOptions,
+  CompetitionSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 
 @injectable()
@@ -16,6 +21,7 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
 
   public async getCompetitions(
     filterOptions?: CompetitionFilterOptions,
+    sortOptions?: CompetitionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -39,6 +45,18 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

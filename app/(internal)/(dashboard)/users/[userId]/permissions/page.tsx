@@ -88,7 +88,7 @@ export default async function UserPermissionsPage({ params }: Props) {
 
     const [userResult, userPermissionsResult] = await Promise.all([
       cache(async () => await getUser.execute(userId))(),
-      getUserPermissions.execute(userId, undefined, { perPage: 25 }),
+      getUserPermissions.execute(userId, undefined, undefined, { perPage: 25 }),
     ]);
     const user = match(userResult, {
       onLeft: (error) => {

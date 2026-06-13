@@ -34,7 +34,7 @@ export default async function FacultiesPage() {
   if (['read-faculty'].some((p) => userPermissions.has(p))) {
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
 
-    const result = await getFaculties.execute(undefined, { perPage: 25 });
+    const result = await getFaculties.execute(undefined, undefined, { perPage: 25 });
     const [faculties, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

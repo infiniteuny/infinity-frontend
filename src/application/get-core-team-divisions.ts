@@ -5,12 +5,14 @@ import {
   PaginationOptions,
   CoreTeamDivision,
   CoreTeamDivisionFilterOptions,
+  CoreTeamDivisionSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetCoreTeamDivisionsParams = [
   filterOptions?: CoreTeamDivisionFilterOptions,
+  sortOptions?: CoreTeamDivisionSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -35,6 +37,7 @@ export class GetCoreTeamDivisions implements UseCase<
 
   public async execute(
     filterOptions?: CoreTeamDivisionFilterOptions,
+    sortOptions?: CoreTeamDivisionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[CoreTeamDivision[], PaginationOptions], Error>> {
@@ -43,6 +46,7 @@ export class GetCoreTeamDivisions implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.coreTeamDivisionRepository.getCoreTeamDivisions(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function CommunityGroupsPage() {
   const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
 
-  const result = await getCommunityGroups.execute(undefined, { perPage: 25 });
+  const result = await getCommunityGroups.execute(undefined, undefined, { perPage: 25 });
   const [communityGroups, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

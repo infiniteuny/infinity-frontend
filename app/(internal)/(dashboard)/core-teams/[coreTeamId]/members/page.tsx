@@ -58,6 +58,7 @@ export default async function CoreTeamMembersPage({ params }: Props) {
       coreTeamId,
       ['major', 'major.faculty', 'membership.core_team_division'],
       undefined,
+      undefined,
       { perPage: 25 },
     ),
   ]);

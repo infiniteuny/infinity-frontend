@@ -95,7 +95,7 @@ export default async function SingleTeamEditPage({ params }: Props) {
       notFound();
     }
 
-    const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, {
+    const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, undefined, {
       perPage: 10,
     });
     const [teamTypes] = match(teamTypesResult, {

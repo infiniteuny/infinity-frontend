@@ -4,12 +4,14 @@ import {
   CompetitionInstance,
   CompetitionInstanceFilterOptions,
   CompetitionInstanceIncludeOptions,
+  CompetitionInstanceSortOptions,
 } from '@app/domain/entities';
 
 export interface CompetitionInstanceRepository {
   getCompetitionInstances(
     includeOptions?: CompetitionInstanceIncludeOptions,
     filterOptions?: CompetitionInstanceFilterOptions,
+    sortOptions?: CompetitionInstanceSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

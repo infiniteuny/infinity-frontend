@@ -6,6 +6,7 @@ import {
   Team,
   TeamFilterOptions,
   TeamIncludeOptions,
+  TeamSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetTeamsParams = [
   includeOptions?: TeamIncludeOptions,
   filterOptions?: TeamFilterOptions,
+  sortOptions?: TeamSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -38,6 +40,7 @@ export class GetTeams implements UseCase<
   public async execute(
     includeOptions?: TeamIncludeOptions,
     filterOptions?: TeamFilterOptions,
+    sortOptions?: TeamSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Team[], PaginationOptions], Error>> {
@@ -47,6 +50,7 @@ export class GetTeams implements UseCase<
       return await this.teamRepository.getTeams(
         includeOptions,
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

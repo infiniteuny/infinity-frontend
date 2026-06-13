@@ -56,7 +56,7 @@ export default async function UserCommunityGroupsPage({ params }: Props) {
 
   const [userResult, userCommunityGroupsResult] = await Promise.all([
     cache(async () => await getUser.execute(userId))(),
-    getUserCommunityGroups.execute(userId, undefined, { perPage: 25 }),
+    getUserCommunityGroups.execute(userId, undefined, undefined, { perPage: 25 }),
   ]);
 
   const user = match(userResult, {

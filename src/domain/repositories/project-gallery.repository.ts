@@ -3,11 +3,13 @@ import {
   PaginationOptions,
   ProjectGallery,
   ProjectGalleryFilterOptions,
+  ProjectGallerySortOptions,
 } from '@app/domain/entities';
 
 export interface ProjectGalleryRepository {
   getProjectGalleries(
     filterOptions?: ProjectGalleryFilterOptions,
+    sortOptions?: ProjectGallerySortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

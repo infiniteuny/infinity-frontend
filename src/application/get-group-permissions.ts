@@ -5,6 +5,7 @@ import {
   PaginationOptions,
   GroupPermission,
   GroupPermissionFilterOptions,
+  PermissionSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -12,6 +13,7 @@ import { UseCase } from '@app/application';
 export type GetGroupPermissionsParams = [
   groupId: string,
   filterOptions?: GroupPermissionFilterOptions,
+  sortOptions?: PermissionSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -37,6 +39,7 @@ export class GetGroupPermissions implements UseCase<
   public async execute(
     groupId: string,
     filterOptions?: GroupPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[GroupPermission[], PaginationOptions], Error>> {
@@ -48,6 +51,7 @@ export class GetGroupPermissions implements UseCase<
       return await this.groupPermissionRepository.getGroupPermissions(
         groupId,
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessToken,

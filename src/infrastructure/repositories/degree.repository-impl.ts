@@ -1,6 +1,11 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
-import { Degree, DegreeFilterOptions, PaginationOptions } from '@app/domain/entities';
+import {
+  Degree,
+  DegreeFilterOptions,
+  DegreeSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { DegreeMapper } from '@app/infrastructure/dtos';
 import { DegreeRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
@@ -16,6 +21,7 @@ export class DegreeRepositoryImpl implements DegreeRepository {
 
   public async getDegrees(
     filterOptions?: DegreeFilterOptions,
+    sortOptions?: DegreeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -39,6 +45,18 @@ export class DegreeRepositoryImpl implements DegreeRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

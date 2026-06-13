@@ -126,7 +126,7 @@ export default async function SingleCompetitionInstanceEditPage({ params }: Prop
         async () =>
           await getCompetitionInstance.execute(instanceId, ['competition', 'organizer_type']),
       )(),
-      getCompetitionOrganizerTypes.execute(undefined, { perPage: 100 }),
+      getCompetitionOrganizerTypes.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const [competitionOrganizerTypes] = match(organizerTypesResult, {

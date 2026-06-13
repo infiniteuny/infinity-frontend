@@ -3,6 +3,7 @@ import {
   Achievement,
   AchievementFilterOptions,
   AchievementIncludeOptions,
+  AchievementSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { AchievementMapper } from '@app/infrastructure/dtos';
@@ -22,6 +23,7 @@ export class AchievementRepositoryImpl implements AchievementRepository {
   public async getAchievements(
     includeOptions?: AchievementIncludeOptions,
     filterOptions?: AchievementFilterOptions,
+    sortOptions?: AchievementSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -65,6 +67,18 @@ export class AchievementRepositoryImpl implements AchievementRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

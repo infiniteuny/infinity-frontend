@@ -96,7 +96,9 @@ export default async function GroupPermissionsPage({ params }: Props) {
       SYMBOLS.GetGroupPermissions,
     );
 
-    const result = await getGroupPermissions.execute(groupId, undefined, { perPage: 25 });
+    const result = await getGroupPermissions.execute(groupId, undefined, undefined, {
+      perPage: 25,
+    });
     const [groupPermissions, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

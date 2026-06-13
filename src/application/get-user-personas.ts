@@ -3,11 +3,17 @@ import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
-import { PaginationOptions, UserPersona, UserPersonaFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  PersonaSortOptions,
+  UserPersona,
+  UserPersonaFilterOptions,
+} from '@app/domain/entities';
 
 export type GetUserPersonasParams = [
   userId: string,
   filterOptions?: UserPersonaFilterOptions,
+  sortOptions?: PersonaSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -34,6 +40,7 @@ export class GetUserPersonas implements UseCase<
   public async execute(
     userId: string,
     filterOptions?: UserPersonaFilterOptions,
+    sortOptions?: PersonaSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -53,6 +60,7 @@ export class GetUserPersonas implements UseCase<
     return await this.userPersonaRepository.getUserPersonas(
       userId,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

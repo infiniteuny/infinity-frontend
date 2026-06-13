@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, UserPersona, UserPersonaFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  PersonaSortOptions,
+  UserPersona,
+  UserPersonaFilterOptions,
+} from '@app/domain/entities';
 import { UserPersonaMapper } from '@app/infrastructure/dtos';
 import { UserPersonaRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -17,6 +22,7 @@ export class UserPersonaRepositoryImpl implements UserPersonaRepository {
   public async getUserPersonas(
     userId: string,
     filterOptions?: UserPersonaFilterOptions,
+    sortOptions?: PersonaSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -41,6 +47,18 @@ export class UserPersonaRepositoryImpl implements UserPersonaRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

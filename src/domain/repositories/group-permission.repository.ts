@@ -2,6 +2,7 @@ import {
   GroupPermission,
   GroupPermissionFilterOptions,
   PaginationOptions,
+  PermissionSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
@@ -9,6 +10,7 @@ export interface GroupPermissionRepository {
   getGroupPermissions(
     groupId: string,
     filterOptions?: GroupPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

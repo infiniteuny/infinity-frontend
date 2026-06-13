@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Testimonial,
+  TestimonialFilterOptions,
+  TestimonialSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { TestimonialMapper } from '@app/infrastructure/dtos';
 import { TestimonialRepository } from '@app/domain/repositories';
@@ -16,6 +21,7 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
 
   public async getTestimonials(
     filterOptions?: TestimonialFilterOptions,
+    sortOptions?: TestimonialSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -39,6 +45,18 @@ export class TestimonialRepositoryImpl implements TestimonialRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

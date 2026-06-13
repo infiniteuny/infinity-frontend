@@ -39,7 +39,7 @@ export default async function CompetitionOutputsPage() {
       SYMBOLS.GetCompetitionOutputs,
     );
 
-    const result = await getCompetitionOutputs.execute(undefined, { perPage: 25 });
+    const result = await getCompetitionOutputs.execute(undefined, undefined, { perPage: 25 });
     const [competitionOutputs, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

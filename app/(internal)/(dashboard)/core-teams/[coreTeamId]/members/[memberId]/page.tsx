@@ -170,7 +170,9 @@ export default async function SingleCoreTeamMemberPage({ params }: Props) {
       SYMBOLS.GetCoreTeamDivisions,
     );
 
-    const coreTeamDivisionsResult = await getCoreTeamDivisions.execute(undefined, { perPage: 100 });
+    const coreTeamDivisionsResult = await getCoreTeamDivisions.execute(undefined, undefined, {
+      perPage: 100,
+    });
     const [coreTeamDivisions] = match(coreTeamDivisionsResult, {
       onLeft: (error) => {
         throw error;

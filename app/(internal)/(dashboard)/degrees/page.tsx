@@ -34,7 +34,7 @@ export default async function DegreesPage() {
   if (['read-degree'].some((p) => userPermissions.has(p))) {
     const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
 
-    const result = await getDegrees.execute(undefined, { perPage: 25 });
+    const result = await getDegrees.execute(undefined, undefined, { perPage: 25 });
     const [degrees, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

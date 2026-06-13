@@ -113,7 +113,7 @@ export default async function SingleFundApplicationEditPage({ params }: Props) {
       notFound();
     }
 
-    const competitionScalesResult = await getCompetitionScales.execute(undefined, {
+    const competitionScalesResult = await getCompetitionScales.execute(undefined, undefined, {
       perPage: 100,
     });
     const [competitionScales] = match(competitionScalesResult, {

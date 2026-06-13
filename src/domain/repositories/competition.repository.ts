@@ -1,9 +1,15 @@
 import { Either } from 'effect/Either';
-import { PaginationOptions, Competition, CompetitionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Competition,
+  CompetitionFilterOptions,
+  CompetitionSortOptions,
+} from '@app/domain/entities';
 
 export interface CompetitionRepository {
   getCompetitions(
     filterOptions?: CompetitionFilterOptions,
+    sortOptions?: CompetitionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

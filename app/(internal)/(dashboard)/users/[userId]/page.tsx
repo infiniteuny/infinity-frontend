@@ -105,7 +105,7 @@ export default async function SingleUserPage({ params }: Props) {
   } else if (userId === 'new' && ['create-user'].some((p) => userPermissions.has(p))) {
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
 
-    const facultiesResult = await getFaculties.execute(undefined, { perPage: 100 });
+    const facultiesResult = await getFaculties.execute(undefined, undefined, { perPage: 100 });
     const [faculties] = match(facultiesResult, {
       onLeft: (error) => {
         throw error;

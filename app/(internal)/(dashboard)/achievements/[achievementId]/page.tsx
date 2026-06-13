@@ -180,10 +180,10 @@ export default async function SingleAchievementPage({ params }: Props) {
       competitionOutputsResult,
       competitionRanksResult,
     ] = await Promise.all([
-      getCompetitionScales.execute(undefined, { perPage: 100 }),
-      getCompetitionTimeRanges.execute(undefined, { perPage: 100 }),
-      getCompetitionOutputs.execute(undefined, { perPage: 100 }),
-      getCompetitionRanks.execute(undefined, { perPage: 100 }),
+      getCompetitionScales.execute(undefined, undefined, { perPage: 100 }),
+      getCompetitionTimeRanges.execute(undefined, undefined, { perPage: 100 }),
+      getCompetitionOutputs.execute(undefined, undefined, { perPage: 100 }),
+      getCompetitionRanks.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const [competitionScales] = match(competitionScalesResult, {

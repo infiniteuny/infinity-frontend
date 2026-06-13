@@ -48,7 +48,7 @@ export default async function ProfileGroupsPage() {
     onRight: (data) => data,
   });
 
-  const userGroupsResult = await getUserGroups.execute(user.id, undefined, {
+  const userGroupsResult = await getUserGroups.execute(user.id, undefined, undefined, {
     perPage: 25,
   });
   const [userGroups, paginationOptions] = match(userGroupsResult, {

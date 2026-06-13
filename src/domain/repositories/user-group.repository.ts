@@ -1,10 +1,16 @@
-import { PaginationOptions, UserGroup, UserGroupFilterOptions } from '@app/domain/entities';
+import {
+  GroupSortOptions,
+  PaginationOptions,
+  UserGroup,
+  UserGroupFilterOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserGroupRepository {
   getUserGroups(
     userId: string,
     filterOptions?: UserGroupFilterOptions,
+    sortOptions?: GroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

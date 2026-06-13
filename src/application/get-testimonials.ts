@@ -1,12 +1,18 @@
 import type { TestimonialRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Testimonial,
+  TestimonialFilterOptions,
+  TestimonialSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetTestimonialsParams = [
   filterOptions?: TestimonialFilterOptions,
+  sortOptions?: TestimonialSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -32,6 +38,7 @@ export class GetTestimonials implements UseCase<
 
   public async execute(
     filterOptions?: TestimonialFilterOptions,
+    sortOptions?: TestimonialSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -50,6 +57,7 @@ export class GetTestimonials implements UseCase<
 
     return await this.testimonialRepository.getTestimonials(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

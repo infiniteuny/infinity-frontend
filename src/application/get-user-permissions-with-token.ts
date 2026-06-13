@@ -8,6 +8,7 @@ import {
   UserPermission,
   UserPermissionFilterOptions,
   UserPermissionIncludeOptions,
+  UserPermissionSortOptions,
 } from '@app/domain/entities';
 
 export type GetUserPermissionsWithTokenParams =
@@ -20,6 +21,7 @@ export type GetUserPermissionsWithTokenParams =
   | [
       userId: string,
       filterOptions?: UserPermissionFilterOptions,
+      sortOptions?: UserPermissionSortOptions,
       paginationOptions?: PaginationOptions,
       abortSignal?: AbortSignal,
       token?: string,
@@ -48,6 +50,7 @@ export class GetUserPermissionsWithToken implements UseCase<
   public async execute(
     userId: string,
     filterOptions?: UserPermissionFilterOptions,
+    sortOptions?: UserPermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -55,8 +58,9 @@ export class GetUserPermissionsWithToken implements UseCase<
   public async execute(
     userId: string,
     includeOptionsOrFilterOptions?: UserPermissionIncludeOptions | UserPermissionFilterOptions,
-    abortSignalOrPaginationOptions?: AbortSignal | PaginationOptions,
-    tokenOrAbortSignal?: AbortSignal | string,
+    sortOrAbortOrPagination?: AbortSignal | PaginationOptions | UserPermissionSortOptions,
+    tokenOrAbortOrPagination?: AbortSignal | PaginationOptions | string,
+    tokenOrAbort?: AbortSignal | string,
     token?: string,
   ): Promise<Either<[UserPermission[], PaginationOptions] | UserPermission[], Error>> {
     const hasIncludeOptions = Array.isArray(includeOptionsOrFilterOptions);
@@ -65,15 +69,16 @@ export class GetUserPermissionsWithToken implements UseCase<
       return await this.userPermissionRepository.getUserPermissions(
         userId,
         includeOptionsOrFilterOptions as UserPermissionIncludeOptions,
-        abortSignalOrPaginationOptions as AbortSignal | undefined,
-        tokenOrAbortSignal as string | undefined,
+        sortOrAbortOrPagination as AbortSignal | undefined,
+        tokenOrAbortOrPagination as string | undefined,
       );
     } else {
       return await this.userPermissionRepository.getUserPermissions(
         userId,
         includeOptionsOrFilterOptions as UserPermissionFilterOptions | undefined,
-        abortSignalOrPaginationOptions as PaginationOptions | undefined,
-        tokenOrAbortSignal as AbortSignal | undefined,
+        sortOrAbortOrPagination as UserPermissionSortOptions | undefined,
+        tokenOrAbortOrPagination as PaginationOptions | undefined,
+        tokenOrAbort as AbortSignal | undefined,
         token,
       );
     }

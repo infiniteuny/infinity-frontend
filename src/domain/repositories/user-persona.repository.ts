@@ -1,10 +1,16 @@
-import { PaginationOptions, UserPersona, UserPersonaFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  PersonaSortOptions,
+  UserPersona,
+  UserPersonaFilterOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface UserPersonaRepository {
   getUserPersonas(
     userId: string,
     filterOptions?: UserPersonaFilterOptions,
+    sortOptions?: PersonaSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

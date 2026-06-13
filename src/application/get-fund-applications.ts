@@ -6,6 +6,7 @@ import {
   FundApplication,
   FundApplicationFilterOptions,
   FundApplicationIncludeOptions,
+  FundApplicationSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetFundApplicationsParams = [
   includeOptions?: FundApplicationIncludeOptions,
   filterOptions?: FundApplicationFilterOptions,
+  sortOptions?: FundApplicationSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -38,6 +40,7 @@ export class GetFundApplications implements UseCase<
   public async execute(
     includeOptions?: FundApplicationIncludeOptions,
     filterOptions?: FundApplicationFilterOptions,
+    sortOptions?: FundApplicationSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[FundApplication[], PaginationOptions], Error>> {
@@ -47,6 +50,7 @@ export class GetFundApplications implements UseCase<
       return await this.fundApplicationRepository.getFundApplications(
         includeOptions,
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

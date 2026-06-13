@@ -54,7 +54,7 @@ export default async function UserPersonasPage({ params }: Props) {
 
   const [userResult, userPersonasResult] = await Promise.all([
     cache(async () => await getUser.execute(userId))(),
-    getUserPersonas.execute(userId, undefined, { perPage: 25 }),
+    getUserPersonas.execute(userId, undefined, undefined, { perPage: 25 }),
   ]);
 
   const user = match(userResult, {

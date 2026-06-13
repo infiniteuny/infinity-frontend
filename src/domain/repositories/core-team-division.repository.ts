@@ -2,12 +2,14 @@ import {
   PaginationOptions,
   CoreTeamDivision,
   CoreTeamDivisionFilterOptions,
+  CoreTeamDivisionSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CoreTeamDivisionRepository {
   getCoreTeamDivisions(
     filterOptions?: CoreTeamDivisionFilterOptions,
+    sortOptions?: CoreTeamDivisionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

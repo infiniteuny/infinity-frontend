@@ -115,7 +115,7 @@ export default async function SingleMajorPage({ params }: Props) {
     const getDegrees = serverContainer.get<GetDegrees>(SYMBOLS.GetDegrees);
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
 
-    const degreesResult = await getDegrees.execute(undefined, { perPage: 100 });
+    const degreesResult = await getDegrees.execute(undefined, undefined, { perPage: 100 });
     const [degrees] = match(degreesResult, {
       onLeft: (error) => {
         throw error;
@@ -123,7 +123,7 @@ export default async function SingleMajorPage({ params }: Props) {
       onRight: (data) => data,
     });
 
-    const facultiesResult = await getFaculties.execute(undefined, { perPage: 100 });
+    const facultiesResult = await getFaculties.execute(undefined, undefined, { perPage: 100 });
     const [faculties] = match(facultiesResult, {
       onLeft: (error) => {
         throw error;

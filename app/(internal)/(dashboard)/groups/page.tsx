@@ -34,7 +34,7 @@ export default async function GroupsPage() {
   if (['read-group'].some((p) => userPermissions.has(p))) {
     const getGroups = serverContainer.get<GetGroups>(SYMBOLS.GetGroups);
 
-    const result = await getGroups.execute(undefined, { perPage: 25 });
+    const result = await getGroups.execute(undefined, undefined, { perPage: 25 });
     const [groups, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

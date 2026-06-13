@@ -87,7 +87,7 @@ export default async function SingleUserEditPage({ params }: Props) {
 
     const [userResult, facultiesResult] = await Promise.all([
       cache(async () => await getUser.execute(userId, ['major', 'major.faculty']))(),
-      getFaculties.execute(undefined, { perPage: 100 }),
+      getFaculties.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const user = match(userResult, {
@@ -110,6 +110,7 @@ export default async function SingleUserEditPage({ params }: Props) {
     const majorsResult = await getMajors.execute(
       ['degree'],
       { facultyId: user.major?.facultyId },
+      undefined,
       { perPage: 100 },
     );
     const [majors] = match(majorsResult, {

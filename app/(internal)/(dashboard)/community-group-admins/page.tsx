@@ -26,7 +26,7 @@ export default async function CommunityGroupAdminsPage() {
     SYMBOLS.GetCommunityGroupAdmins,
   );
 
-  const result = await getCommunityGroupAdmins.execute(undefined, { perPage: 25 });
+  const result = await getCommunityGroupAdmins.execute(undefined, undefined, { perPage: 25 });
   const [communityGroupAdmins, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

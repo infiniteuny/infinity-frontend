@@ -6,6 +6,7 @@ import {
   Major,
   MajorFilterOptions,
   MajorIncludeOptions,
+  MajorSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetMajorsParams = [
   includeOptions?: MajorIncludeOptions,
   filterOptions?: MajorFilterOptions,
+  sortOptions?: MajorSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -38,6 +40,7 @@ export class GetMajors implements UseCase<
   public async execute(
     includeOptions?: MajorIncludeOptions,
     filterOptions?: MajorFilterOptions,
+    sortOptions?: MajorSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Major[], PaginationOptions], Error>> {
@@ -47,6 +50,7 @@ export class GetMajors implements UseCase<
       return await this.majorRepository.getMajors(
         includeOptions,
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

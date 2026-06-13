@@ -79,8 +79,8 @@ export default async function SingleMajorEditPage({ params }: Props) {
 
     const [majorResult, degreesResult, facultiesResult] = await Promise.all([
       getMajor.execute(majorId, ['degree', 'faculty']),
-      getDegrees.execute(undefined, { perPage: 100 }),
-      getFaculties.execute(undefined, { perPage: 100 }),
+      getDegrees.execute(undefined, undefined, { perPage: 100 }),
+      getFaculties.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const major = match(majorResult, {

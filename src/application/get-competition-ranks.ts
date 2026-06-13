@@ -2,6 +2,7 @@ import type { CompetitionRankRepository, AuthRepository } from '@app/domain/repo
 import {
   CompetitionRank,
   CompetitionRankFilterOptions,
+  CompetitionRankSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { Either, left, isRight } from 'effect/Either';
@@ -11,6 +12,7 @@ import { UseCase } from '@app/application';
 
 export type GetCompetitionRanksParams = [
   filterOptions?: CompetitionRankFilterOptions,
+  sortOptions?: CompetitionRankSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -35,6 +37,7 @@ export class GetCompetitionRanks implements UseCase<
 
   public async execute(
     filterOptions?: CompetitionRankFilterOptions,
+    sortOptions?: CompetitionRankSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[CompetitionRank[], PaginationOptions], Error>> {
@@ -43,6 +46,7 @@ export class GetCompetitionRanks implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.competitionRankRepository.getCompetitionRanks(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

@@ -3,6 +3,7 @@ import {
   FundApplication,
   FundApplicationFilterOptions,
   FundApplicationIncludeOptions,
+  FundApplicationSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { FundApplicationMapper } from '@app/infrastructure/dtos';
@@ -22,6 +23,7 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
   public async getFundApplications(
     includeOptions?: FundApplicationIncludeOptions,
     filterOptions?: FundApplicationFilterOptions,
+    sortOptions?: FundApplicationSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -61,6 +63,18 @@ export class FundApplicationRepositoryImpl implements FundApplicationRepository 
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

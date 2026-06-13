@@ -88,7 +88,7 @@ export default async function UserGroupsPage({ params }: Props) {
 
     const [userResult, userGroupsResult] = await Promise.all([
       cache(async () => await getUser.execute(userId))(),
-      getUserGroups.execute(userId, undefined, { perPage: 25 }),
+      getUserGroups.execute(userId, undefined, undefined, { perPage: 25 }),
     ]);
     const user = match(userResult, {
       onLeft: (error) => {

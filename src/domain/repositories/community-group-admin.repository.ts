@@ -2,12 +2,14 @@ import {
   PaginationOptions,
   CommunityGroupAdmin,
   CommunityGroupAdminFilterOptions,
+  CommunityGroupAdminSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CommunityGroupAdminRepository {
   getCommunityGroupAdmins(
     filterOptions?: CommunityGroupAdminFilterOptions,
+    sortOptions?: CommunityGroupAdminSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

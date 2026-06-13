@@ -1,6 +1,11 @@
 import type { InfinityApiDataSource } from '@app/infrastructure/datasources/server';
 import { Either, left, right } from 'effect/Either';
-import { Group, GroupFilterOptions, PaginationOptions } from '@app/domain/entities';
+import {
+  Group,
+  GroupFilterOptions,
+  GroupSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { GroupMapper } from '@app/infrastructure/dtos';
 import { GroupRepository } from '@app/domain/repositories';
 import { handleAxiosError } from '@app/utils';
@@ -16,6 +21,7 @@ export class GroupRepositoryImpl implements GroupRepository {
 
   public async getGroups(
     filterOptions?: GroupFilterOptions,
+    sortOptions?: GroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -39,6 +45,18 @@ export class GroupRepositoryImpl implements GroupRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

@@ -3,6 +3,7 @@ import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
+  PermissionSortOptions,
   UserPermission,
   UserPermissionFilterOptions,
   UserPermissionIncludeOptions,
@@ -15,6 +16,7 @@ export type GetUserPermissionsParams =
   | [
       userId: string,
       filterOptions?: UserPermissionFilterOptions,
+      sortOptions?: PermissionSortOptions,
       paginationOptions?: PaginationOptions,
       abortSignal?: AbortSignal,
     ];
@@ -45,13 +47,15 @@ export class GetUserPermissions implements UseCase<
   public async execute(
     userId: string,
     filterOptions?: UserPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[UserPermission[], PaginationOptions], Error>>;
   public async execute(
     userId: string,
     includeOptionsOrFilterOptions?: UserPermissionIncludeOptions | UserPermissionFilterOptions,
-    abortSignalOrPaginationOptions?: AbortSignal | PaginationOptions,
+    sortOptionsOrAbortSignal?: PermissionSortOptions | AbortSignal,
+    paginationOptionsOrAbortSignal?: PaginationOptions | AbortSignal,
     abortSignal?: AbortSignal,
   ): Promise<Either<[UserPermission[], PaginationOptions] | UserPermission[], Error>> {
     const accessTokenResult = await this.authRepository.getAccessToken();
@@ -63,14 +67,15 @@ export class GetUserPermissions implements UseCase<
         return await this.userPermissionRepository.getUserPermissions(
           userId,
           includeOptionsOrFilterOptions as UserPermissionIncludeOptions,
-          abortSignalOrPaginationOptions as AbortSignal | undefined,
+          sortOptionsOrAbortSignal as AbortSignal | undefined,
           accessTokenResult.right,
         );
       } else {
         return await this.userPermissionRepository.getUserPermissions(
           userId,
           includeOptionsOrFilterOptions as UserPermissionFilterOptions | undefined,
-          abortSignalOrPaginationOptions as PaginationOptions | undefined,
+          sortOptionsOrAbortSignal as PermissionSortOptions | undefined,
+          paginationOptionsOrAbortSignal as PaginationOptions | undefined,
           abortSignal,
           accessTokenResult.right,
         );

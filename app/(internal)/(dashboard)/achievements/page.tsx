@@ -34,6 +34,7 @@ export default async function AchievementsPage() {
       'competition_rank',
     ],
     undefined,
+    undefined,
     { perPage: 25 },
   );
   const [achievements, paginationOptions] = match(result, {

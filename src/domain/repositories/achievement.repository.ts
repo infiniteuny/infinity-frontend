@@ -4,12 +4,14 @@ import {
   Achievement,
   AchievementFilterOptions,
   AchievementIncludeOptions,
+  AchievementSortOptions,
 } from '@app/domain/entities';
 
 export interface AchievementRepository {
   getAchievements(
     includeOptions?: AchievementIncludeOptions,
     filterOptions?: AchievementFilterOptions,
+    sortOptions?: AchievementSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

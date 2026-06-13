@@ -66,6 +66,7 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
       communityGroupAdminId,
       ['major', 'major.faculty', 'membership.community_group'],
       undefined,
+      undefined,
       { perPage: 25 },
     ),
   ]);

@@ -39,7 +39,7 @@ export default async function TeamTypesPage() {
       SYMBOLS.GetCompetitionTeamTypes,
     );
 
-    const result = await getCompetitionTeamTypes.execute(undefined, { perPage: 25 });
+    const result = await getCompetitionTeamTypes.execute(undefined, undefined, { perPage: 25 });
     const [competitionTeamTypes, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

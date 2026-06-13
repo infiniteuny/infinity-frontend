@@ -4,6 +4,7 @@ import { handleAxiosError } from '@app/utils';
 import { inject, injectable } from 'inversify';
 import {
   PaginationOptions,
+  PermissionSortOptions,
   UserPermission,
   UserPermissionFilterOptions,
   UserPermissionIncludeOptions,
@@ -28,6 +29,7 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
   public async getUserPermissions(
     userId: string,
     filterOptions?: UserPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -35,7 +37,8 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
   public async getUserPermissions(
     userId: string,
     includeOptionsOrFilterOptions?: UserPermissionIncludeOptions | UserPermissionFilterOptions,
-    abortSignalOrPaginationOptions?: AbortSignal | PaginationOptions,
+    sortOptionsOrAbortSignal?: PermissionSortOptions | AbortSignal,
+    paginationOptionsOrTokenOrAbortSignal?: PaginationOptions | AbortSignal | string,
     tokenOrAbortSignal?: AbortSignal | string,
     token?: string,
   ): Promise<Either<UserPermission[] | [UserPermission[], PaginationOptions], Error>> {
@@ -44,13 +47,18 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
     const filterOptions = hasIncludeOptions
       ? undefined
       : (includeOptionsOrFilterOptions as UserPermissionFilterOptions | undefined);
+    const sortOptions = hasIncludeOptions
+      ? undefined
+      : (sortOptionsOrAbortSignal as PermissionSortOptions | undefined);
     const paginationOptions = hasIncludeOptions
       ? undefined
-      : (abortSignalOrPaginationOptions as PaginationOptions | undefined);
+      : (paginationOptionsOrTokenOrAbortSignal as PaginationOptions | undefined);
     const abortSignal = hasIncludeOptions
-      ? (abortSignalOrPaginationOptions as AbortSignal | undefined)
+      ? (sortOptionsOrAbortSignal as AbortSignal | undefined)
       : (tokenOrAbortSignal as AbortSignal | undefined);
-    const authToken = hasIncludeOptions ? (tokenOrAbortSignal as string | undefined) : token;
+    const authToken = hasIncludeOptions
+      ? (paginationOptionsOrTokenOrAbortSignal as string | undefined)
+      : token;
     try {
       const response = await this.infinityApiDataSource.get(`/users/${userId}/permissions`, {
         signal: abortSignal,
@@ -73,6 +81,18 @@ export class UserPermissionRepositoryImpl implements UserPermissionRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

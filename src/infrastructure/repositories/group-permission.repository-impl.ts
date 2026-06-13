@@ -6,6 +6,7 @@ import {
   GroupPermission,
   GroupPermissionFilterOptions,
   PaginationOptions,
+  PermissionSortOptions,
 } from '@app/domain/entities';
 import { GroupPermissionMapper } from '@app/infrastructure/dtos';
 import { GroupPermissionRepository } from '@app/domain/repositories';
@@ -21,6 +22,7 @@ export class GroupPermissionRepositoryImpl implements GroupPermissionRepository 
   public async getGroupPermissions(
     groupId: string,
     filterOptions?: GroupPermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -44,6 +46,18 @@ export class GroupPermissionRepositoryImpl implements GroupPermissionRepository 
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

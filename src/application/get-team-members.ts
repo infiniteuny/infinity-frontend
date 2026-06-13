@@ -8,12 +8,14 @@ import {
   TeamMember,
   TeamMemberFilterOptions,
   TeamMemberIncludeOptions,
+  TeamMemberSortOptions,
 } from '@app/domain/entities';
 
 export type GetTeamMembersParams = [
   teamId: string,
   includeOptions?: TeamMemberIncludeOptions,
   filterOptions?: TeamMemberFilterOptions,
+  sortOptions?: TeamMemberSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -40,6 +42,7 @@ export class GetTeamMembers implements UseCase<
     teamId: string,
     includeOptions?: TeamMemberIncludeOptions,
     filterOptions?: TeamMemberFilterOptions,
+    sortOptions?: TeamMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[TeamMember[], PaginationOptions], Error>> {
@@ -52,6 +55,7 @@ export class GetTeamMembers implements UseCase<
         teamId,
         includeOptions,
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessToken,

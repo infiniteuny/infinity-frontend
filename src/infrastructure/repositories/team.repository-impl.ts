@@ -7,6 +7,7 @@ import {
   Team,
   TeamFilterOptions,
   TeamIncludeOptions,
+  TeamSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { TeamMapper } from '@app/infrastructure/dtos';
@@ -22,6 +23,7 @@ export class TeamRepositoryImpl implements TeamRepository {
   public async getTeams(
     includeOptions?: TeamIncludeOptions,
     filterOptions?: TeamFilterOptions,
+    sortOptions?: TeamSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -50,6 +52,18 @@ export class TeamRepositoryImpl implements TeamRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

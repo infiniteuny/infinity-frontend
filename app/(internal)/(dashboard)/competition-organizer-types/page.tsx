@@ -39,7 +39,9 @@ export default async function CompetitionOrganizerTypesPage() {
       SYMBOLS.GetCompetitionOrganizerTypes,
     );
 
-    const result = await getCompetitionOrganizerTypes.execute(undefined, { perPage: 25 });
+    const result = await getCompetitionOrganizerTypes.execute(undefined, undefined, {
+      perPage: 25,
+    });
     const [competitionOrganizerTypes, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

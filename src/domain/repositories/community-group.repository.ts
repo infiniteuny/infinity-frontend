@@ -2,12 +2,14 @@ import {
   PaginationOptions,
   CommunityGroup,
   CommunityGroupFilterOptions,
+  CommunityGroupSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CommunityGroupRepository {
   getCommunityGroups(
     filterOptions?: CommunityGroupFilterOptions,
+    sortOptions?: CommunityGroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

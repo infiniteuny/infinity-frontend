@@ -3,6 +3,7 @@ import {
   TeamMember,
   TeamMemberFilterOptions,
   TeamMemberIncludeOptions,
+  TeamMemberSortOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
@@ -11,6 +12,7 @@ export interface TeamMemberRepository {
     teamId: string,
     includeOptions?: TeamMemberIncludeOptions,
     filterOptions?: TeamMemberFilterOptions,
+    sortOptions?: TeamMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

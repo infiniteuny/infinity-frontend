@@ -122,7 +122,7 @@ export default async function SingleTeamPage({ params }: Props) {
     const getCompetitionTeamTypes = serverContainer.get<GetCompetitionTeamTypes>(
       SYMBOLS.GetCompetitionTeamTypes,
     );
-    const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, {
+    const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, undefined, {
       perPage: 100,
     });
     const [teamTypes] = match(teamTypesResult, {

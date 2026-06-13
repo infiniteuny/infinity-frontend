@@ -2,7 +2,12 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import { Either, left, right } from 'effect/Either';
 import { handleAxiosError } from '@app/utils';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Permission, PermissionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Permission,
+  PermissionFilterOptions,
+  PermissionSortOptions,
+} from '@app/domain/entities';
 import { PermissionMapper } from '@app/infrastructure/dtos';
 import { PermissionRepository } from '@app/domain/repositories';
 import { SYMBOLS } from '@config';
@@ -16,6 +21,7 @@ export class PermissionRepositoryImpl implements PermissionRepository {
 
   public async getPermissions(
     filterOptions?: PermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -39,6 +45,18 @@ export class PermissionRepositoryImpl implements PermissionRepository {
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

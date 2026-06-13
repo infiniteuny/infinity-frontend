@@ -39,7 +39,7 @@ export default async function CoreTeamDivisionsPage() {
       SYMBOLS.GetCoreTeamDivisions,
     );
 
-    const result = await getCoreTeamDivisions.execute(undefined, { perPage: 25 });
+    const result = await getCoreTeamDivisions.execute(undefined, undefined, { perPage: 25 });
     const [coreTeamDivisions, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

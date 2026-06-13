@@ -48,7 +48,7 @@ export default async function ProfilePermissionsPage() {
     onRight: (data) => data,
   });
 
-  const userPermissionsResult = await getUserPermissions.execute(user.id, undefined, {
+  const userPermissionsResult = await getUserPermissions.execute(user.id, undefined, undefined, {
     perPage: 25,
   });
   const [userPermissions, paginationOptions] = match(userPermissionsResult, {

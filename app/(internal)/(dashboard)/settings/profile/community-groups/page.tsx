@@ -50,9 +50,14 @@ export default async function ProfileCommunityGroupsPage() {
     onRight: (data) => data,
   });
 
-  const userCommunityGroupsResult = await getUserCommunityGroups.execute(user.id, undefined, {
-    perPage: 25,
-  });
+  const userCommunityGroupsResult = await getUserCommunityGroups.execute(
+    user.id,
+    undefined,
+    undefined,
+    {
+      perPage: 25,
+    },
+  );
   const [userCommunityGroups, paginationOptions] = match(userCommunityGroupsResult, {
     onLeft: (error) => {
       throw error;

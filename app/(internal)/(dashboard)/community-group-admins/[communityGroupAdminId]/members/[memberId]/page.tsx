@@ -198,7 +198,9 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
   ) {
     const getCommunityGroups = serverContainer.get<GetCommunityGroups>(SYMBOLS.GetCommunityGroups);
 
-    const communityGroupsResult = await getCommunityGroups.execute(undefined, { perPage: 100 });
+    const communityGroupsResult = await getCommunityGroups.execute(undefined, undefined, {
+      perPage: 100,
+    });
     const [communityGroups] = match(communityGroupsResult, {
       onLeft: (error) => {
         throw error;

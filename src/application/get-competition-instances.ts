@@ -5,6 +5,7 @@ import {
   CompetitionInstance,
   CompetitionInstanceFilterOptions,
   CompetitionInstanceIncludeOptions,
+  CompetitionInstanceSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetCompetitionInstancesParams = [
   includeOptions?: CompetitionInstanceIncludeOptions,
   filterOptions?: CompetitionInstanceFilterOptions,
+  sortOptions?: CompetitionInstanceSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -39,6 +41,7 @@ export class GetCompetitionInstances implements UseCase<
   public async execute(
     includeOptions?: CompetitionInstanceIncludeOptions,
     filterOptions?: CompetitionInstanceFilterOptions,
+    sortOptions?: CompetitionInstanceSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -58,6 +61,7 @@ export class GetCompetitionInstances implements UseCase<
     return await this.competitionInstanceRepository.getCompetitionInstances(
       includeOptions,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

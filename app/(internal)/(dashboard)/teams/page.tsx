@@ -34,7 +34,9 @@ export default async function TeamsPage() {
   if (['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
     const getTeams = serverContainer.get<GetTeams>(SYMBOLS.GetTeams);
 
-    const result = await getTeams.execute(['leader', 'team_type'], undefined, { perPage: 25 });
+    const result = await getTeams.execute(['leader', 'team_type'], undefined, undefined, {
+      perPage: 25,
+    });
     const [teams, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

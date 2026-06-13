@@ -1,4 +1,5 @@
 import {
+  CommunityGroupSortOptions,
   PaginationOptions,
   UserCommunityGroup,
   UserCommunityGroupFilterOptions,
@@ -9,6 +10,7 @@ export interface UserCommunityGroupRepository {
   getUserCommunityGroups(
     userId: string,
     filterOptions?: UserCommunityGroupFilterOptions,
+    sortOptions?: CommunityGroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

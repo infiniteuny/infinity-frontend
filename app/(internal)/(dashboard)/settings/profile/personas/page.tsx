@@ -48,7 +48,7 @@ export default async function ProfilePersonasPage() {
     onRight: (data) => data,
   });
 
-  const userPersonasResult = await getUserPersonas.execute(user.id, undefined, {
+  const userPersonasResult = await getUserPersonas.execute(user.id, undefined, undefined, {
     perPage: 25,
   });
   const [userPersonas, paginationOptions] = match(userPersonasResult, {

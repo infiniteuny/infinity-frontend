@@ -1,12 +1,18 @@
 import type { GroupRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Group, GroupFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Group,
+  GroupFilterOptions,
+  GroupSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetGroupsParams = [
   filterOptions?: GroupFilterOptions,
+  sortOptions?: GroupSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -31,6 +37,7 @@ export class GetGroups implements UseCase<
 
   public async execute(
     filterOptions?: GroupFilterOptions,
+    sortOptions?: GroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Group[], PaginationOptions], Error>> {
@@ -39,6 +46,7 @@ export class GetGroups implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.groupRepository.getGroups(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

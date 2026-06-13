@@ -1,9 +1,15 @@
 import { Either } from 'effect/Either';
-import { PaginationOptions, Testimonial, TestimonialFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Testimonial,
+  TestimonialFilterOptions,
+  TestimonialSortOptions,
+} from '@app/domain/entities';
 
 export interface TestimonialRepository {
   getTestimonials(
     filterOptions?: TestimonialFilterOptions,
+    sortOptions?: TestimonialSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

@@ -2,6 +2,7 @@ import type { CompetitionOrganizerTypeRepository, AuthRepository } from '@app/do
 import {
   CompetitionOrganizerType,
   CompetitionOrganizerTypeFilterOptions,
+  CompetitionOrganizerTypeSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { Either, left, isRight } from 'effect/Either';
@@ -11,6 +12,7 @@ import { UseCase } from '@app/application';
 
 export type GetCompetitionOrganizerTypesParams = [
   filterOptions?: CompetitionOrganizerTypeFilterOptions,
+  sortOptions?: CompetitionOrganizerTypeSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -35,6 +37,7 @@ export class GetCompetitionOrganizerTypes implements UseCase<
 
   public async execute(
     filterOptions?: CompetitionOrganizerTypeFilterOptions,
+    sortOptions?: CompetitionOrganizerTypeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[CompetitionOrganizerType[], PaginationOptions], Error>> {
@@ -43,6 +46,7 @@ export class GetCompetitionOrganizerTypes implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.competitionOrganizerTypeRepository.getCompetitionOrganizerTypes(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

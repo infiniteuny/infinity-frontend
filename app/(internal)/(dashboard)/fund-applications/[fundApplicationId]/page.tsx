@@ -166,7 +166,9 @@ export default async function SingleFundApplicationPage({ params }: Props) {
     const getCompetitionScales = serverContainer.get<GetCompetitionScales>(
       SYMBOLS.GetCompetitionScales,
     );
-    const competitionScalesResult = await getCompetitionScales.execute(undefined, { perPage: 100 });
+    const competitionScalesResult = await getCompetitionScales.execute(undefined, undefined, {
+      perPage: 100,
+    });
     const [competitionScales] = match(competitionScalesResult, {
       onLeft: (error) => {
         throw error;

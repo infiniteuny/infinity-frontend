@@ -4,12 +4,14 @@ import {
   FundApplication,
   FundApplicationFilterOptions,
   FundApplicationIncludeOptions,
+  FundApplicationSortOptions,
 } from '@app/domain/entities';
 
 export interface FundApplicationRepository {
   getFundApplications(
     includeOptions?: FundApplicationIncludeOptions,
     filterOptions?: FundApplicationFilterOptions,
+    sortOptions?: FundApplicationSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

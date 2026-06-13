@@ -39,7 +39,7 @@ export default async function CompetitionScalesPage() {
       SYMBOLS.GetCompetitionScales,
     );
 
-    const result = await getCompetitionScales.execute(undefined, { perPage: 25 });
+    const result = await getCompetitionScales.execute(undefined, undefined, { perPage: 25 });
     const [competitionScales, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

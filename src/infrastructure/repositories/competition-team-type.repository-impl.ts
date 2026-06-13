@@ -2,6 +2,7 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import {
   CompetitionTeamType,
   CompetitionTeamTypeFilterOptions,
+  CompetitionTeamTypeSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { CompetitionTeamTypeMapper } from '@app/infrastructure/dtos';
@@ -20,6 +21,7 @@ export class CompetitionTeamTypeRepositoryImpl implements CompetitionTeamTypeRep
 
   public async getCompetitionTeamTypes(
     filterOptions?: CompetitionTeamTypeFilterOptions,
+    sortOptions?: CompetitionTeamTypeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -43,6 +45,18 @@ export class CompetitionTeamTypeRepositoryImpl implements CompetitionTeamTypeRep
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

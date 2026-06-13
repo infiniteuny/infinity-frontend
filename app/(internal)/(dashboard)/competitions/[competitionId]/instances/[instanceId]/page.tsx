@@ -180,7 +180,7 @@ export default async function SingleCompetitionInstancePage({ params }: Props) {
       SYMBOLS.GetCompetitionOrganizerTypes,
     );
 
-    const organizerTypesResult = await getCompetitionOrganizerTypes.execute(undefined, {
+    const organizerTypesResult = await getCompetitionOrganizerTypes.execute(undefined, undefined, {
       perPage: 100,
     });
     const [competitionOrganizerTypes] = match(organizerTypesResult, {

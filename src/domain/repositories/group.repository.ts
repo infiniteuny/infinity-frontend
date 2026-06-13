@@ -1,9 +1,15 @@
-import { PaginationOptions, Group, GroupFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Group,
+  GroupFilterOptions,
+  GroupSortOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface GroupRepository {
   getGroups(
     filterOptions?: GroupFilterOptions,
+    sortOptions?: GroupSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

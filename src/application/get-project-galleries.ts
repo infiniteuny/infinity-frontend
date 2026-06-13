@@ -5,12 +5,14 @@ import {
   PaginationOptions,
   ProjectGallery,
   ProjectGalleryFilterOptions,
+  ProjectGallerySortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetProjectGalleriesParams = [
   filterOptions?: ProjectGalleryFilterOptions,
+  sortOptions?: ProjectGallerySortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -36,6 +38,7 @@ export class GetProjectGalleries implements UseCase<
 
   public async execute(
     filterOptions?: ProjectGalleryFilterOptions,
+    sortOptions?: ProjectGallerySortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -54,6 +57,7 @@ export class GetProjectGalleries implements UseCase<
 
     return await this.projectGalleryRepository.getProjectGalleries(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

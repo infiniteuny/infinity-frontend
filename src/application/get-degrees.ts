@@ -1,12 +1,18 @@
 import type { DegreeRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Degree, DegreeFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Degree,
+  DegreeFilterOptions,
+  DegreeSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetDegreesParams = [
   filterOptions?: DegreeFilterOptions,
+  sortOptions?: DegreeSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -31,6 +37,7 @@ export class GetDegrees implements UseCase<
 
   public async execute(
     filterOptions?: DegreeFilterOptions,
+    sortOptions?: DegreeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Degree[], PaginationOptions], Error>> {
@@ -39,6 +46,7 @@ export class GetDegrees implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.degreeRepository.getDegrees(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

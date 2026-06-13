@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function ProjectGalleriesPage() {
   const getProjectGalleries = serverContainer.get<GetProjectGalleries>(SYMBOLS.GetProjectGalleries);
 
-  const result = await getProjectGalleries.execute(undefined, { perPage: 25 });
+  const result = await getProjectGalleries.execute(undefined, undefined, { perPage: 25 });
   const [projectGalleries, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

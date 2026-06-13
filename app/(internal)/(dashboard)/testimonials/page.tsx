@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function TestimonialsPage() {
   const getTestimonials = serverContainer.get<GetTestimonials>(SYMBOLS.GetTestimonials);
 
-  const result = await getTestimonials.execute(undefined, { perPage: 25 });
+  const result = await getTestimonials.execute(undefined, undefined, { perPage: 25 });
   const [testimonials, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

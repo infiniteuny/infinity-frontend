@@ -108,6 +108,7 @@ export default async function TeamMembersPage({ params }: Props) {
       teamId,
       ['major', 'major.faculty'],
       undefined,
+      undefined,
       { perPage: 25 },
     );
     const [teamMembers, paginationOptions] = match(teamMembersResult, {

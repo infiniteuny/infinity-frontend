@@ -6,6 +6,7 @@ import {
   Achievement,
   AchievementFilterOptions,
   AchievementIncludeOptions,
+  AchievementSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
@@ -13,6 +14,7 @@ import { UseCase } from '@app/application';
 export type GetAchievementsParams = [
   includeOptions?: AchievementIncludeOptions,
   filterOptions?: AchievementFilterOptions,
+  sortOptions?: AchievementSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -39,6 +41,7 @@ export class GetAchievements implements UseCase<
   public async execute(
     includeOptions?: AchievementIncludeOptions,
     filterOptions?: AchievementFilterOptions,
+    sortOptions?: AchievementSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -58,6 +61,7 @@ export class GetAchievements implements UseCase<
     return await this.achievementRepository.getAchievements(
       includeOptions,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

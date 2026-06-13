@@ -6,6 +6,7 @@ import {
   CommunityGroupAdminMember,
   CommunityGroupAdminMemberFilterOptions,
   CommunityGroupAdminMemberIncludeOptions,
+  CommunityGroupAdminMemberSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { CommunityGroupAdminMemberMapper } from '@app/infrastructure/dtos';
@@ -23,6 +24,7 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
     communityGroupAdminId: string,
     includeOptions?: CommunityGroupAdminMemberIncludeOptions,
     filterOptions?: CommunityGroupAdminMemberFilterOptions,
+    sortOptions?: CommunityGroupAdminMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -65,6 +67,18 @@ export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAd
               filterOptions?.updatedAt != null
                 ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
                 : undefined,
+            sorts: sortOptions
+              ? Object.entries(sortOptions)
+                  .map((sortOption) => {
+                    const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                    const field = sortOption[0]
+                      .split(/(?=[A-Z])/)
+                      .join('_')
+                      .toLowerCase();
+                    return prefix + field;
+                  })
+                  .join(',')
+              : undefined,
           },
         },
       );

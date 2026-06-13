@@ -1,12 +1,18 @@
 import type { FacultyRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Faculty, FacultyFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Faculty,
+  FacultyFilterOptions,
+  FacultySortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetFacultiesParams = [
   filterOptions?: FacultyFilterOptions,
+  sortOptions?: FacultySortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -31,6 +37,7 @@ export class GetFaculties implements UseCase<
 
   public async execute(
     filterOptions?: FacultyFilterOptions,
+    sortOptions?: FacultySortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Faculty[], PaginationOptions], Error>> {
@@ -39,6 +46,7 @@ export class GetFaculties implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.facultyRepository.getFaculties(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

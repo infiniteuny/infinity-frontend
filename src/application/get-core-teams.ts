@@ -1,12 +1,18 @@
 import type { CoreTeamRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, CoreTeam, CoreTeamFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  CoreTeam,
+  CoreTeamFilterOptions,
+  CoreTeamSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetCoreTeamsParams = [
   filterOptions?: CoreTeamFilterOptions,
+  sortOptions?: CoreTeamSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -32,6 +38,7 @@ export class GetCoreTeams implements UseCase<
 
   public async execute(
     filterOptions?: CoreTeamFilterOptions,
+    sortOptions?: CoreTeamSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -50,6 +57,7 @@ export class GetCoreTeams implements UseCase<
 
     return await this.coreTeamRepository.getCoreTeams(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

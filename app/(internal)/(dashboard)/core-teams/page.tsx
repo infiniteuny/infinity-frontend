@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function CoreTeamsPage() {
   const getCoreTeams = serverContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams);
 
-  const result = await getCoreTeams.execute(undefined, { perPage: 25 });
+  const result = await getCoreTeams.execute(undefined, undefined, { perPage: 25 });
   const [coreTeams, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

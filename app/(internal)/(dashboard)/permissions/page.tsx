@@ -37,7 +37,7 @@ export default async function PermissionsPage() {
   if (['read-permission'].some((p) => userPermissions.has(p))) {
     const getPermissions = serverContainer.get<GetPermissions>(SYMBOLS.GetPermissions);
 
-    const result = await getPermissions.execute(undefined, { perPage: 25 });
+    const result = await getPermissions.execute(undefined, undefined, { perPage: 25 });
     const [permissions, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;

@@ -115,7 +115,7 @@ export default async function SingleCoreTeamMemberEditPage({ params }: Props) {
       cache(
         async () => await getCoreTeamMember.execute(memberId, ['membership.core_team_division']),
       )(),
-      getCoreTeamDivisions.execute(undefined, { perPage: 100 }),
+      getCoreTeamDivisions.execute(undefined, undefined, { perPage: 100 }),
     ]);
 
     const [coreTeamDivisions] = match(coreTeamDivisionsResult, {

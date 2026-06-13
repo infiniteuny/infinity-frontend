@@ -8,12 +8,14 @@ import {
   CommunityGroupAdminMember,
   CommunityGroupAdminMemberFilterOptions,
   CommunityGroupAdminMemberIncludeOptions,
+  CommunityGroupAdminMemberSortOptions,
 } from '@app/domain/entities';
 
 export type GetCommunityGroupAdminMembersParams = [
   communityGroupAdminId: string,
   includeOptions?: CommunityGroupAdminMemberIncludeOptions,
   filterOptions?: CommunityGroupAdminMemberFilterOptions,
+  sortOptions?: CommunityGroupAdminMemberSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -41,6 +43,7 @@ export class GetCommunityGroupAdminMembers implements UseCase<
     communityGroupAdminId: string,
     includeOptions?: CommunityGroupAdminMemberIncludeOptions,
     filterOptions?: CommunityGroupAdminMemberFilterOptions,
+    sortOptions?: CommunityGroupAdminMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -61,6 +64,7 @@ export class GetCommunityGroupAdminMembers implements UseCase<
       communityGroupAdminId,
       includeOptions,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

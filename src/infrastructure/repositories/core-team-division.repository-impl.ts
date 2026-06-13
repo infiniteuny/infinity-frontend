@@ -2,6 +2,7 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import {
   CoreTeamDivision,
   CoreTeamDivisionFilterOptions,
+  CoreTeamDivisionSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { CoreTeamDivisionMapper } from '@app/infrastructure/dtos';
@@ -20,6 +21,7 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
 
   public async getCoreTeamDivisions(
     filterOptions?: CoreTeamDivisionFilterOptions,
+    sortOptions?: CoreTeamDivisionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -43,6 +45,18 @@ export class CoreTeamDivisionRepositoryImpl implements CoreTeamDivisionRepositor
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

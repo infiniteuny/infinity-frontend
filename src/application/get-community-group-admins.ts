@@ -5,12 +5,14 @@ import {
   PaginationOptions,
   CommunityGroupAdmin,
   CommunityGroupAdminFilterOptions,
+  CommunityGroupAdminSortOptions,
 } from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetCommunityGroupAdminsParams = [
   filterOptions?: CommunityGroupAdminFilterOptions,
+  sortOptions?: CommunityGroupAdminSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -36,6 +38,7 @@ export class GetCommunityGroupAdmins implements UseCase<
 
   public async execute(
     filterOptions?: CommunityGroupAdminFilterOptions,
+    sortOptions?: CommunityGroupAdminSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -54,6 +57,7 @@ export class GetCommunityGroupAdmins implements UseCase<
 
     return await this.communityGroupAdminRepository.getCommunityGroupAdmins(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

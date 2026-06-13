@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function CompetitionsPage() {
   const getCompetitions = serverContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions);
 
-  const result = await getCompetitions.execute(undefined, { perPage: 25 });
+  const result = await getCompetitions.execute(undefined, undefined, { perPage: 25 });
   const [competitions, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

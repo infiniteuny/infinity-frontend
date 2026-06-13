@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function PersonasPage() {
   const getPersonas = serverContainer.get<GetPersonas>(SYMBOLS.GetPersonas);
 
-  const result = await getPersonas.execute(undefined, { perPage: 25 });
+  const result = await getPersonas.execute(undefined, undefined, { perPage: 25 });
   const [personas, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;

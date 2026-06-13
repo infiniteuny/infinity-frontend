@@ -1,12 +1,18 @@
 import type { CompetitionRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { Competition, CompetitionFilterOptions, PaginationOptions } from '@app/domain/entities';
+import {
+  Competition,
+  CompetitionFilterOptions,
+  CompetitionSortOptions,
+  PaginationOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetCompetitionsParams = [
   filterOptions?: CompetitionFilterOptions,
+  sortOptions?: CompetitionSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -32,6 +38,7 @@ export class GetCompetitions implements UseCase<
 
   public async execute(
     filterOptions?: CompetitionFilterOptions,
+    sortOptions?: CompetitionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -50,6 +57,7 @@ export class GetCompetitions implements UseCase<
 
     return await this.competitionRepository.getCompetitions(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

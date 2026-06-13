@@ -4,12 +4,14 @@ import {
   Team,
   TeamFilterOptions,
   TeamIncludeOptions,
+  TeamSortOptions,
 } from '@app/domain/entities';
 
 export interface TeamRepository {
   getTeams(
     includeOptions?: TeamIncludeOptions,
     filterOptions?: TeamFilterOptions,
+    sortOptions?: TeamSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

@@ -8,12 +8,14 @@ import {
   CoreTeamMember,
   CoreTeamMemberFilterOptions,
   CoreTeamMemberIncludeOptions,
+  CoreTeamMemberSortOptions,
 } from '@app/domain/entities';
 
 export type GetCoreTeamMembersParams = [
   coreTeamId: string,
   includeOptions?: CoreTeamMemberIncludeOptions,
   filterOptions?: CoreTeamMemberFilterOptions,
+  sortOptions?: CoreTeamMemberSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -41,6 +43,7 @@ export class GetCoreTeamMembers implements UseCase<
     coreTeamId: string,
     includeOptions?: CoreTeamMemberIncludeOptions,
     filterOptions?: CoreTeamMemberFilterOptions,
+    sortOptions?: CoreTeamMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -61,6 +64,7 @@ export class GetCoreTeamMembers implements UseCase<
       coreTeamId,
       includeOptions,
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

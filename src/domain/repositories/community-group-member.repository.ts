@@ -2,6 +2,7 @@ import {
   CommunityGroupMember,
   CommunityGroupMemberFilterOptions,
   CommunityGroupMemberIncludeOptions,
+  CommunityGroupMemberSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
@@ -11,6 +12,7 @@ export interface CommunityGroupMemberRepository {
     communityGroupId: string,
     includeOptions?: CommunityGroupMemberIncludeOptions,
     filterOptions?: CommunityGroupMemberFilterOptions,
+    sortOptions?: CommunityGroupMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

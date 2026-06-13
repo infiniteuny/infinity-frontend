@@ -1,12 +1,18 @@
 import type { PermissionRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Permission, PermissionFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Permission,
+  PermissionFilterOptions,
+  PermissionSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetPermissionsParams = [
   filterOptions?: PermissionFilterOptions,
+  sortOptions?: PermissionSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
 ];
@@ -31,6 +37,7 @@ export class GetPermissions implements UseCase<
 
   public async execute(
     filterOptions?: PermissionFilterOptions,
+    sortOptions?: PermissionSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
   ): Promise<Either<[Permission[], PaginationOptions], Error>> {
@@ -39,6 +46,7 @@ export class GetPermissions implements UseCase<
     if (isRight(accessTokenResult)) {
       return await this.permissionRepository.getPermissions(
         filterOptions,
+        sortOptions,
         paginationOptions,
         abortSignal,
         accessTokenResult.right,

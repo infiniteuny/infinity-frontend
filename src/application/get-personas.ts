@@ -1,12 +1,18 @@
 import type { PersonaRepository, AuthRepository } from '@app/domain/repositories';
 import { Either, left, isRight } from 'effect/Either';
 import { inject, injectable } from 'inversify';
-import { PaginationOptions, Persona, PersonaFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Persona,
+  PersonaFilterOptions,
+  PersonaSortOptions,
+} from '@app/domain/entities';
 import { SYMBOLS } from '@config';
 import { UseCase } from '@app/application';
 
 export type GetPersonasParams = [
   filterOptions?: PersonaFilterOptions,
+  sortOptions?: PersonaSortOptions,
   paginationOptions?: PaginationOptions,
   abortSignal?: AbortSignal,
   authenticate?: boolean,
@@ -32,6 +38,7 @@ export class GetPersonas implements UseCase<
 
   public async execute(
     filterOptions?: PersonaFilterOptions,
+    sortOptions?: PersonaSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     authenticate: boolean = true,
@@ -50,6 +57,7 @@ export class GetPersonas implements UseCase<
 
     return await this.personaRepository.getPersonas(
       filterOptions,
+      sortOptions,
       paginationOptions,
       abortSignal,
       accessToken,

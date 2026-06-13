@@ -1,9 +1,15 @@
-import { PaginationOptions, CoreTeam, CoreTeamFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  CoreTeam,
+  CoreTeamFilterOptions,
+  CoreTeamSortOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface CoreTeamRepository {
   getCoreTeams(
     filterOptions?: CoreTeamFilterOptions,
+    sortOptions?: CoreTeamSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

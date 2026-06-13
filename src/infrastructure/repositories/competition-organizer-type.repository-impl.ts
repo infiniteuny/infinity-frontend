@@ -2,6 +2,7 @@ import type { InfinityApiDataSource } from '@app/infrastructure/datasources/serv
 import {
   CompetitionOrganizerType,
   CompetitionOrganizerTypeFilterOptions,
+  CompetitionOrganizerTypeSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { CompetitionOrganizerTypeMapper } from '@app/infrastructure/dtos';
@@ -20,6 +21,7 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
 
   public async getCompetitionOrganizerTypes(
     filterOptions?: CompetitionOrganizerTypeFilterOptions,
+    sortOptions?: CompetitionOrganizerTypeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,
@@ -43,6 +45,18 @@ export class CompetitionOrganizerTypeRepositoryImpl implements CompetitionOrgani
             filterOptions?.updatedAt != null
               ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
               : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
         },
       });
 

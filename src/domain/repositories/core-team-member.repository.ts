@@ -2,6 +2,7 @@ import {
   CoreTeamMember,
   CoreTeamMemberFilterOptions,
   CoreTeamMemberIncludeOptions,
+  CoreTeamMemberSortOptions,
   PaginationOptions,
 } from '@app/domain/entities';
 import { Either } from 'effect/Either';
@@ -11,6 +12,7 @@ export interface CoreTeamMemberRepository {
     coreTeamId: string,
     includeOptions?: CoreTeamMemberIncludeOptions,
     filterOptions?: CoreTeamMemberFilterOptions,
+    sortOptions?: CoreTeamMemberSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

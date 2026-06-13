@@ -3,11 +3,13 @@ import {
   PaginationOptions,
   CompetitionTimeRange,
   CompetitionTimeRangeFilterOptions,
+  CompetitionTimeRangeSortOptions,
 } from '@app/domain/entities';
 
 export interface CompetitionTimeRangeRepository {
   getCompetitionTimeRanges(
     filterOptions?: CompetitionTimeRangeFilterOptions,
+    sortOptions?: CompetitionTimeRangeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

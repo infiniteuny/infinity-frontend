@@ -1,9 +1,15 @@
-import { PaginationOptions, Degree, DegreeFilterOptions } from '@app/domain/entities';
+import {
+  PaginationOptions,
+  Degree,
+  DegreeFilterOptions,
+  DegreeSortOptions,
+} from '@app/domain/entities';
 import { Either } from 'effect/Either';
 
 export interface DegreeRepository {
   getDegrees(
     filterOptions?: DegreeFilterOptions,
+    sortOptions?: DegreeSortOptions,
     paginationOptions?: PaginationOptions,
     abortSignal?: AbortSignal,
     token?: string,

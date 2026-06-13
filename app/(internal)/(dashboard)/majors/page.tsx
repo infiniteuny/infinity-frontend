@@ -34,7 +34,9 @@ export default async function MajorsPage() {
   if (['read-major'].some((p) => userPermissions.has(p))) {
     const getMajors = serverContainer.get<GetMajors>(SYMBOLS.GetMajors);
 
-    const result = await getMajors.execute(['degree', 'faculty'], undefined, { perPage: 25 });
+    const result = await getMajors.execute(['degree', 'faculty'], undefined, undefined, {
+      perPage: 25,
+    });
     const [majors, paginationOptions] = match(result, {
       onLeft: (error) => {
         throw error;
