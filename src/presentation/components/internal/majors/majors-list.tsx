@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import {
   AlertDialog,
+  DegreeFilterInput,
   EmptyRowOverlay,
+  FacultyFilterInput,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -112,6 +114,16 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
         case 'code':
           if (filterItem.value != null) {
             filterOptions.code = String(filterItem.value);
+          }
+          break;
+        case 'degree':
+          if (filterItem.value != null) {
+            filterOptions.degreeId = String(filterItem.value);
+          }
+          break;
+        case 'faculty':
+          if (filterItem.value != null) {
+            filterOptions.facultyId = String(filterItem.value);
           }
           break;
       }
@@ -301,16 +313,48 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
                 headerName: 'Degree',
                 flex: 1.5,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: DegreeFilterInput,
+                  },
+                ],
               },
               {
                 field: 'faculty',
                 headerName: 'Faculty',
                 flex: 1.5,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: FacultyFilterInput,
+                  },
+                ],
               },
               {
                 field: 'actions',

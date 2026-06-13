@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import {
   AlertDialog,
+  CompetitionInstanceFilterInput,
+  CompetitionScaleFilterInput,
   EmptyRowOverlay,
   StringOperators,
+  TeamFilterInput,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
@@ -117,6 +120,21 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
 
     for (const filterItem of model.items) {
       switch (filterItem.field) {
+        case 'team':
+          if (filterItem.value != null) {
+            filterOptions.teamId = String(filterItem.value);
+          }
+          break;
+        case 'competition':
+          if (filterItem.value != null) {
+            filterOptions.competitionInstanceId = String(filterItem.value);
+          }
+          break;
+        case 'competitionScale':
+          if (filterItem.value != null) {
+            filterOptions.competitionScaleId = String(filterItem.value);
+          }
+          break;
         case 'competitionBranch':
           if (filterItem.value != null) {
             filterOptions.competitionBranch = String(filterItem.value);
@@ -299,24 +317,72 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
                 headerName: 'Team',
                 flex: 1,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: TeamFilterInput,
+                  },
+                ],
               },
               {
                 field: 'competition',
                 headerName: 'Competition',
                 flex: 2,
                 minWidth: 200,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: CompetitionInstanceFilterInput,
+                  },
+                ],
               },
               {
                 field: 'competitionScale',
                 headerName: 'Scale',
                 flex: 1,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: CompetitionScaleFilterInput,
+                  },
+                ],
               },
               {
                 field: 'competitionBranch',
@@ -366,7 +432,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
                 minWidth: 120,
                 filterable: true,
                 sortable: true,
-                filterOperators: [StringOperators.contains],
+                filterOperators: [StringOperators.equals],
               },
               {
                 field: 'actions',

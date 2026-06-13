@@ -6,6 +6,7 @@ import {
   BooleanOperators,
   DateOperators,
   EmptyRowOverlay,
+  MajorFilterInput,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -157,6 +158,11 @@ export function CommunityGroupAdminMembersList({
         case 'studentId':
           if (filterItem.value != null) {
             filterOptions.studentId = String(filterItem.value);
+          }
+          break;
+        case 'major':
+          if (filterItem.value != null) {
+            filterOptions.majorId = String(filterItem.value);
           }
           break;
         case 'isMember':
@@ -437,8 +443,24 @@ export function CommunityGroupAdminMembersList({
                 headerName: 'Major',
                 flex: 1.2,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: MajorFilterInput,
+                  },
+                ],
               },
               {
                 field: 'faculty',

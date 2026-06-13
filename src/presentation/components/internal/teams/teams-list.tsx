@@ -4,8 +4,10 @@ import Link from 'next/link';
 import {
   AlertDialog,
   BooleanOperators,
+  CompetitionTeamTypeFilterInput,
   EmptyRowOverlay,
   StringOperators,
+  UserFilterInput,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
@@ -103,6 +105,16 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
         case 'name':
           if (filterItem.value != null) {
             filterOptions.name = String(filterItem.value);
+          }
+          break;
+        case 'leader':
+          if (filterItem.value != null) {
+            filterOptions.leaderId = String(filterItem.value);
+          }
+          break;
+        case 'team_type':
+          if (filterItem.value != null) {
+            filterOptions.teamTypeId = String(filterItem.value);
           }
           break;
         case 'isPersonal':
@@ -291,16 +303,48 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
                 headerName: 'Leader',
                 flex: 2,
                 minWidth: 300,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: UserFilterInput,
+                  },
+                ],
               },
               {
                 field: 'team_type',
                 headerName: 'Team Type',
                 flex: 1,
                 minWidth: 170,
-                filterable: false,
+                filterable: true,
                 sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: CompetitionTeamTypeFilterInput,
+                  },
+                ],
               },
               {
                 field: 'isPersonal',

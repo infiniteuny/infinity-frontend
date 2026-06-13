@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {
   AlertDialog,
+  CompetitionOrganizerTypeFilterInput,
   DateOperators,
   EmptyRowOverlay,
   StringOperators,
@@ -150,6 +151,11 @@ export function CompetitionInstancesList({
         case 'location':
           if (filterItem.value != null) {
             filterOptions.location = String(filterItem.value);
+          }
+          break;
+        case 'organizerType':
+          if (filterItem.value != null) {
+            filterOptions.organizerTypeId = String(filterItem.value);
           }
           break;
         case 'startDate':
@@ -377,6 +383,30 @@ export function CompetitionInstancesList({
                 filterOperators: [StringOperators.contains],
               },
               {
+                field: 'organizerType',
+                headerName: 'Organizer Type',
+                flex: 1,
+                minWidth: 170,
+                filterable: true,
+                sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: CompetitionOrganizerTypeFilterInput,
+                  },
+                ],
+              },
+              {
                 field: 'location',
                 headerName: 'Location',
                 flex: 2,
@@ -472,6 +502,7 @@ export function CompetitionInstancesList({
               name: instance.name,
               shortname: instance.shortname,
               organizer: instance.organizer,
+              organizerType: instance.organizerType?.name || 'N/A',
               location: instance.location,
               startDate: instance.startDate,
               endDate: instance.endDate,
