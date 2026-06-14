@@ -5,12 +5,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  CommunityGroupAdminMembersList,
-  CommunityGroupAdminMembersToolbar,
-} from '@app/presentation/components/internal/community-group-admin-members';
+import { CommunityGroupAdminMembersList } from '@app/presentation/components/internal/community-group-admin-members';
 import { GetCommunityGroupAdmin, GetCommunityGroupAdminMembers } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -100,12 +97,6 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
         { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
       ]}
     >
-      <SectionHeader
-        title={`${communityGroupAdmin.year} Members`}
-        backUrl={`/community-group-admins/${communityGroupAdminId}`}
-      >
-        <CommunityGroupAdminMembersToolbar communityGroupAdminId={communityGroupAdminId} />
-      </SectionHeader>
       <CommunityGroupAdminMembersList
         communityGroupAdminId={communityGroupAdminId}
         initialCommunityGroupAdminMembers={

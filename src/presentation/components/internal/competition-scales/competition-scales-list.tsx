@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   AlertDialog,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionScale, GetCompetitionScales } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CompetitionScalesToolbar } from './competition-scales-toolbar';
 
 type Props = {
   initialCompetitionScales: CompetitionScaleDto[];
@@ -85,6 +88,7 @@ export function CompetitionScalesList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedscaleId, setSelectedscaleId] = useState<string | null>(null);
@@ -260,6 +264,9 @@ export function CompetitionScalesList({
 
   return (
     <>
+      <SectionHeader title="Scales">
+        <CompetitionScalesToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -375,6 +382,7 @@ export function CompetitionScalesList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

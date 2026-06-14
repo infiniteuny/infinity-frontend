@@ -7,6 +7,7 @@ import {
   DateOperators,
   EmptyRowOverlay,
   MajorFilterInput,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -21,6 +22,7 @@ import {
   GridActionsCell,
   GridSortModel,
   GridFilterModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { DeleteUser, GetUsers } from '@app/application';
@@ -45,6 +47,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import { convertDateFilterOperator } from '@app/utils';
+import { UsersToolbar } from './users-toolbar';
 
 type Props = {
   initialUsers: UserDto[];
@@ -81,7 +84,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
-  const lastFetchedStateRef = useRef<string>('[]');
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
@@ -342,6 +345,9 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
 
   return (
     <>
+      <SectionHeader title="Users">
+        <UsersToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -635,6 +641,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

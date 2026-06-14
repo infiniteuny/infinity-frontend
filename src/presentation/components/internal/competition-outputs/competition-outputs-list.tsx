@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   AlertDialog,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionOutput, GetCompetitionOutputs } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CompetitionOutputsToolbar } from './competition-outputs-toolbar';
 
 type Props = {
   initialCompetitionOutputs: CompetitionOutputDto[];
@@ -85,6 +88,7 @@ export function CompetitionOutputsList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedOutputId, setSelectedOutputId] = useState<string | null>(null);
@@ -260,6 +264,9 @@ export function CompetitionOutputsList({
 
   return (
     <>
+      <SectionHeader title="Outputs">
+        <CompetitionOutputsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -375,6 +382,7 @@ export function CompetitionOutputsList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

@@ -1,7 +1,4 @@
-import {
-  CompetitionTimeRangesList,
-  CompetitionTimeRangesToolbar,
-} from '@app/presentation/components/internal/competition-time-ranges';
+import { CompetitionTimeRangesList } from '@app/presentation/components/internal/competition-time-ranges';
 import {
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
@@ -12,7 +9,7 @@ import { GetCompetitionTimeRanges, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -55,9 +52,6 @@ export default async function CompetitionTimeRangesPage() {
           { label: 'Competition Time Ranges', url: '/competition-time-ranges' },
         ]}
       >
-        <SectionHeader title="Competition Time Ranges" backUrl="/settings">
-          <CompetitionTimeRangesToolbar />
-        </SectionHeader>
         <CompetitionTimeRangesList
           initialCompetitionTimeRanges={
             competitionTimeRanges.map(

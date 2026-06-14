@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetSession, GetUser, GetUserGroups } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -13,10 +13,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserGroupsList,
-  UserGroupsToolbar,
-} from '@app/presentation/components/internal/user-groups';
+import { UserGroupsList } from '@app/presentation/components/internal/user-groups';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,9 +113,6 @@ export default async function UserGroupsPage({ params }: Props) {
           { label: 'Groups', url: `/users/${userId}/groups` },
         ]}
       >
-        <SectionHeader title={`${user.name}'s Groups`} backUrl={`/users/${userId}`}>
-          <UserGroupsToolbar userId={userId} />
-        </SectionHeader>
         <UserGroupsList
           userId={userId}
           initialUserGroups={userGroups.map(UserGroupMapper.fromDomainToDto) as UserGroupDto[]}

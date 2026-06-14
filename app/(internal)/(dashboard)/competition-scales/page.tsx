@@ -1,7 +1,4 @@
-import {
-  CompetitionScalesList,
-  CompetitionScalesToolbar,
-} from '@app/presentation/components/internal/competition-scales';
+import { CompetitionScalesList } from '@app/presentation/components/internal/competition-scales';
 import {
   CompetitionScaleDto,
   CompetitionScaleMapper,
@@ -9,7 +6,7 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCompetitionScales, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -55,9 +52,6 @@ export default async function CompetitionScalesPage() {
           { label: 'Competition Scales', url: '/competition-scales' },
         ]}
       >
-        <SectionHeader title="Competition Scales" backUrl="/settings">
-          <CompetitionScalesToolbar />
-        </SectionHeader>
         <CompetitionScalesList
           initialCompetitionScales={
             competitionScales.map(CompetitionScaleMapper.fromDomainToDto) as CompetitionScaleDto[]

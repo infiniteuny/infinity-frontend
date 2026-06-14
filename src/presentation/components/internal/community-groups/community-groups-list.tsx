@@ -5,6 +5,7 @@ import {
   AlertDialog,
   BooleanOperators,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -31,6 +32,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCommunityGroup, GetCommunityGroups } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -39,6 +41,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CommunityGroupsToolbar } from './community-groups-toolbar';
 
 type Props = {
   initialCommunityGroups: CommunityGroupDto[];
@@ -80,6 +83,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCommunityGroupId, setSelectedCommunityGroupId] = useState<string | null>(null);
   const [selectedCommunityGroupName, setSelectedCommunityGroupName] = useState<string | null>(null);
@@ -225,6 +229,9 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
 
   return (
     <>
+      <SectionHeader title="Community Groups">
+        <CommunityGroupsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -338,6 +345,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
             initialState={{ columns: { columnVisibilityModel: { id: false } } }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

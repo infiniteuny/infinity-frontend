@@ -1,7 +1,4 @@
-import {
-  CommunityGroupsList,
-  CommunityGroupsToolbar,
-} from '@app/presentation/components/internal/community-groups';
+import { CommunityGroupsList } from '@app/presentation/components/internal/community-groups';
 import {
   CommunityGroupDto,
   CommunityGroupMapper,
@@ -9,7 +6,7 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCommunityGroups } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
@@ -40,9 +37,6 @@ export default async function CommunityGroupsPage() {
         { label: 'Community Groups', url: '/community-groups' },
       ]}
     >
-      <SectionHeader title="Community Groups" backUrl="/settings">
-        <CommunityGroupsToolbar />
-      </SectionHeader>
       <CommunityGroupsList
         initialCommunityGroups={
           communityGroups.map(CommunityGroupMapper.fromDomainToDto) as CommunityGroupDto[]

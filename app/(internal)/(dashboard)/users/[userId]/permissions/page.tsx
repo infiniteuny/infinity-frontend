@@ -9,13 +9,10 @@ import {
   UserPermissionDto,
   UserPermissionMapper,
 } from '@app/infrastructure/dtos';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserPermissionsList,
-  UserPermissionsToolbar,
-} from '@app/presentation/components/internal/user-permissions';
+import { UserPermissionsList } from '@app/presentation/components/internal/user-permissions';
 import { cache } from 'react';
 
 export const dynamic = 'force-dynamic';
@@ -116,9 +113,6 @@ export default async function UserPermissionsPage({ params }: Props) {
           { label: 'Permissions', url: `/users/${userId}/permissions` },
         ]}
       >
-        <SectionHeader title={`${user.name}'s Permissions`} backUrl={`/users/${userId}`}>
-          <UserPermissionsToolbar userId={userId} />
-        </SectionHeader>
         <UserPermissionsList
           userId={userId}
           initialUserPermissions={

@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetUser, GetUserCommunityGroups } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -13,10 +13,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserCommunityGroupsList,
-  UserCommunityGroupsToolbar,
-} from '@app/presentation/components/internal/user-community-groups';
+import { UserCommunityGroupsList } from '@app/presentation/components/internal/user-community-groups';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,9 +82,6 @@ export default async function UserCommunityGroupsPage({ params }: Props) {
         { label: 'Community Groups', url: `/users/${userId}/community-groups` },
       ]}
     >
-      <SectionHeader title={`${user.name}'s Community Groups`} backUrl={`/users/${userId}`}>
-        <UserCommunityGroupsToolbar userId={userId} />
-      </SectionHeader>
       <UserCommunityGroupsList
         userId={userId}
         initialUserCommunityGroups={

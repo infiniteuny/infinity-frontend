@@ -1,7 +1,4 @@
-import {
-  CoreTeamDivisionsList,
-  CoreTeamDivisionsToolbar,
-} from '@app/presentation/components/internal/core-team-divisions';
+import { CoreTeamDivisionsList } from '@app/presentation/components/internal/core-team-divisions';
 import {
   CoreTeamDivisionDto,
   CoreTeamDivisionMapper,
@@ -9,7 +6,7 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCoreTeamDivisions, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -55,9 +52,6 @@ export default async function CoreTeamDivisionsPage() {
           { label: 'Core Team Divisions', url: '/core-team-divisions' },
         ]}
       >
-        <SectionHeader title="Core Team Divisions" backUrl="/settings">
-          <CoreTeamDivisionsToolbar />
-        </SectionHeader>
         <CoreTeamDivisionsList
           initialCoreTeamDivisions={
             coreTeamDivisions.map(CoreTeamDivisionMapper.fromDomainToDto) as CoreTeamDivisionDto[]

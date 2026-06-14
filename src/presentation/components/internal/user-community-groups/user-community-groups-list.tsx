@@ -5,6 +5,7 @@ import {
   AlertDialog,
   BooleanOperators,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -19,6 +20,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCommunityGroupMember, GetUserCommunityGroups } from '@app/application';
 import { DeleteRounded, VisibilityRounded } from '@mui/icons-material';
@@ -39,6 +41,7 @@ import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { UserCommunityGroupsToolbar } from './user-community-groups-toolbar';
 
 type Props = {
   initialUserCommunityGroups: UserCommunityGroupDto[];
@@ -88,6 +91,7 @@ export function UserCommunityGroupsList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedUserCommunityGroupId, setSelectedUserCommunityGroupId] = useState<string | null>(
@@ -299,6 +303,9 @@ export function UserCommunityGroupsList({
 
   return (
     <>
+      <SectionHeader title="Community Groups">
+        <UserCommunityGroupsToolbar userId={userId} dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -419,6 +426,7 @@ export function UserCommunityGroupsList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

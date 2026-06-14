@@ -5,6 +5,7 @@ import {
   AlertDialog,
   BooleanOperators,
   CompetitionTeamTypeFilterInput,
+  SectionHeader,
   EmptyRowOverlay,
   StringOperators,
   UserFilterInput,
@@ -21,6 +22,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteTeam, GetTeams } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -36,6 +38,7 @@ import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { TeamsToolbar } from './teams-toolbar';
 
 type Props = {
   initialTeams: TeamDto[];
@@ -72,6 +75,7 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
@@ -278,6 +282,9 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
 
   return (
     <>
+      <SectionHeader title="Teams">
+        <TeamsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -450,6 +457,7 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

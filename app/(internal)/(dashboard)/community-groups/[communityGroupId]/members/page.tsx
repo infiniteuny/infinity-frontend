@@ -5,12 +5,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  CommunityGroupMembersList,
-  CommunityGroupMembersToolbar,
-} from '@app/presentation/components/internal/community-group-members';
+import { CommunityGroupMembersList } from '@app/presentation/components/internal/community-group-members';
 import { GetCommunityGroup, GetCommunityGroupMembers } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -96,12 +93,6 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
         { label: 'Members', url: `/community-groups/${communityGroupId}/members` },
       ]}
     >
-      <SectionHeader
-        title={`${communityGroup.name}'s Members`}
-        backUrl={`/community-groups/${communityGroupId}`}
-      >
-        <CommunityGroupMembersToolbar communityGroupId={communityGroupId} />
-      </SectionHeader>
       <CommunityGroupMembersList
         communityGroupId={communityGroupId}
         initialCommunityGroupMembers={

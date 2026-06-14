@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   AlertDialog,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -18,6 +19,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteGroupPermission, GetGroupPermissions } from '@app/application';
 import { DeleteRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { GroupPermissionsToolbar } from './group-permissions-toolbar';
 
 type Props = {
   initialGroupPermissions: GroupPermissionDto[];
@@ -85,6 +88,7 @@ export function GroupPermissionsList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedGroupPermissionId, setSelectedGroupPermissionId] = useState<string | null>(null);
@@ -278,6 +282,9 @@ export function GroupPermissionsList({
 
   return (
     <>
+      <SectionHeader title="Permissions">
+        <GroupPermissionsToolbar groupId={groupId} dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -385,6 +392,7 @@ export function GroupPermissionsList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

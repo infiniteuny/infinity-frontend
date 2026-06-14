@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetUser, GetUserPersonas } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -13,10 +13,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserPersonasList,
-  UserPersonasToolbar,
-} from '@app/presentation/components/internal/user-personas';
+import { UserPersonasList } from '@app/presentation/components/internal/user-personas';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,9 +80,6 @@ export default async function UserPersonasPage({ params }: Props) {
         { label: 'Personas', url: `/users/${userId}/personas` },
       ]}
     >
-      <SectionHeader title={`${user.name}'s Personas`} backUrl={`/users/${userId}`}>
-        <UserPersonasToolbar userId={userId} />
-      </SectionHeader>
       <UserPersonasList
         userId={userId}
         initialUserPersonas={

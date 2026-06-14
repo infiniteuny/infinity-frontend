@@ -1,5 +1,5 @@
 import { GetPersonas } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import {
@@ -8,7 +8,7 @@ import {
   PersonaDto,
   PersonaMapper,
 } from '@app/infrastructure/dtos';
-import { PersonasList, PersonasToolbar } from '@app/presentation/components/internal/personas';
+import { PersonasList } from '@app/presentation/components/internal/personas';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -37,9 +37,6 @@ export default async function PersonasPage() {
         { label: 'Personas', url: '/personas' },
       ]}
     >
-      <SectionHeader title="Personas" backUrl="/settings">
-        <PersonasToolbar />
-      </SectionHeader>
       <PersonasList
         initialPersonas={personas.map(PersonaMapper.fromDomainToDto) as PersonaDto[]}
         initialPaginationOptions={

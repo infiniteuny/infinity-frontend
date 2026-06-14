@@ -16,6 +16,7 @@ import {
   CompetitionScaleFilterInput,
   CompetitionTimeRangeFilterInput,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
   TeamFilterInput,
 } from '@app/presentation/components/internal/shared';
@@ -31,6 +32,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteAchievement, GetAchievements } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -40,6 +42,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AchievementsToolbar } from './achievements-toolbar';
 
 type Props = {
   initialAchievements: AchievementDto[];
@@ -82,6 +85,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedAchievementId, setSelectedAchievementId] = useState<string | null>(null);
@@ -318,6 +322,9 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
 
   return (
     <>
+      <SectionHeader title="Achievements">
+        <AchievementsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -618,6 +625,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

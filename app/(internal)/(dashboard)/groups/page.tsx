@@ -5,8 +5,8 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { GroupsList, GroupsToolbar } from '@app/presentation/components/internal/groups';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { GroupsList } from '@app/presentation/components/internal/groups';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -49,9 +49,6 @@ export default async function GroupsPage() {
           { label: 'Groups', url: '/groups' },
         ]}
       >
-        <SectionHeader title="Groups">
-          <GroupsToolbar />
-        </SectionHeader>
         <GroupsList
           initialGroups={groups.map(GroupMapper.fromDomainToDto) as GroupDto[]}
           initialPaginationOptions={

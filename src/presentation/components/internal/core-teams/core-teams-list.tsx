@@ -5,6 +5,7 @@ import {
   AlertDialog,
   BooleanOperators,
   EmptyRowOverlay,
+  SectionHeader,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCoreTeam, GetCoreTeams } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CoreTeamsToolbar } from './core-teams-toolbar';
 
 type Props = {
   initialCoreTeams: CoreTeamDto[];
@@ -81,6 +84,7 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const convertSortModelToDomain = (model: GridSortModel): CoreTeamSortOptions | undefined => {
     if (model.length === 0) return undefined;
@@ -250,6 +254,9 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
 
   return (
     <>
+      <SectionHeader title="Core Teams">
+        <CoreTeamsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -367,6 +374,7 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

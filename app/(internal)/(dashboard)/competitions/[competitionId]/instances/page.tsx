@@ -5,12 +5,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  CompetitionInstancesList,
-  CompetitionInstancesToolbar,
-} from '@app/presentation/components/internal/competition-instances';
+import { CompetitionInstancesList } from '@app/presentation/components/internal/competition-instances';
 import { GetCompetition, GetCompetitionInstances } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -86,12 +83,6 @@ export default async function CompetitionInstancesPage({ params }: Props) {
         { label: 'Instances', url: `/competitions/${competitionId}/instances` },
       ]}
     >
-      <SectionHeader
-        title={`${competition.shortname || competition.name}'s Instances`}
-        backUrl={`/competitions/${competitionId}`}
-      >
-        <CompetitionInstancesToolbar competitionId={competitionId} />
-      </SectionHeader>
       <CompetitionInstancesList
         initialCompetitionInstances={
           competitionInstances.map(

@@ -1,5 +1,5 @@
 import { GetPermissions, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -9,10 +9,7 @@ import {
   PermissionDto,
   PermissionMapper,
 } from '@app/infrastructure/dtos';
-import {
-  PermissionsList,
-  PermissionsToolbar,
-} from '@app/presentation/components/internal/permissions';
+import { PermissionsList } from '@app/presentation/components/internal/permissions';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -52,9 +49,6 @@ export default async function PermissionsPage() {
           { label: 'Permissions', url: '/permissions' },
         ]}
       >
-        <SectionHeader title="Permissions">
-          <PermissionsToolbar />
-        </SectionHeader>
         <PermissionsList
           initialPermissions={permissions.map(PermissionMapper.fromDomainToDto) as PermissionDto[]}
           initialPaginationOptions={

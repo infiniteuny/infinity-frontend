@@ -1,12 +1,12 @@
 import { GetMajors, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import {
   MajorDto,
   MajorMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { MajorsList, MajorsToolbar } from '@app/presentation/components/internal/majors';
+import { MajorsList } from '@app/presentation/components/internal/majors';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -52,9 +52,6 @@ export default async function MajorsPage() {
           { label: 'Majors', url: '/majors' },
         ]}
       >
-        <SectionHeader title="Majors" backUrl="/settings">
-          <MajorsToolbar />
-        </SectionHeader>
         <MajorsList
           initialMajors={majors.map(MajorMapper.fromDomainToDto) as MajorDto[]}
           initialPaginationOptions={

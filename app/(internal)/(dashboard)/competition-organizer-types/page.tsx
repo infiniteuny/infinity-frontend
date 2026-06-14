@@ -1,7 +1,4 @@
-import {
-  CompetitionOrganizerTypesList,
-  CompetitionOrganizerTypesToolbar,
-} from '@app/presentation/components/internal/competition-organizer-types';
+import { CompetitionOrganizerTypesList } from '@app/presentation/components/internal/competition-organizer-types';
 import {
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
@@ -9,7 +6,7 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCompetitionOrganizerTypes, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -57,9 +54,6 @@ export default async function CompetitionOrganizerTypesPage() {
           { label: 'Competition Organizer Types', url: '/competition-organizer-types' },
         ]}
       >
-        <SectionHeader title="Competition Organizer Types" backUrl="/settings">
-          <CompetitionOrganizerTypesToolbar />
-        </SectionHeader>
         <CompetitionOrganizerTypesList
           initialCompetitionOrganizerTypes={
             competitionOrganizerTypes.map(

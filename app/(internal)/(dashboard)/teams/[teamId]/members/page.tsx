@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetSession, GetTeam, GetTeamMembers } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -15,10 +15,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  TeamMembersList,
-  TeamMembersToolbar,
-} from '@app/presentation/components/internal/team-members';
+import { TeamMembersList } from '@app/presentation/components/internal/team-members';
 
 export const dynamic = 'force-dynamic';
 
@@ -127,9 +124,6 @@ export default async function TeamMembersPage({ params }: Props) {
           { label: 'Members', url: `/teams/${teamId}/members` },
         ]}
       >
-        <SectionHeader title={`${team.name}'s Members`} backUrl={`/teams/${teamId}`}>
-          <TeamMembersToolbar teamId={teamId} />
-        </SectionHeader>
         <TeamMembersList
           team={TeamMapper.fromDomainToDto(team) as TeamDto}
           initialTeamMembers={teamMembers.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[]}

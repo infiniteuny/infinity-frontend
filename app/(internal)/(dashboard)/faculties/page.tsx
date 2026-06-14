@@ -4,9 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { FacultiesList, FacultiesToolbar } from '@app/presentation/components/internal/faculties';
+import { FacultiesList } from '@app/presentation/components/internal/faculties';
 import { GetFaculties, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -50,9 +50,6 @@ export default async function FacultiesPage() {
           { label: 'Faculties', url: '/faculties' },
         ]}
       >
-        <SectionHeader title="Faculties" backUrl="/settings">
-          <FacultiesToolbar />
-        </SectionHeader>
         <FacultiesList
           initialFaculties={faculties.map(FacultyMapper.fromDomainToDto) as FacultyDto[]}
           initialPaginationOptions={

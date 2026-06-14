@@ -1,5 +1,5 @@
 import { GetSession, GetUser, GetUserGroups } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -12,10 +12,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserGroupsList,
-  UserGroupsToolbar,
-} from '@app/presentation/components/internal/user-groups';
+import { UserGroupsList } from '@app/presentation/components/internal/user-groups';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,9 +64,6 @@ export default async function ProfileGroupsPage() {
         { label: 'Groups', url: '/settings/profile/groups' },
       ]}
     >
-      <SectionHeader title="My Groups" backUrl="/settings/profile">
-        <UserGroupsToolbar userId={user.id} isProfileView />
-      </SectionHeader>
       <UserGroupsList
         userId={user.id}
         initialUserGroups={userGroups.map(UserGroupMapper.fromDomainToDto) as UserGroupDto[]}

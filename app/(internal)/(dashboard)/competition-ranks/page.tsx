@@ -1,7 +1,4 @@
-import {
-  CompetitionRanksList,
-  CompetitionRanksToolbar,
-} from '@app/presentation/components/internal/competition-ranks';
+import { CompetitionRanksList } from '@app/presentation/components/internal/competition-ranks';
 import {
   CompetitionRankDto,
   CompetitionRankMapper,
@@ -11,7 +8,7 @@ import {
 import { GetCompetitionRanks, GetSession } from '@app/application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { Metadata } from 'next';
@@ -55,9 +52,6 @@ export default async function CompetitionRanksPage() {
           { label: 'Competition Ranks', url: '/competition-ranks' },
         ]}
       >
-        <SectionHeader title="Competition Ranks" backUrl="/settings">
-          <CompetitionRanksToolbar />
-        </SectionHeader>
         <CompetitionRanksList
           initialCompetitionRanks={
             competitionRanks.map(CompetitionRankMapper.fromDomainToDto) as CompetitionRankDto[]

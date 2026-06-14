@@ -1,7 +1,4 @@
-import {
-  CompetitionOutputsList,
-  CompetitionOutputsToolbar,
-} from '@app/presentation/components/internal/competition-outputs';
+import { CompetitionOutputsList } from '@app/presentation/components/internal/competition-outputs';
 import {
   CompetitionOutputDto,
   CompetitionOutputMapper,
@@ -9,7 +6,7 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetCompetitionOutputs, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -55,9 +52,6 @@ export default async function CompetitionOutputsPage() {
           { label: 'Competition Outputs', url: '/competition-outputs' },
         ]}
       >
-        <SectionHeader title="Competition Outputs" backUrl="/settings">
-          <CompetitionOutputsToolbar />
-        </SectionHeader>
         <CompetitionOutputsList
           initialCompetitionOutputs={
             competitionOutputs.map(

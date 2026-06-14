@@ -7,6 +7,7 @@ import {
   DateOperators,
   EmptyRowOverlay,
   MajorFilterInput,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -21,6 +22,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteTeamMember, GetTeamMembers } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -47,6 +49,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import { convertDateFilterOperator } from '@app/utils';
+import { TeamMembersToolbar } from './team-members-toolbar';
 
 type Props = {
   initialTeamMembers: TeamMemberDto[];
@@ -91,6 +94,7 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedTeamMemberId, setSelectedTeamMemberId] = useState<string | null>(null);
@@ -351,6 +355,9 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
 
   return (
     <>
+      <SectionHeader title="Members">
+        <TeamMembersToolbar teamId={team.id} dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -633,6 +640,7 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

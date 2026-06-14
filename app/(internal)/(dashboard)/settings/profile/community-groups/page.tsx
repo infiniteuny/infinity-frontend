@@ -1,5 +1,5 @@
 import { GetSession, GetUser, GetUserCommunityGroups } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -12,10 +12,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserCommunityGroupsList,
-  UserCommunityGroupsToolbar,
-} from '@app/presentation/components/internal/user-community-groups';
+import { UserCommunityGroupsList } from '@app/presentation/components/internal/user-community-groups';
 
 export const dynamic = 'force-dynamic';
 
@@ -74,9 +71,6 @@ export default async function ProfileCommunityGroupsPage() {
         { label: 'Community Groups', url: '/settings/profile/community-groups' },
       ]}
     >
-      <SectionHeader title="My Community Groups" backUrl="/settings/profile">
-        <UserCommunityGroupsToolbar userId={user.id} isProfileView />
-      </SectionHeader>
       <UserCommunityGroupsList
         userId={user.id}
         initialUserCommunityGroups={

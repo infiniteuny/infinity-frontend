@@ -4,12 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  CommunityGroupAdminsList,
-  CommunityGroupAdminsToolbar,
-} from '@app/presentation/components/internal/community-group-admins';
+import { CommunityGroupAdminsList } from '@app/presentation/components/internal/community-group-admins';
 import { GetCommunityGroupAdmins } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
@@ -41,9 +38,6 @@ export default async function CommunityGroupAdminsPage() {
         { label: 'Community Group Administrators', url: '/community-group-admins' },
       ]}
     >
-      <SectionHeader title="Community Group Administrators">
-        <CommunityGroupAdminsToolbar />
-      </SectionHeader>
       <CommunityGroupAdminsList
         initialCommunityGroupAdmins={
           communityGroupAdmins.map(

@@ -7,6 +7,7 @@ import {
   DateOperators,
   EmptyRowOverlay,
   MajorFilterInput,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -35,6 +36,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCommunityGroupMember, GetCommunityGroupMembers } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -45,6 +47,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import { convertDateFilterOperator } from '@app/utils';
+import { CommunityGroupMembersToolbar } from './community-group-members-toolbar';
 
 type Props = {
   initialCommunityGroupMembers: CommunityGroupMemberDto[];
@@ -94,6 +97,7 @@ export function CommunityGroupMembersList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCommunityGroupMemberId, setSelectedCommunityGroupMemberId] = useState<
@@ -358,6 +362,12 @@ export function CommunityGroupMembersList({
 
   return (
     <>
+      <SectionHeader title="Members">
+        <CommunityGroupMembersToolbar
+          communityGroupId={communityGroupId}
+          dataGridApiRef={dataGridApiRef}
+        />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -631,6 +641,7 @@ export function CommunityGroupMembersList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

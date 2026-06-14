@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   AlertDialog,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteFaculty, GetFaculties } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FacultiesToolbar } from './faculties-toolbar';
 
 type Props = { initialFaculties: FacultyDto[]; initialPaginationOptions: PaginationOptionsDto };
 
@@ -73,6 +76,7 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedFacultyId, setSelectedFacultyId] = useState<string | null>(null);
   const [selectedFacultyName, setSelectedFacultyName] = useState<string | null>(null);
@@ -213,6 +217,9 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
 
   return (
     <>
+      <SectionHeader title="Faculties">
+        <FacultiesToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -311,6 +318,7 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
             initialState={{ columns: { columnVisibilityModel: { id: false } } }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

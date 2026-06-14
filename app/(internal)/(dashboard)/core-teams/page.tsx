@@ -4,9 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { CoreTeamsList, CoreTeamsToolbar } from '@app/presentation/components/internal/core-teams';
+import { CoreTeamsList } from '@app/presentation/components/internal/core-teams';
 import { GetCoreTeams } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
@@ -36,9 +36,6 @@ export default async function CoreTeamsPage() {
         { label: 'Core Teams', url: '/core-teams' },
       ]}
     >
-      <SectionHeader title="Core Teams">
-        <CoreTeamsToolbar />
-      </SectionHeader>
       <CoreTeamsList
         initialCoreTeams={coreTeams.map(CoreTeamMapper.fromDomainToDto) as CoreTeamDto[]}
         initialPaginationOptions={

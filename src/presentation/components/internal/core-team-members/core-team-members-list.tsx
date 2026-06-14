@@ -7,6 +7,7 @@ import {
   DateOperators,
   EmptyRowOverlay,
   MajorFilterInput,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -35,6 +36,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCoreTeamMember, GetCoreTeamMembers } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -45,6 +47,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import { convertDateFilterOperator } from '@app/utils';
+import { CoreTeamMembersToolbar } from './core-team-members-toolbar';
 
 type Props = {
   initialCoreTeamMembers: CoreTeamMemberDto[];
@@ -92,6 +95,7 @@ export function CoreTeamMembersList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCoreTeamMemberId, setSelectedCoreTeamMemberId] = useState<string | null>(null);
@@ -352,6 +356,9 @@ export function CoreTeamMembersList({
 
   return (
     <>
+      <SectionHeader title="Members">
+        <CoreTeamMembersToolbar coreTeamId={coreTeamId} dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -631,6 +638,7 @@ export function CoreTeamMembersList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

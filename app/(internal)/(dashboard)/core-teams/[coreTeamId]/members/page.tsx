@@ -1,8 +1,5 @@
 import { cache } from 'react';
-import {
-  CoreTeamMembersList,
-  CoreTeamMembersToolbar,
-} from '@app/presentation/components/internal/core-team-members';
+import { CoreTeamMembersList } from '@app/presentation/components/internal/core-team-members';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
@@ -10,7 +7,7 @@ import {
   CoreTeamMemberMapper,
 } from '@app/infrastructure/dtos';
 import { GetCoreTeam, GetCoreTeamMembers } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -89,9 +86,6 @@ export default async function CoreTeamMembersPage({ params }: Props) {
         { label: 'Members', url: `/core-teams/${coreTeamId}/members` },
       ]}
     >
-      <SectionHeader title={`${coreTeam.year}'s Members`} backUrl={`/core-teams/${coreTeamId}`}>
-        <CoreTeamMembersToolbar coreTeamId={coreTeamId} />
-      </SectionHeader>
       <CoreTeamMembersList
         coreTeamId={coreTeamId}
         initialCoreTeamMembers={

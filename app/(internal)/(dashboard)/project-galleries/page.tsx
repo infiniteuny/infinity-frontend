@@ -1,5 +1,5 @@
 import { GetProjectGalleries } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import {
@@ -8,10 +8,7 @@ import {
   ProjectGalleryDto,
   ProjectGalleryMapper,
 } from '@app/infrastructure/dtos';
-import {
-  ProjectGalleriesList,
-  ProjectGalleriesToolbar,
-} from '@app/presentation/components/internal/project-galleries';
+import { ProjectGalleriesList } from '@app/presentation/components/internal/project-galleries';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -39,9 +36,6 @@ export default async function ProjectGalleriesPage() {
         { label: 'Project Galleries', url: '/project-galleries' },
       ]}
     >
-      <SectionHeader title="Project Galleries">
-        <ProjectGalleriesToolbar />
-      </SectionHeader>
       <ProjectGalleriesList
         initialProjectGalleries={
           projectGalleries.map(ProjectGalleryMapper.fromDomainToDto) as ProjectGalleryDto[]

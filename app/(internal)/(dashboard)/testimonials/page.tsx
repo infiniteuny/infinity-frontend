@@ -1,5 +1,5 @@
 import { GetTestimonials } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import {
@@ -10,10 +10,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  TestimonialsList,
-  TestimonialsToolbar,
-} from '@app/presentation/components/internal/testimonials';
+import { TestimonialsList } from '@app/presentation/components/internal/testimonials';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,9 +36,6 @@ export default async function TestimonialsPage() {
         { label: 'Testimonials', url: '/testimonials' },
       ]}
     >
-      <SectionHeader title="Testimonials">
-        <TestimonialsToolbar />
-      </SectionHeader>
       <TestimonialsList
         initialTestimonials={
           testimonials.map(TestimonialMapper.fromDomainToDto) as TestimonialDto[]

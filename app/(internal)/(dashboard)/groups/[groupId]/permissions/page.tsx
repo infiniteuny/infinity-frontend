@@ -6,11 +6,8 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  GroupPermissionsList,
-  GroupPermissionsToolbar,
-} from '@app/presentation/components/internal/group-permissions';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { GroupPermissionsList } from '@app/presentation/components/internal/group-permissions';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -115,9 +112,6 @@ export default async function GroupPermissionsPage({ params }: Props) {
           { label: 'Permissions', url: `/groups/${groupId}/permissions` },
         ]}
       >
-        <SectionHeader title={`${group.name}'s Permissions`} backUrl={`/groups/${groupId}`}>
-          <GroupPermissionsToolbar groupId={groupId} />
-        </SectionHeader>
         <GroupPermissionsList
           groupId={groupId}
           initialGroupPermissions={

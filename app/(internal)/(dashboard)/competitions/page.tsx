@@ -4,12 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  CompetitionsList,
-  CompetitionsToolbar,
-} from '@app/presentation/components/internal/competitions';
+import { CompetitionsList } from '@app/presentation/components/internal/competitions';
 import { GetCompetitions } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
@@ -40,9 +37,6 @@ export default async function CompetitionsPage() {
         { label: 'Competitions', url: '/competitions' },
       ]}
     >
-      <SectionHeader title="Competitions" backUrl="/settings">
-        <CompetitionsToolbar />
-      </SectionHeader>
       <CompetitionsList
         initialCompetitions={
           competitions.map(CompetitionMapper.fromDomainToDto) as CompetitionDto[]

@@ -5,15 +5,12 @@ import {
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
 import { GetAchievements } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  AchievementsList,
-  AchievementsToolbar,
-} from '@app/presentation/components/internal/achievements';
+import { AchievementsList } from '@app/presentation/components/internal/achievements';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,9 +48,6 @@ export default async function AchievementsPage() {
         { label: 'Achievements', url: '/achievements' },
       ]}
     >
-      <SectionHeader title="Achievements">
-        <AchievementsToolbar />
-      </SectionHeader>
       <AchievementsList
         initialAchievements={
           achievements.map(AchievementMapper.fromDomainToDto) as AchievementDto[]

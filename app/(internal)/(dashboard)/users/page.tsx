@@ -1,5 +1,5 @@
 import { GetUsers } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { UsersList, UsersToolbar } from '@app/presentation/components/internal/users';
+import { UsersList } from '@app/presentation/components/internal/users';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,9 +38,6 @@ export default async function UsersPage() {
         { label: 'Users', url: '/users' },
       ]}
     >
-      <SectionHeader title="Users">
-        <UsersToolbar />
-      </SectionHeader>
       <UsersList
         initialUsers={users.map(UserMapper.fromDomainToDto) as UserDto[]}
         initialPaginationOptions={

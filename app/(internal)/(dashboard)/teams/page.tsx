@@ -1,5 +1,5 @@
 import { GetSession, GetTeams } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -11,7 +11,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { TeamsList, TeamsToolbar } from '@app/presentation/components/internal/teams';
+import { TeamsList } from '@app/presentation/components/internal/teams';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,9 +51,6 @@ export default async function TeamsPage() {
           { label: 'Teams', url: '/teams' },
         ]}
       >
-        <SectionHeader title="Teams">
-          <TeamsToolbar />
-        </SectionHeader>
         <TeamsList
           initialTeams={teams.map(TeamMapper.fromDomainToDto) as TeamDto[]}
           initialPaginationOptions={

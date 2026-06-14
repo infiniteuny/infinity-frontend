@@ -4,9 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import { DegreesList, DegreesToolbar } from '@app/presentation/components/internal/degrees';
+import { DegreesList } from '@app/presentation/components/internal/degrees';
 import { GetDegrees, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -50,9 +50,6 @@ export default async function DegreesPage() {
           { label: 'Degrees', url: '/degrees' },
         ]}
       >
-        <SectionHeader title="Degrees" backUrl="/settings">
-          <DegreesToolbar />
-        </SectionHeader>
         <DegreesList
           initialDegrees={degrees.map(DegreeMapper.fromDomainToDto) as DegreeDto[]}
           initialPaginationOptions={

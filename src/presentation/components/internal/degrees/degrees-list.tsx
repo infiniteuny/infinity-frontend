@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   AlertDialog,
   EmptyRowOverlay,
+  SectionHeader,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteDegree, GetDegrees } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { DegreesToolbar } from './degrees-toolbar';
 
 type Props = {
   initialDegrees: DegreeDto[];
@@ -74,6 +77,7 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedDegreeId, setSelectedDegreeId] = useState<string | null>(null);
@@ -244,6 +248,9 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
 
   return (
     <>
+      <SectionHeader title="Degrees">
+        <DegreesToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -349,6 +356,7 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
             initialState={{ columns: { columnVisibilityModel: { id: false } } }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

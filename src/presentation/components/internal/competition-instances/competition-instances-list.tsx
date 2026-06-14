@@ -5,6 +5,7 @@ import {
   AlertDialog,
   CompetitionOrganizerTypeFilterInput,
   DateOperators,
+  SectionHeader,
   EmptyRowOverlay,
   StringOperators,
 } from '@app/presentation/components/internal/shared';
@@ -33,6 +34,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionInstance, GetCompetitionInstances } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -42,6 +44,7 @@ import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { convertDateFilterOperator } from '@app/utils';
+import { CompetitionInstancesToolbar } from './competition-instances-toolbar';
 
 type Props = {
   initialCompetitionInstances: CompetitionInstanceDto[];
@@ -91,6 +94,7 @@ export function CompetitionInstancesList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCompetitionInstanceId, setSelectedCompetitionInstanceId] = useState<string | null>(
@@ -344,6 +348,12 @@ export function CompetitionInstancesList({
 
   return (
     <>
+      <SectionHeader title="Instances">
+        <CompetitionInstancesToolbar
+          competitionId={competitionId}
+          dataGridApiRef={dataGridApiRef}
+        />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -545,6 +555,7 @@ export function CompetitionInstancesList({
             }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

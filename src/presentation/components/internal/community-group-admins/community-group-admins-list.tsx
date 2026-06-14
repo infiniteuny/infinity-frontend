@@ -5,6 +5,7 @@ import {
   AlertDialog,
   BooleanOperators,
   EmptyRowOverlay,
+  SectionHeader,
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
@@ -30,6 +31,7 @@ import {
   GridRowParams,
   GridSlots,
   GridSortModel,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCommunityGroupAdmin, GetCommunityGroupAdmins } from '@app/application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -38,6 +40,7 @@ import { match } from 'effect/Either';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CommunityGroupAdminsToolbar } from './community-group-admins-toolbar';
 
 type Props = {
   initialCommunityGroupAdmins: CommunityGroupAdminDto[];
@@ -84,6 +87,7 @@ export function CommunityGroupAdminsList({
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
   const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const dataGridApiRef = useGridApiRef();
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCommunityGroupAdminId, setSelectedCommunityGroupAdminId] = useState<string | null>(
     null,
@@ -231,6 +235,9 @@ export function CommunityGroupAdminsList({
 
   return (
     <>
+      <SectionHeader title="Community Group Admins">
+        <CommunityGroupAdminsToolbar dataGridApiRef={dataGridApiRef} />
+      </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
@@ -329,6 +336,7 @@ export function CommunityGroupAdminsList({
             initialState={{ columns: { columnVisibilityModel: { id: false, group: false } } }}
             loading={isLoading}
             rowCount={rowCount}
+            apiRef={dataGridApiRef}
             paginationMeta={paginationMeta}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}

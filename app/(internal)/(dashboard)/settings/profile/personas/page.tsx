@@ -1,5 +1,5 @@
 import { GetSession, GetUser, GetUserPersonas } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -12,10 +12,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserPersonasList,
-  UserPersonasToolbar,
-} from '@app/presentation/components/internal/user-personas';
+import { UserPersonasList } from '@app/presentation/components/internal/user-personas';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,9 +64,6 @@ export default async function ProfilePersonasPage() {
         { label: 'Personas', url: '/settings/profile/personas' },
       ]}
     >
-      <SectionHeader title="My Personas" backUrl="/settings/profile">
-        <UserPersonasToolbar userId={user.id} isProfileView />
-      </SectionHeader>
       <UserPersonasList
         userId={user.id}
         initialUserPersonas={

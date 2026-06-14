@@ -1,5 +1,5 @@
 import { GetSession, GetUser, GetUserPermissions } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -12,10 +12,7 @@ import {
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import {
-  UserPermissionsList,
-  UserPermissionsToolbar,
-} from '@app/presentation/components/internal/user-permissions';
+import { UserPermissionsList } from '@app/presentation/components/internal/user-permissions';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,9 +64,6 @@ export default async function ProfilePermissionsPage() {
         { label: 'Permissions', url: '/settings/profile/permissions' },
       ]}
     >
-      <SectionHeader title="My Permissions" backUrl="/settings/profile">
-        <UserPermissionsToolbar userId={user.id} isProfileView />
-      </SectionHeader>
       <UserPermissionsList
         userId={user.id}
         initialUserPermissions={

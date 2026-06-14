@@ -4,12 +4,9 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
-import {
-  FundApplicationsList,
-  FundApplicationsToolbar,
-} from '@app/presentation/components/internal/fund-applications';
+import { FundApplicationsList } from '@app/presentation/components/internal/fund-applications';
 import { GetFundApplications, GetSession } from '@app/application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -59,9 +56,6 @@ export default async function FundApplicationsPage() {
           { label: 'Fund Applications', url: '/fund-applications' },
         ]}
       >
-        <SectionHeader title="Fund Applications">
-          <FundApplicationsToolbar />
-        </SectionHeader>
         <FundApplicationsList
           initialFundApplications={
             fundApplications.map(FundApplicationMapper.fromDomainToDto) as FundApplicationDto[]

@@ -1,17 +1,32 @@
 'use client';
 
 import Link from 'next/link';
-import { AddRounded } from '@mui/icons-material';
-import { Box, Button } from '@mui/material';
+import { AddRounded, SearchRounded } from '@mui/icons-material';
+import { Box, Button, IconButton } from '@mui/material';
 import { useInternalStore } from '@app/presentation/hooks';
+import { GridApiCommunity } from '@mui/x-data-grid/internals';
+import { RefObject } from 'react';
 
-export function CompetitionsToolbar() {
+type Props = {
+  dataGridApiRef: RefObject<GridApiCommunity | null>;
+};
+
+export function CompetitionsToolbar({ dataGridApiRef }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
     <>
-      {['create-competition'].some((p) => userPermissions.has(p)) ? (
-        <Box className="ml-auto">
+      <Box className="ml-auto">
+        <IconButton
+          className="ml-4"
+          aria-label="Search"
+          onClick={() => {
+            dataGridApiRef.current?.showFilterPanel();
+          }}
+        >
+          <SearchRounded />
+        </IconButton>
+        {['create-competition'].some((p) => userPermissions.has(p)) ? (
           <Button
             variant="filled"
             className="ml-4"
@@ -22,8 +37,8 @@ export function CompetitionsToolbar() {
           >
             Add
           </Button>
-        </Box>
-      ) : null}
+        ) : null}
+      </Box>
     </>
   );
 }
