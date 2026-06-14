@@ -1,22 +1,48 @@
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
-import { GetMajors } from '@app/application';
+import { GetMajor, GetMajors } from '@app/application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { Major } from '@app/domain/entities';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function MajorFilterInput({ item, applyValue }: GridFilterInputValueProps) {
   const getMajors = useMemo(() => clientContainer.get<GetMajors>(SYMBOLS.GetMajors), []);
+  const getMajor = useMemo(() => clientContainer.get<GetMajor>(SYMBOLS.GetMajor), []);
 
-  const [majorInput, setMajorInput] = useState('');
-  const [majorOptions, setMajorOptions] = useState<Major[]>([]);
-  const [isMajorLoading, setIsMajorLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<Major[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!item.value) return;
+
+    let active = true;
+
+    (async () => {
+      const result = await getMajor.execute(String(item.value), ['degree']);
+
+      if (!active) return;
+
+      match(result, {
+        onLeft: () => {},
+        onRight: (major) => {
+          setOptions([major]);
+          setInputValue(`${major.degree?.name ?? ''} - ${major.name}`);
+        },
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [getMajor, item.value]);
 
   useEffect(() => {
     let active = true;
-    const query = majorInput.trim();
+    const query = searchQuery.trim();
 
     if (query.length < 1) {
       return () => {
@@ -25,9 +51,9 @@ export function MajorFilterInput({ item, applyValue }: GridFilterInputValueProps
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsMajorLoading(true);
+      setIsLoading(true);
 
-      const majorsResult = await getMajors.execute(undefined, { name: query }, undefined, {
+      const majorsResult = await getMajors.execute(['degree'], { name: query }, undefined, {
         perPage: 10,
       });
 
@@ -35,43 +61,50 @@ export function MajorFilterInput({ item, applyValue }: GridFilterInputValueProps
 
       match(majorsResult, {
         onLeft: () => {
-          setMajorOptions([]);
+          setOptions([]);
         },
         onRight: ([majors]) => {
-          setMajorOptions(majors);
+          setOptions(majors);
         },
       });
 
-      setIsMajorLoading(false);
+      setIsLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [getMajors, majorInput]);
+  }, [getMajors, searchQuery]);
+
+  const handleInputChange = useCallback((_: unknown, value: string) => {
+    setInputValue(value);
+    setSearchQuery(value);
+  }, []);
+
+  const handleChange = useCallback(
+    (_: unknown, major: Major | null) => {
+      if (major) {
+        setInputValue(`${major.degree?.name ?? ''} - ${major.name}`);
+        setSearchQuery('');
+      }
+      applyValue({ ...item, value: major?.id ?? '' });
+    },
+    [applyValue, item],
+  );
 
   return (
     <Autocomplete
-      options={majorOptions}
-      value={majorOptions.find((major) => major.id === item.value) ?? null}
-      onChange={(_, major) => {
-        applyValue({ ...item, value: major?.id ?? '' });
-      }}
-      inputValue={majorInput}
-      onInputChange={(_, value) => {
-        setMajorInput(value);
-
-        if (value.trim().length < 1) {
-          setMajorOptions([]);
-          setIsMajorLoading(false);
-        }
-      }}
-      getOptionLabel={(option) => option.name}
+      options={options}
+      value={options.find((major) => major.id === item.value) ?? null}
+      onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
+      getOptionLabel={(option) => `${option.degree?.name ?? ''} - ${option.name}`}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isMajorLoading}
-      noOptionsText={majorInput ? 'No majors found' : 'Type to search major'}
-      filterOptions={(options) => options}
+      loading={isLoading}
+      noOptionsText={searchQuery ? 'No majors found' : 'Type to search major'}
+      filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />
       )}

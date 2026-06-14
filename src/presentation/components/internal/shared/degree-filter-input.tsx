@@ -1,22 +1,48 @@
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
-import { GetDegrees } from '@app/application';
+import { GetDegree, GetDegrees } from '@app/application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { Degree } from '@app/domain/entities';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function DegreeFilterInput({ item, applyValue }: GridFilterInputValueProps) {
   const getDegrees = useMemo(() => clientContainer.get<GetDegrees>(SYMBOLS.GetDegrees), []);
+  const getDegree = useMemo(() => clientContainer.get<GetDegree>(SYMBOLS.GetDegree), []);
 
-  const [degreeInput, setDegreeInput] = useState('');
-  const [degreeOptions, setDegreeOptions] = useState<Degree[]>([]);
-  const [isDegreeLoading, setIsDegreeLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<Degree[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!item.value) return;
+
+    let active = true;
+
+    (async () => {
+      const result = await getDegree.execute(String(item.value));
+
+      if (!active) return;
+
+      match(result, {
+        onLeft: () => {},
+        onRight: (degree) => {
+          setOptions([degree]);
+          setInputValue(degree.name);
+        },
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [getDegree, item.value]);
 
   useEffect(() => {
     let active = true;
-    const query = degreeInput.trim();
+    const query = searchQuery.trim();
 
     if (query.length < 1) {
       return () => {
@@ -25,7 +51,7 @@ export function DegreeFilterInput({ item, applyValue }: GridFilterInputValueProp
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsDegreeLoading(true);
+      setIsLoading(true);
 
       const degreesResult = await getDegrees.execute({ name: query }, undefined, {
         perPage: 10,
@@ -35,43 +61,50 @@ export function DegreeFilterInput({ item, applyValue }: GridFilterInputValueProp
 
       match(degreesResult, {
         onLeft: () => {
-          setDegreeOptions([]);
+          setOptions([]);
         },
         onRight: ([degrees]) => {
-          setDegreeOptions(degrees);
+          setOptions(degrees);
         },
       });
 
-      setIsDegreeLoading(false);
+      setIsLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [getDegrees, degreeInput]);
+  }, [getDegrees, searchQuery]);
+
+  const handleInputChange = useCallback((_: unknown, value: string) => {
+    setInputValue(value);
+    setSearchQuery(value);
+  }, []);
+
+  const handleChange = useCallback(
+    (_: unknown, degree: Degree | null) => {
+      if (degree) {
+        setInputValue(degree.name);
+        setSearchQuery('');
+      }
+      applyValue({ ...item, value: degree?.id ?? '' });
+    },
+    [applyValue, item],
+  );
 
   return (
     <Autocomplete
-      options={degreeOptions}
-      value={degreeOptions.find((degree) => degree.id === item.value) ?? null}
-      onChange={(_, degree) => {
-        applyValue({ ...item, value: degree?.id ?? '' });
-      }}
-      inputValue={degreeInput}
-      onInputChange={(_, value) => {
-        setDegreeInput(value);
-
-        if (value.trim().length < 1) {
-          setDegreeOptions([]);
-          setIsDegreeLoading(false);
-        }
-      }}
+      options={options}
+      value={options.find((degree) => degree.id === item.value) ?? null}
+      onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isDegreeLoading}
-      noOptionsText={degreeInput ? 'No degrees found' : 'Type to search degree'}
-      filterOptions={(options) => options}
+      loading={isLoading}
+      noOptionsText={searchQuery ? 'No degrees found' : 'Type to search degree'}
+      filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />
       )}

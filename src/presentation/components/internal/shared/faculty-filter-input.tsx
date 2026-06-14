@@ -1,22 +1,48 @@
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
-import { GetFaculties } from '@app/application';
+import { GetFaculties, GetFaculty } from '@app/application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { Faculty } from '@app/domain/entities';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function FacultyFilterInput({ item, applyValue }: GridFilterInputValueProps) {
   const getFaculties = useMemo(() => clientContainer.get<GetFaculties>(SYMBOLS.GetFaculties), []);
+  const getFaculty = useMemo(() => clientContainer.get<GetFaculty>(SYMBOLS.GetFaculty), []);
 
-  const [facultyInput, setFacultyInput] = useState('');
-  const [facultyOptions, setFacultyOptions] = useState<Faculty[]>([]);
-  const [isFacultyLoading, setIsFacultyLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<Faculty[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!item.value) return;
+
+    let active = true;
+
+    (async () => {
+      const result = await getFaculty.execute(String(item.value));
+
+      if (!active) return;
+
+      match(result, {
+        onLeft: () => {},
+        onRight: (faculty) => {
+          setOptions([faculty]);
+          setInputValue(faculty.name);
+        },
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [getFaculty, item.value]);
 
   useEffect(() => {
     let active = true;
-    const query = facultyInput.trim();
+    const query = searchQuery.trim();
 
     if (query.length < 1) {
       return () => {
@@ -25,7 +51,7 @@ export function FacultyFilterInput({ item, applyValue }: GridFilterInputValuePro
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsFacultyLoading(true);
+      setIsLoading(true);
 
       const facultiesResult = await getFaculties.execute({ name: query }, undefined, {
         perPage: 10,
@@ -35,43 +61,50 @@ export function FacultyFilterInput({ item, applyValue }: GridFilterInputValuePro
 
       match(facultiesResult, {
         onLeft: () => {
-          setFacultyOptions([]);
+          setOptions([]);
         },
         onRight: ([faculties]) => {
-          setFacultyOptions(faculties);
+          setOptions(faculties);
         },
       });
 
-      setIsFacultyLoading(false);
+      setIsLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [getFaculties, facultyInput]);
+  }, [getFaculties, searchQuery]);
+
+  const handleInputChange = useCallback((_: unknown, value: string) => {
+    setInputValue(value);
+    setSearchQuery(value);
+  }, []);
+
+  const handleChange = useCallback(
+    (_: unknown, faculty: Faculty | null) => {
+      if (faculty) {
+        setInputValue(faculty.name);
+        setSearchQuery('');
+      }
+      applyValue({ ...item, value: faculty?.id ?? '' });
+    },
+    [applyValue, item],
+  );
 
   return (
     <Autocomplete
-      options={facultyOptions}
-      value={facultyOptions.find((faculty) => faculty.id === item.value) ?? null}
-      onChange={(_, faculty) => {
-        applyValue({ ...item, value: faculty?.id ?? '' });
-      }}
-      inputValue={facultyInput}
-      onInputChange={(_, value) => {
-        setFacultyInput(value);
-
-        if (value.trim().length < 1) {
-          setFacultyOptions([]);
-          setIsFacultyLoading(false);
-        }
-      }}
+      options={options}
+      value={options.find((faculty) => faculty.id === item.value) ?? null}
+      onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isFacultyLoading}
-      noOptionsText={facultyInput ? 'No faculties found' : 'Type to search faculty'}
-      filterOptions={(options) => options}
+      loading={isLoading}
+      noOptionsText={searchQuery ? 'No faculties found' : 'Type to search faculty'}
+      filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />
       )}

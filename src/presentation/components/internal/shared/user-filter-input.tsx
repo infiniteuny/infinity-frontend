@@ -1,22 +1,48 @@
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
-import { GetUsers } from '@app/application';
+import { GetUser, GetUsers } from '@app/application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { User } from '@app/domain/entities';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function UserFilterInput({ item, applyValue }: GridFilterInputValueProps) {
   const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
+  const getUser = useMemo(() => clientContainer.get<GetUser>(SYMBOLS.GetUser), []);
 
-  const [userInput, setUserInput] = useState('');
-  const [userOptions, setUserOptions] = useState<User[]>([]);
-  const [isUserLoading, setIsUserLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!item.value) return;
+
+    let active = true;
+
+    (async () => {
+      const result = await getUser.execute(String(item.value));
+
+      if (!active) return;
+
+      match(result, {
+        onLeft: () => {},
+        onRight: (user) => {
+          setOptions([user]);
+          setInputValue(user.name);
+        },
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [getUser, item.value]);
 
   useEffect(() => {
     let active = true;
-    const query = userInput.trim();
+    const query = searchQuery.trim();
 
     if (query.length < 1) {
       return () => {
@@ -25,7 +51,7 @@ export function UserFilterInput({ item, applyValue }: GridFilterInputValueProps)
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsUserLoading(true);
+      setIsLoading(true);
 
       const usersResult = await getUsers.execute(undefined, { name: query }, undefined, {
         perPage: 10,
@@ -35,43 +61,50 @@ export function UserFilterInput({ item, applyValue }: GridFilterInputValueProps)
 
       match(usersResult, {
         onLeft: () => {
-          setUserOptions([]);
+          setOptions([]);
         },
         onRight: ([users]) => {
-          setUserOptions(users);
+          setOptions(users);
         },
       });
 
-      setIsUserLoading(false);
+      setIsLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [getUsers, userInput]);
+  }, [getUsers, searchQuery]);
+
+  const handleInputChange = useCallback((_: unknown, value: string) => {
+    setInputValue(value);
+    setSearchQuery(value);
+  }, []);
+
+  const handleChange = useCallback(
+    (_: unknown, user: User | null) => {
+      if (user) {
+        setInputValue(user.name);
+        setSearchQuery('');
+      }
+      applyValue({ ...item, value: user?.id ?? '' });
+    },
+    [applyValue, item],
+  );
 
   return (
     <Autocomplete
-      options={userOptions}
-      value={userOptions.find((user) => user.id === item.value) ?? null}
-      onChange={(_, user) => {
-        applyValue({ ...item, value: user?.id ?? '' });
-      }}
-      inputValue={userInput}
-      onInputChange={(_, value) => {
-        setUserInput(value);
-
-        if (value.trim().length < 1) {
-          setUserOptions([]);
-          setIsUserLoading(false);
-        }
-      }}
+      options={options}
+      value={options.find((user) => user.id === item.value) ?? null}
+      onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isUserLoading}
-      noOptionsText={userInput ? 'No users found' : 'Type to search user'}
-      filterOptions={(options) => options}
+      loading={isLoading}
+      noOptionsText={searchQuery ? 'No users found' : 'Type to search user'}
+      filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />
       )}

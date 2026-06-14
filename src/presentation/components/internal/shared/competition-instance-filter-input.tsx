@@ -1,27 +1,54 @@
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
-import { GetCompetitionInstances } from '@app/application';
+import { GetCompetitionInstance, GetCompetitionInstances } from '@app/application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { CompetitionInstance } from '@app/domain/entities';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function CompetitionInstanceFilterInput({ item, applyValue }: GridFilterInputValueProps) {
   const getCompetitionInstances = useMemo(
     () => clientContainer.get<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances),
     [],
   );
+  const getCompetitionInstance = useMemo(
+    () => clientContainer.get<GetCompetitionInstance>(SYMBOLS.GetCompetitionInstance),
+    [],
+  );
 
-  const [CompetitionInstanceInput, setCompetitionInstanceInput] = useState('');
-  const [CompetitionInstanceOptions, setCompetitionInstanceOptions] = useState<
-    CompetitionInstance[]
-  >([]);
-  const [isCompetitionInstanceLoading, setIsCompetitionInstanceLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<CompetitionInstance[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!item.value) return;
+
+    let active = true;
+
+    (async () => {
+      const result = await getCompetitionInstance.execute(String(item.value));
+
+      if (!active) return;
+
+      match(result, {
+        onLeft: () => {},
+        onRight: (competitionInstance) => {
+          setOptions([competitionInstance]);
+          setInputValue(competitionInstance.name);
+        },
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [getCompetitionInstance, item.value]);
 
   useEffect(() => {
     let active = true;
-    const query = CompetitionInstanceInput.trim();
+    const query = searchQuery.trim();
 
     if (query.length < 1) {
       return () => {
@@ -30,9 +57,9 @@ export function CompetitionInstanceFilterInput({ item, applyValue }: GridFilterI
     }
 
     const timeoutId = setTimeout(async () => {
-      setIsCompetitionInstanceLoading(true);
+      setIsLoading(true);
 
-      const CompetitionInstancesResult = await getCompetitionInstances.execute(
+      const competitionInstancesResult = await getCompetitionInstances.execute(
         undefined,
         { name: query },
         undefined,
@@ -43,53 +70,54 @@ export function CompetitionInstanceFilterInput({ item, applyValue }: GridFilterI
 
       if (!active) return;
 
-      match(CompetitionInstancesResult, {
+      match(competitionInstancesResult, {
         onLeft: () => {
-          setCompetitionInstanceOptions([]);
+          setOptions([]);
         },
-        onRight: ([CompetitionInstances]) => {
-          setCompetitionInstanceOptions(CompetitionInstances);
+        onRight: ([competitionInstances]) => {
+          setOptions(competitionInstances);
         },
       });
 
-      setIsCompetitionInstanceLoading(false);
+      setIsLoading(false);
     }, 300);
 
     return () => {
       active = false;
       clearTimeout(timeoutId);
     };
-  }, [getCompetitionInstances, CompetitionInstanceInput]);
+  }, [getCompetitionInstances, searchQuery]);
+
+  const handleInputChange = useCallback((_: unknown, value: string) => {
+    setInputValue(value);
+    setSearchQuery(value);
+  }, []);
+
+  const handleChange = useCallback(
+    (_: unknown, competitionInstance: CompetitionInstance | null) => {
+      if (competitionInstance) {
+        setInputValue(competitionInstance.name);
+        setSearchQuery('');
+      }
+      applyValue({ ...item, value: competitionInstance?.id ?? '' });
+    },
+    [applyValue, item],
+  );
 
   return (
     <Autocomplete
-      options={CompetitionInstanceOptions}
-      value={
-        CompetitionInstanceOptions.find(
-          (CompetitionInstance) => CompetitionInstance.id === item.value,
-        ) ?? null
-      }
-      onChange={(_, CompetitionInstance) => {
-        applyValue({ ...item, value: CompetitionInstance?.id ?? '' });
-      }}
-      inputValue={CompetitionInstanceInput}
-      onInputChange={(_, value) => {
-        setCompetitionInstanceInput(value);
-
-        if (value.trim().length < 1) {
-          setCompetitionInstanceOptions([]);
-          setIsCompetitionInstanceLoading(false);
-        }
-      }}
+      options={options}
+      value={options.find((c) => c.id === item.value) ?? null}
+      onChange={handleChange}
+      inputValue={inputValue}
+      onInputChange={handleInputChange}
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isCompetitionInstanceLoading}
+      loading={isLoading}
       noOptionsText={
-        CompetitionInstanceInput
-          ? 'No competition instances found'
-          : 'Type to search competition instance'
+        searchQuery ? 'No competition instances found' : 'Type to search competition instance'
       }
-      filterOptions={(options) => options}
+      filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />
       )}
