@@ -84,7 +84,7 @@ export function UserPermissionsList({
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>('[]');
+  const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedUserPermissionId, setSelectedUserPermissionId] = useState<string | null>(null);

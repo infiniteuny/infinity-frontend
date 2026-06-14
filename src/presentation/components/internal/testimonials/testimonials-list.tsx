@@ -78,7 +78,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>('[]');
+  const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedTestimonialId, setSelectedTestimonialId] = useState<string | null>(null);
   const [selectedTestimonialName, setSelectedTestimonialName] = useState<string | null>(null);

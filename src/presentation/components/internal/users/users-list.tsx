@@ -80,6 +80,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
+  const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
   const lastFetchedStateRef = useRef<string>('[]');
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
