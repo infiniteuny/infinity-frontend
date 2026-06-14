@@ -161,16 +161,22 @@ export function GeneralForm({
               control={control}
               render={({ field }) => (
                 <DatePicker
+                  {...field}
                   label="Start Date"
-                  value={field.value ? DateTime.fromJSDate(field.value) : null}
+                  format="dd/LL/yyyy"
+                  timezone="UTC"
+                  value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
                   onChange={(date) => field.onChange(date?.toJSDate())}
+                  onAccept={field.onBlur}
                   disabled={isSubmitting}
+                  inputRef={field.ref}
                   slotProps={{
                     textField: {
                       fullWidth: true,
                       margin: 'none',
                       error: !!errors.startDate,
                       helperText: errors.startDate?.message,
+                      onBlur: field.onBlur,
                     },
                   }}
                 />
@@ -183,16 +189,22 @@ export function GeneralForm({
               control={control}
               render={({ field }) => (
                 <DatePicker
+                  {...field}
                   label="End Date"
-                  value={field.value ? DateTime.fromJSDate(field.value) : null}
+                  format="dd/LL/yyyy"
+                  timezone="UTC"
+                  value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
                   onChange={(date) => field.onChange(date?.toJSDate())}
+                  onAccept={field.onBlur}
                   disabled={isSubmitting}
+                  inputRef={field.ref}
                   slotProps={{
                     textField: {
                       fullWidth: true,
                       margin: 'none',
                       error: !!errors.endDate,
                       helperText: errors.endDate?.message,
+                      onBlur: field.onBlur,
                     },
                   }}
                 />

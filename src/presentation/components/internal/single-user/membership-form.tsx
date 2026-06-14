@@ -68,13 +68,13 @@ export function MembershipForm({
                   render={({ field }) => (
                     <DatePicker
                       {...field}
-                      disabled={isSubmitting}
                       label="Start Date"
                       format="dd/LL/yyyy"
                       timezone="UTC"
                       value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
                       onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
                       onAccept={field.onBlur}
+                      disabled={isSubmitting}
                       inputRef={field.ref}
                       slotProps={{
                         field: {
@@ -98,12 +98,13 @@ export function MembershipForm({
                   render={({ field }) => (
                     <DatePicker
                       {...field}
-                      disabled={isSubmitting}
                       label="End Date"
                       format="dd/LL/yyyy"
-                      value={field.value ? DateTime.fromJSDate(field.value) : null}
+                      timezone="UTC"
+                      value={field.value ? DateTime.fromJSDate(field.value, { zone: 'UTC' }) : null}
                       onChange={(date) => field.onChange(date ? date.toJSDate() : null)}
                       onAccept={field.onBlur}
+                      disabled={isSubmitting}
                       inputRef={field.ref}
                       slotProps={{
                         field: {
