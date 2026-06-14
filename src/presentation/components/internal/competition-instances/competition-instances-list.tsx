@@ -90,6 +90,7 @@ export function CompetitionInstancesList({
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
+  const lastFetchedStateRef = useRef<string>('[]');
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCompetitionInstanceId, setSelectedCompetitionInstanceId] = useState<string | null>(
@@ -194,6 +195,19 @@ export function CompetitionInstancesList({
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
+    }
+
+    const stateString = JSON.stringify({
+      filters: filterModel.items
+        .filter((item) => item.value != null && item.value !== '')
+        .map((item) => ({ field: item.field, value: item.value })),
+      sort: sortModel,
+    });
+
+    if (stateString === lastFetchedStateRef.current) {
+      return;
+    } else {
+      lastFetchedStateRef.current = stateString;
     }
 
     let cancelled = false;

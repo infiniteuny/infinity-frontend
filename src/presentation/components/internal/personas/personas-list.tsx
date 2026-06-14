@@ -72,6 +72,7 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
+  const lastFetchedStateRef = useRef<string>('[]');
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [selectedPersonaName, setSelectedPersonaName] = useState<string | null>(null);
@@ -105,6 +106,20 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
       isInitialMount.current = false;
       return;
     }
+
+    const stateString = JSON.stringify({
+      filters: filterModel.items
+        .filter((item) => item.value != null && item.value !== '')
+        .map((item) => ({ field: item.field, value: item.value })),
+      sort: sortModel,
+    });
+
+    if (stateString === lastFetchedStateRef.current) {
+      return;
+    } else {
+      lastFetchedStateRef.current = stateString;
+    }
+
     let cancelled = false;
     (async () => {
       setIsLoading(true);
