@@ -1,3 +1,40 @@
+# [1.3.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.2.0...v1.3.0) (2026-06-15)
+
+
+
+# 1.3.0-alpha.2 (2026-06-15)
+
+
+### Bug Fixes
+
+* **component:** Add aria-label to icon button component on header ([b14ac15](https://github.com/infiniteuny/infinity-frontend/commit/b14ac15ba4fd22d031ccec44e8ab45f12465a30a))
+* **component:** Change transition to be only with the transform/width related ([7601dc5](https://github.com/infiniteuny/infinity-frontend/commit/7601dc5075151e8c055247055fb2eab66c4e45fe))
+* **component:** Fix autocomplete filter input to reload selected option on reopen ([296f8bb](https://github.com/infiniteuny/infinity-frontend/commit/296f8bb83dd232069ab5cad545206df812f6f33c))
+* **component:** Fix date timezone on render and input ([7a91a66](https://github.com/infiniteuny/infinity-frontend/commit/7a91a660dc3d4cb3b241f52d3ecb86784cfcdd0b))
+* **component:** Fix footer left margin on sidebar extended ([42ee9e0](https://github.com/infiniteuny/infinity-frontend/commit/42ee9e05a207f95ca123f06ac1cde016a759ed83))
+* **component:** Fix initial sort and filter state to include empty array for both ([485b2bb](https://github.com/infiniteuny/infinity-frontend/commit/485b2bb3ea75671569a64b48f21926506f063e75))
+* **component:** Move background CSS to body instead of html element ([6494b99](https://github.com/infiniteuny/infinity-frontend/commit/6494b99c604bd202012f1453bd0d2f01c88f676d))
+* **component:** Track sort and filter state to prevent unnecessary reload when no changes ([dbcf9d6](https://github.com/infiniteuny/infinity-frontend/commit/dbcf9d63f736d9e451f50eb7013ada049f42d105))
+* **datasource:** Fix better-auth account cookie max-age to 2 hours ([079ad15](https://github.com/infiniteuny/infinity-frontend/commit/079ad15d8d82e61057137b8f95fa92e12959b397))
+* **deps:** update non-major dependencies ([#665](https://github.com/infiniteuny/infinity-frontend/issues/665)) ([5ad0e3f](https://github.com/infiniteuny/infinity-frontend/commit/5ad0e3fe153113c3cda9473b3da110c63bbe105a))
+* **deps:** update non-major dependencies ([#670](https://github.com/infiniteuny/infinity-frontend/issues/670)) ([c3b686c](https://github.com/infiniteuny/infinity-frontend/commit/c3b686c2ae6b4a5ecc039eaca9a8a1ab1431ed96))
+* **deps:** update non-major dependencies to v0.35.0 ([#668](https://github.com/infiniteuny/infinity-frontend/issues/668)) ([5be5f00](https://github.com/infiniteuny/infinity-frontend/commit/5be5f00a9f19a69a50ae9a2b58cb91b8cd8ef202))
+* **docker:** Use prefer offline for npm ci command ([4266652](https://github.com/infiniteuny/infinity-frontend/commit/426665245743fdcdf2bbf39b2eac466244d10ee6))
+* Ignore beads ([433dd92](https://github.com/infiniteuny/infinity-frontend/commit/433dd92ff4054c3cc70c8f7422c1eb1c7d3c1c36))
+* **usecase:** Call get access token first on get session ([c5db84d](https://github.com/infiniteuny/infinity-frontend/commit/c5db84d64bead8a1644a8f67bfe096cd0e5d463b))
+
+
+### Features
+
+* **component:** Add filter for relation ID on entity lists ([f4fe169](https://github.com/infiniteuny/infinity-frontend/commit/f4fe169a0b13cc9d7a577f5306db0c89176a17b6))
+* **component:** Add INFINITE logo with text ([ae5f4d4](https://github.com/infiniteuny/infinity-frontend/commit/ae5f4d4af1569a20b381ab9c2926ae54ea3c7bc9))
+* **component:** Add initial complete sort and filter options ([b31c719](https://github.com/infiniteuny/infinity-frontend/commit/b31c7199599a78cdafd1c80acbfe730eb167cf95))
+* **component:** Add search button to lists' toolbar ([efa8403](https://github.com/infiniteuny/infinity-frontend/commit/efa8403461ff4e3716b786a726aa2e5a78017d2e))
+* **repository:** Add more complete sort options to all repository ([3905692](https://github.com/infiniteuny/infinity-frontend/commit/3905692c257a2c624aea027c8cc98b0a001fdb27))
+* **workflow:** Use multijob with matrix for native arm64 docker build ([1525bef](https://github.com/infiniteuny/infinity-frontend/commit/1525bef75ded09ce131e13e3277f71c1a9d2af30))
+
+
+
 # [1.2.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.1.0...v1.2.0) (2026-06-09)
 
 
