@@ -8,7 +8,7 @@ COPY package.json package-lock.json* ./
 
 # Install project dependencies with frozen lockfile for reproducible builds
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --no-audit --no-fund;
+    npm ci --prefer-offline --no-audit --no-fund;
 
 FROM node:24.15.0-alpine AS builder
 
@@ -57,8 +57,8 @@ ENV NODE_ENV=production \
 COPY --from=builder --chown=bun:bun /app/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown bun:bun .next
+RUN mkdir .next && \
+    chown bun:bun .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
