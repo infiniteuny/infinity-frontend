@@ -70,6 +70,7 @@ jobs:
       labels: ${{ steps.meta.outputs.labels }}
       annotations: ${{ steps.meta.outputs.annotations }}
       clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
+      commit_hash: ${{ steps.auto-commit.outputs.commit_hash }}
     steps:
       - name: Set version
         id: version
@@ -107,6 +108,7 @@ jobs:
 
       - name: Commit and push version change
         if: ${{ inputs.release_type == 'prod' }}
+        id: auto-commit
         uses: stefanzweifel/git-auto-commit-action@v7.1.0
         with:
           commit_message: "chore: Update version to v${{ steps.version.outputs.version }}"
@@ -159,6 +161,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6.0.3
+        with:
+          ref: ${{ needs.prepare.outputs.commit_hash || github.ref_name }}
 
       - name: Download release files
         if: ${{ inputs.release_type != 'prod' }}
@@ -294,6 +298,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6.0.3
+        with:
+          ref: ${{ needs.prepare.outputs.commit_hash || github.ref_name }}
 
       - name: Create release
         uses: softprops/action-gh-release@v3.0.0
