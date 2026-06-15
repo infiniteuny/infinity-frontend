@@ -1,6 +1,11 @@
 # [1.3.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.2.0...v1.3.0) (2026-06-15)
 
 
+### Bug Fixes
+
+* **workflow:** Use the new committed version and changelog on prod release ([1085454](https://github.com/infiniteuny/infinity-frontend/commit/108545406ebff1ede7c5350a0788605a37fc9d5d))
+
+
 
 # 1.3.0-alpha.2 (2026-06-15)
 
