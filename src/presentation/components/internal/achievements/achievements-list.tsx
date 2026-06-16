@@ -554,8 +554,8 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/achievements/${params.row.actions.id}`}
                     />
-                    {['update-achievements'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-achievements'].some((p) => userPermissions.has(p)) &&
+                    {['update-achievement'].some((p) => userPermissions.has(p)) ||
+                    (['update-own-achievement'].some((p) => userPermissions.has(p)) &&
                       params.row.actions.team?.members?.some(
                         (member: User) => member.id === userSession?.user?.id,
                       )) ? (
@@ -569,8 +569,8 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                         href={`/achievements/${params.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-achievements'].some((p) => userPermissions.has(p)) ||
-                    (['delete-own-achievements'].some((p) => userPermissions.has(p)) &&
+                    {['delete-achievement'].some((p) => userPermissions.has(p)) ||
+                    (['delete-own-achievement'].some((p) => userPermissions.has(p)) &&
                       params.row.actions.team?.members?.some(
                         (member: User) => member.id === userSession?.user?.id,
                       )) ? (
