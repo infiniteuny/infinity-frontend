@@ -97,7 +97,7 @@ export default async function SingleGroupPage({ params }: Props) {
         ]}
       >
         <SectionHeader title={group.name} backUrl="/groups">
-          <GroupToolbar groupId={group.id} />
+          <GroupToolbar group={GroupMapper.fromDomainToDto(group) as GroupDto} />
         </SectionHeader>
         <GroupView initialGroup={GroupMapper.fromDomainToDto(group) as GroupDto} />
       </InternalMain>
