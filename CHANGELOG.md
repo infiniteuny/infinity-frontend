@@ -6,6 +6,7 @@
 * **component:** Add back url to related entity lists ([3fc5b70](https://github.com/infiniteuny/infinity-frontend/commit/3fc5b709fc11c7eb937084854b23c88734db8ddc))
 * **component:** Add back URL to the entity list that on settings ([ed099ba](https://github.com/infiniteuny/infinity-frontend/commit/ed099bacd3cdeeabd4ea9c8ac091b19f27686453))
 * **component:** Reorder code column after name on degree list ([1491424](https://github.com/infiniteuny/infinity-frontend/commit/149142475c704154125df39247adca4629b65216))
+* **route:** Fix missing changed entity props to list ([df70e24](https://github.com/infiniteuny/infinity-frontend/commit/df70e244493457f7acaab8feeae830f65222eee7))
 
 
 
