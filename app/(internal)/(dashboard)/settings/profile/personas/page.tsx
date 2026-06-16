@@ -74,6 +74,7 @@ export default async function ProfilePersonasPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
         user={UserMapper.fromDomainToDto(user) as UserDto}
+        isProfileView
       />
     </InternalMain>
   );

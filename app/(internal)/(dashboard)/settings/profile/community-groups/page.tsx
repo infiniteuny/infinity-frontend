@@ -83,6 +83,7 @@ export default async function ProfileCommunityGroupsPage() {
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
         user={UserMapper.fromDomainToDto(user) as UserDto}
+        isProfileView
       />
     </InternalMain>
   );

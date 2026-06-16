@@ -296,7 +296,11 @@ export function UserGroupsList({
         title={`${parsedUser.name}'s Groups`}
         backUrl={isProfileView ? '/settings/profile' : `/users/${parsedUser.id}`}
       >
-        <UserGroupsToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
+        <UserGroupsToolbar
+          userId={parsedUser.id}
+          dataGridApiRef={dataGridApiRef}
+          isProfileView={isProfileView}
+        />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}

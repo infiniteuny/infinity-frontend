@@ -123,7 +123,6 @@ export default async function UserPermissionsPage({ params }: Props) {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
           user={UserMapper.fromDomainToDto(user) as UserDto}
-          isProfileView
         />
       </InternalMain>
     );

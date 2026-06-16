@@ -298,7 +298,11 @@ export function UserPermissionsList({
         title={`${parsedUser.name}'s Permissions`}
         backUrl={isProfileView ? `/settings/profile` : `/users/${parsedUser.id}`}
       >
-        <UserPermissionsToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
+        <UserPermissionsToolbar
+          userId={parsedUser.id}
+          dataGridApiRef={dataGridApiRef}
+          isProfileView={isProfileView}
+        />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}

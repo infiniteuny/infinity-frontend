@@ -296,7 +296,11 @@ export function UserPersonasList({
         title={`${parsedUser.name}'s Personas`}
         backUrl={isProfileView ? '/settings/profile' : `/users/${parsedUser.id}`}
       >
-        <UserPersonasToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
+        <UserPersonasToolbar
+          userId={parsedUser.id}
+          dataGridApiRef={dataGridApiRef}
+          isProfileView={isProfileView}
+        />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}

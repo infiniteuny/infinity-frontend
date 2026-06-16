@@ -121,7 +121,6 @@ export default async function UserGroupsPage({ params }: Props) {
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
           user={UserMapper.fromDomainToDto(user) as UserDto}
-          isProfileView
         />
       </InternalMain>
     );
