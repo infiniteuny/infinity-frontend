@@ -37,7 +37,7 @@ export default async function FundApplicationsPage() {
     );
 
     const result = await getFundApplications.execute(
-      ['team', 'competition_instance', 'competition_scale'],
+      ['team', 'team.members', 'competition_instance', 'competition_scale'],
       undefined,
       undefined,
       { perPage: 25 },

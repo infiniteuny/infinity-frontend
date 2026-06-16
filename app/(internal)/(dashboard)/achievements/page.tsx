@@ -24,6 +24,7 @@ export default async function AchievementsPage() {
   const result = await getAchievements.execute(
     [
       'team',
+      'team.members',
       'competition_instance',
       'competition_scale',
       'competition_time_range',
