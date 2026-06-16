@@ -1,4 +1,13 @@
-## [1.3.3](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.2...v1.3.3) (2026-06-16)
+## [1.3.5](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.4...v1.3.5) (2026-06-16)
+
+
+### Bug Fixes
+
+* **component:** Subtitute missing competitionId ([1853027](https://github.com/infiniteuny/infinity-frontend/commit/1853027ec2940fa8e6d4fad31f81ffe29550f5db))
+
+
+
+## [1.3.4](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.2...v1.3.4) (2026-06-16)
 
 
 ### Bug Fixes
@@ -80,40 +89,6 @@
 
 * **component:** Update nested user property component to be used to profile page ([1f61259](https://github.com/infiniteuny/infinity-frontend/commit/1f61259ce91b810ff599f98e648df055cb26f14b))
 * **route:** Add nested user property route to profile page ([e7a809f](https://github.com/infiniteuny/infinity-frontend/commit/e7a809f771792e00faa4bd61cf9e5451e06456cf))
-
-
-
-# [1.1.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.0.0...v1.1.0) (2026-06-08)
-
-
-### Bug Fixes
-
-* **component:** Change list loading overlay to skeleton ([3c30b45](https://github.com/infiniteuny/infinity-frontend/commit/3c30b45f484538611f1835f31579dd79ddad1a47))
-* **component:** Change main component to use flex ([6238358](https://github.com/infiniteuny/infinity-frontend/commit/623835822c03ef5bd5302276854aa47afe10e184))
-* **component:** Fix clickable view tile component to use Link for URL ([60b741d](https://github.com/infiniteuny/infinity-frontend/commit/60b741daaf25e3f9ea1e547d33075ee8bba05bc1))
-* **component:** Fix core team and cg admin member's animation tile ([1c8b28b](https://github.com/infiniteuny/infinity-frontend/commit/1c8b28bb9765b9405238077221a8e5d38e9b2496))
-* **component:** Hide status field on achievement and fund app form based on user permission ([dfecf32](https://github.com/infiniteuny/infinity-frontend/commit/dfecf32efa4db5d2f0262ae60101a6a8849b2808))
-* **component:** Use shortname for all competition related name if available ([f52f3a9](https://github.com/infiniteuny/infinity-frontend/commit/f52f3a9d763b2c4c917a13f8709de443f4e43e2f))
-* **datasource:** Move better-auth nextCookie plugin to the latest ([23e7a4e](https://github.com/infiniteuny/infinity-frontend/commit/23e7a4e8f496e13e3fe5934b1798be819efbdb73))
-* **deps:** update dependency better-auth to v1.6.11 [security] ([#663](https://github.com/infiniteuny/infinity-frontend/issues/663)) ([8edbe50](https://github.com/infiniteuny/infinity-frontend/commit/8edbe5057b53865212d4ed63d251ed1ab8f752ac))
-* **entity:** Allow user date filter to be null (for empty and not empty) ([a558879](https://github.com/infiniteuny/infinity-frontend/commit/a5588794ebc93da61adf47362a5ffb39451038f8))
-* **entity:** Do not allow null value on create and update date filter ([b328d97](https://github.com/infiniteuny/infinity-frontend/commit/b328d97d0faf4da0b7e4ff3819a6a3f6250bc66d))
-* **favicon:** Move to route folder ([e7278e3](https://github.com/infiniteuny/infinity-frontend/commit/e7278e3a14d9a26dc06bb6ecceed2b2f6e768f7c))
-* **layout:** Remove favicon from metadata ([f52ac3e](https://github.com/infiniteuny/infinity-frontend/commit/f52ac3e17d30ba17eada02719e2f9b055b560a40))
-* **proxy:** Remove logout from unproxied path ([36e04be](https://github.com/infiniteuny/infinity-frontend/commit/36e04befe0985fddf0ca2e4464547ecb77fbc3de))
-* **repository:** Fix user date filter repo implementation ([b943d97](https://github.com/infiniteuny/infinity-frontend/commit/b943d97e756dbd4c59fe16aca8d4ee482b00e934))
-* **route:** Move global error template to root ([e39730e](https://github.com/infiniteuny/infinity-frontend/commit/e39730e2264e78ada91f0a510ca188429753840a))
-
-
-### Features
-
-* **component:** Add back button to section header ([bc48a80](https://github.com/infiniteuny/infinity-frontend/commit/bc48a80cec4056800d729e13d0be1e2cd0740132))
-* **component:** Add breadcrumbs and title metadata to each page ([f296193](https://github.com/infiniteuny/infinity-frontend/commit/f296193060460c19c25a5d307d5208bc8f684428))
-* **component:** Add breadcrumbs component to main ([4060060](https://github.com/infiniteuny/infinity-frontend/commit/40600600cd439b9445ebb0b1ba9f16832755203c))
-* **component:** Add initial grid operators list ([2ceb1ce](https://github.com/infiniteuny/infinity-frontend/commit/2ceb1ce8a248e64a823219d1aeb2b7f12a5fb66c))
-* **component:** Add server side filtering and sorting to users list ([8600694](https://github.com/infiniteuny/infinity-frontend/commit/86006948d6f79a20198f213dffbdaa5c188afb34))
-* **repository:** Add sort option to get users repo method ([24ca846](https://github.com/infiniteuny/infinity-frontend/commit/24ca8461435d3a0b8032246e1088d701b5156b7d))
-* **util:** Add date filter operator converter ([ae5133e](https://github.com/infiniteuny/infinity-frontend/commit/ae5133e6ca96ac0805fdeb2e328e99445a336962))
 
 
 
