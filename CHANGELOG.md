@@ -1,3 +1,13 @@
+## [1.3.11](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.10...v1.3.11) (2026-06-16)
+
+
+### Bug Fixes
+
+* **component:** Add isProfileView prop to profile route components ([1ec687d](https://github.com/infiniteuny/infinity-frontend/commit/1ec687d9262d2f6d619bcde39a5229bfe1be1be7))
+* **route:** Add missing include organizer_type in competition instances ([19ba8f3](https://github.com/infiniteuny/infinity-frontend/commit/19ba8f3f00711d456b7e88b734270db341758220))
+
+
+
 ## [1.3.10](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.9...v1.3.10) (2026-06-16)
 
 
@@ -37,15 +47,6 @@
 ### Bug Fixes
 
 * **component:** Move competitions menu to sidebar directly ([9435f63](https://github.com/infiniteuny/infinity-frontend/commit/9435f63d20ba25c2c060b78080f4ed4ffefc6840))
-
-
-
-## [1.3.5](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.4...v1.3.5) (2026-06-16)
-
-
-### Bug Fixes
-
-* **component:** Subtitute missing competitionId ([1853027](https://github.com/infiniteuny/infinity-frontend/commit/1853027ec2940fa8e6d4fad31f81ffe29550f5db))
 
 
 
