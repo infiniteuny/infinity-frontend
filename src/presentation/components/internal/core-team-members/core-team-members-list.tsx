@@ -94,7 +94,16 @@ export function CoreTeamMembersList({
     );
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(JSON.stringify({ filters: [], sort: [] }));
+  const lastFetchedStateRef = useRef<string>(
+    JSON.stringify({
+      filters: [],
+      sort: [],
+      pagination: {
+        page: initPaginationOptions.previousCursor ? 1 : 0,
+        pageSize: initPaginationOptions.perPage || 25,
+      },
+    }),
+  );
   const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -217,6 +226,7 @@ export function CoreTeamMembersList({
         .filter((item) => item.value != null && item.value !== '')
         .map((item) => ({ field: item.field, value: item.value })),
       sort: sortModel,
+      pagination: paginationModel,
     });
 
     if (stateString === lastFetchedStateRef.current) {
