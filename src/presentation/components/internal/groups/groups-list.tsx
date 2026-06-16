@@ -292,7 +292,7 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                       href={`/groups/${params.row.actions.id}`}
                     />
                     {['update-group'].some((x) => userPermissions.has(x)) &&
-                    !params.row.isManaged ? (
+                    !params.row.actions.isManaged ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -304,7 +304,7 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                       />
                     ) : null}
                     {['delete-group'].some((x) => userPermissions.has(x)) &&
-                    !params.row.isManaged ? (
+                    !params.row.actions.isManaged ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
@@ -319,12 +319,13 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                 ),
               },
             ]}
-            rows={rows.map((x) => ({
-              id: x.id,
-              name: x.name,
-              guardName: x.guardName,
-              createdAt: x.createdAt.toLocaleDateString(),
-              actions: x,
+            rows={rows.map((group) => ({
+              id: group.id,
+              name: group.name,
+              guardName: group.guardName,
+              isManaged: group.isManaged,
+              createdAt: group.createdAt.toLocaleDateString(),
+              actions: group,
             }))}
             slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
             slotProps={{
