@@ -9,6 +9,8 @@ import {
   PaginationOptionsMapper,
   UserCommunityGroupDto,
   UserCommunityGroupMapper,
+  UserDto,
+  UserMapper,
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
@@ -72,7 +74,6 @@ export default async function ProfileCommunityGroupsPage() {
       ]}
     >
       <UserCommunityGroupsList
-        userId={user.id}
         initialUserCommunityGroups={
           userCommunityGroups.map(
             UserCommunityGroupMapper.fromDomainToDto,
@@ -81,6 +82,7 @@ export default async function ProfileCommunityGroupsPage() {
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
+        user={UserMapper.fromDomainToDto(user) as UserDto}
       />
     </InternalMain>
   );

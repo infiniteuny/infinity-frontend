@@ -7,8 +7,10 @@ import { NotFoundError } from '@app/domain/errors';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
   UserGroupDto,
   UserGroupMapper,
+  UserMapper,
 } from '@app/infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
@@ -65,11 +67,11 @@ export default async function ProfileGroupsPage() {
       ]}
     >
       <UserGroupsList
-        userId={user.id}
         initialUserGroups={userGroups.map(UserGroupMapper.fromDomainToDto) as UserGroupDto[]}
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
+        user={UserMapper.fromDomainToDto(user) as UserDto}
       />
     </InternalMain>
   );

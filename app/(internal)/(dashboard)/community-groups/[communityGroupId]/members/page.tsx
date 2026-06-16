@@ -4,6 +4,8 @@ import {
   CommunityGroupMemberDto,
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  CommunityGroupMapper,
+  CommunityGroupDto,
 } from '@app/infrastructure/dtos';
 import { CommunityGroupMembersList } from '@app/presentation/components/internal/community-group-members';
 import { GetCommunityGroup, GetCommunityGroupMembers } from '@app/application';
@@ -94,7 +96,6 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
       ]}
     >
       <CommunityGroupMembersList
-        communityGroupId={communityGroupId}
         initialCommunityGroupMembers={
           communityGroupMembers.map(
             CommunityGroupMemberMapper.fromDomainToDto,
@@ -103,6 +104,7 @@ export default async function CommunityGroupMembersPage({ params }: Props) {
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
+        communityGroup={CommunityGroupMapper.fromDomainToDto(communityGroup) as CommunityGroupDto}
       />
     </InternalMain>
   );
