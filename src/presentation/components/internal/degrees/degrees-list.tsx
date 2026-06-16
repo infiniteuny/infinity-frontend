@@ -287,15 +287,6 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
                 sortable: true,
               },
               {
-                field: 'code',
-                headerName: 'Code',
-                flex: 1,
-                minWidth: 120,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.equals],
-              },
-              {
                 field: 'name',
                 headerName: 'Name',
                 flex: 2,
@@ -303,6 +294,15 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
                 filterable: true,
                 sortable: true,
                 filterOperators: [StringOperators.contains],
+              },
+              {
+                field: 'code',
+                headerName: 'Code',
+                flex: 1,
+                minWidth: 120,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.equals],
               },
               {
                 field: 'actions',
