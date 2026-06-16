@@ -21,13 +21,22 @@ export class Group {
   public id: string;
   public name: string;
   public guardName: 'api';
+  public isManaged: boolean;
   public createdAt: Date;
   public updatedAt: Date;
 
-  public constructor(id: string, name: string, guardName: 'api', createdAt: Date, updatedAt: Date) {
+  public constructor(
+    id: string,
+    name: string,
+    guardName: 'api',
+    isManaged: boolean,
+    createdAt: Date,
+    updatedAt: Date,
+  ) {
     this.id = id;
     this.name = name;
     this.guardName = guardName;
+    this.isManaged = isManaged;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

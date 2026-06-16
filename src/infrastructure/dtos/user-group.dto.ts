@@ -31,6 +31,7 @@ export class UserGroupMapper {
       dto.id,
       dto.name,
       dto.guard_name,
+      dto.is_managed,
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       {

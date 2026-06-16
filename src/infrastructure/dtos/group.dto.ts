@@ -5,6 +5,7 @@ export interface GroupDto {
   id: string;
   name: string;
   guard_name: 'api';
+  is_managed: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -15,6 +16,7 @@ export class GroupMapper {
       id: group.id,
       name: group.name,
       guard_name: group.guardName,
+      is_managed: group.isManaged,
       created_at: group.createdAt?.toISOString(),
       updated_at: group.updatedAt?.toISOString(),
     };
@@ -25,6 +27,7 @@ export class GroupMapper {
       dto.id,
       dto.name,
       dto.guard_name,
+      dto.is_managed,
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
     );

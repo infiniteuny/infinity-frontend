@@ -15,6 +15,7 @@ export class UserGroup extends Group {
     id: string,
     name: string,
     guardName: 'api',
+    isManaged: boolean,
     createdAt: Date,
     updatedAt: Date,
     entitlement: {
@@ -23,7 +24,7 @@ export class UserGroup extends Group {
       groupId: string;
     },
   ) {
-    super(id, name, guardName, createdAt, updatedAt);
+    super(id, name, guardName, isManaged, createdAt, updatedAt);
     this.entitlement = entitlement;
   }
 }

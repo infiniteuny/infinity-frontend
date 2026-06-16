@@ -265,14 +265,23 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                 sortable: false,
               },
               {
+                field: 'isManaged',
+                type: 'boolean',
+                headerName: 'Managed',
+                flex: 0.5,
+                minWidth: 80,
+                filterable: false,
+                sortable: false,
+              },
+              {
                 field: 'actions',
                 type: 'actions',
                 headerName: '',
                 flex: 0.5,
                 minWidth: 50,
                 maxWidth: 50,
-                renderCell: (p) => (
-                  <GridActionsCell {...p}>
+                renderCell: (params) => (
+                  <GridActionsCell {...params}>
                     <GridActionsCellItem
                       key="view"
                       showInMenu
@@ -280,9 +289,10 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/groups/${p.row.actions.id}`}
+                      href={`/groups/${params.row.actions.id}`}
                     />
-                    {['update-group'].some((x) => userPermissions.has(x)) ? (
+                    {['update-group'].some((x) => userPermissions.has(x)) &&
+                    !params.row.isManaged ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -290,16 +300,19 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/groups/${p.row.actions.id}/edit`}
+                        href={`/groups/${params.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-group'].some((x) => userPermissions.has(x)) ? (
+                    {['delete-group'].some((x) => userPermissions.has(x)) &&
+                    !params.row.isManaged ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
                         icon={<DeleteRounded />}
                         label="Delete"
-                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
+                        onClick={() =>
+                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
+                        }
                       />
                     ) : null}
                   </GridActionsCell>

@@ -97,7 +97,7 @@ export class GroupRepositoryImpl implements GroupRepository {
   }
 
   public async createGroup(
-    group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
+    group: Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Group, Error>> {
@@ -123,7 +123,7 @@ export class GroupRepositoryImpl implements GroupRepository {
 
   public async updateGroup(
     id: string,
-    group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
+    group: Partial<Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
     token?: string,
   ): Promise<Either<Group, Error>> {

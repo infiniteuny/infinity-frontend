@@ -26,6 +26,9 @@ export function GeneralView({ group }: Props) {
           <Grid size={12}>
             <ViewTile title="Guard Name" subtitle={group.guardName} position="middle" />
           </Grid>
+          <Grid size={12}>
+            <ViewTile title="Managed" subtitle={group.isManaged ? 'Yes' : 'No'} position="middle" />
+          </Grid>
           {['read-group-permission'].some((p) => userPermissions.has(p)) ? (
             <Grid size={12}>
               <ClickableViewTile

@@ -7,7 +7,7 @@ import { Group } from '@app/domain/entities';
 
 export type UpdateGroupParams = [
   id: string,
-  group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
+  group: Partial<Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>>,
   abortSignal?: AbortSignal,
 ];
 
@@ -28,7 +28,7 @@ export class UpdateGroup implements UseCase<Promise<Either<Group, Error>>, Updat
 
   public async execute(
     id: string,
-    group: Partial<Omit<Group, 'id' | 'createdAt' | 'updatedAt'>>,
+    group: Partial<Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>>,
     abortSignal?: AbortSignal,
   ): Promise<Either<Group, Error>> {
     const accessTokenResult = await this.authRepository.getAccessToken();

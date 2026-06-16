@@ -2,15 +2,16 @@
 
 import Link from 'next/link';
 import { Box, Button } from '@mui/material';
+import { GroupDto, GroupMapper } from '@app/infrastructure/dtos';
 import { GroupInput } from './group-form';
 import { EditRounded, SaveRounded } from '@mui/icons-material';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
-  groupId: string;
+  group: GroupDto;
 };
 
 type FormProps = {
@@ -18,20 +19,24 @@ type FormProps = {
   methods: UseFormReturn<GroupInput>;
 };
 
-export function GroupToolbar({ groupId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+export function GroupToolbar({ group, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
   const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const parsedGroup = useMemo(
+    () => (group ? GroupMapper.fromDtoToDomain(group) : undefined),
+    [group],
+  );
 
-  if (groupId) {
+  if (group && parsedGroup) {
     return (
       <Box className="ml-auto">
-        {['update-group'].some((p) => userPermissions.includes(p)) ? (
+        {['update-group'].some((p) => userPermissions.includes(p)) && !parsedGroup.isManaged ? (
           <Button
             variant="filled"
             className="ml-4"
             aria-label="Edit group"
             LinkComponent={Link}
-            href={`/groups/${groupId}/edit`}
+            href={`/groups/${group.id}/edit`}
             startIcon={<EditRounded />}
           >
             Edit

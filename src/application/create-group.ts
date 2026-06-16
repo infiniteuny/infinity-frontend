@@ -6,7 +6,7 @@ import { UseCase } from '@app/application';
 import { Group } from '@app/domain/entities';
 
 export type CreateGroupParams = [
-  group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
+  group: Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>,
   abortSignal?: AbortSignal,
 ];
 
@@ -26,7 +26,7 @@ export class CreateGroup implements UseCase<Promise<Either<Group, Error>>, Creat
   }
 
   public async execute(
-    group: Omit<Group, 'id' | 'createdAt' | 'updatedAt'>,
+    group: Omit<Group, 'id' | 'isManaged' | 'createdAt' | 'updatedAt'>,
     abortSignal?: AbortSignal,
   ): Promise<Either<Group, Error>> {
     const accessTokenResult = await this.authRepository.getAccessToken();
