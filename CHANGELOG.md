@@ -1,4 +1,15 @@
-# [1.3.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.2.0...v1.3.0) (2026-06-15)
+## [1.3.2](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.1...v1.3.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* **component:** Fix typo on achievement permission checking ([3ce80cf](https://github.com/infiniteuny/infinity-frontend/commit/3ce80cf3fa078005361f4715035c1a4975de7791))
+* **component:** Track pagination state changes on entity list ([5c90315](https://github.com/infiniteuny/infinity-frontend/commit/5c90315698c16e4802ccfecf7bd139d119d8dadf))
+* **route:** Add missing team member include on achievement and fund app route initial fetch ([8e244c7](https://github.com/infiniteuny/infinity-frontend/commit/8e244c7a38b4690b8315b150bb936f4de46a1438))
+
+
+
+## [1.3.1](https://github.com/infiniteuny/infinity-frontend/compare/v1.2.0...v1.3.1) (2026-06-15)
 
 
 ### Bug Fixes
