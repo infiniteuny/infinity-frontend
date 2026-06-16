@@ -21,6 +21,8 @@ import {
   UserSortOptions,
 } from '@app/domain/entities';
 import {
+  CommunityGroupAdminDto,
+  CommunityGroupAdminMapper,
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
   PaginationOptionsDto,
@@ -52,13 +54,13 @@ import { CommunityGroupAdminMembersToolbar } from './community-group-admin-membe
 type Props = {
   initialCommunityGroupAdminMembers: CommunityGroupAdminMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  communityGroupAdminId: string;
+  communityGroupAdmin: CommunityGroupAdminDto;
 };
 
 export function CommunityGroupAdminMembersList({
   initialCommunityGroupAdminMembers,
   initialPaginationOptions,
-  communityGroupAdminId,
+  communityGroupAdmin,
 }: Props) {
   const getCommunityGroupAdminMembers = useMemo(
     () => clientContainer.get<GetCommunityGroupAdminMembers>(SYMBOLS.GetCommunityGroupAdminMembers),
@@ -73,6 +75,10 @@ export function CommunityGroupAdminMembersList({
     CommunityGroupAdminMemberMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedCommunityGroupAdmin = useMemo(
+    () => CommunityGroupAdminMapper.fromDtoToDomain(communityGroupAdmin),
+    [communityGroupAdmin],
+  );
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
@@ -250,7 +256,7 @@ export function CommunityGroupAdminMembersList({
 
       try {
         const result = await getCommunityGroupAdminMembers.execute(
-          communityGroupAdminId,
+          parsedCommunityGroupAdmin.id,
           ['major', 'major.faculty', 'membership.community_group'],
           filterOptions,
           sortOptions,
@@ -290,7 +296,7 @@ export function CommunityGroupAdminMembersList({
     filterModel,
     cursor,
     getCommunityGroupAdminMembers,
-    communityGroupAdminId,
+    parsedCommunityGroupAdmin.id,
   ]);
 
   const handlePaginationModelChange = useCallback(
@@ -337,7 +343,7 @@ export function CommunityGroupAdminMembersList({
 
   const handleRowClick = (params: GridRowParams) => {
     router.push(
-      `/community-group-admins/${communityGroupAdminId}/members/${params.row.membershipId}`,
+      `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.membershipId}`,
     );
   };
 
@@ -388,9 +394,12 @@ export function CommunityGroupAdminMembersList({
 
   return (
     <>
-      <SectionHeader title="Admin Members">
+      <SectionHeader
+        title={`${parsedCommunityGroupAdmin.year}'s Admin Members`}
+        backUrl={`/community-group-admins/${parsedCommunityGroupAdmin.id}`}
+      >
         <CommunityGroupAdminMembersToolbar
-          communityGroupAdminId={communityGroupAdminId}
+          communityGroupAdminId={parsedCommunityGroupAdmin.id}
           dataGridApiRef={dataGridApiRef}
         />
       </SectionHeader>
@@ -595,7 +604,7 @@ export function CommunityGroupAdminMembersList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/community-group-admins/${communityGroupAdminId}/members/${params.row.membershipId}`}
+                      href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.membershipId}`}
                     />
                     {['update-community-group-admin-member'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -605,7 +614,7 @@ export function CommunityGroupAdminMembersList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/community-group-admins/${communityGroupAdminId}/members/${params.row.membershipId}/edit`}
+                        href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.membershipId}/edit`}
                       />
                     ) : null}
                     {['delete-community-group-admin-member'].some((p) => userPermissions.has(p)) ? (

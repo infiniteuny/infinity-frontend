@@ -1,5 +1,7 @@
 import { cache } from 'react';
 import {
+  CommunityGroupAdminDto,
+  CommunityGroupAdminMapper,
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
   PaginationOptionsDto,
@@ -98,7 +100,6 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
       ]}
     >
       <CommunityGroupAdminMembersList
-        communityGroupAdminId={communityGroupAdminId}
         initialCommunityGroupAdminMembers={
           communityGroupAdminMembers.map(
             CommunityGroupAdminMemberMapper.fromDomainToDto,
@@ -106,6 +107,9 @@ export default async function CommunityGroupAdminMembersPage({ params }: Props) 
         }
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+        communityGroupAdmin={
+          CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
         }
       />
     </InternalMain>

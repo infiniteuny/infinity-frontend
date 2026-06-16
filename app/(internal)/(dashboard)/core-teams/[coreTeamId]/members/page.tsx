@@ -3,6 +3,8 @@ import { CoreTeamMembersList } from '@app/presentation/components/internal/core-
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  CoreTeamDto,
+  CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
 } from '@app/infrastructure/dtos';
@@ -87,13 +89,13 @@ export default async function CoreTeamMembersPage({ params }: Props) {
       ]}
     >
       <CoreTeamMembersList
-        coreTeamId={coreTeamId}
         initialCoreTeamMembers={
           coreTeamMembers.map(CoreTeamMemberMapper.fromDomainToDto) as CoreTeamMemberDto[]
         }
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
+        coreTeam={CoreTeamMapper.fromDomainToDto(coreTeam) as CoreTeamDto}
       />
     </InternalMain>
   );

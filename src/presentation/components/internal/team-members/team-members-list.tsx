@@ -60,7 +60,7 @@ type Props = {
 export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, team }: Props) {
   const initTeamMembers = initialTeamMembers.map(TeamMemberMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const parsedTeam = TeamMapper.fromDtoToDomain(team);
+  const parsedTeam = useMemo(() => TeamMapper.fromDtoToDomain(team), [team]);
   const getTeamMembers = useMemo(
     () => clientContainer.get<GetTeamMembers>(SYMBOLS.GetTeamMembers),
     [],
@@ -365,8 +365,8 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
 
   return (
     <>
-      <SectionHeader title="Members">
-        <TeamMembersToolbar teamId={team.id} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader title={`${parsedTeam.name}'s Members`} backUrl={`/teams/${parsedTeam.id}`}>
+        <TeamMembersToolbar teamId={parsedTeam.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}

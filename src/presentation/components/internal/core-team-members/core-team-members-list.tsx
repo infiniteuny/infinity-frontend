@@ -21,6 +21,8 @@ import {
   UserSortOptions,
 } from '@app/domain/entities';
 import {
+  CoreTeamDto,
+  CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
   PaginationOptionsDto,
@@ -52,16 +54,17 @@ import { CoreTeamMembersToolbar } from './core-team-members-toolbar';
 type Props = {
   initialCoreTeamMembers: CoreTeamMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  coreTeamId: string;
+  coreTeam: CoreTeamDto;
 };
 
 export function CoreTeamMembersList({
   initialCoreTeamMembers,
   initialPaginationOptions,
-  coreTeamId,
+  coreTeam,
 }: Props) {
   const initCoreTeamMembers = initialCoreTeamMembers.map(CoreTeamMemberMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedCoreTeam = useMemo(() => CoreTeamMapper.fromDtoToDomain(coreTeam), [coreTeam]);
   const getCoreTeamMembers = useMemo(
     () => clientContainer.get<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers),
     [],
@@ -244,7 +247,7 @@ export function CoreTeamMembersList({
 
       try {
         const result = await getCoreTeamMembers.execute(
-          coreTeamId,
+          parsedCoreTeam.id,
           ['major', 'major.faculty', 'membership.core_team_division'],
           filterOptions,
           sortOptions,
@@ -278,7 +281,7 @@ export function CoreTeamMembersList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getCoreTeamMembers, coreTeamId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getCoreTeamMembers, parsedCoreTeam.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -323,7 +326,7 @@ export function CoreTeamMembersList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/core-teams/${coreTeamId}/members/${params.row.membershipId}`);
+    router.push(`/core-teams/${parsedCoreTeam.id}/members/${params.row.membershipId}`);
   };
 
   const handleDeleteClick = (coreTeamMemberId: string, coreTeamMemberName?: string) => {
@@ -366,8 +369,11 @@ export function CoreTeamMembersList({
 
   return (
     <>
-      <SectionHeader title="Members">
-        <CoreTeamMembersToolbar coreTeamId={coreTeamId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedCoreTeam.year} Members`}
+        backUrl={`/core-teams/${parsedCoreTeam.id}`}
+      >
+        <CoreTeamMembersToolbar coreTeamId={parsedCoreTeam.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
@@ -570,7 +576,7 @@ export function CoreTeamMembersList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/core-teams/${coreTeamId}/members/${params.row.membershipId}`}
+                      href={`/core-teams/${parsedCoreTeam.id}/members/${params.row.membershipId}`}
                     />
                     {['update-core-team-member'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -580,7 +586,7 @@ export function CoreTeamMembersList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/core-teams/${coreTeamId}/members/${params.row.membershipId}/edit`}
+                        href={`/core-teams/${parsedCoreTeam.id}/members/${params.row.membershipId}/edit`}
                       />
                     ) : null}
                     {['delete-core-team-member'].some((p) => userPermissions.has(p)) ? (

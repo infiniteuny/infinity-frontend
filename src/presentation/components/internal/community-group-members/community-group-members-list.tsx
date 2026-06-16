@@ -21,6 +21,8 @@ import {
   UserSortOptions,
 } from '@app/domain/entities';
 import {
+  CommunityGroupDto,
+  CommunityGroupMapper,
   CommunityGroupMemberDto,
   CommunityGroupMemberMapper,
   PaginationOptionsDto,
@@ -52,13 +54,13 @@ import { CommunityGroupMembersToolbar } from './community-group-members-toolbar'
 type Props = {
   initialCommunityGroupMembers: CommunityGroupMemberDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  communityGroupId: string;
+  communityGroup: CommunityGroupDto;
 };
 
 export function CommunityGroupMembersList({
   initialCommunityGroupMembers,
   initialPaginationOptions,
-  communityGroupId,
+  communityGroup,
 }: Props) {
   const initCommunityGroupMembers = initialCommunityGroupMembers.map(
     CommunityGroupMemberMapper.fromDtoToDomain,
@@ -71,6 +73,10 @@ export function CommunityGroupMembersList({
   const deleteCommunityGroupMember = useMemo(
     () => clientContainer.get<DeleteCommunityGroupMember>(SYMBOLS.DeleteCommunityGroupMember),
     [],
+  );
+  const parsedCommunityGroup = useMemo(
+    () => CommunityGroupMapper.fromDtoToDomain(communityGroup),
+    [communityGroup],
   );
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
@@ -250,7 +256,7 @@ export function CommunityGroupMembersList({
 
       try {
         const result = await getCommunityGroupMembers.execute(
-          communityGroupId,
+          parsedCommunityGroup.id,
           ['major', 'major.faculty'],
           filterOptions,
           sortOptions,
@@ -284,7 +290,14 @@ export function CommunityGroupMembersList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getCommunityGroupMembers, communityGroupId]);
+  }, [
+    paginationModel,
+    sortModel,
+    filterModel,
+    cursor,
+    getCommunityGroupMembers,
+    parsedCommunityGroup.id,
+  ]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -372,9 +385,12 @@ export function CommunityGroupMembersList({
 
   return (
     <>
-      <SectionHeader title="Members">
+      <SectionHeader
+        title={`${parsedCommunityGroup.name}'s Members`}
+        backUrl={`/community-groups/${parsedCommunityGroup.id}`}
+      >
         <CommunityGroupMembersToolbar
-          communityGroupId={communityGroupId}
+          communityGroupId={parsedCommunityGroup.id}
           dataGridApiRef={dataGridApiRef}
         />
       </SectionHeader>

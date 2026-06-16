@@ -6,6 +6,8 @@ import { NotFoundError } from '@app/domain/errors';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserPermissionDto,
   UserPermissionMapper,
 } from '@app/infrastructure/dtos';
@@ -114,13 +116,14 @@ export default async function UserPermissionsPage({ params }: Props) {
         ]}
       >
         <UserPermissionsList
-          userId={userId}
           initialUserPermissions={
             userPermissions.map(UserPermissionMapper.fromDomainToDto) as UserPermissionDto[]
           }
           initialPaginationOptions={
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
+          user={UserMapper.fromDomainToDto(user) as UserDto}
+          isProfileView
         />
       </InternalMain>
     );

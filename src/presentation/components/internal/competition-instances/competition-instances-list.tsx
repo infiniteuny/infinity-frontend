@@ -19,8 +19,10 @@ import {
   PaginationOptions,
 } from '@app/domain/entities';
 import {
+  CompetitionDto,
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
+  CompetitionMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
@@ -49,13 +51,13 @@ import { CompetitionInstancesToolbar } from './competition-instances-toolbar';
 type Props = {
   initialCompetitionInstances: CompetitionInstanceDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  competitionId: string;
+  competition: CompetitionDto;
 };
 
 export function CompetitionInstancesList({
   initialCompetitionInstances,
   initialPaginationOptions,
-  competitionId,
+  competition,
 }: Props) {
   const getCompetitionInstances = useMemo(
     () => clientContainer.get<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances),
@@ -69,6 +71,10 @@ export function CompetitionInstancesList({
     CompetitionInstanceMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedCompetition = useMemo(
+    () => CompetitionMapper.fromDtoToDomain(competition),
+    [competition],
+  );
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
@@ -231,7 +237,7 @@ export function CompetitionInstancesList({
       const sortOptions = convertSortModelToDomain(sortModel);
       const userFilterOptions = convertFilterModelToDomain(filterModel);
       const baseFilterOptions: CompetitionInstanceFilterOptions = {
-        ...(competitionId ? { competitionId } : {}),
+        ...(parsedCompetition ? { competitionId: parsedCompetition.id } : {}),
         ...userFilterOptions,
       };
 
@@ -270,7 +276,7 @@ export function CompetitionInstancesList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionInstances, competitionId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionInstances, parsedCompetition]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -315,7 +321,7 @@ export function CompetitionInstancesList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competitions/${competitionId}/instances/${params.row.id}`);
+    router.push(`/competitions/${parsedCompetition.id}/instances/${params.row.id}`);
   };
 
   const handleDeleteClick = (competitionInstanceId: string, competitionInstanceName?: string) => {
@@ -358,9 +364,12 @@ export function CompetitionInstancesList({
 
   return (
     <>
-      <SectionHeader title="Instances">
+      <SectionHeader
+        title={`${parsedCompetition.shortname || parsedCompetition.name}'s Instances`}
+        backUrl={`/competitions/${parsedCompetition.id}`}
+      >
         <CompetitionInstancesToolbar
-          competitionId={competitionId}
+          competitionId={parsedCompetition.id}
           dataGridApiRef={dataGridApiRef}
         />
       </SectionHeader>

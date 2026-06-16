@@ -1,7 +1,9 @@
 import { cache } from 'react';
 import {
+  CompetitionDto,
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
+  CompetitionMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@app/infrastructure/dtos';
@@ -92,7 +94,7 @@ export default async function CompetitionInstancesPage({ params }: Props) {
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
         }
-        competitionId={competitionId}
+        competition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
       />
     </InternalMain>
   );

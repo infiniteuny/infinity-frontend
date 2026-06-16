@@ -30,6 +30,8 @@ import {
   PermissionSortOptions,
 } from '@app/domain/entities';
 import {
+  GroupDto,
+  GroupMapper,
   GroupPermissionDto,
   GroupPermissionMapper,
   PaginationOptionsDto,
@@ -45,16 +47,17 @@ import { GroupPermissionsToolbar } from './group-permissions-toolbar';
 type Props = {
   initialGroupPermissions: GroupPermissionDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  groupId: string;
+  group: GroupDto;
 };
 
 export function GroupPermissionsList({
   initialGroupPermissions,
   initialPaginationOptions,
-  groupId,
+  group,
 }: Props) {
   const initGroupPermissions = initialGroupPermissions.map(GroupPermissionMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedGroup = useMemo(() => GroupMapper.fromDtoToDomain(group), [group]);
   const getGroupPermissions = useMemo(
     () => clientContainer.get<GetGroupPermissions>(SYMBOLS.GetGroupPermissions),
     [],
@@ -172,10 +175,15 @@ export function GroupPermissionsList({
       const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
-        const result = await getGroupPermissions.execute(groupId, filterOptions, sortOptions, {
-          perPage: paginationModel.pageSize,
-          cursor,
-        });
+        const result = await getGroupPermissions.execute(
+          parsedGroup.id,
+          filterOptions,
+          sortOptions,
+          {
+            perPage: paginationModel.pageSize,
+            cursor,
+          },
+        );
 
         if (cancelled) return;
 
@@ -204,7 +212,7 @@ export function GroupPermissionsList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getGroupPermissions, groupId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getGroupPermissions, parsedGroup.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -249,7 +257,7 @@ export function GroupPermissionsList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/groups/${groupId}/permissions/${params.row.id}`);
+    router.push(`/groups/${parsedGroup.id}/permissions/${params.row.id}`);
   };
 
   const handleDeleteClick = (groupPermissionId: string, groupPermissionName?: string) => {
@@ -292,8 +300,11 @@ export function GroupPermissionsList({
 
   return (
     <>
-      <SectionHeader title="Permissions">
-        <GroupPermissionsToolbar groupId={groupId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedGroup.name}'s Permissions`}
+        backUrl={`/groups/${parsedGroup.id}`}
+      >
+        <GroupPermissionsToolbar groupId={parsedGroup.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
@@ -353,7 +364,7 @@ export function GroupPermissionsList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/groups/${groupId}/permissions/${params.row.actions.id}`}
+                      href={`/groups/${parsedGroup.id}/permissions/${params.row.actions.id}`}
                     />
                     {['delete-group-permission'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem

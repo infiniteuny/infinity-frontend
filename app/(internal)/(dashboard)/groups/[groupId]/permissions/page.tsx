@@ -1,6 +1,8 @@
 import { cache } from 'react';
 import { GetGroup, GetGroupPermissions, GetSession } from '@app/application';
 import {
+  GroupDto,
+  GroupMapper,
   GroupPermissionDto,
   GroupPermissionMapper,
   PaginationOptionsDto,
@@ -113,13 +115,13 @@ export default async function GroupPermissionsPage({ params }: Props) {
         ]}
       >
         <GroupPermissionsList
-          groupId={groupId}
           initialGroupPermissions={
             groupPermissions.map(GroupPermissionMapper.fromDomainToDto) as GroupPermissionDto[]
           }
           initialPaginationOptions={
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
+          group={GroupMapper.fromDomainToDto(group) as GroupDto}
         />
       </InternalMain>
     );

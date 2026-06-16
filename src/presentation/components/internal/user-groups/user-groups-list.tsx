@@ -33,6 +33,8 @@ import {
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserGroupDto,
   UserGroupMapper,
 } from '@app/infrastructure/dtos';
@@ -45,12 +47,19 @@ import { UserGroupsToolbar } from './user-groups-toolbar';
 type Props = {
   initialUserGroups: UserGroupDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  userId: string;
+  user: UserDto;
+  isProfileView?: boolean;
 };
 
-export function UserGroupsList({ initialUserGroups, initialPaginationOptions, userId }: Props) {
+export function UserGroupsList({
+  initialUserGroups,
+  initialPaginationOptions,
+  user,
+  isProfileView,
+}: Props) {
   const initUserGroups = initialUserGroups.map(UserGroupMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const getUserGroups = useMemo(
     () => clientContainer.get<GetUserGroups>(SYMBOLS.GetUserGroups),
     [],
@@ -164,7 +173,7 @@ export function UserGroupsList({ initialUserGroups, initialPaginationOptions, us
       const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
-        const result = await getUserGroups.execute(userId, filterOptions, sortOptions, {
+        const result = await getUserGroups.execute(parsedUser.id, filterOptions, sortOptions, {
           perPage: paginationModel.pageSize,
           cursor,
         });
@@ -196,7 +205,7 @@ export function UserGroupsList({ initialUserGroups, initialPaginationOptions, us
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getUserGroups, userId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getUserGroups, parsedUser.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -283,8 +292,11 @@ export function UserGroupsList({ initialUserGroups, initialPaginationOptions, us
 
   return (
     <>
-      <SectionHeader title="Groups">
-        <UserGroupsToolbar userId={userId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedUser.name}'s Groups`}
+        backUrl={isProfileView ? '/settings/profile' : `/users/${parsedUser.id}`}
+      >
+        <UserGroupsToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}

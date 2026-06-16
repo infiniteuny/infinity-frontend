@@ -34,6 +34,8 @@ import {
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserCommunityGroupDto,
   UserCommunityGroupMapper,
 } from '@app/infrastructure/dtos';
@@ -46,13 +48,15 @@ import { UserCommunityGroupsToolbar } from './user-community-groups-toolbar';
 type Props = {
   initialUserCommunityGroups: UserCommunityGroupDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  userId: string;
+  user: UserDto;
+  isProfileView?: boolean;
 };
 
 export function UserCommunityGroupsList({
   initialUserCommunityGroups,
   initialPaginationOptions,
-  userId,
+  user,
+  isProfileView,
 }: Props) {
   const getUserCommunityGroups = useMemo(
     () => clientContainer.get<GetUserCommunityGroups>(SYMBOLS.GetUserCommunityGroups),
@@ -66,6 +70,7 @@ export function UserCommunityGroupsList({
     UserCommunityGroupMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
@@ -185,10 +190,15 @@ export function UserCommunityGroupsList({
       const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
-        const result = await getUserCommunityGroups.execute(userId, filterOptions, sortOptions, {
-          perPage: paginationModel.pageSize,
-          cursor,
-        });
+        const result = await getUserCommunityGroups.execute(
+          parsedUser.id,
+          filterOptions,
+          sortOptions,
+          {
+            perPage: paginationModel.pageSize,
+            cursor,
+          },
+        );
 
         if (cancelled) return;
 
@@ -217,7 +227,7 @@ export function UserCommunityGroupsList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getUserCommunityGroups, userId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getUserCommunityGroups, parsedUser.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -313,8 +323,11 @@ export function UserCommunityGroupsList({
 
   return (
     <>
-      <SectionHeader title="Community Groups">
-        <UserCommunityGroupsToolbar userId={userId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedUser.name}'s Community Groups`}
+        backUrl={isProfileView ? `/settings/profile` : `/users/${parsedUser.id}`}
+      >
+        <UserCommunityGroupsToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
@@ -388,7 +401,7 @@ export function UserCommunityGroupsList({
                     />
                     {['delete-community-group-member'].some((p) => userPermissions.has(p)) ||
                     (['delete-own-community-group-member'].some((p) => userPermissions.has(p)) &&
-                      userId === userSession?.user?.id) ? (
+                      parsedUser.id === userSession?.user?.id) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu

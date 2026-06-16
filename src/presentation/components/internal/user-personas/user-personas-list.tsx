@@ -33,6 +33,8 @@ import {
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserPersonaDto,
   UserPersonaMapper,
 } from '@app/infrastructure/dtos';
@@ -45,12 +47,19 @@ import { UserPersonasToolbar } from './user-personas-toolbar';
 type Props = {
   initialUserPersonas: UserPersonaDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  userId: string;
+  user: UserDto;
+  isProfileView?: boolean;
 };
 
-export function UserPersonasList({ initialUserPersonas, initialPaginationOptions, userId }: Props) {
+export function UserPersonasList({
+  initialUserPersonas,
+  initialPaginationOptions,
+  user,
+  isProfileView,
+}: Props) {
   const initUserPersonas = initialUserPersonas.map(UserPersonaMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const getUserPersonas = useMemo(
     () => clientContainer.get<GetUserPersonas>(SYMBOLS.GetUserPersonas),
     [],
@@ -164,7 +173,7 @@ export function UserPersonasList({ initialUserPersonas, initialPaginationOptions
       const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
-        const result = await getUserPersonas.execute(userId, filterOptions, sortOptions, {
+        const result = await getUserPersonas.execute(parsedUser.id, filterOptions, sortOptions, {
           perPage: paginationModel.pageSize,
           cursor,
         });
@@ -196,7 +205,7 @@ export function UserPersonasList({ initialUserPersonas, initialPaginationOptions
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getUserPersonas, userId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getUserPersonas, parsedUser.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -283,8 +292,11 @@ export function UserPersonasList({ initialUserPersonas, initialPaginationOptions
 
   return (
     <>
-      <SectionHeader title="Personas">
-        <UserPersonasToolbar userId={userId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedUser.name}'s Personas`}
+        backUrl={isProfileView ? '/settings/profile' : `/users/${parsedUser.id}`}
+      >
+        <UserPersonasToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
@@ -362,7 +374,7 @@ export function UserPersonasList({ initialUserPersonas, initialPaginationOptions
                     />
                     {['update-user-persona'].some((p) => userPermissions.has(p)) ||
                     (['update-own-user-persona'].some((p) => userPermissions.has(p)) &&
-                      userId === userSession?.user?.id) ? (
+                      parsedUser.id === userSession?.user?.id) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -375,7 +387,7 @@ export function UserPersonasList({ initialUserPersonas, initialPaginationOptions
                     ) : null}
                     {['delete-user-persona'].some((p) => userPermissions.has(p)) ||
                     (['delete-own-user-persona'].some((p) => userPermissions.has(p)) &&
-                      userId === userSession?.user?.id) ? (
+                      parsedUser.id === userSession?.user?.id) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu

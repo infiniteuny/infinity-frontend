@@ -8,6 +8,8 @@ import { NotFoundError } from '@app/domain/errors';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserGroupDto,
   UserGroupMapper,
 } from '@app/infrastructure/dtos';
@@ -114,11 +116,12 @@ export default async function UserGroupsPage({ params }: Props) {
         ]}
       >
         <UserGroupsList
-          userId={userId}
           initialUserGroups={userGroups.map(UserGroupMapper.fromDomainToDto) as UserGroupDto[]}
           initialPaginationOptions={
             PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
           }
+          user={UserMapper.fromDomainToDto(user) as UserDto}
+          isProfileView
         />
       </InternalMain>
     );

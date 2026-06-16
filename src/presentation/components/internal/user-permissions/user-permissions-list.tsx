@@ -33,6 +33,8 @@ import {
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
+  UserDto,
+  UserMapper,
   UserPermissionDto,
   UserPermissionMapper,
 } from '@app/infrastructure/dtos';
@@ -45,16 +47,19 @@ import { UserPermissionsToolbar } from './user-permissions-toolbar';
 type Props = {
   initialUserPermissions: UserPermissionDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  userId: string;
+  user: UserDto;
+  isProfileView?: boolean;
 };
 
 export function UserPermissionsList({
   initialUserPermissions,
   initialPaginationOptions,
-  userId,
+  user,
+  isProfileView,
 }: Props) {
   const initUserPermissions = initialUserPermissions.map(UserPermissionMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
+  const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const getUserPermissions = useMemo(
     () => clientContainer.get<GetUserPermissions>(SYMBOLS.GetUserPermissions),
     [],
@@ -170,7 +175,7 @@ export function UserPermissionsList({
       const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
-        const result = await getUserPermissions.execute(userId, filterOptions, sortOptions, {
+        const result = await getUserPermissions.execute(parsedUser.id, filterOptions, sortOptions, {
           perPage: paginationModel.pageSize,
           cursor,
         });
@@ -202,7 +207,7 @@ export function UserPermissionsList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getUserPermissions, userId]);
+  }, [paginationModel, sortModel, filterModel, cursor, getUserPermissions, parsedUser.id]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -289,8 +294,11 @@ export function UserPermissionsList({
 
   return (
     <>
-      <SectionHeader title="Permissions">
-        <UserPermissionsToolbar userId={userId} dataGridApiRef={dataGridApiRef} />
+      <SectionHeader
+        title={`${parsedUser.name}'s Permissions`}
+        backUrl={isProfileView ? `/settings/profile` : `/users/${parsedUser.id}`}
+      >
+        <UserPermissionsToolbar userId={parsedUser.id} dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
