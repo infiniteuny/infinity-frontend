@@ -258,7 +258,7 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
 
   return (
     <>
-      <SectionHeader title="Degrees">
+      <SectionHeader title="Degrees" backUrl="/settings">
         <DegreesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

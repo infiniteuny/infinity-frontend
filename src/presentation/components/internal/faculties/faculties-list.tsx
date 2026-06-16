@@ -227,7 +227,7 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
 
   return (
     <>
-      <SectionHeader title="Faculties">
+      <SectionHeader title="Faculties" backUrl="/settings">
         <FacultiesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

@@ -274,7 +274,7 @@ export function CompetitionOutputsList({
 
   return (
     <>
-      <SectionHeader title="Outputs">
+      <SectionHeader title="Outputs" backUrl="/settings">
         <CompetitionOutputsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

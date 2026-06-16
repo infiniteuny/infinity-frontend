@@ -269,7 +269,7 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
 
   return (
     <>
-      <SectionHeader title="Ranks">
+      <SectionHeader title="Ranks" backUrl="/settings">
         <CompetitionRanksToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

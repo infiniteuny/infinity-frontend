@@ -276,7 +276,7 @@ export function CoreTeamDivisionsList({
 
   return (
     <>
-      <SectionHeader title="Divisions">
+      <SectionHeader title="Divisions" backUrl="/settings">
         <CoreTeamDivisionsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

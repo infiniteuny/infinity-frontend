@@ -274,7 +274,7 @@ export function CompetitionScalesList({
 
   return (
     <>
-      <SectionHeader title="Scales">
+      <SectionHeader title="Scales" backUrl="/settings">
         <CompetitionScalesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

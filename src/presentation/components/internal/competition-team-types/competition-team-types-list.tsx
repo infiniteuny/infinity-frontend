@@ -274,7 +274,7 @@ export function CompetitionTeamTypesList({
 
   return (
     <>
-      <SectionHeader title="Team Types">
+      <SectionHeader title="Team Types" backUrl="/settings">
         <CompetitionTeamTypesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

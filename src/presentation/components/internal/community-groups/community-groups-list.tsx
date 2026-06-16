@@ -239,7 +239,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
 
   return (
     <>
-      <SectionHeader title="Community Groups">
+      <SectionHeader title="Community Groups" backUrl="/settings">
         <CommunityGroupsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

@@ -293,7 +293,7 @@ export function CompetitionOrganizerTypesList({
 
   return (
     <>
-      <SectionHeader title="Organizer Types">
+      <SectionHeader title="Organizer Types" backUrl="/settings">
         <CompetitionOrganizerTypesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

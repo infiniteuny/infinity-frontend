@@ -274,7 +274,7 @@ export function CompetitionTimeRangesList({
 
   return (
     <>
-      <SectionHeader title="Time Ranges">
+      <SectionHeader title="Time Ranges" backUrl="/settings">
         <CompetitionTimeRangesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

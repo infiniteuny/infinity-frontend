@@ -293,7 +293,7 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
 
   return (
     <>
-      <SectionHeader title="Majors">
+      <SectionHeader title="Majors" backUrl="/settings">
         <MajorsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

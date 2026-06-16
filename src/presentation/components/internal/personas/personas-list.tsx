@@ -226,7 +226,7 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
 
   return (
     <>
-      <SectionHeader title="Personas">
+      <SectionHeader title="Personas" backUrl="/settings">
         <PersonasToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
