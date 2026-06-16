@@ -95,8 +95,8 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
   const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedrankId, setSelectedrankId] = useState<string | null>(null);
-  const [selectedrankName, setSelectedrankName] = useState<string | null>(null);
+  const [selectedRankId, setSelectedrankId] = useState<string | null>(null);
+  const [selectedRankName, setSelectedrankName] = useState<string | null>(null);
 
   const convertSortModelToDomain = (
     model: GridSortModel,
@@ -239,14 +239,14 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
   };
 
   const handleDeleteAccept = async () => {
-    if (!selectedrankId) {
+    if (!selectedRankId) {
       console.error('No rank selected for deletion');
       return;
     }
-    const result = await deleteCompetitionRank.execute(selectedrankId);
+    const result = await deleteCompetitionRank.execute(selectedRankId);
     match(result, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedrankId));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRankId));
       },
       onLeft: (error) => {
         console.error('Failed to delete rank:', error);
@@ -277,7 +277,7 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedrankName || 'this rank'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedRankName || 'this rank'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

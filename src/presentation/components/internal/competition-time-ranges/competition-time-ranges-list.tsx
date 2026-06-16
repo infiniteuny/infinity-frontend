@@ -100,8 +100,8 @@ export function CompetitionTimeRangesList({
   const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedtimeRangeId, setSelectedtimeRangeId] = useState<string | null>(null);
-  const [selectedtimeRangeName, setSelectedtimeRangeName] = useState<string | null>(null);
+  const [selectedTimeRangeId, setSelectedtimeRangeId] = useState<string | null>(null);
+  const [selectedTimeRangeName, setSelectedtimeRangeName] = useState<string | null>(null);
 
   const convertSortModelToDomain = (
     model: GridSortModel,
@@ -234,7 +234,7 @@ export function CompetitionTimeRangesList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competition-timeRanges/${params.row.id}`);
+    router.push(`/competition-time-ranges/${params.row.id}`);
   };
 
   const handleDeleteClick = (timeRangeId: string, timeRangeName?: string) => {
@@ -244,17 +244,17 @@ export function CompetitionTimeRangesList({
   };
 
   const handleDeleteAccept = async () => {
-    if (!selectedtimeRangeId) {
-      console.error('No timeRange selected for deletion');
+    if (!selectedTimeRangeId) {
+      console.error('No time range selected for deletion');
       return;
     }
-    const result = await deleteCompetitionTimeRange.execute(selectedtimeRangeId);
+    const result = await deleteCompetitionTimeRange.execute(selectedTimeRangeId);
     match(result, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedtimeRangeId));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedTimeRangeId));
       },
       onLeft: (error) => {
-        console.error('Failed to delete timeRange:', error);
+        console.error('Failed to delete time range:', error);
       },
     });
     setOpenDeleteDialog(false);
@@ -282,7 +282,7 @@ export function CompetitionTimeRangesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedtimeRangeName || 'this timeRange'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedTimeRangeName || 'this time range'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
@@ -335,9 +335,9 @@ export function CompetitionTimeRangesList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/competition-timeRanges/${params.row.actions.id}`}
+                      href={`/competition-time-ranges/${params.row.actions.id}`}
                     />
-                    {['update-competition-timeRange'].some((p) => userPermissions.has(p)) ? (
+                    {['update-competition-time-range'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -345,10 +345,10 @@ export function CompetitionTimeRangesList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/competition-timeRanges/${params.row.actions.id}/edit`}
+                        href={`/competition-time-ranges/${params.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-competition-timeRange'].some((p) => userPermissions.has(p)) ? (
+                    {['delete-competition-time-range'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
@@ -373,7 +373,7 @@ export function CompetitionTimeRangesList({
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
             }}
             slotProps={{
-              noRowsOverlay: { text: 'No competition timeRanges found.' },
+              noRowsOverlay: { text: 'No competition time ranges found.' },
               loadingOverlay: {
                 variant: 'skeleton',
                 noRowsVariant: 'skeleton',

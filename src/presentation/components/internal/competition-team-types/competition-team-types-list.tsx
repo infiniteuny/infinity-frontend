@@ -100,8 +100,8 @@ export function CompetitionTeamTypesList({
   const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedteamTypeId, setSelectedteamTypeId] = useState<string | null>(null);
-  const [selectedteamTypeName, setSelectedteamTypeName] = useState<string | null>(null);
+  const [selectedTeamTypeId, setSelectedTeamTypeId] = useState<string | null>(null);
+  const [selectedTeamTypeName, setSelectedTeamTypeName] = useState<string | null>(null);
 
   const convertSortModelToDomain = (
     model: GridSortModel,
@@ -234,41 +234,41 @@ export function CompetitionTeamTypesList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competition-teamTypes/${params.row.id}`);
+    router.push(`/competition-team-types/${params.row.id}`);
   };
 
   const handleDeleteClick = (teamTypeId: string, teamTypeName?: string) => {
-    setSelectedteamTypeId(teamTypeId);
-    setSelectedteamTypeName(teamTypeName || null);
+    setSelectedTeamTypeId(teamTypeId);
+    setSelectedTeamTypeName(teamTypeName || null);
     setOpenDeleteDialog(true);
   };
 
   const handleDeleteAccept = async () => {
-    if (!selectedteamTypeId) {
-      console.error('No teamType selected for deletion');
+    if (!selectedTeamTypeId) {
+      console.error('No team type selected for deletion');
       return;
     }
-    const result = await deleteCompetitionTeamType.execute(selectedteamTypeId);
+    const result = await deleteCompetitionTeamType.execute(selectedTeamTypeId);
     match(result, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedteamTypeId));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedTeamTypeId));
       },
       onLeft: (error) => {
-        console.error('Failed to delete teamType:', error);
+        console.error('Failed to delete team type:', error);
       },
     });
     setOpenDeleteDialog(false);
     setTimeout(function () {
-      setSelectedteamTypeId(null);
-      setSelectedteamTypeName(null);
+      setSelectedTeamTypeId(null);
+      setSelectedTeamTypeName(null);
     }, 1000);
   };
 
   const handleDeleteCancel = () => {
     setOpenDeleteDialog(false);
     setTimeout(function () {
-      setSelectedteamTypeId(null);
-      setSelectedteamTypeName(null);
+      setSelectedTeamTypeId(null);
+      setSelectedTeamTypeName(null);
     }, 1000);
   };
 
@@ -282,7 +282,7 @@ export function CompetitionTeamTypesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedteamTypeName || 'this teamType'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedTeamTypeName || 'this team type'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
@@ -335,9 +335,9 @@ export function CompetitionTeamTypesList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/competition-teamTypes/${params.row.actions.id}`}
+                      href={`/competition-team-types/${params.row.actions.id}`}
                     />
-                    {['update-competition-teamType'].some((p) => userPermissions.has(p)) ? (
+                    {['update-competition-team-type'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -345,10 +345,10 @@ export function CompetitionTeamTypesList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/competition-teamTypes/${params.row.actions.id}/edit`}
+                        href={`/competition-team-types/${params.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-competition-teamType'].some((p) => userPermissions.has(p)) ? (
+                    {['delete-competition-team-type'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
@@ -373,7 +373,7 @@ export function CompetitionTeamTypesList({
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
             }}
             slotProps={{
-              noRowsOverlay: { text: 'No competition teamTypes found.' },
+              noRowsOverlay: { text: 'No competition team types found.' },
               loadingOverlay: {
                 variant: 'skeleton',
                 noRowsVariant: 'skeleton',

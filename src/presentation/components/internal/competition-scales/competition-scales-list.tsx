@@ -100,8 +100,8 @@ export function CompetitionScalesList({
   const dataGridApiRef = useGridApiRef();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedscaleId, setSelectedscaleId] = useState<string | null>(null);
-  const [selectedscaleName, setSelectedscaleName] = useState<string | null>(null);
+  const [selectedScaleId, setSelectedscaleId] = useState<string | null>(null);
+  const [selectedScaleName, setSelectedscaleName] = useState<string | null>(null);
 
   const convertSortModelToDomain = (
     model: GridSortModel,
@@ -244,14 +244,14 @@ export function CompetitionScalesList({
   };
 
   const handleDeleteAccept = async () => {
-    if (!selectedscaleId) {
+    if (!selectedScaleId) {
       console.error('No scale selected for deletion');
       return;
     }
-    const result = await deleteCompetitionScale.execute(selectedscaleId);
+    const result = await deleteCompetitionScale.execute(selectedScaleId);
     match(result, {
       onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedscaleId));
+        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedScaleId));
       },
       onLeft: (error) => {
         console.error('Failed to delete scale:', error);
@@ -282,7 +282,7 @@ export function CompetitionScalesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedscaleName || 'this scale'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedScaleName || 'this scale'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
