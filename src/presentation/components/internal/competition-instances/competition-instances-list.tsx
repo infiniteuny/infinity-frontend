@@ -512,7 +512,7 @@ export function CompetitionInstancesList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/competitions/${competitionId}/instances/${params.row.actions.id}`}
+                      href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}`}
                     />
                     {['update-competition'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -522,7 +522,7 @@ export function CompetitionInstancesList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/competitions/${competitionId}/instances/${params.row.actions.id}/edit`}
+                        href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}/edit`}
                       />
                     ) : null}
                     {['delete-competition'].some((p) => userPermissions.has(p)) ? (
