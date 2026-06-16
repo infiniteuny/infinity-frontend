@@ -1,3 +1,12 @@
+## [1.3.6](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.5...v1.3.6) (2026-06-16)
+
+
+### Bug Fixes
+
+* **component:** Move competitions menu to sidebar directly ([9435f63](https://github.com/infiniteuny/infinity-frontend/commit/9435f63d20ba25c2c060b78080f4ed4ffefc6840))
+
+
+
 ## [1.3.5](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.4...v1.3.5) (2026-06-16)
 
 
@@ -69,26 +78,6 @@
 * **component:** Add search button to lists' toolbar ([efa8403](https://github.com/infiniteuny/infinity-frontend/commit/efa8403461ff4e3716b786a726aa2e5a78017d2e))
 * **repository:** Add more complete sort options to all repository ([3905692](https://github.com/infiniteuny/infinity-frontend/commit/3905692c257a2c624aea027c8cc98b0a001fdb27))
 * **workflow:** Use multijob with matrix for native arm64 docker build ([1525bef](https://github.com/infiniteuny/infinity-frontend/commit/1525bef75ded09ce131e13e3277f71c1a9d2af30))
-
-
-
-# [1.2.0](https://github.com/infiniteuny/infinity-frontend/compare/v1.1.0...v1.2.0) (2026-06-09)
-
-
-### Bug Fixes
-
-* **component:** Add permission checking on edit button ([de3fb14](https://github.com/infiniteuny/infinity-frontend/commit/de3fb14eea92ea5220e407f0268b04461ef0920a))
-* **component:** Avoid useEffect to set state ([501d8b8](https://github.com/infiniteuny/infinity-frontend/commit/501d8b8a72c383a440620ec9ab32b11da7267441))
-* **component:** Fix component on MUI v9 ([0cf7cd0](https://github.com/infiniteuny/infinity-frontend/commit/0cf7cd096acdb5cdc7b1db9c5acc5754ae1157bf))
-* **deps:** update major dependencies ([56128f3](https://github.com/infiniteuny/infinity-frontend/commit/56128f37df400b250fccd0b7f452a9f06e189b1d))
-* **deps:** update non-major dependencies ([883e72b](https://github.com/infiniteuny/infinity-frontend/commit/883e72bfa1ded0d7f4c2aba2a3292c96316e24c0))
-* **workfllow:** Set fetch depth to 0 so changelog builder can works correctly ([e401039](https://github.com/infiniteuny/infinity-frontend/commit/e4010397ea39b42120f4ed2f76946e4d9cf8528a))
-
-
-### Features
-
-* **component:** Update nested user property component to be used to profile page ([1f61259](https://github.com/infiniteuny/infinity-frontend/commit/1f61259ce91b810ff599f98e648df055cb26f14b))
-* **route:** Add nested user property route to profile page ([e7a809f](https://github.com/infiniteuny/infinity-frontend/commit/e7a809f771792e00faa4bd61cf9e5451e06456cf))
 
 
 
