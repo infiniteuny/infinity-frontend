@@ -33,7 +33,6 @@ export default async function CompetitionsPage() {
     <InternalMain
       breadcrumbs={[
         { label: 'Overview', url: '/' },
-        { label: 'Settings', url: '/settings' },
         { label: 'Competitions', url: '/competitions' },
       ]}
     >

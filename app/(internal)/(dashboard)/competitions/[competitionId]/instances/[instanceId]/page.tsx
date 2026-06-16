@@ -146,7 +146,6 @@ export default async function SingleCompetitionInstancePage({ params }: Props) {
       <InternalMain
         breadcrumbs={[
           { label: 'Overview', url: '/' },
-          { label: 'Settings', url: '/settings' },
           { label: 'Competitions', url: '/competitions' },
           {
             label: competition.shortname || competition.name,

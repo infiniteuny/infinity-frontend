@@ -99,7 +99,6 @@ export default async function SingleCompetitionPage({ params }: Props) {
       <InternalMain
         breadcrumbs={[
           { label: 'Overview', url: '/' },
-          { label: 'Settings', url: '/settings' },
           { label: 'Competitions', url: '/competitions' },
           {
             label: competition.shortname || competition.name,
@@ -123,7 +122,6 @@ export default async function SingleCompetitionPage({ params }: Props) {
       <InternalMain
         breadcrumbs={[
           { label: 'Overview', url: '/' },
-          { label: 'Settings', url: '/settings' },
           { label: 'Competitions', url: '/competitions' },
           { label: 'Create Competition', url: `/competitions/new` },
         ]}

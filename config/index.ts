@@ -53,9 +53,15 @@ export const APP: {
           path: '/',
         },
         {
-          name: 'Competitions',
-          icon: 'emoji-events',
+          name: 'Programs',
+          icon: 'rocket-launch',
           items: [
+            {
+              name: 'Competitions',
+              icon: 'emoji-events',
+              path: '/competitions',
+              matcher: '^\\/competitions',
+            },
             {
               name: 'Fund Applications',
               icon: 'request-quote',
@@ -162,7 +168,7 @@ export const APP: {
           icon: 'settings',
           path: '/settings',
           matcher:
-            '^\\/(settings|degrees|faculties|majors|personas|team-types|core-team-divisions|community-groups|competitions|competition-organizer-types|competition-scales|competition-time-ranges|competition-outputs|competition-ranks)',
+            '^\\/(settings|degrees|faculties|majors|personas|team-types|core-team-divisions|community-groups|competition-organizer-types|competition-scales|competition-time-ranges|competition-outputs|competition-ranks)',
         },
       ],
     },

@@ -268,7 +268,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
 
   return (
     <>
-      <SectionHeader title="Competitions" backUrl="/settings">
+      <SectionHeader title="Competitions">
         <CompetitionsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog

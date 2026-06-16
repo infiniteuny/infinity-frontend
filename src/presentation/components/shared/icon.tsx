@@ -39,6 +39,8 @@ import {
   RequestQuoteRounded,
   ReviewsOutlined,
   ReviewsRounded,
+  RocketLaunchOutlined,
+  RocketLaunchRounded,
   SettingsOutlined,
   SettingsRounded,
   WebOutlined,
@@ -130,6 +132,10 @@ export function Icon({ name, ...props }: Props) {
       return <ReviewsRounded {...props} />;
     case 'reviews-outlined':
       return <ReviewsOutlined {...props} />;
+    case 'rocket-launch':
+      return <RocketLaunchRounded {...props} />;
+    case 'rocket-launch-outlined':
+      return <RocketLaunchOutlined {...props} />;
     case 'settings':
       return <SettingsRounded {...props} />;
     case 'settings-outlined':
