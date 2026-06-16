@@ -4,6 +4,7 @@
 ### Bug Fixes
 
 * **component:** Fix testimonial permission typo ([1146d34](https://github.com/infiniteuny/infinity-frontend/commit/1146d34eaf05c0d5558adf6b9e8395fe4934e3f8))
+* **component:** Pass full group dto for isManaged check on toolbar ([0fdae19](https://github.com/infiniteuny/infinity-frontend/commit/0fdae19f64d0bb3e38d54f1d3cd828ac268199ac))
 
 
 ### Features
