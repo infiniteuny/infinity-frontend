@@ -315,7 +315,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/testimonials/${p.row.actions.id}`}
                     />
-                    {['update-testimonal'].some((x) => userPermissions.has(x)) ? (
+                    {['update-testimonial'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="edit"
                         showInMenu
@@ -326,7 +326,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
                         href={`/testimonials/${p.row.actions.id}/edit`}
                       />
                     ) : null}
-                    {['delete-testimonal'].some((x) => userPermissions.has(x)) ? (
+                    {['delete-testimonial'].some((x) => userPermissions.has(x)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
