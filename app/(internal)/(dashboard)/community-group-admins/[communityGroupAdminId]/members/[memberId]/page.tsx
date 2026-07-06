@@ -170,7 +170,7 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
           { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
           {
             label: communityGroupAdminMember.name,
-            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.id}`,
+            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.membership.id}`,
           },
         ]}
       >
@@ -180,7 +180,7 @@ export default async function SingleCommunityGroupAdminMemberPage({ params }: Pr
         >
           <CommunityGroupAdminMemberToolbar
             communityGroupAdminId={communityGroupAdminId}
-            communityGroupAdminMemberId={communityGroupAdminMember.id}
+            communityGroupAdminMemberId={communityGroupAdminMember.membership.id}
           />
         </SectionHeader>
         <CommunityGroupAdminMemberView

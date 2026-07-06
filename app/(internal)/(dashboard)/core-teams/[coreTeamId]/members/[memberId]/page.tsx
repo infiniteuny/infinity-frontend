@@ -148,12 +148,15 @@ export default async function SingleCoreTeamMemberPage({ params }: Props) {
           { label: 'Members', url: `/core-teams/${coreTeamId}/members` },
           {
             label: coreTeamMember.name,
-            url: `/core-teams/${coreTeamId}/members/${coreTeamMember.id}`,
+            url: `/core-teams/${coreTeamId}/members/${coreTeamMember.membership.id}`,
           },
         ]}
       >
         <SectionHeader title={coreTeamMember.name} backUrl={`/core-teams/${coreTeamId}/members`}>
-          <CoreTeamMemberToolbar coreTeamId={coreTeamId} coreTeamMemberId={coreTeamMember.id} />
+          <CoreTeamMemberToolbar
+            coreTeamId={coreTeamId}
+            coreTeamMemberId={coreTeamMember.membership.id}
+          />
         </SectionHeader>
         <CoreTeamMemberView
           initialCoreTeamMember={

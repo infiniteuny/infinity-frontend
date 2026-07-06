@@ -129,7 +129,7 @@ export function CoreTeamMemberForm({ coreTeam, initialCoreTeamMember, coreTeamDi
             throw error;
           },
           onRight: () => {
-            router.push(`/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.id}`);
+            router.push(`/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.membership.id}`);
           },
         });
       }
@@ -146,7 +146,7 @@ export function CoreTeamMemberForm({ coreTeam, initialCoreTeamMember, coreTeamDi
         }
         backUrl={
           coreTeamMember
-            ? `/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.id}`
+            ? `/core-teams/${parsedCoreTeam.id}/members/${coreTeamMember.membership.id}`
             : `/core-teams/${parsedCoreTeam.id}/members`
         }
       >

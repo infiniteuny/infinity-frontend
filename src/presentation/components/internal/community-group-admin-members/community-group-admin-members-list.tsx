@@ -604,7 +604,7 @@ export function CommunityGroupAdminMembersList({
                       label="View"
                       component={Link}
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                      href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.membershipId}`}
+                      href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.actions.membership.id}`}
                     />
                     {['update-community-group-admin-member'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -614,7 +614,7 @@ export function CommunityGroupAdminMembersList({
                         label="Edit"
                         component={Link}
                         // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.membershipId}/edit`}
+                        href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.actions.membership.id}/edit`}
                       />
                     ) : null}
                     {['delete-community-group-admin-member'].some((p) => userPermissions.has(p)) ? (

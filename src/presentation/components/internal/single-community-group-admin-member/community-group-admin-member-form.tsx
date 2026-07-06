@@ -141,7 +141,7 @@ export function CommunityGroupAdminMemberForm({
           },
           onRight: () => {
             router.push(
-              `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.id}`,
+              `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.membership.id}`,
             );
           },
         });
@@ -161,7 +161,7 @@ export function CommunityGroupAdminMemberForm({
         }
         backUrl={
           communityGroupAdminMember
-            ? `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.id}`
+            ? `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.membership.id}`
             : `/community-group-admins/${parsedCommunityGroupAdmin.id}/members`
         }
       >

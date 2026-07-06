@@ -144,9 +144,12 @@ export default async function SingleCoreTeamMemberEditPage({ params }: Props) {
           { label: 'Members', url: `/core-teams/${coreTeamId}/members` },
           {
             label: coreTeamMember.name,
-            url: `/core-teams/${coreTeamId}/members/${coreTeamMember.id}`,
+            url: `/core-teams/${coreTeamId}/members/${coreTeamMember.membership.id}`,
           },
-          { label: 'Edit', url: `/core-teams/${coreTeamId}/members/${coreTeamMember.id}/edit` },
+          {
+            label: 'Edit',
+            url: `/core-teams/${coreTeamId}/members/${coreTeamMember.membership.id}/edit`,
+          },
         ]}
       >
         <CoreTeamMemberForm

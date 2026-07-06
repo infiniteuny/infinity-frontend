@@ -160,11 +160,11 @@ export default async function SingleCommunityGroupAdminMemberEditPage({ params }
           { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
           {
             label: communityGroupAdminMember.name,
-            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.id}`,
+            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.membership.id}`,
           },
           {
             label: 'Edit',
-            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.id}/edit`,
+            url: `/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMember.membership.id}/edit`,
           },
         ]}
       >
