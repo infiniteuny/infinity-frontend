@@ -1,3 +1,12 @@
+## [1.3.13](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.12...v1.3.13) (2026-07-06)
+
+
+### Bug Fixes
+
+* **component:** Fix view URL on group's permissions list ([4d6964b](https://github.com/infiniteuny/infinity-frontend/commit/4d6964b8b629da958937f6508d1281e17c784123))
+
+
+
 ## [1.3.12](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.11...v1.3.12) (2026-07-06)
 
 
@@ -45,15 +54,6 @@
 ### Features
 
 * **entity:** Add is managed to Group ([e29f946](https://github.com/infiniteuny/infinity-frontend/commit/e29f9468847469788949eb944a4978365a1b8bd3))
-
-
-
-## [1.3.7](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.6...v1.3.7) (2026-06-16)
-
-
-### Bug Fixes
-
-* **component:** Fix typo on competition related entity lists ([9d54a2f](https://github.com/infiniteuny/infinity-frontend/commit/9d54a2f571ad6b487fda6f6b385423898e0ea01d))
 
 
 
