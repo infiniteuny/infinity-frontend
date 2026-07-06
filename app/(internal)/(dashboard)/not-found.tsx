@@ -8,7 +8,11 @@ export default function DashboardNotFound() {
   const router = useRouter();
 
   return (
-    <Box className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col items-center justify-center gap-4 p-8">
+    <Box
+      id="content"
+      component="main"
+      className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col items-center justify-center gap-4 p-8"
+    >
       <Typography variant="h4" className="font-medium">
         404
       </Typography>

@@ -28,7 +28,11 @@ export default function DashboardError({ error, unstable_retry }: Props) {
   };
 
   return (
-    <Box className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col items-center justify-center gap-6 p-8">
+    <Box
+      id="content"
+      component="main"
+      className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col items-center justify-center gap-6 p-8"
+    >
       <Typography variant="h5" className="font-medium">
         Something went wrong
       </Typography>
