@@ -257,7 +257,7 @@ export function GroupPermissionsList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/groups/${parsedGroup.id}/permissions/${params.row.id}`);
+    router.push(`/permissions/${params.row.id}`);
   };
 
   const handleDeleteClick = (groupPermissionId: string, groupPermissionName?: string) => {
