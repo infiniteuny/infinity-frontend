@@ -25,7 +25,7 @@ import {
   useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteTeamMember, GetTeamMembers } from '@app/application';
-import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
+import { DeleteRounded, VisibilityRounded } from '@mui/icons-material';
 import {
   FilterOperator,
   Major,
@@ -571,19 +571,6 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
                       // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/users/${params.row.actions.id}`}
                     />
-                    {['update-team-member'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-team-member'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.id === userSession?.user?.id) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
-                        href={`/teams/${team.id}/members/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
                     {['delete-team-member'].some((p) => userPermissions.has(p)) ||
                     (['delete-own-team-member'].some((p) => userPermissions.has(p)) &&
                       params.row.actions.id === userSession?.user?.id) ? (
