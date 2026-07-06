@@ -1,5 +1,8 @@
 import { APP } from '@config';
-import { InternalSidebar } from '@app/presentation/components/internal/shared';
+import {
+  InternalMainContainer,
+  InternalSidebar,
+} from '@app/presentation/components/internal/shared';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -10,7 +13,7 @@ export default function DashboardLayout({ children }: Props) {
   return (
     <>
       <InternalSidebar menus={APP.internal.sidebar.menus} />
-      {children}
+      <InternalMainContainer>{children}</InternalMainContainer>
     </>
   );
 }

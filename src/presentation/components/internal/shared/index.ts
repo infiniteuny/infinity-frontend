@@ -9,6 +9,7 @@ export * from './footer';
 export * from './grid-operators';
 export * from './header';
 export * from './main';
+export * from './main-container';
 export * from './section-header';
 export * from './sidebar';
 export * from './store-provider';

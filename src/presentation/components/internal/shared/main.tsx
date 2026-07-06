@@ -1,10 +1,9 @@
 'use client';
 
 import NextLink from 'next/link';
-import { Box, Breadcrumbs, Container, Link, Typography } from '@mui/material';
-import { InternalStoreContext } from './store-provider';
-import { ReactNode, useContext, useSyncExternalStore } from 'react';
+import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { NavigateNextRounded } from '@mui/icons-material';
+import { ReactNode } from 'react';
 
 type Props = {
   breadcrumbs?: {
@@ -15,21 +14,8 @@ type Props = {
 };
 
 export function InternalMain({ breadcrumbs, children }: Props) {
-  const store = useContext(InternalStoreContext);
-  const sidebarExtended = useSyncExternalStore(
-    store!.subscribe,
-    () => store?.getState().sidebarExtended,
-    () => true,
-  );
-
   return (
-    <Container
-      maxWidth={false}
-      sx={{ bgcolor: 'surfaceContainer.main' }}
-      className={`flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col overflow-auto pr-4 ${
-        sidebarExtended ? 'lg:pl-65' : 'lg:pl-20'
-      }`}
-    >
+    <>
       {breadcrumbs && breadcrumbs.length > 0 ? (
         <Breadcrumbs
           separator={<NavigateNextRounded fontSize="small" />}
@@ -64,6 +50,6 @@ export function InternalMain({ breadcrumbs, children }: Props) {
       >
         {children}
       </Box>
-    </Container>
+    </>
   );
 }
