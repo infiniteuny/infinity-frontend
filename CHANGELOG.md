@@ -1,3 +1,14 @@
+## [1.3.14](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.13...v1.3.14) (2026-07-09)
+
+
+### Bug Fixes
+
+* **component:** Separate container form the main ([cde39d5](https://github.com/infiniteuny/infinity-frontend/commit/cde39d5ceb500be89216ae9ff7a5452f27390977))
+* **entity:** Remove shortname as filterable on competition and competition instance ([6560eea](https://github.com/infiniteuny/infinity-frontend/commit/6560eeadee08f134b0bd411dc56d4c602ac20e3b))
+* **route:** Use main component for the error and not found route ([d3e0eb7](https://github.com/infiniteuny/infinity-frontend/commit/d3e0eb7e94ae0ba023d72b23a3329d5bc755debc))
+
+
+
 ## [1.3.13](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.12...v1.3.13) (2026-07-06)
 
 
@@ -39,21 +50,6 @@
 ### Bug Fixes
 
 * **component:** Add isManaged to row data mapping in groups list ([838fbf8](https://github.com/infiniteuny/infinity-frontend/commit/838fbf8bd3d2c1b7e8fa1953df859e322873c8e7))
-
-
-
-## [1.3.9](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.7...v1.3.9) (2026-06-16)
-
-
-### Bug Fixes
-
-* **component:** Fix testimonial permission typo ([1146d34](https://github.com/infiniteuny/infinity-frontend/commit/1146d34eaf05c0d5558adf6b9e8395fe4934e3f8))
-* **component:** Pass full group dto for isManaged check on toolbar ([0fdae19](https://github.com/infiniteuny/infinity-frontend/commit/0fdae19f64d0bb3e38d54f1d3cd828ac268199ac))
-
-
-### Features
-
-* **entity:** Add is managed to Group ([e29f946](https://github.com/infiniteuny/infinity-frontend/commit/e29f9468847469788949eb944a4978365a1b8bd3))
 
 
 
