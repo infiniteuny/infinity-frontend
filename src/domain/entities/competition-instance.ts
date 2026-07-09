@@ -7,7 +7,6 @@ export type CompetitionInstanceIncludeOptions = ('competition' | 'organizer_type
 export interface CompetitionInstanceFilterOptions {
   competitionId?: string;
   name?: string;
-  shortname?: string;
   description?: string;
   url?: string;
   organizer?: string;

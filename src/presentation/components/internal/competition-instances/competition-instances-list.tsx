@@ -158,11 +158,6 @@ export function CompetitionInstancesList({
             filterOptions.name = String(filterItem.value);
           }
           break;
-        case 'shortname':
-          if (filterItem.value != null) {
-            filterOptions.shortname = String(filterItem.value);
-          }
-          break;
         case 'organizer':
           if (filterItem.value != null) {
             filterOptions.organizer = String(filterItem.value);
@@ -412,9 +407,8 @@ export function CompetitionInstancesList({
                 headerName: 'Shortname',
                 flex: 1,
                 minWidth: 120,
-                filterable: true,
+                filterable: false,
                 sortable: true,
-                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'organizer',

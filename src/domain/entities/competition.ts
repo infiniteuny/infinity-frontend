@@ -2,7 +2,6 @@ import { FilterOperator } from '.';
 
 export interface CompetitionFilterOptions {
   name?: string;
-  shortname?: string;
   description?: string;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;

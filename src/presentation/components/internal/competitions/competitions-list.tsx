@@ -125,9 +125,6 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
         case 'name':
           if (filterItem.value != null) filterOptions.name = String(filterItem.value);
           break;
-        case 'shortname':
-          if (filterItem.value != null) filterOptions.shortname = String(filterItem.value);
-          break;
       }
     }
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
@@ -310,9 +307,8 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
                 headerName: 'Shortname',
                 flex: 1,
                 minWidth: 120,
-                filterable: true,
+                filterable: false,
                 sortable: true,
-                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'description',
