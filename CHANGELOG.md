@@ -1,3 +1,12 @@
+## [1.3.15](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.14...v1.3.15) (2026-07-10)
+
+
+### Bug Fixes
+
+* **injection:** Add missing GetTeam usecase on client injection ([69bb7d0](https://github.com/infiniteuny/infinity-frontend/commit/69bb7d0593b209119d2d8d17ad64a6020e67e770))
+
+
+
 ## [1.3.14](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.13...v1.3.14) (2026-07-09)
 
 
@@ -41,15 +50,6 @@
 
 * **component:** Add isProfileView prop to profile route components ([1ec687d](https://github.com/infiniteuny/infinity-frontend/commit/1ec687d9262d2f6d619bcde39a5229bfe1be1be7))
 * **route:** Add missing include organizer_type in competition instances ([19ba8f3](https://github.com/infiniteuny/infinity-frontend/commit/19ba8f3f00711d456b7e88b734270db341758220))
-
-
-
-## [1.3.10](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.9...v1.3.10) (2026-06-16)
-
-
-### Bug Fixes
-
-* **component:** Add isManaged to row data mapping in groups list ([838fbf8](https://github.com/infiniteuny/infinity-frontend/commit/838fbf8bd3d2c1b7e8fa1953df859e322873c8e7))
 
 
 
