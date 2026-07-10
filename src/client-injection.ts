@@ -184,6 +184,7 @@ import {
   GetPersonas,
   GetProjectGalleries,
   GetSidebarExtendedState,
+  GetTeam,
   GetTeams,
   GetTeamMembers,
   GetTestimonials,
@@ -432,6 +433,7 @@ clientContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 clientContainer
   .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
   .to(GetSidebarExtendedState);
+clientContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
 clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 clientContainer.bind<GetTeamMembers>(SYMBOLS.GetTeamMembers).to(GetTeamMembers);
 clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
