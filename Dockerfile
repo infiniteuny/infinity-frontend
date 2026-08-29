@@ -1,4 +1,4 @@
-FROM node:24.17.0-alpine AS dependencies
+FROM node:24.20.0-alpine AS dependencies
 
 # Set working directory
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY package.json package-lock.json* ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --prefer-offline --no-audit --no-fund;
 
-FROM node:24.17.0-alpine AS builder
+FROM node:24.20.0-alpine AS builder
 
 # Set working directory
 WORKDIR /app
