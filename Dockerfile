@@ -41,7 +41,7 @@ ENV NODE_ENV=production \
 RUN --mount=type=cache,target=/app/.next/cache \
     npm run build
 
-FROM oven/bun:1.3.13 AS runner
+FROM oven/bun:1.4.2 AS runner
 
 # Set working directory
 WORKDIR /app
