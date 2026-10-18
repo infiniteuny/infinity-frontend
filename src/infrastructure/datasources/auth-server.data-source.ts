@@ -17,15 +17,15 @@ const additionalOptions = {
     additionalFields: {
       internalId: {
         type: 'string',
-        input: false,
+        input: true,
       },
       username: {
         type: 'string',
-        input: false,
+        input: true,
       },
       permissions: {
         type: 'string[]',
-        input: false,
+        input: true,
       },
     },
   },
@@ -150,8 +150,15 @@ export const authServerDataSourceImpl = (
                 onRight: (result) => result,
               });
 
+              if (users.length !== 1) {
+                throw new APIError('UNAUTHORIZED', {
+                  message: `Expected to find exactly one user with email ${email}, but found ${users.length} user(s).`,
+                });
+              }
+
+              const user = users[0];
               const userPermissionsResult = await getUserPermissions.execute(
-                users[0].id,
+                user.id,
                 ['nested'],
                 undefined,
                 tokens.accessToken ?? '',
@@ -167,17 +174,11 @@ export const authServerDataSourceImpl = (
                 onRight: (result) => result,
               });
 
-              if (users.length !== 1) {
-                throw new APIError('UNAUTHORIZED', {
-                  message: `Expected to find exactly one user with email ${email}, but found ${users.length} user(s).`,
-                });
-              }
-
               return {
                 sub: id,
-                internalId: users[0].id,
-                name: users[0].name,
-                username: users[0].username,
+                internalId: user.id,
+                name: user.name,
+                username: user.username,
                 email: email,
                 emailVerified: true,
                 permissions: userPermissions.map((userPermission) => userPermission.name),
