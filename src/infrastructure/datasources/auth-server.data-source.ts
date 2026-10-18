@@ -107,14 +107,29 @@ export const authServerDataSourceImpl = (
             clientId: process.env.BETTER_AUTH_INFINITE_SSO_ID!,
             clientSecret: process.env.BETTER_AUTH_INFINITE_SSO_SECRET!,
             discoveryUrl: process.env.BETTER_AUTH_INFINITE_SSO_DISCOVERY_URL!,
+            requireIdTokenVerification: true,
             accessType: 'offline',
             getUserInfo: async (tokens) => {
+              const idTokenPayload = tokens.idToken?.split('.')[1];
+
+              if (!idTokenPayload) {
+                throw new APIError('UNAUTHORIZED', { message: 'ID token not found' });
+              }
+
+              const idTokenData = JSON.parse(
+                Buffer.from(idTokenPayload, 'base64url').toString('utf-8'),
+              );
+              const id = idTokenData.sub;
+
+              if (typeof id !== 'string' || id.trim() === '') {
+                throw new APIError('UNAUTHORIZED', { message: 'Subject not found in ID token' });
+              }
+
               const accessTokenPayload = Buffer.from(
                 tokens.accessToken?.split('.')[1] ?? '',
-                'base64',
+                'base64url',
               ).toString('utf-8');
               const accessTokenData = JSON.parse(accessTokenPayload);
-              const id = accessTokenData.sub;
               const email = accessTokenData.email;
 
               if (!email || email.trim() === '') {
@@ -162,7 +177,7 @@ export const authServerDataSourceImpl = (
               }
 
               return {
-                id: id,
+                sub: id,
                 internalId: users[0].id,
                 name: users[0].name,
                 username: users[0].username,
@@ -175,6 +190,7 @@ export const authServerDataSourceImpl = (
               internalId: profile.internalId,
               name: profile.name,
               username: profile.username,
+              permissions: profile.permissions,
             }),
           },
         ],
@@ -235,7 +251,6 @@ export const authServerDataSourceImpl = (
       '/revoke-sessions',
       '/revoke-other-sessions',
       '/refresh-token',
-      '/oauth2/link',
     ],
     onAPIError: {
       errorURL: '/login',

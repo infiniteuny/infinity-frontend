@@ -21,8 +21,8 @@ export class AuthRepositoryImpl implements AuthRepository {
       if (this.isServer) {
         return left(new Error('Sign-in is not supported on the server side'));
       } else {
-        await (this.authDataSource as AuthClientDataSource).signIn.oauth2({
-          providerId: 'infinite-sso',
+        await (this.authDataSource as AuthClientDataSource).signIn.social({
+          provider: 'infinite-sso',
           callbackURL: callbackUrl,
         });
       }
@@ -121,12 +121,12 @@ export class AuthRepositoryImpl implements AuthRepository {
         accessToken = await (this.authDataSource as AuthServerDataSource).api.getAccessToken({
           headers,
           body: {
-            providerId: 'infinite-sso',
+            useAccountCookie: true,
           },
         });
       } else {
         const { data, error } = await (this.authDataSource as AuthClientDataSource).getAccessToken({
-          providerId: 'infinite-sso',
+          useAccountCookie: true,
         });
         accessToken = data;
         if (error) {
