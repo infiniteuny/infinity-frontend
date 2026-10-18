@@ -1,3 +1,12 @@
+## [1.4.2](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.1...v1.4.2) (2026-10-18)
+
+
+### Bug Fixes
+
+* **datasource:** Specify openid, email profile as oauth2 scope ([6fd538e](https://github.com/infiniteuny/infinity-frontend/commit/6fd538e15b27b06ad48e2b965f7da3e3911c7319))
+
+
+
 ## [1.4.1](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.0...v1.4.1) (2026-10-18)
 
 
@@ -52,15 +61,6 @@
 * **component:** Separate container form the main ([cde39d5](https://github.com/infiniteuny/infinity-frontend/commit/cde39d5ceb500be89216ae9ff7a5452f27390977))
 * **entity:** Remove shortname as filterable on competition and competition instance ([6560eea](https://github.com/infiniteuny/infinity-frontend/commit/6560eeadee08f134b0bd411dc56d4c602ac20e3b))
 * **route:** Use main component for the error and not found route ([d3e0eb7](https://github.com/infiniteuny/infinity-frontend/commit/d3e0eb7e94ae0ba023d72b23a3329d5bc755debc))
-
-
-
-## [1.3.13](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.12...v1.3.13) (2026-07-06)
-
-
-### Bug Fixes
-
-* **component:** Fix view URL on group's permissions list ([4d6964b](https://github.com/infiniteuny/infinity-frontend/commit/4d6964b8b629da958937f6508d1281e17c784123))
 
 
 
