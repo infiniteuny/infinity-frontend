@@ -1,13 +1,12 @@
 'use client';
 
 import { clientContainer } from '@app/client-injection';
-import { createContext, ReactNode, useState } from 'react';
+import { createInternalStore } from '@app/presentation/stores';
 import { GetSidebarExtendedState } from '@app/application';
-import { InternalStoreApi, createInternalStore } from '@app/presentation/stores';
+import { InternalStoreContext } from './store-context';
+import { ReactNode, useState } from 'react';
 import { SessionDto, SessionMapper } from '@app/infrastructure/dtos';
 import { SYMBOLS } from '@config/symbols';
-
-export const InternalStoreContext = createContext<InternalStoreApi | undefined>(undefined);
 
 type Props = {
   session: SessionDto;

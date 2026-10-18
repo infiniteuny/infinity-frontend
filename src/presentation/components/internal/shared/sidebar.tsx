@@ -15,12 +15,11 @@ import {
   ListItemText,
 } from '@mui/material';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
-import { InternalStoreContext } from './store-provider';
 import { sanitizeMenus } from '@app/utils';
 import { SidebarDropdownMenu } from './sidebar-dropdown-menu';
 import { SidebarMenu } from './sidebar-menu';
-import { useContext, useMemo, useSyncExternalStore } from 'react';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useMemo, useSyncExternalStore } from 'react';
+import { useInternalStore, useInternalStoreContext } from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
 type Props = {
@@ -28,10 +27,10 @@ type Props = {
 };
 
 export function InternalSidebar({ menus }: Props) {
-  const store = useContext(InternalStoreContext);
+  const store = useInternalStoreContext();
   const sidebarExtended = useSyncExternalStore(
-    store!.subscribe,
-    () => store?.getState().sidebarExtended,
+    store.subscribe,
+    () => store.getState().sidebarExtended,
     () => true,
   );
   const [

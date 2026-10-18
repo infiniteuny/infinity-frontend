@@ -2,11 +2,8 @@ import '@app/presentation/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { GetSession } from '@app/application';
 import { InitColorSchemeScript } from '@mui/material';
-import {
-  InternalFooter,
-  InternalHeader,
-  InternalStoreProvider,
-} from '@app/presentation/components/internal/shared';
+import { InternalFooter, InternalHeader } from '@app/presentation/components/internal/shared';
+import { InternalStoreProvider } from '@app/presentation/components/internal/shared/store-provider';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@app/presentation/components/shared';

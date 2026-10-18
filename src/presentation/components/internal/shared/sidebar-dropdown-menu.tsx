@@ -10,10 +10,9 @@ import {
 } from '@mui/material';
 import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import { Icon } from '@app/presentation/components/shared';
-import { InternalStoreContext } from './store-provider';
-import { MouseEvent, useContext, useMemo, useState, useSyncExternalStore } from 'react';
+import { MouseEvent, useMemo, useState, useSyncExternalStore } from 'react';
 import { NestedMenu, PathMenu } from '@app/domain/entities';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useInternalStoreContext } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
 import { useShallow } from 'zustand/shallow';
 
@@ -29,10 +28,10 @@ export function SidebarDropdownMenu({ menu }: Props) {
   const path = usePathname();
   const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const [manualExpanded, setManualExpanded] = useState(false);
-  const store = useContext(InternalStoreContext);
+  const store = useInternalStoreContext();
   const sidebarExtended = useSyncExternalStore(
-    store!.subscribe,
-    () => store?.getState().sidebarExtended,
+    store.subscribe,
+    () => store.getState().sidebarExtended,
     () => true,
   );
   const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
@@ -103,10 +102,10 @@ export function SidebarDropdownMenu({ menu }: Props) {
 
 function SidebarDropdownItemMenu({ menu }: ItemProps) {
   const path = usePathname();
-  const store = useContext(InternalStoreContext);
+  const store = useInternalStoreContext();
   const sidebarExtended = useSyncExternalStore(
-    store!.subscribe,
-    () => store?.getState().sidebarExtended,
+    store.subscribe,
+    () => store.getState().sidebarExtended,
     () => true,
   );
   const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
