@@ -603,7 +603,6 @@ export function CommunityGroupAdminMembersList({
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.actions.membership.id}`}
                     />
                     {['update-community-group-admin-member'].some((p) => userPermissions.has(p)) ? (
@@ -613,7 +612,6 @@ export function CommunityGroupAdminMembersList({
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={`/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${params.row.actions.membership.id}/edit`}
                       />
                     ) : null}

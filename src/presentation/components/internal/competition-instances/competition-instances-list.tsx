@@ -505,7 +505,6 @@ export function CompetitionInstancesList({
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}`}
                     />
                     {['update-competition'].some((p) => userPermissions.has(p)) ? (
@@ -515,7 +514,6 @@ export function CompetitionInstancesList({
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}/edit`}
                       />
                     ) : null}

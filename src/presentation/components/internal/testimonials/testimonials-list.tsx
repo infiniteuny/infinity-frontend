@@ -312,7 +312,6 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/testimonials/${p.row.actions.id}`}
                     />
                     {['update-testimonial'].some((x) => userPermissions.has(x)) ? (
@@ -322,7 +321,6 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={`/testimonials/${p.row.actions.id}/edit`}
                       />
                     ) : null}

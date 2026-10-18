@@ -294,7 +294,6 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/personas/${p.row.actions.id}`}
                     />
                     {['update-persona'].some((x) => userPermissions.has(x)) ? (
@@ -304,7 +303,6 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={`/personas/${p.row.actions.id}/edit`}
                       />
                     ) : null}

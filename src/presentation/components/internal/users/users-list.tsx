@@ -556,7 +556,6 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={
                         params.row.actions.id === userSession?.user?.id
                           ? '/settings/profile'
@@ -572,7 +571,6 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={
                           params.row.actions.id === userSession?.user?.id
                             ? '/settings/profile/edit'
@@ -600,7 +598,6 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
                         icon={<DeleteRounded />}
                         label="Delete"
                         component={Link}
-                        // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                         href={`/settings/profile/delete`}
                       />
                     ) : null}

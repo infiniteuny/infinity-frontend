@@ -363,7 +363,6 @@ export function GroupPermissionsList({
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      // @ts-expect-error Link component requires href prop but it does not exposed as a prop for some reason. Read more on https://github.com/mui/mui-x/issues/9913
                       href={`/permissions/${params.row.actions.id}`}
                     />
                     {['delete-group-permission'].some((p) => userPermissions.has(p)) ? (
