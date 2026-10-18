@@ -108,6 +108,7 @@ export const authServerDataSourceImpl = (
             clientSecret: process.env.BETTER_AUTH_INFINITE_SSO_SECRET!,
             discoveryUrl: process.env.BETTER_AUTH_INFINITE_SSO_DISCOVERY_URL!,
             requireIdTokenVerification: true,
+            scopes: ['openid', 'email', 'profile'],
             accessType: 'offline',
             getUserInfo: async (tokens) => {
               const idTokenPayload = tokens.idToken?.split('.')[1];
