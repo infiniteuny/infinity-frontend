@@ -120,20 +120,16 @@ export const authServerDataSourceImpl = (
                 Buffer.from(idTokenPayload, 'base64url').toString('utf-8'),
               );
               const id = idTokenData.sub;
+              const email = idTokenData.email;
 
               if (typeof id !== 'string' || id.trim() === '') {
                 throw new APIError('UNAUTHORIZED', { message: 'Subject not found in ID token' });
               }
 
-              const accessTokenPayload = Buffer.from(
-                tokens.accessToken?.split('.')[1] ?? '',
-                'base64url',
-              ).toString('utf-8');
-              const accessTokenData = JSON.parse(accessTokenPayload);
-              const email = accessTokenData.email;
-
               if (!email || email.trim() === '') {
-                throw new APIError('UNAUTHORIZED', { message: 'Email not found in access token' });
+                throw new APIError('UNAUTHORIZED', {
+                  message: 'Email claim not found in ID token',
+                });
               }
 
               const usersResult = await getUsers.execute(
@@ -146,7 +142,7 @@ export const authServerDataSourceImpl = (
               const [users] = match(usersResult, {
                 onLeft: (error) => {
                   throw new APIError('UNAUTHORIZED', {
-                    message: 'Failed to fetch user with email from access token',
+                    message: 'Failed to fetch user with email from ID token',
                     cause: error,
                   });
                 },
@@ -228,7 +224,6 @@ export const authServerDataSourceImpl = (
       '/ok',
       '/sign-up/email',
       '/sign-in/email',
-      '/sign-in/social',
       '/link-social',
       '/callback/:id',
       '/change-password',
