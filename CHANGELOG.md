@@ -1,3 +1,12 @@
+## [1.4.4](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.3...v1.4.4) (2026-10-18)
+
+
+### Bug Fixes
+
+* **hooks:** Break circular store context imports ([530c262](https://github.com/infiniteuny/infinity-frontend/commit/530c262d9a46796d25ab4086db287dbbab305d4f))
+
+
+
 ## [1.4.3](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.2...v1.4.3) (2026-10-18)
 
 
@@ -50,15 +59,6 @@
 ### Features
 
 * **datasource:** Add redis DB config var ([c4b4550](https://github.com/infiniteuny/infinity-frontend/commit/c4b45504d4903721113e4908929cf1e02df0ab22))
-
-
-
-## [1.3.15](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.14...v1.3.15) (2026-07-10)
-
-
-### Bug Fixes
-
-* **injection:** Add missing GetTeam usecase on client injection ([69bb7d0](https://github.com/infiniteuny/infinity-frontend/commit/69bb7d0593b209119d2d8d17ad64a6020e67e770))
 
 
 
