@@ -3,8 +3,7 @@ import { Major } from './major';
 import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
 
 export type CoreTeamMemberIncludeOptions = (
-  | UserIncludeOptions[number]
-  | 'membership.core_team_division'
+  UserIncludeOptions[number] | 'membership.core_team_division'
 )[];
 
 export type CoreTeamMemberFilterOptions = UserFilterOptions;

@@ -4,11 +4,7 @@ import { TeamMember } from './team-member';
 import { User } from './user';
 
 export type TeamIncludeOptions = (
-  | 'leader'
-  | 'members'
-  | 'team_type'
-  | 'fund_applications'
-  | 'achievements'
+  'leader' | 'members' | 'team_type' | 'fund_applications' | 'achievements'
 )[];
 
 export interface TeamFilterOptions {

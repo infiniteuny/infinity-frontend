@@ -3,8 +3,7 @@ import { Major } from './major';
 import { User, UserFilterOptions, UserIncludeOptions, UserSortOptions } from './user';
 
 export type CommunityGroupAdminMemberIncludeOptions = (
-  | UserIncludeOptions[number]
-  | 'membership.community_group'
+  UserIncludeOptions[number] | 'membership.community_group'
 )[];
 
 export type CommunityGroupAdminMemberFilterOptions = UserFilterOptions;

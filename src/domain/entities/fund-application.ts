@@ -4,10 +4,7 @@ import { CompetitionScale } from './competition-scale';
 import { Team } from './team';
 
 export type FundApplicationIncludeOptions = (
-  | 'team'
-  | 'team.members'
-  | 'competition_instance'
-  | 'competition_scale'
+  'team' | 'team.members' | 'competition_instance' | 'competition_scale'
 )[];
 
 export interface FundApplicationFilterOptions {
