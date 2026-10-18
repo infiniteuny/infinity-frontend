@@ -1,3 +1,12 @@
+## [1.4.3](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.2...v1.4.3) (2026-10-18)
+
+
+### Bug Fixes
+
+* **datasource:** Align SSO integration with Better Auth 1.7 ([e08e5c4](https://github.com/infiniteuny/infinity-frontend/commit/e08e5c4bd1e869854f530b912455273490a4e703))
+
+
+
 ## [1.4.2](https://github.com/infiniteuny/infinity-frontend/compare/v1.4.1...v1.4.2) (2026-10-18)
 
 
@@ -50,17 +59,6 @@
 ### Bug Fixes
 
 * **injection:** Add missing GetTeam usecase on client injection ([69bb7d0](https://github.com/infiniteuny/infinity-frontend/commit/69bb7d0593b209119d2d8d17ad64a6020e67e770))
-
-
-
-## [1.3.14](https://github.com/infiniteuny/infinity-frontend/compare/v1.3.13...v1.3.14) (2026-07-09)
-
-
-### Bug Fixes
-
-* **component:** Separate container form the main ([cde39d5](https://github.com/infiniteuny/infinity-frontend/commit/cde39d5ceb500be89216ae9ff7a5452f27390977))
-* **entity:** Remove shortname as filterable on competition and competition instance ([6560eea](https://github.com/infiniteuny/infinity-frontend/commit/6560eeadee08f134b0bd411dc56d4c602ac20e3b))
-* **route:** Use main component for the error and not found route ([d3e0eb7](https://github.com/infiniteuny/infinity-frontend/commit/d3e0eb7e94ae0ba023d72b23a3329d5bc755debc))
 
 
 
