@@ -1,0 +1,59 @@
+import { GetSession, GetUser } from '@infiniteuny/infinity-application';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@infiniteuny/infinity-domain';
+import { ProfileToolbar } from '@app/presentation/components/internal/profile';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserView } from '@app/presentation/components/internal/single-user';
+
+export const metadata: Metadata = {
+  title: 'My Profile',
+};
+
+export default async function ProfilePage() {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
+
+  const sessionResult = await getSession.execute();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+
+  const userResult = await getUser.execute(session.user.id, [
+    'major',
+    'major.faculty',
+    'major.degree',
+  ]);
+  const user = match(userResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return (
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Settings', url: '/settings' },
+        { label: 'Profile', url: '/settings/profile' },
+      ]}
+    >
+      <SectionHeader title="My Profile" backUrl="/settings">
+        <ProfileToolbar userId={user.id} />
+      </SectionHeader>
+      <UserView initialUser={UserMapper.fromDomainToDto(user) as UserDto} isProfileView />
+    </InternalMain>
+  );
+}

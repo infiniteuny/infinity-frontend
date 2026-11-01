@@ -1,0 +1,120 @@
+import { cache } from 'react';
+import {
+  CommunityGroupAdminDto,
+  CommunityGroupAdminMapper,
+  CommunityGroupAdminMemberDto,
+  CommunityGroupAdminMemberMapper,
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+} from '@infiniteuny/infinity-infrastructure';
+import { CommunityGroupAdminMembersList } from '@app/presentation/components/internal/community-group-admin-members';
+import {
+  GetCommunityGroupAdmin,
+  GetCommunityGroupAdminMembers,
+} from '@infiniteuny/infinity-application';
+import { InternalMain } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@infiniteuny/infinity-domain';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+
+export const dynamic = 'force-dynamic';
+
+type Props = {
+  params: Promise<{
+    communityGroupAdminId: string;
+  }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
+  const communityGroupAdminId = (await params).communityGroupAdminId;
+
+  const communityGroupAdminResult = await cache(
+    async () => await getCommunityGroupAdmin.execute(communityGroupAdminId),
+  )();
+  const communityGroupAdmin = match(communityGroupAdminResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+
+  return {
+    title: `${communityGroupAdmin.year}'s Members`,
+  };
+}
+
+export default async function CommunityGroupAdminMembersPage({ params }: Props) {
+  const getCommunityGroupAdmin = serverContainer.get<GetCommunityGroupAdmin>(
+    SYMBOLS.GetCommunityGroupAdmin,
+  );
+  const getCommunityGroupAdminMembers = serverContainer.get<GetCommunityGroupAdminMembers>(
+    SYMBOLS.GetCommunityGroupAdminMembers,
+  );
+  const communityGroupAdminId = (await params).communityGroupAdminId;
+
+  const [communityGroupAdminResult, communityGroupAdminMembersResult] = await Promise.all([
+    getCommunityGroupAdmin.execute(communityGroupAdminId),
+    getCommunityGroupAdminMembers.execute(
+      communityGroupAdminId,
+      ['major', 'major.faculty', 'membership.community_group'],
+      undefined,
+      undefined,
+      { perPage: 25 },
+    ),
+  ]);
+
+  const communityGroupAdmin = match(communityGroupAdminResult, {
+    onLeft: (error) => {
+      if (error instanceof NotFoundError) {
+        notFound();
+      } else {
+        throw error;
+      }
+    },
+    onRight: (data) => data,
+  });
+  const [communityGroupAdminMembers, paginationOptions] = match(communityGroupAdminMembersResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (data) => data,
+  });
+
+  return (
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Community Group Administrators', url: '/community-group-admins' },
+        {
+          label: communityGroupAdmin.year.toString(),
+          url: `/community-group-admins/${communityGroupAdminId}`,
+        },
+        { label: 'Members', url: `/community-group-admins/${communityGroupAdminId}/members` },
+      ]}
+    >
+      <CommunityGroupAdminMembersList
+        initialCommunityGroupAdminMembers={
+          communityGroupAdminMembers.map(
+            CommunityGroupAdminMemberMapper.fromDomainToDto,
+          ) as CommunityGroupAdminMemberDto[]
+        }
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+        communityGroupAdmin={
+          CommunityGroupAdminMapper.fromDomainToDto(communityGroupAdmin) as CommunityGroupAdminDto
+        }
+      />
+    </InternalMain>
+  );
+}

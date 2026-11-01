@@ -1,0 +1,50 @@
+import type { TestimonialRepository, AuthRepository } from '@infiniteuny/infinity-domain';
+import { Either, left, isRight } from 'effect/Either';
+import { inject, injectable } from 'inversify';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+import { UseCase } from './use-case';
+import { Testimonial } from '@infiniteuny/infinity-domain';
+
+export type UpdateTestimonialParams = [
+  id: string,
+  testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
+  abortSignal?: AbortSignal,
+];
+
+@injectable()
+export class UpdateTestimonial implements UseCase<
+  Promise<Either<Testimonial, Error>>,
+  UpdateTestimonialParams
+> {
+  private readonly testimonialRepository: TestimonialRepository;
+  private readonly authRepository: AuthRepository;
+
+  public constructor(
+    @inject(SYMBOLS.TestimonialRepository)
+    testimonialRepository: TestimonialRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
+  ) {
+    this.testimonialRepository = testimonialRepository;
+    this.authRepository = authRepository;
+  }
+
+  public async execute(
+    id: string,
+    testimonial: Partial<Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt'>>,
+    abortSignal?: AbortSignal,
+  ): Promise<Either<Testimonial, Error>> {
+    const accessTokenResult = await this.authRepository.getAccessToken();
+
+    if (isRight(accessTokenResult)) {
+      return await this.testimonialRepository.updateTestimonial(
+        id,
+        testimonial,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
+    }
+  }
+}

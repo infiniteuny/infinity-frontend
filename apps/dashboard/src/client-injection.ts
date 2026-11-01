@@ -1,0 +1,597 @@
+import { Container } from 'inversify';
+import {
+  AchievementRepository,
+  AuthRepository,
+  ConfigRepository,
+  CommunityGroupAdminMemberRepository,
+  CommunityGroupAdminRepository,
+  CommunityGroupMemberRepository,
+  CommunityGroupRepository,
+  CompetitionInstanceRepository,
+  CompetitionOrganizerTypeRepository,
+  CompetitionOutputRepository,
+  CompetitionRankRepository,
+  CompetitionScaleRepository,
+  CompetitionTeamTypeRepository,
+  CompetitionTimeRangeRepository,
+  CompetitionRepository,
+  CoreTeamDivisionRepository,
+  CoreTeamMemberRepository,
+  CoreTeamRepository,
+  DegreeRepository,
+  FacultyRepository,
+  FundApplicationRepository,
+  GroupPermissionRepository,
+  GroupRepository,
+  InternalRepository,
+  MajorRepository,
+  PermissionRepository,
+  PersonaRepository,
+  ProjectGalleryRepository,
+  TeamMemberRepository,
+  TeamRepository,
+  TestimonialRepository,
+  UserCommunityGroupRepository,
+  UserGroupRepository,
+  UserPermissionRepository,
+  UserPersonaRepository,
+  UserRepository,
+} from '@infiniteuny/infinity-domain';
+import {
+  AchievementRepositoryImpl,
+  AuthRepositoryImpl,
+  ConfigRepositoryImpl,
+  CommunityGroupAdminMemberRepositoryImpl,
+  CommunityGroupAdminRepositoryImpl,
+  CommunityGroupMemberRepositoryImpl,
+  CommunityGroupRepositoryImpl,
+  CompetitionInstanceRepositoryImpl,
+  CompetitionOrganizerTypeRepositoryImpl,
+  CompetitionOutputRepositoryImpl,
+  CompetitionRankRepositoryImpl,
+  CompetitionScaleRepositoryImpl,
+  CompetitionTeamTypeRepositoryImpl,
+  CompetitionTimeRangeRepositoryImpl,
+  CompetitionRepositoryImpl,
+  CoreTeamDivisionRepositoryImpl,
+  CoreTeamMemberRepositoryImpl,
+  CoreTeamRepositoryImpl,
+  DegreeRepositoryImpl,
+  FacultyRepositoryImpl,
+  FundApplicationRepositoryImpl,
+  GroupPermissionRepositoryImpl,
+  GroupRepositoryImpl,
+  InternalRepositoryImpl,
+  MajorRepositoryImpl,
+  PermissionRepositoryImpl,
+  PersonaRepositoryImpl,
+  ProjectGalleryRepositoryImpl,
+  TeamMemberRepositoryImpl,
+  TeamRepositoryImpl,
+  TestimonialRepositoryImpl,
+  UserCommunityGroupRepositoryImpl,
+  UserGroupRepositoryImpl,
+  UserPermissionRepositoryImpl,
+  UserPersonaRepositoryImpl,
+  UserRepositoryImpl,
+} from '@infiniteuny/infinity-infrastructure';
+import {
+  CreateAchievement,
+  CreateCommunityGroup,
+  CreateCommunityGroupAdmin,
+  CreateCommunityGroupAdminMember,
+  CreateCommunityGroupMember,
+  CreateCompetition,
+  CreateCompetitionInstance,
+  CreateCompetitionOrganizerType,
+  CreateCompetitionOutput,
+  CreateCompetitionRank,
+  CreateCompetitionScale,
+  CreateCompetitionTeamType,
+  CreateCompetitionTimeRange,
+  CreateConfig,
+  CreateCoreTeamDivision,
+  CreateCoreTeam,
+  CreateCoreTeamMember,
+  CreateDegree,
+  CreateFaculty,
+  CreateFundApplication,
+  CreateGroup,
+  CreateGroupPermission,
+  CreateMajor,
+  CreatePermission,
+  CreatePersona,
+  CreateProjectGallery,
+  CreateTeam,
+  CreateTeamMember,
+  CreateTestimonial,
+  CreateUser,
+  CreateUserGroup,
+  CreateUserPermission,
+  CreateUserPersona,
+  DeleteAchievement,
+  DeleteCompetition,
+  DeleteCompetitionInstance,
+  DeleteCompetitionOrganizerType,
+  DeleteCompetitionOutput,
+  DeleteCompetitionRank,
+  DeleteCompetitionScale,
+  DeleteCompetitionTeamType,
+  DeleteCompetitionTimeRange,
+  DeleteConfig,
+  DeleteCommunityGroup,
+  DeleteCommunityGroupAdmin,
+  DeleteCommunityGroupAdminMember,
+  DeleteCommunityGroupMember,
+  DeleteCoreTeam,
+  DeleteCoreTeamMember,
+  DeleteCoreTeamDivision,
+  DeleteDegree,
+  DeleteFaculty,
+  DeleteFundApplication,
+  DeleteGroup,
+  DeleteGroupPermission,
+  DeleteMajor,
+  DeletePermission,
+  DeletePersona,
+  DeleteProjectGallery,
+  DeleteTeam,
+  DeleteTeamMember,
+  DeleteTestimonial,
+  DeleteUser,
+  DeleteUserGroup,
+  DeleteUserPermission,
+  DeleteUserPersona,
+  ExtendUserMembership,
+  GetAchievements,
+  GetCommunityGroup,
+  GetCommunityGroupAdmins,
+  GetCommunityGroups,
+  GetCompetition,
+  GetCompetitionInstance,
+  GetCompetitionInstances,
+  GetCompetitionOrganizerType,
+  GetCompetitionOrganizerTypes,
+  GetCompetitionOutput,
+  GetCompetitions,
+  GetCompetitionOutputs,
+  GetCompetitionRank,
+  GetCompetitionRanks,
+  GetCompetitionScale,
+  GetCompetitionScales,
+  GetCompetitionTeamType,
+  GetCompetitionTeamTypes,
+  GetCompetitionTimeRange,
+  GetCompetitionTimeRanges,
+  GetConfig,
+  GetConfigs,
+  GetCoreTeamDivision,
+  GetCoreTeamDivisions,
+  GetCoreTeams,
+  GetDegree,
+  GetDegrees,
+  GetFaculty,
+  GetFaculties,
+  GetFundApplications,
+  GetGroups,
+  GetGroupPermissions,
+  GetMajor,
+  GetMajors,
+  GetPermissions,
+  GetUserPermissions,
+  GetUserPersonas,
+  GetPersona,
+  GetPersonas,
+  GetProjectGalleries,
+  GetSidebarExtendedState,
+  GetTeam,
+  GetTeams,
+  GetTeamMembers,
+  GetTestimonials,
+  GetUserCommunityGroups,
+  GetUserGroups,
+  GetUsers,
+  SetSidebarExtendedState,
+  UpdateAchievement,
+  UpdateCommunityGroup,
+  UpdateCommunityGroupAdmin,
+  UpdateCommunityGroupAdminMember,
+  UpdateCompetition,
+  UpdateCompetitionInstance,
+  UpdateCompetitionOrganizerType,
+  UpdateCompetitionOutput,
+  UpdateCompetitionRank,
+  UpdateCompetitionScale,
+  UpdateCompetitionTeamType,
+  UpdateCompetitionTimeRange,
+  UpdateConfig,
+  UpdateCoreTeamDivision,
+  UpdateCoreTeam,
+  UpdateCoreTeamMember,
+  UpdateDegree,
+  UpdateFaculty,
+  UpdateFundApplication,
+  UpdateGroup,
+  UpdateMajor,
+  UpdatePermission,
+  UpdatePersona,
+  UpdateProjectGallery,
+  UpdateTeam,
+  UpdateTestimonial,
+  UpdateUser,
+  Login,
+  Logout,
+  GetCoreTeamMember,
+  GetCoreTeamMembers,
+  GetCommunityGroupAdminMembers,
+  GetCommunityGroupAdminMember,
+  GetCommunityGroupMembers,
+  GetSession,
+} from '@infiniteuny/infinity-application';
+import {
+  AuthClientDataSource,
+  authClientDataSourceImpl,
+  InfinityApiDataSource,
+  infinityApiDataSourceImpl,
+  SessionStorageDataSource,
+  SessionStorageDataSourceImpl,
+} from '@infiniteuny/infinity-infrastructure/datasources/client';
+import { SYMBOLS } from '@config';
+
+export const clientContainer = new Container();
+
+// Use cases
+clientContainer.bind<CreateAchievement>(SYMBOLS.CreateAchievement).to(CreateAchievement);
+clientContainer.bind<CreateCommunityGroup>(SYMBOLS.CreateCommunityGroup).to(CreateCommunityGroup);
+clientContainer
+  .bind<CreateCommunityGroupAdmin>(SYMBOLS.CreateCommunityGroupAdmin)
+  .to(CreateCommunityGroupAdmin);
+clientContainer.bind<CreateCompetition>(SYMBOLS.CreateCompetition).to(CreateCompetition);
+clientContainer
+  .bind<CreateCompetitionInstance>(SYMBOLS.CreateCompetitionInstance)
+  .to(CreateCompetitionInstance);
+clientContainer
+  .bind<CreateCompetitionOrganizerType>(SYMBOLS.CreateCompetitionOrganizerType)
+  .to(CreateCompetitionOrganizerType);
+clientContainer
+  .bind<CreateCompetitionOutput>(SYMBOLS.CreateCompetitionOutput)
+  .to(CreateCompetitionOutput);
+clientContainer
+  .bind<CreateCompetitionRank>(SYMBOLS.CreateCompetitionRank)
+  .to(CreateCompetitionRank);
+clientContainer
+  .bind<CreateCompetitionScale>(SYMBOLS.CreateCompetitionScale)
+  .to(CreateCompetitionScale);
+clientContainer
+  .bind<CreateCompetitionTeamType>(SYMBOLS.CreateCompetitionTeamType)
+  .to(CreateCompetitionTeamType);
+clientContainer
+  .bind<CreateCompetitionTimeRange>(SYMBOLS.CreateCompetitionTimeRange)
+  .to(CreateCompetitionTimeRange);
+clientContainer.bind<CreateConfig>(SYMBOLS.CreateConfig).to(CreateConfig);
+clientContainer
+  .bind<CreateCoreTeamDivision>(SYMBOLS.CreateCoreTeamDivision)
+  .to(CreateCoreTeamDivision);
+clientContainer.bind<CreateCoreTeam>(SYMBOLS.CreateCoreTeam).to(CreateCoreTeam);
+clientContainer.bind<CreateDegree>(SYMBOLS.CreateDegree).to(CreateDegree);
+clientContainer.bind<CreateFaculty>(SYMBOLS.CreateFaculty).to(CreateFaculty);
+clientContainer
+  .bind<CreateFundApplication>(SYMBOLS.CreateFundApplication)
+  .to(CreateFundApplication);
+clientContainer.bind<CreateGroup>(SYMBOLS.CreateGroup).to(CreateGroup);
+clientContainer.bind<CreateMajor>(SYMBOLS.CreateMajor).to(CreateMajor);
+clientContainer.bind<CreatePermission>(SYMBOLS.CreatePermission).to(CreatePermission);
+clientContainer.bind<CreatePersona>(SYMBOLS.CreatePersona).to(CreatePersona);
+clientContainer.bind<CreateProjectGallery>(SYMBOLS.CreateProjectGallery).to(CreateProjectGallery);
+clientContainer.bind<CreateTeam>(SYMBOLS.CreateTeam).to(CreateTeam);
+clientContainer.bind<CreateTestimonial>(SYMBOLS.CreateTestimonial).to(CreateTestimonial);
+clientContainer.bind<CreateUser>(SYMBOLS.CreateUser).to(CreateUser);
+clientContainer.bind<CreateUserPermission>(SYMBOLS.CreateUserPermission).to(CreateUserPermission);
+clientContainer.bind<CreateUserPersona>(SYMBOLS.CreateUserPersona).to(CreateUserPersona);
+clientContainer
+  .bind<CreateCommunityGroupAdminMember>(SYMBOLS.CreateCommunityGroupAdminMember)
+  .to(CreateCommunityGroupAdminMember);
+clientContainer
+  .bind<CreateCommunityGroupMember>(SYMBOLS.CreateCommunityGroupMember)
+  .to(CreateCommunityGroupMember);
+clientContainer.bind<CreateCoreTeamMember>(SYMBOLS.CreateCoreTeamMember).to(CreateCoreTeamMember);
+clientContainer
+  .bind<CreateGroupPermission>(SYMBOLS.CreateGroupPermission)
+  .to(CreateGroupPermission);
+clientContainer.bind<CreateTeamMember>(SYMBOLS.CreateTeamMember).to(CreateTeamMember);
+clientContainer.bind<CreateUserGroup>(SYMBOLS.CreateUserGroup).to(CreateUserGroup);
+clientContainer.bind<DeleteAchievement>(SYMBOLS.DeleteAchievement).to(DeleteAchievement);
+clientContainer.bind<DeleteUser>(SYMBOLS.DeleteUser).to(DeleteUser);
+clientContainer.bind<DeleteUserGroup>(SYMBOLS.DeleteUserGroup).to(DeleteUserGroup);
+clientContainer.bind<DeleteCompetition>(SYMBOLS.DeleteCompetition).to(DeleteCompetition);
+clientContainer
+  .bind<DeleteCompetitionInstance>(SYMBOLS.DeleteCompetitionInstance)
+  .to(DeleteCompetitionInstance);
+clientContainer
+  .bind<DeleteCompetitionOrganizerType>(SYMBOLS.DeleteCompetitionOrganizerType)
+  .to(DeleteCompetitionOrganizerType);
+clientContainer
+  .bind<DeleteCompetitionOutput>(SYMBOLS.DeleteCompetitionOutput)
+  .to(DeleteCompetitionOutput);
+clientContainer
+  .bind<DeleteCompetitionRank>(SYMBOLS.DeleteCompetitionRank)
+  .to(DeleteCompetitionRank);
+clientContainer
+  .bind<DeleteCompetitionScale>(SYMBOLS.DeleteCompetitionScale)
+  .to(DeleteCompetitionScale);
+clientContainer
+  .bind<DeleteCompetitionTeamType>(SYMBOLS.DeleteCompetitionTeamType)
+  .to(DeleteCompetitionTeamType);
+clientContainer
+  .bind<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange)
+  .to(DeleteCompetitionTimeRange);
+clientContainer.bind<DeleteConfig>(SYMBOLS.DeleteConfig).to(DeleteConfig);
+clientContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(DeleteCommunityGroup);
+clientContainer
+  .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
+  .to(DeleteCommunityGroupAdmin);
+clientContainer
+  .bind<DeleteCommunityGroupAdminMember>(SYMBOLS.DeleteCommunityGroupAdminMember)
+  .to(DeleteCommunityGroupAdminMember);
+clientContainer
+  .bind<DeleteCommunityGroupMember>(SYMBOLS.DeleteCommunityGroupMember)
+  .to(DeleteCommunityGroupMember);
+clientContainer.bind<DeleteCoreTeam>(SYMBOLS.DeleteCoreTeam).to(DeleteCoreTeam);
+clientContainer.bind<DeleteCoreTeamMember>(SYMBOLS.DeleteCoreTeamMember).to(DeleteCoreTeamMember);
+clientContainer
+  .bind<DeleteCoreTeamDivision>(SYMBOLS.DeleteCoreTeamDivision)
+  .to(DeleteCoreTeamDivision);
+clientContainer.bind<DeleteDegree>(SYMBOLS.DeleteDegree).to(DeleteDegree);
+clientContainer.bind<DeleteFaculty>(SYMBOLS.DeleteFaculty).to(DeleteFaculty);
+clientContainer
+  .bind<DeleteFundApplication>(SYMBOLS.DeleteFundApplication)
+  .to(DeleteFundApplication);
+clientContainer.bind<DeleteGroup>(SYMBOLS.DeleteGroup).to(DeleteGroup);
+clientContainer
+  .bind<DeleteGroupPermission>(SYMBOLS.DeleteGroupPermission)
+  .to(DeleteGroupPermission);
+clientContainer.bind<DeleteMajor>(SYMBOLS.DeleteMajor).to(DeleteMajor);
+clientContainer.bind<DeletePermission>(SYMBOLS.DeletePermission).to(DeletePermission);
+clientContainer.bind<DeletePersona>(SYMBOLS.DeletePersona).to(DeletePersona);
+clientContainer.bind<DeleteProjectGallery>(SYMBOLS.DeleteProjectGallery).to(DeleteProjectGallery);
+clientContainer.bind<DeleteTeam>(SYMBOLS.DeleteTeam).to(DeleteTeam);
+clientContainer.bind<DeleteTeamMember>(SYMBOLS.DeleteTeamMember).to(DeleteTeamMember);
+clientContainer.bind<DeleteTestimonial>(SYMBOLS.DeleteTestimonial).to(DeleteTestimonial);
+clientContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(DeleteUserPermission);
+clientContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
+clientContainer.bind<ExtendUserMembership>(SYMBOLS.ExtendUserMembership).to(ExtendUserMembership);
+clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
+clientContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
+clientContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
+clientContainer
+  .bind<GetCommunityGroupMembers>(SYMBOLS.GetCommunityGroupMembers)
+  .to(GetCommunityGroupMembers);
+clientContainer
+  .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
+  .to(GetCommunityGroupAdmins);
+clientContainer
+  .bind<GetCommunityGroupAdminMember>(SYMBOLS.GetCommunityGroupAdminMember)
+  .to(GetCommunityGroupAdminMember);
+clientContainer
+  .bind<GetCommunityGroupAdminMembers>(SYMBOLS.GetCommunityGroupAdminMembers)
+  .to(GetCommunityGroupAdminMembers);
+clientContainer.bind<GetCompetition>(SYMBOLS.GetCompetition).to(GetCompetition);
+clientContainer
+  .bind<GetCompetitionInstance>(SYMBOLS.GetCompetitionInstance)
+  .to(GetCompetitionInstance);
+clientContainer
+  .bind<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances)
+  .to(GetCompetitionInstances);
+clientContainer
+  .bind<GetCompetitionOrganizerType>(SYMBOLS.GetCompetitionOrganizerType)
+  .to(GetCompetitionOrganizerType);
+clientContainer
+  .bind<GetCompetitionOrganizerTypes>(SYMBOLS.GetCompetitionOrganizerTypes)
+  .to(GetCompetitionOrganizerTypes);
+clientContainer.bind<GetCompetitionOutput>(SYMBOLS.GetCompetitionOutput).to(GetCompetitionOutput);
+clientContainer.bind<GetCompetitions>(SYMBOLS.GetCompetitions).to(GetCompetitions);
+clientContainer
+  .bind<GetCompetitionOutputs>(SYMBOLS.GetCompetitionOutputs)
+  .to(GetCompetitionOutputs);
+clientContainer.bind<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks).to(GetCompetitionRanks);
+clientContainer.bind<GetCompetitionRank>(SYMBOLS.GetCompetitionRank).to(GetCompetitionRank);
+clientContainer.bind<GetCompetitionScale>(SYMBOLS.GetCompetitionScale).to(GetCompetitionScale);
+clientContainer.bind<GetCompetitionScales>(SYMBOLS.GetCompetitionScales).to(GetCompetitionScales);
+clientContainer
+  .bind<GetCompetitionTeamType>(SYMBOLS.GetCompetitionTeamType)
+  .to(GetCompetitionTeamType);
+clientContainer
+  .bind<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes)
+  .to(GetCompetitionTeamTypes);
+clientContainer
+  .bind<GetCompetitionTimeRange>(SYMBOLS.GetCompetitionTimeRange)
+  .to(GetCompetitionTimeRange);
+clientContainer
+  .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
+  .to(GetCompetitionTimeRanges);
+clientContainer.bind<GetConfig>(SYMBOLS.GetConfig).to(GetConfig);
+clientContainer.bind<GetConfigs>(SYMBOLS.GetConfigs).to(GetConfigs);
+clientContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
+clientContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
+clientContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
+clientContainer.bind<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember).to(GetCoreTeamMember);
+clientContainer.bind<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers).to(GetCoreTeamMembers);
+clientContainer.bind<GetDegree>(SYMBOLS.GetDegree).to(GetDegree);
+clientContainer.bind<GetDegrees>(SYMBOLS.GetDegrees).to(GetDegrees);
+clientContainer.bind<GetFaculty>(SYMBOLS.GetFaculty).to(GetFaculty);
+clientContainer.bind<GetFaculties>(SYMBOLS.GetFaculties).to(GetFaculties);
+clientContainer.bind<GetFundApplications>(SYMBOLS.GetFundApplications).to(GetFundApplications);
+clientContainer.bind<GetGroups>(SYMBOLS.GetGroups).to(GetGroups);
+clientContainer.bind<GetGroupPermissions>(SYMBOLS.GetGroupPermissions).to(GetGroupPermissions);
+clientContainer.bind<GetMajor>(SYMBOLS.GetMajor).to(GetMajor);
+clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
+clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
+clientContainer.bind<GetPersona>(SYMBOLS.GetPersona).to(GetPersona);
+clientContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
+clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+clientContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
+clientContainer
+  .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
+  .to(GetSidebarExtendedState);
+clientContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
+clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
+clientContainer.bind<GetTeamMembers>(SYMBOLS.GetTeamMembers).to(GetTeamMembers);
+clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
+clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
+clientContainer
+  .bind<GetUserCommunityGroups>(SYMBOLS.GetUserCommunityGroups)
+  .to(GetUserCommunityGroups);
+clientContainer.bind<GetUserGroups>(SYMBOLS.GetUserGroups).to(GetUserGroups);
+clientContainer.bind<GetUserPermissions>(SYMBOLS.GetUserPermissions).to(GetUserPermissions);
+clientContainer.bind<GetUserPersonas>(SYMBOLS.GetUserPersonas).to(GetUserPersonas);
+clientContainer.bind<Login>(SYMBOLS.Login).to(Login);
+clientContainer.bind<Logout>(SYMBOLS.Logout).to(Logout);
+clientContainer
+  .bind<SetSidebarExtendedState>(SYMBOLS.SetSidebarExtendedState)
+  .to(SetSidebarExtendedState);
+clientContainer.bind<UpdateAchievement>(SYMBOLS.UpdateAchievement).to(UpdateAchievement);
+clientContainer.bind<UpdateCommunityGroup>(SYMBOLS.UpdateCommunityGroup).to(UpdateCommunityGroup);
+clientContainer
+  .bind<UpdateCommunityGroupAdmin>(SYMBOLS.UpdateCommunityGroupAdmin)
+  .to(UpdateCommunityGroupAdmin);
+clientContainer.bind<UpdateCompetition>(SYMBOLS.UpdateCompetition).to(UpdateCompetition);
+clientContainer
+  .bind<UpdateCompetitionInstance>(SYMBOLS.UpdateCompetitionInstance)
+  .to(UpdateCompetitionInstance);
+clientContainer
+  .bind<UpdateCompetitionOrganizerType>(SYMBOLS.UpdateCompetitionOrganizerType)
+  .to(UpdateCompetitionOrganizerType);
+clientContainer
+  .bind<UpdateCompetitionOutput>(SYMBOLS.UpdateCompetitionOutput)
+  .to(UpdateCompetitionOutput);
+clientContainer
+  .bind<UpdateCompetitionRank>(SYMBOLS.UpdateCompetitionRank)
+  .to(UpdateCompetitionRank);
+clientContainer
+  .bind<UpdateCompetitionScale>(SYMBOLS.UpdateCompetitionScale)
+  .to(UpdateCompetitionScale);
+clientContainer
+  .bind<UpdateCompetitionTeamType>(SYMBOLS.UpdateCompetitionTeamType)
+  .to(UpdateCompetitionTeamType);
+clientContainer
+  .bind<UpdateCompetitionTimeRange>(SYMBOLS.UpdateCompetitionTimeRange)
+  .to(UpdateCompetitionTimeRange);
+clientContainer.bind<UpdateConfig>(SYMBOLS.UpdateConfig).to(UpdateConfig);
+clientContainer
+  .bind<UpdateCoreTeamDivision>(SYMBOLS.UpdateCoreTeamDivision)
+  .to(UpdateCoreTeamDivision);
+clientContainer.bind<UpdateCoreTeam>(SYMBOLS.UpdateCoreTeam).to(UpdateCoreTeam);
+clientContainer.bind<UpdateCoreTeamMember>(SYMBOLS.UpdateCoreTeamMember).to(UpdateCoreTeamMember);
+clientContainer
+  .bind<UpdateCommunityGroupAdminMember>(SYMBOLS.UpdateCommunityGroupAdminMember)
+  .to(UpdateCommunityGroupAdminMember);
+clientContainer.bind<UpdateDegree>(SYMBOLS.UpdateDegree).to(UpdateDegree);
+clientContainer.bind<UpdateFaculty>(SYMBOLS.UpdateFaculty).to(UpdateFaculty);
+clientContainer
+  .bind<UpdateFundApplication>(SYMBOLS.UpdateFundApplication)
+  .to(UpdateFundApplication);
+clientContainer.bind<UpdateGroup>(SYMBOLS.UpdateGroup).to(UpdateGroup);
+clientContainer.bind<UpdateMajor>(SYMBOLS.UpdateMajor).to(UpdateMajor);
+clientContainer.bind<UpdatePermission>(SYMBOLS.UpdatePermission).to(UpdatePermission);
+clientContainer.bind<UpdatePersona>(SYMBOLS.UpdatePersona).to(UpdatePersona);
+clientContainer.bind<UpdateProjectGallery>(SYMBOLS.UpdateProjectGallery).to(UpdateProjectGallery);
+clientContainer.bind<UpdateTeam>(SYMBOLS.UpdateTeam).to(UpdateTeam);
+clientContainer.bind<UpdateTestimonial>(SYMBOLS.UpdateTestimonial).to(UpdateTestimonial);
+clientContainer.bind<UpdateUser>(SYMBOLS.UpdateUser).to(UpdateUser);
+
+// Repositories
+clientContainer
+  .bind<AchievementRepository>(SYMBOLS.AchievementRepository)
+  .to(AchievementRepositoryImpl);
+clientContainer.bind<ConfigRepository>(SYMBOLS.ConfigRepository).to(ConfigRepositoryImpl);
+clientContainer.bind<AuthRepository>(SYMBOLS.AuthRepository).to(AuthRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupAdminMemberRepository>(SYMBOLS.CommunityGroupAdminMemberRepository)
+  .to(CommunityGroupAdminMemberRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupAdminRepository>(SYMBOLS.CommunityGroupAdminRepository)
+  .to(CommunityGroupAdminRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupMemberRepository>(SYMBOLS.CommunityGroupMemberRepository)
+  .to(CommunityGroupMemberRepositoryImpl);
+clientContainer
+  .bind<CommunityGroupRepository>(SYMBOLS.CommunityGroupRepository)
+  .to(CommunityGroupRepositoryImpl);
+clientContainer
+  .bind<CompetitionInstanceRepository>(SYMBOLS.CompetitionInstanceRepository)
+  .to(CompetitionInstanceRepositoryImpl);
+clientContainer
+  .bind<CompetitionOrganizerTypeRepository>(SYMBOLS.CompetitionOrganizerTypeRepository)
+  .to(CompetitionOrganizerTypeRepositoryImpl);
+clientContainer
+  .bind<CompetitionOutputRepository>(SYMBOLS.CompetitionOutputRepository)
+  .to(CompetitionOutputRepositoryImpl);
+clientContainer
+  .bind<CompetitionRankRepository>(SYMBOLS.CompetitionRankRepository)
+  .to(CompetitionRankRepositoryImpl);
+clientContainer
+  .bind<CompetitionScaleRepository>(SYMBOLS.CompetitionScaleRepository)
+  .to(CompetitionScaleRepositoryImpl);
+clientContainer
+  .bind<CompetitionTeamTypeRepository>(SYMBOLS.CompetitionTeamTypeRepository)
+  .to(CompetitionTeamTypeRepositoryImpl);
+clientContainer
+  .bind<CompetitionTimeRangeRepository>(SYMBOLS.CompetitionTimeRangeRepository)
+  .to(CompetitionTimeRangeRepositoryImpl);
+clientContainer
+  .bind<CompetitionRepository>(SYMBOLS.CompetitionRepository)
+  .to(CompetitionRepositoryImpl);
+clientContainer
+  .bind<CoreTeamDivisionRepository>(SYMBOLS.CoreTeamDivisionRepository)
+  .to(CoreTeamDivisionRepositoryImpl);
+clientContainer
+  .bind<CoreTeamMemberRepository>(SYMBOLS.CoreTeamMemberRepository)
+  .to(CoreTeamMemberRepositoryImpl);
+clientContainer.bind<CoreTeamRepository>(SYMBOLS.CoreTeamRepository).to(CoreTeamRepositoryImpl);
+clientContainer.bind<DegreeRepository>(SYMBOLS.DegreeRepository).to(DegreeRepositoryImpl);
+clientContainer.bind<InternalRepository>(SYMBOLS.InternalRepository).to(InternalRepositoryImpl);
+clientContainer.bind<FacultyRepository>(SYMBOLS.FacultyRepository).to(FacultyRepositoryImpl);
+clientContainer
+  .bind<FundApplicationRepository>(SYMBOLS.FundApplicationRepository)
+  .to(FundApplicationRepositoryImpl);
+clientContainer
+  .bind<GroupPermissionRepository>(SYMBOLS.GroupPermissionRepository)
+  .to(GroupPermissionRepositoryImpl);
+clientContainer.bind<GroupRepository>(SYMBOLS.GroupRepository).to(GroupRepositoryImpl);
+clientContainer.bind<MajorRepository>(SYMBOLS.MajorRepository).to(MajorRepositoryImpl);
+clientContainer
+  .bind<PermissionRepository>(SYMBOLS.PermissionRepository)
+  .to(PermissionRepositoryImpl);
+clientContainer.bind<PersonaRepository>(SYMBOLS.PersonaRepository).to(PersonaRepositoryImpl);
+clientContainer
+  .bind<ProjectGalleryRepository>(SYMBOLS.ProjectGalleryRepository)
+  .to(ProjectGalleryRepositoryImpl);
+clientContainer
+  .bind<TeamMemberRepository>(SYMBOLS.TeamMemberRepository)
+  .to(TeamMemberRepositoryImpl);
+clientContainer.bind<TeamRepository>(SYMBOLS.TeamRepository).to(TeamRepositoryImpl);
+clientContainer
+  .bind<TestimonialRepository>(SYMBOLS.TestimonialRepository)
+  .to(TestimonialRepositoryImpl);
+clientContainer
+  .bind<UserCommunityGroupRepository>(SYMBOLS.UserCommunityGroupRepository)
+  .to(UserCommunityGroupRepositoryImpl);
+clientContainer.bind<UserGroupRepository>(SYMBOLS.UserGroupRepository).to(UserGroupRepositoryImpl);
+clientContainer
+  .bind<UserPermissionRepository>(SYMBOLS.UserPermissionRepository)
+  .to(UserPermissionRepositoryImpl);
+clientContainer
+  .bind<UserPersonaRepository>(SYMBOLS.UserPersonaRepository)
+  .to(UserPersonaRepositoryImpl);
+clientContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
+
+// Data sources
+clientContainer
+  .bind<AuthClientDataSource>(SYMBOLS.AuthDataSource)
+  .toConstantValue(authClientDataSourceImpl);
+clientContainer
+  .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
+  .toConstantValue(infinityApiDataSourceImpl);
+clientContainer
+  .bind<SessionStorageDataSource>(SYMBOLS.SessionStorageDataSource)
+  .to(SessionStorageDataSourceImpl);

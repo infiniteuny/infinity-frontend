@@ -1,0 +1,44 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["reflect-metadata"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@app/*": ["./src/*"],
+      "@config": ["./config/index.ts"],
+      "@config/*": ["./config/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../../packages/ui/src/theme/mui.d.ts"
+  ],
+  "exclude": ["node_modules", ".next", "out", "build"],
+  "references": [
+    {
+      "path": "../../packages/utils"
+    },
+    {
+      "path": "../../packages/domain"
+    },
+    {
+      "path": "../../packages/infrastructure"
+    },
+    {
+      "path": "../../packages/application"
+    },
+    {
+      "path": "../../packages/ui"
+    }
+  ]
+}

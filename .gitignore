@@ -12,11 +12,16 @@
 .vscode
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build/
+dist/
+
+# nx
+.nx/cache
+.nx/workspace-data
 
 # misc
 .DS_Store

@@ -1,0 +1,44 @@
+import { Either } from 'effect/Either';
+import {
+  PaginationOptions,
+  CompetitionOrganizerType,
+  CompetitionOrganizerTypeFilterOptions,
+  CompetitionOrganizerTypeSortOptions,
+} from '../entities';
+
+export interface CompetitionOrganizerTypeRepository {
+  getCompetitionOrganizerTypes(
+    filterOptions?: CompetitionOrganizerTypeFilterOptions,
+    sortOptions?: CompetitionOrganizerTypeSortOptions,
+    paginationOptions?: PaginationOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<[CompetitionOrganizerType[], PaginationOptions], Error>>;
+
+  getCompetitionOrganizerType(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionOrganizerType, Error>>;
+
+  createCompetitionOrganizerType(
+    competitionOrganizerType: Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionOrganizerType, Error>>;
+
+  updateCompetitionOrganizerType(
+    id: string,
+    competitionOrganizerType: Partial<
+      Omit<CompetitionOrganizerType, 'id' | 'createdAt' | 'updatedAt'>
+    >,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionOrganizerType, Error>>;
+
+  deleteCompetitionOrganizerType(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionOrganizerType, Error>>;
+}

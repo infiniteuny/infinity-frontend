@@ -1,0 +1,47 @@
+import type { CoreTeamRepository, AuthRepository } from '@infiniteuny/infinity-domain';
+import { Either, left, isRight } from 'effect/Either';
+import { inject, injectable } from 'inversify';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+import { UseCase } from './use-case';
+import { CoreTeam } from '@infiniteuny/infinity-domain';
+
+export type CreateCoreTeamParams = [
+  coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
+  abortSignal?: AbortSignal,
+];
+
+@injectable()
+export class CreateCoreTeam implements UseCase<
+  Promise<Either<CoreTeam, Error>>,
+  CreateCoreTeamParams
+> {
+  private readonly coreTeamRepository: CoreTeamRepository;
+  private readonly authRepository: AuthRepository;
+
+  public constructor(
+    @inject(SYMBOLS.CoreTeamRepository)
+    coreTeamRepository: CoreTeamRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
+  ) {
+    this.coreTeamRepository = coreTeamRepository;
+    this.authRepository = authRepository;
+  }
+
+  public async execute(
+    coreTeam: Omit<CoreTeam, 'id' | 'groupId' | 'createdAt' | 'updatedAt' | 'group'>,
+    abortSignal?: AbortSignal,
+  ): Promise<Either<CoreTeam, Error>> {
+    const accessTokenResult = await this.authRepository.getAccessToken();
+
+    if (isRight(accessTokenResult)) {
+      return await this.coreTeamRepository.createCoreTeam(
+        coreTeam,
+        abortSignal,
+        accessTokenResult.right,
+      );
+    } else {
+      return left(accessTokenResult.left);
+    }
+  }
+}

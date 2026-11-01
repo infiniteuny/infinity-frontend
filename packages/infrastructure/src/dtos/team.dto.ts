@@ -1,0 +1,54 @@
+import { DateTime } from 'luxon';
+import { Team, TeamMember } from '@infiniteuny/infinity-domain';
+import { UserDto, UserMapper } from './user.dto';
+import { CompetitionTeamTypeDto, CompetitionTeamTypeMapper } from './competition-team-type.dto';
+import { TeamMemberDto, TeamMemberMapper } from './team-member.dto';
+
+export interface TeamDto {
+  id: string;
+  leader_id: string;
+  team_type_id: string;
+  name: string;
+  is_personal: boolean;
+  created_at: string;
+  updated_at: string;
+  leader?: UserDto;
+  members?: TeamMemberDto[];
+  team_type?: CompetitionTeamTypeDto;
+}
+
+export class TeamMapper {
+  public static fromDomainToDto(team: Partial<Team>): Partial<TeamDto> {
+    return {
+      id: team.id,
+      leader_id: team.leaderId,
+      team_type_id: team.teamTypeId,
+      name: team.name,
+      is_personal: team.isPersonal,
+      created_at: team.createdAt?.toISOString(),
+      updated_at: team.updatedAt?.toISOString(),
+      leader: team.leader ? (UserMapper.fromDomainToDto(team.leader) as UserDto) : undefined,
+      members: team.members
+        ? (team.members.map(TeamMemberMapper.fromDomainToDto) as TeamMemberDto[])
+        : undefined,
+      team_type: team.teamType
+        ? (CompetitionTeamTypeMapper.fromDomainToDto(team.teamType) as CompetitionTeamTypeDto)
+        : undefined,
+    };
+  }
+
+  public static fromDtoToDomain(dto: TeamDto): Team {
+    return new Team(
+      dto.id,
+      dto.leader_id,
+      dto.team_type_id,
+      dto.name,
+      dto.is_personal,
+      DateTime.fromISO(dto.created_at).toJSDate(),
+      DateTime.fromISO(dto.updated_at).toJSDate(),
+      dto.leader ? UserMapper.fromDtoToDomain(dto.leader) : undefined,
+      dto.members ? (dto.members.map(TeamMemberMapper.fromDtoToDomain) as TeamMember[]) : undefined,
+      dto.team_type ? CompetitionTeamTypeMapper.fromDtoToDomain(dto.team_type) : undefined,
+    );
+  }
+}

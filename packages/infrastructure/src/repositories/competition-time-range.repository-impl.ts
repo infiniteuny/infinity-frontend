@@ -1,0 +1,180 @@
+import type { InfinityApiDataSource } from '../datasources/server';
+import {
+  CompetitionTimeRange,
+  CompetitionTimeRangeFilterOptions,
+  CompetitionTimeRangeSortOptions,
+  PaginationOptions,
+} from '@infiniteuny/infinity-domain';
+import { CompetitionTimeRangeMapper } from '../dtos';
+import { CompetitionTimeRangeRepository } from '@infiniteuny/infinity-domain';
+import { Either, left, right } from 'effect/Either';
+import { handleAxiosError } from '@infiniteuny/infinity-utils';
+import { inject, injectable } from 'inversify';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+
+@injectable()
+export class CompetitionTimeRangeRepositoryImpl implements CompetitionTimeRangeRepository {
+  public constructor(
+    @inject(SYMBOLS.InfinityApiDataSource)
+    private infinityApiDataSource: InfinityApiDataSource,
+  ) {}
+
+  public async getCompetitionTimeRanges(
+    filterOptions?: CompetitionTimeRangeFilterOptions,
+    sortOptions?: CompetitionTimeRangeSortOptions,
+    paginationOptions?: PaginationOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<[CompetitionTimeRange[], PaginationOptions], Error>> {
+    try {
+      const response = await this.infinityApiDataSource.get('/competition-time-ranges', {
+        signal: abortSignal,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        params: {
+          per_page: paginationOptions?.perPage,
+          cursor: paginationOptions?.cursor,
+          'filters[name]': filterOptions?.name,
+          'filters[weight]': filterOptions?.weight,
+          'filters[created_at]':
+            filterOptions?.createdAt != null
+              ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+              : undefined,
+          'filters[updated_at]':
+            filterOptions?.updatedAt != null
+              ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+              : undefined,
+          sorts: sortOptions
+            ? Object.entries(sortOptions)
+                .map((sortOption) => {
+                  const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                  const field = sortOption[0]
+                    .split(/(?=[A-Z])/)
+                    .join('_')
+                    .toLowerCase();
+                  return prefix + field;
+                })
+                .join(',')
+            : undefined,
+        },
+      });
+
+      const competitionTimeRangesResponse = response.data.data.competition_time_ranges.map(
+        CompetitionTimeRangeMapper.fromDtoToDomain,
+      );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([competitionTimeRangesResponse, paginationOptionsResponse]);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async getCompetitionTimeRange(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionTimeRange, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.get(`/competition-time-ranges/${id}`, {
+        signal: abortSignal,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      const competitionTimeRangeResponse = CompetitionTimeRangeMapper.fromDtoToDomain(
+        response.data.data.competition_time_range,
+      );
+
+      return right(competitionTimeRangeResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async createCompetitionTimeRange(
+    competitionTimeRange: Omit<CompetitionTimeRange, 'id' | 'createdAt' | 'updatedAt'>,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionTimeRange, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.post(
+        '/competition-time-ranges',
+        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange),
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const competitionTimeRangeResponse = CompetitionTimeRangeMapper.fromDtoToDomain(
+        response.data.data.competition_time_range,
+      );
+
+      return right(competitionTimeRangeResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async updateCompetitionTimeRange(
+    id: string,
+    competitionTimeRange: Partial<Omit<CompetitionTimeRange, 'id' | 'createdAt' | 'updatedAt'>>,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionTimeRange, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.put(
+        `/competition-time-ranges/${id}`,
+        CompetitionTimeRangeMapper.fromDomainToDto(competitionTimeRange),
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const competitionTimeRangeResponse = CompetitionTimeRangeMapper.fromDtoToDomain(
+        response.data.data.competition_time_range,
+      );
+
+      return right(competitionTimeRangeResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async deleteCompetitionTimeRange(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CompetitionTimeRange, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.delete(`/competition-time-ranges/${id}`, {
+        signal: abortSignal,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      const competitionTimeRangeResponse = CompetitionTimeRangeMapper.fromDtoToDomain(
+        response.data.data.competition_time_range,
+      );
+
+      return right(competitionTimeRangeResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+}

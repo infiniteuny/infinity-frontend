@@ -1,0 +1,58 @@
+{
+  "name": "@infiniteuny/infinity-infrastructure",
+  "version": "1.4.3",
+  "private": true,
+  "nx": {
+    "name": "infrastructure"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@infiniteuny/source": "./src/index.ts",
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./repositories": {
+      "@infiniteuny/source": "./src/repositories/index.ts",
+      "types": "./src/repositories/index.ts",
+      "import": "./src/repositories/index.ts",
+      "default": "./src/repositories/index.ts"
+    },
+    "./dtos": {
+      "@infiniteuny/source": "./src/dtos/index.ts",
+      "types": "./src/dtos/index.ts",
+      "import": "./src/dtos/index.ts",
+      "default": "./src/dtos/index.ts"
+    },
+    "./datasources/client": {
+      "@infiniteuny/source": "./src/datasources/client.ts",
+      "types": "./src/datasources/client.ts",
+      "import": "./src/datasources/client.ts",
+      "default": "./src/datasources/client.ts"
+    },
+    "./datasources/server": {
+      "@infiniteuny/source": "./src/datasources/server.ts",
+      "types": "./src/datasources/server.ts",
+      "import": "./src/datasources/server.ts",
+      "default": "./src/datasources/server.ts"
+    }
+  },
+  "dependencies": {
+    "@better-auth/redis-storage": "1.7.10",
+    "axios": "1.20.0",
+    "better-auth": "1.7.10",
+    "effect": "3.22.3",
+    "inversify": "8.2.3",
+    "ioredis": "5.11.1",
+    "luxon": "3.7.2",
+    "next": "16.4.2",
+    "reflect-metadata": "0.2.2"
+  },
+  "devDependencies": {
+    "@infiniteuny/infinity-application": "*",
+    "@infiniteuny/infinity-domain": "*",
+    "@infiniteuny/infinity-utils": "*",
+    "@types/luxon": "3.7.6"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@infiniteuny/infinity-landing",
+  "version": "1.4.3",
+  "private": true,
+  "nx": {
+    "name": "landing"
+  },
+  "dependencies": {
+    "@emotion/cache": "11.14.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/icons-material": "9.5.0",
+    "@mui/material": "9.5.0",
+    "@mui/material-nextjs": "9.5.0",
+    "effect": "3.22.3",
+    "inversify": "8.2.3",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "reflect-metadata": "0.2.2",
+    "sharp": "0.35.5",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@infiniteuny/infinity-application": "*",
+    "@infiniteuny/infinity-domain": "*",
+    "@infiniteuny/infinity-infrastructure": "*",
+    "@infiniteuny/infinity-ui": "*",
+    "@infiniteuny/infinity-utils": "*"
+  }
+}

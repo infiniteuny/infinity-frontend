@@ -1,0 +1,281 @@
+'use client';
+
+import {
+  AdjustRounded,
+  AppRegistrationRounded,
+  AssignmentIndRounded,
+  BusinessRounded,
+  CategoryRounded,
+  ChevronRightRounded,
+  Diversity2Rounded,
+  Groups3Rounded,
+  GroupsRounded,
+  PersonRounded,
+  SchoolRounded,
+  SquareFootRounded,
+  StairsRounded,
+  TimelapseRounded,
+  TuneRounded,
+  WorkspacePremiumRounded,
+} from '@mui/icons-material';
+import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
+import { ClickableViewTile } from '@app/presentation/components/internal/shared';
+import { useInternalStore } from '@app/presentation/hooks';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+
+type Props = {
+  user: UserDto;
+};
+
+export function SettingsView({ user }: Props) {
+  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const parsedUser = UserMapper.fromDtoToDomain(user);
+
+  return (
+    <>
+      <Box component="section" className="mb-4 w-full px-6">
+        <Container maxWidth={false} className="max-w-2xl p-0">
+          <Toolbar component="header" className="h-auto min-h-10 p-3">
+            <Typography component="h2" variant="h6" className="font-medium">
+              General
+            </Typography>
+          </Toolbar>
+          <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+            <Grid size={12}>
+              <ClickableViewTile
+                title="Profile"
+                subtitle="View and manage your profile information"
+                position="top"
+                icon={<PersonRounded />}
+                trailingIcon={<ChevronRightRounded />}
+                href="/settings/profile"
+              />
+            </Grid>
+            {parsedUser.isMember ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Re-registration"
+                  subtitle="Extend your membership"
+                  position="middle"
+                  icon={<AppRegistrationRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/settings/reregistration"
+                />
+              </Grid>
+            ) : null}
+            {['create-config', 'update-config'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="System Configurations"
+                  subtitle="View and manage system-wide configurations"
+                  position="bottom"
+                  icon={<TuneRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/settings/system"
+                />
+              </Grid>
+            ) : null}
+          </Grid>
+        </Container>
+      </Box>
+      {['read-degree', 'read-faculty', 'read-major', 'read-competition-team-type'].some((p) =>
+        userPermissions.has(p),
+      ) ? (
+        <Box component="section" className="mb-4 w-full px-6">
+          <Container maxWidth={false} className="max-w-2xl p-0">
+            <Toolbar component="header" className="h-auto min-h-10 p-3">
+              <Typography component="h2" variant="h6" className="font-medium">
+                Directories
+              </Typography>
+            </Toolbar>
+            <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+              {['read-degree'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Degrees"
+                    subtitle="Academic degrees"
+                    position="top"
+                    icon={<StairsRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/degrees"
+                  />
+                </Grid>
+              ) : null}
+              {['read-faculty'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Faculties"
+                    subtitle="Academic faculties"
+                    position="middle"
+                    icon={<SchoolRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/faculties"
+                  />
+                </Grid>
+              ) : null}
+              {['read-major'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Majors"
+                    subtitle="Academic majors"
+                    position="middle"
+                    icon={<AdjustRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/majors"
+                  />
+                </Grid>
+              ) : null}
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Personas"
+                  subtitle="User personas"
+                  position="middle"
+                  icon={<AssignmentIndRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/personas"
+                />
+              </Grid>
+              {['read-competition-team-type'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Team Types"
+                    subtitle="Types of teams"
+                    position="bottom"
+                    icon={<GroupsRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/team-types"
+                  />
+                </Grid>
+              ) : null}
+            </Grid>
+          </Container>
+        </Box>
+      ) : null}
+      <Box
+        component="section"
+        className={`w-full px-6 ${
+          [
+            'read-competition-organizer-type',
+            'read-competition-scale',
+            'read-competition-time-range',
+            'read-competition-output',
+            'read-competition-rank',
+          ].some((p) => userPermissions.has(p))
+            ? 'mb-4'
+            : 'mb-6'
+        }`}
+      >
+        <Container maxWidth={false} className="max-w-2xl p-0">
+          <Toolbar component="header" className="h-auto min-h-10 p-3">
+            <Typography component="h2" variant="h6" className="font-medium">
+              Communities
+            </Typography>
+          </Toolbar>
+          <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+            {['read-core-team-division'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Core Team Divisions"
+                  subtitle="Divisions within the core team"
+                  position="top"
+                  icon={<Groups3Rounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/core-team-divisions"
+                />
+              </Grid>
+            ) : null}
+            <Grid size={12}>
+              <ClickableViewTile
+                title="Community Groups"
+                subtitle="Groups within the community"
+                position="bottom"
+                icon={<Diversity2Rounded />}
+                trailingIcon={<ChevronRightRounded />}
+                href="/community-groups"
+              />
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+      {[
+        'read-competition-organizer-type',
+        'read-competition-scale',
+        'read-competition-time-range',
+        'read-competition-output',
+        'read-competition-rank',
+      ].some((p) => userPermissions.has(p)) ? (
+        <Box component="section" className="mb-6 w-full px-6">
+          <Container maxWidth={false} className="max-w-2xl p-0">
+            <Toolbar component="header" className="h-auto min-h-10 p-3">
+              <Typography component="h2" variant="h6" className="font-medium">
+                Competitions
+              </Typography>
+            </Toolbar>
+            <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+              {['read-competition-organizer-type'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Organizer Types"
+                    subtitle="Types of competition organizers"
+                    position="top"
+                    icon={<BusinessRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/competition-organizer-types"
+                  />
+                </Grid>
+              ) : null}
+              {['read-competition-scale'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Scales"
+                    subtitle="Regional level of the competition"
+                    position="middle"
+                    icon={<SquareFootRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/competition-scales"
+                  />
+                </Grid>
+              ) : null}
+              {['read-competition-time-range'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Time Ranges"
+                    subtitle="Duration of the competition"
+                    position="middle"
+                    icon={<TimelapseRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/competition-time-ranges"
+                  />
+                </Grid>
+              ) : null}
+              {['read-competition-output'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Outputs"
+                    subtitle="Types of outputs produced by the competition"
+                    position="middle"
+                    icon={<CategoryRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/competition-outputs"
+                  />
+                </Grid>
+              ) : null}
+              {['read-competition-rank'].some((p) => userPermissions.has(p)) ? (
+                <Grid size={12}>
+                  <ClickableViewTile
+                    title="Ranks"
+                    subtitle="Winning ranks in the competition"
+                    position="bottom"
+                    icon={<WorkspacePremiumRounded />}
+                    trailingIcon={<ChevronRightRounded />}
+                    href="/competition-ranks"
+                  />
+                </Grid>
+              ) : null}
+            </Grid>
+          </Container>
+        </Box>
+      ) : null}
+    </>
+  );
+}

@@ -1,0 +1,44 @@
+{
+  "name": "@infiniteuny/infinity-domain",
+  "version": "1.4.3",
+  "private": true,
+  "nx": {
+    "name": "domain"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@infiniteuny/source": "./src/index.ts",
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./entities": {
+      "@infiniteuny/source": "./src/entities/index.ts",
+      "types": "./src/entities/index.ts",
+      "import": "./src/entities/index.ts",
+      "default": "./src/entities/index.ts"
+    },
+    "./errors": {
+      "@infiniteuny/source": "./src/errors/index.ts",
+      "types": "./src/errors/index.ts",
+      "import": "./src/errors/index.ts",
+      "default": "./src/errors/index.ts"
+    },
+    "./repositories": {
+      "@infiniteuny/source": "./src/repositories/index.ts",
+      "types": "./src/repositories/index.ts",
+      "import": "./src/repositories/index.ts",
+      "default": "./src/repositories/index.ts"
+    },
+    "./symbols": {
+      "@infiniteuny/source": "./src/symbols.ts",
+      "types": "./src/symbols.ts",
+      "import": "./src/symbols.ts",
+      "default": "./src/symbols.ts"
+    }
+  },
+  "dependencies": {
+    "effect": "3.22.3"
+  }
+}

@@ -1,54 +1,28 @@
 {
-  "compilerOptions": {
-    "target": "es2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "incremental": true,
-    "types": [
-      "reflect-metadata"
-    ],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@app/*": [
-        "./src/*"
-      ],
-      "@config": [
-        "./config/index.ts"
-      ],
-      "@config/*": [
-        "./config/*"
-      ],
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/domain"
+    },
+    {
+      "path": "./packages/application"
+    },
+    {
+      "path": "./packages/utils"
+    },
+    {
+      "path": "./packages/infrastructure"
+    },
+    {
+      "path": "./packages/ui"
+    },
+    {
+      "path": "./apps/dashboard"
+    },
+    {
+      "path": "./apps/landing"
     }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "types/**/*.d.ts",
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

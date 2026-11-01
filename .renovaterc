@@ -23,6 +23,12 @@
   },
   "packageRules": [
     {
+      "matchPackageNames": [
+        "@infiniteuny/**"
+      ],
+      "enabled": false
+    },
+    {
       "groupName": "non-major dependencies",
       "groupSlug": "non-major-dependencies",
       "matchManagers": [

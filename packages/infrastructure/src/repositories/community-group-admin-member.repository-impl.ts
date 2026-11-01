@@ -1,0 +1,248 @@
+import type { InfinityApiDataSource } from '../datasources/server';
+import { Either, left, right } from 'effect/Either';
+import { handleAxiosError } from '@infiniteuny/infinity-utils';
+import { inject, injectable } from 'inversify';
+import {
+  CommunityGroupAdminMember,
+  CommunityGroupAdminMemberFilterOptions,
+  CommunityGroupAdminMemberIncludeOptions,
+  CommunityGroupAdminMemberSortOptions,
+  PaginationOptions,
+} from '@infiniteuny/infinity-domain';
+import { CommunityGroupAdminMemberMapper } from '../dtos';
+import { CommunityGroupAdminMemberRepository } from '@infiniteuny/infinity-domain';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+
+@injectable()
+export class CommunityGroupAdminMemberRepositoryImpl implements CommunityGroupAdminMemberRepository {
+  public constructor(
+    @inject(SYMBOLS.InfinityApiDataSource)
+    private infinityApiDataSource: InfinityApiDataSource,
+  ) {}
+
+  public async getCommunityGroupAdminMembers(
+    communityGroupAdminId: string,
+    includeOptions?: CommunityGroupAdminMemberIncludeOptions,
+    filterOptions?: CommunityGroupAdminMemberFilterOptions,
+    sortOptions?: CommunityGroupAdminMemberSortOptions,
+    paginationOptions?: PaginationOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<[CommunityGroupAdminMember[], PaginationOptions], Error>> {
+    try {
+      const response = await this.infinityApiDataSource.get(
+        `/community-group-admins/${communityGroupAdminId}/members`,
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          params: {
+            per_page: paginationOptions?.perPage,
+            cursor: paginationOptions?.cursor,
+            includes: includeOptions
+              ?.filter((value, index, self) => self.indexOf(value) === index)
+              .join(','),
+            'filters[sso_id]': filterOptions?.ssoId,
+            'filters[name]': filterOptions?.name,
+            'filters[email_address]': filterOptions?.emailAddress,
+            'filters[phone_number]': filterOptions?.phoneNumber,
+            'filters[student_id]': filterOptions?.studentId,
+            'filters[major_id]': filterOptions?.majorId,
+            'filters[start_date]':
+              filterOptions?.startDate != null
+                ? (filterOptions.startDateOperator ?? '') + filterOptions.startDate.toISOString()
+                : undefined,
+            'filters[end_date]':
+              filterOptions?.endDate != null
+                ? (filterOptions.endDateOperator ?? '') + filterOptions?.endDate?.toISOString()
+                : undefined,
+            'filters[is_member]': filterOptions?.isMember,
+            'filters[is_extraordinary]': filterOptions?.isExtraordinary,
+            'filters[created_at]':
+              filterOptions?.createdAt != null
+                ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()
+                : undefined,
+            'filters[updated_at]':
+              filterOptions?.updatedAt != null
+                ? (filterOptions.updatedAtOperator ?? '') + filterOptions?.updatedAt?.toISOString()
+                : undefined,
+            sorts: sortOptions
+              ? Object.entries(sortOptions)
+                  .map((sortOption) => {
+                    const prefix = sortOption[1] === 'DESC' ? '-' : '';
+                    const field = sortOption[0]
+                      .split(/(?=[A-Z])/)
+                      .join('_')
+                      .toLowerCase();
+                    return prefix + field;
+                  })
+                  .join(',')
+              : undefined,
+          },
+        },
+      );
+
+      const communityGroupAdminMembersResponse =
+        response.data.data.community_group_admin_members.map(
+          CommunityGroupAdminMemberMapper.fromDtoToDomain,
+        );
+
+      const paginationOptionsResponse = new PaginationOptions(
+        response.data.data.meta.per_page,
+        paginationOptions?.cursor,
+        response.data.data.meta.next_cursor ?? undefined,
+        response.data.data.meta.prev_cursor ?? undefined,
+      );
+
+      return right([communityGroupAdminMembersResponse, paginationOptionsResponse]);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async getCommunityGroupAdminMember(
+    id: string,
+    includeOptions?: CommunityGroupAdminMemberIncludeOptions,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.get(
+        `/community-group-admin-members/${id}`,
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          params: {
+            includes: includeOptions
+              ?.filter((value, index, self) => self.indexOf(value) === index)
+              .join(','),
+          },
+        },
+      );
+
+      const communityGroupAdminMemberResponse = CommunityGroupAdminMemberMapper.fromDtoToDomain(
+        response.data.data.community_group_admin_member,
+      );
+
+      return right(communityGroupAdminMemberResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async createCommunityGroupAdminMember(
+    communityGroupAdminId: string,
+    communityGroupAdminMember: {
+      userId: string;
+      communityGroupId: string;
+      photo: File;
+      animation: File | null;
+    },
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.postForm(
+        `/community-group-admins/${communityGroupAdminId}/members`,
+        {
+          user_id: communityGroupAdminMember.userId,
+          community_group_id: communityGroupAdminMember.communityGroupId,
+          photo: communityGroupAdminMember.photo,
+          animation:
+            communityGroupAdminMember.animation instanceof File
+              ? communityGroupAdminMember.animation
+              : null,
+        },
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const communityGroupAdminMemberResponse = CommunityGroupAdminMemberMapper.fromDtoToDomain(
+        response.data.data.community_group_admin_member,
+      );
+
+      return right(communityGroupAdminMemberResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async updateCommunityGroupAdminMember(
+    id: string,
+    communityGroupAdminMember: {
+      userId?: string;
+      communityGroupId?: string;
+      photo?: File;
+      animation?: File | null;
+    },
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.putForm(
+        `/community-group-admin-members/${id}`,
+        {
+          user_id: communityGroupAdminMember.userId,
+          community_group_id: communityGroupAdminMember.communityGroupId,
+          photo:
+            communityGroupAdminMember.photo instanceof File
+              ? communityGroupAdminMember.photo
+              : undefined,
+          animation:
+            communityGroupAdminMember.animation instanceof File
+              ? communityGroupAdminMember.animation
+              : communityGroupAdminMember.animation === null
+                ? null
+                : undefined,
+        },
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const communityGroupAdminMemberResponse = CommunityGroupAdminMemberMapper.fromDtoToDomain(
+        response.data.data.community_group_admin_member,
+      );
+
+      return right(communityGroupAdminMemberResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+
+  public async deleteCommunityGroupAdminMember(
+    id: string,
+    abortSignal?: AbortSignal,
+    token?: string,
+  ): Promise<Either<CommunityGroupAdminMember, Error>> {
+    try {
+      const response = await this.infinityApiDataSource.delete(
+        `/community-group-admin-members/${id}`,
+        {
+          signal: abortSignal,
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        },
+      );
+
+      const communityGroupAdminMemberResponse = CommunityGroupAdminMemberMapper.fromDtoToDomain(
+        response.data.data.community_group_admin_member,
+      );
+
+      return right(communityGroupAdminMemberResponse);
+    } catch (error) {
+      return left(handleAxiosError(error));
+    }
+  }
+}

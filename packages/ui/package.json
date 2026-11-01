@@ -1,0 +1,31 @@
+{
+  "name": "@infiniteuny/infinity-ui",
+  "version": "1.4.3",
+  "private": true,
+  "nx": {
+    "name": "ui"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "@infiniteuny/source": "./src/index.ts",
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./styles/globals.css": "./src/styles/globals.css"
+  },
+  "dependencies": {
+    "@emotion/cache": "11.14.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@mui/icons-material": "9.5.0",
+    "@mui/material": "9.5.0",
+    "@mui/material-nextjs": "9.5.0",
+    "@mui/utils": "9.5.0",
+    "@mui/x-data-grid": "9.15.0",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

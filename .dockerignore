@@ -83,6 +83,7 @@ Jenkinsfile
 .stylelintcache
 .swc/
 .turbo/
+.nx/
 .tmp/
 .temp/
 

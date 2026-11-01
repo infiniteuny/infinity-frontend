@@ -19,14 +19,15 @@ Infinity is the main management system for the INFINITE organization. This is th
 3. Run in development mode
 
    ```bash
-   npm run dev
+   npm run dev:dashboard # Dashboard app
+   npm run dev:landing   # Landing app
    ```
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You can start editing pages inside `apps/dashboard/app/` or `apps/landing/app/`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load font.
 
@@ -34,13 +35,28 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ```
 .
-├── app                 # Routing
-├── public              # Static files
-└── src
-    ├── application     # Application business rules
-    ├── domain          # Enterprise business rules
-    ├── infrastructure  # Framework and drivers
-    └── presentation    # User interface
+├── apps
+│   ├── dashboard           # Internal dashboard application (@infiniteuny/infinity-dashboard)
+│   │   ├── app             # App Router routes & layouts
+│   │   ├── config          # Fonts & app configuration
+│   │   ├── public          # Static files
+│   │   └── src
+│   │       ├── presentation        # Feature views, controllers, hooks, stores
+│   │       ├── server-injection.ts # Server DI container
+│   │       └── client-injection.ts # Client DI container
+│   └── landing             # Public landing application (@infiniteuny/infinity-landing)
+│       ├── app             # App Router routes & layouts
+│       ├── config          # Fonts & app configuration
+│       ├── public          # Static files
+│       └── src
+│           ├── server-injection.ts # Server DI container
+│           └── client-injection.ts # Client DI container
+└── packages
+    ├── domain              # Enterprise business rules (@infiniteuny/infinity-domain)
+    ├── application         # Application business rules / use cases (@infiniteuny/infinity-application)
+    ├── infrastructure      # Datasources, DTOs, repositories (@infiniteuny/infinity-infrastructure)
+    ├── ui                  # Shared UI components, Material 3 theme, styles (@infiniteuny/infinity-ui)
+    └── utils               # Shared utility functions (@infiniteuny/infinity-utils)
 ```
 
 ### Learn More

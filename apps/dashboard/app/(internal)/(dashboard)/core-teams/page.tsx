@@ -1,0 +1,47 @@
+import {
+  CoreTeamDto,
+  CoreTeamMapper,
+  PaginationOptionsDto,
+  PaginationOptionsMapper,
+} from '@infiniteuny/infinity-infrastructure';
+import { CoreTeamsList } from '@app/presentation/components/internal/core-teams';
+import { GetCoreTeams } from '@infiniteuny/infinity-application';
+import { InternalMain } from '@app/presentation/components/internal/shared';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+
+export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Core Teams',
+};
+
+export default async function CoreTeamsPage() {
+  const getCoreTeams = serverContainer.get<GetCoreTeams>(SYMBOLS.GetCoreTeams);
+
+  const result = await getCoreTeams.execute(undefined, undefined, { perPage: 25 });
+  const [coreTeams, paginationOptions] = match(result, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (data) => data,
+  });
+
+  return (
+    <InternalMain
+      breadcrumbs={[
+        { label: 'Overview', url: '/' },
+        { label: 'Core Teams', url: '/core-teams' },
+      ]}
+    >
+      <CoreTeamsList
+        initialCoreTeams={coreTeams.map(CoreTeamMapper.fromDomainToDto) as CoreTeamDto[]}
+        initialPaginationOptions={
+          PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto
+        }
+      />
+    </InternalMain>
+  );
+}

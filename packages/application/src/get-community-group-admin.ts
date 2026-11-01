@@ -1,0 +1,55 @@
+import type { CommunityGroupAdminRepository, AuthRepository } from '@infiniteuny/infinity-domain';
+import { Either, left, isRight } from 'effect/Either';
+import { inject, injectable } from 'inversify';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+import { UseCase } from './use-case';
+import { CommunityGroupAdmin } from '@infiniteuny/infinity-domain';
+
+export type GetCommunityGroupAdminParams = [
+  id: string,
+  abortSignal?: AbortSignal,
+  authenticate?: boolean,
+];
+
+@injectable()
+export class GetCommunityGroupAdmin implements UseCase<
+  Promise<Either<CommunityGroupAdmin, Error>>,
+  GetCommunityGroupAdminParams
+> {
+  private readonly communityGroupAdminRepository: CommunityGroupAdminRepository;
+  private readonly authRepository: AuthRepository;
+
+  public constructor(
+    @inject(SYMBOLS.CommunityGroupAdminRepository)
+    communityGroupAdminRepository: CommunityGroupAdminRepository,
+    @inject(SYMBOLS.AuthRepository)
+    authRepository: AuthRepository,
+  ) {
+    this.communityGroupAdminRepository = communityGroupAdminRepository;
+    this.authRepository = authRepository;
+  }
+
+  public async execute(
+    id: string,
+    abortSignal?: AbortSignal,
+    authenticate: boolean = true,
+  ): Promise<Either<CommunityGroupAdmin, Error>> {
+    let accessToken: string | undefined;
+
+    if (authenticate) {
+      const accessTokenResult = await this.authRepository.getAccessToken();
+
+      if (isRight(accessTokenResult)) {
+        accessToken = accessTokenResult.right;
+      } else {
+        return left(accessTokenResult.left);
+      }
+    }
+
+    return await this.communityGroupAdminRepository.getCommunityGroupAdmin(
+      id,
+      abortSignal,
+      accessToken,
+    );
+  }
+}
