@@ -23,8 +23,8 @@
     "@mui/material": "9.5.0",
     "@mui/material-nextjs": "9.5.0",
     "@mui/utils": "9.5.0",
-    "@mui/x-data-grid": "9.15.0",
-    "next": "16.4.2",
+    "@mui/x-data-grid": "9.16.0",
+    "next": "16.4.3",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   }
