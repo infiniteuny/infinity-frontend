@@ -24,10 +24,10 @@
     "@nx/js": "24.0.3",
     "@nx/next": "24.0.3",
     "@tailwindcss/postcss": "4.3.3",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "eslint": "9.39.5",
+    "eslint": "10.13.0",
     "eslint-config-next": "16.4.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.7",
@@ -36,6 +36,6 @@
     "prettier": "3.9.10",
     "prettier-plugin-tailwindcss": "0.8.1",
     "tailwindcss": "4.3.3",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   }
 }
