@@ -48,7 +48,7 @@ ENV NODE_ENV=production \
 RUN --mount=type=cache,target=/app/apps/dashboard/.next/cache \
     npx nx build dashboard
 
-FROM oven/bun:1.4.3 AS runner
+FROM oven/bun:1.4.4 AS runner
 
 # Set working directory
 WORKDIR /app
