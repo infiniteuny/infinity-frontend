@@ -1,4 +1,4 @@
-FROM node:24.22.0-alpine AS dependencies
+FROM node:24.22.2-alpine AS dependencies
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY packages/ui/package.json ./packages/ui/package.json
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --prefer-offline --no-audit --no-fund;
 
-FROM node:24.22.0-alpine AS builder
+FROM node:24.22.2-alpine AS builder
 
 # Set working directory
 WORKDIR /app
