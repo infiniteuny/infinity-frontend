@@ -28,7 +28,7 @@ context: |
   - No automated test setup is present yet (no jest/vitest config). Add appropriate test tooling for new features; prefer use-case-level tests where possible.
 
   ### Git Workflow
-  - Default branch: develop. Use feature branches into develop via PRs and keep commits scoped/atomic.
+  - Default branch: main (trunk-based development). Use feature branches into main via PRs and keep commits scoped/atomic.
   - Commit style: follow Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, `ci:`); scope is recommended (e.g., `feat(auth): add session refresh`).
 
   ## Domain Context

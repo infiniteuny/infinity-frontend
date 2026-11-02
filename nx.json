@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "defaultBase": "develop",
+  "defaultBase": "main",
   "analytics": false,
   "tui": {
     "enabled": false

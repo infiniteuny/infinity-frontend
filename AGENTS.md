@@ -11,7 +11,7 @@ npm run typecheck     # TypeScript project references check
 npm run build         # Production build for all apps
 ```
 
-CI runs `npm run lint` on PRs to main/develop.
+CI runs `npm run lint` on PRs to main.
 
 ## Architecture
 
@@ -73,7 +73,7 @@ No test framework configured yet. Add jest/vitest when needed.
 
 ## Git
 
-- Default branch: `develop`
+- Default branch: `main`
 - Conventional commits: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, `ci:`
 - Scope recommended: `feat(auth): add session refresh`
 
