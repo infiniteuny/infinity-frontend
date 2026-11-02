@@ -292,7 +292,7 @@ jobs:
 
       - name: Create multi-arch manifest
         id: manifest
-        uses: int128/docker-manifest-create-action@v2.29.0
+        uses: int128/docker-manifest-create-action@v2.30.0
         with:
           tags: ${{ steps.meta.outputs.tags }}
           index-annotations: ${{ steps.meta.outputs.labels }}
