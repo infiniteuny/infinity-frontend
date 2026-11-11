@@ -1,3 +1,4 @@
+export * from './achievement-leaderboard';
 export * from './achievement';
 export * from './community-group-admin-member';
 export * from './community-group-admin';

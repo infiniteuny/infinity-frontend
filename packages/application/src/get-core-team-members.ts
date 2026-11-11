@@ -1,6 +1,6 @@
 import type { CoreTeamMemberRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 import { UseCase } from './use-case';
 import {
@@ -27,13 +27,14 @@ export class GetCoreTeamMembers implements UseCase<
   GetCoreTeamMembersParams
 > {
   private readonly coreTeamMemberRepository: CoreTeamMemberRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CoreTeamMemberRepository)
     coreTeamMemberRepository: CoreTeamMemberRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.coreTeamMemberRepository = coreTeamMemberRepository;
     this.authRepository = authRepository;
@@ -50,7 +51,7 @@ export class GetCoreTeamMembers implements UseCase<
   ): Promise<Either<[CoreTeamMember[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {

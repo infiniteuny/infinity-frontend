@@ -1,6 +1,6 @@
 import type { ProjectGalleryRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import {
   PaginationOptions,
   ProjectGallery,
@@ -24,13 +24,14 @@ export class GetProjectGalleries implements UseCase<
   GetProjectGalleriesParams
 > {
   private readonly projectGalleryRepository: ProjectGalleryRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.ProjectGalleryRepository)
     projectGalleryRepository: ProjectGalleryRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.projectGalleryRepository = projectGalleryRepository;
     this.authRepository = authRepository;
@@ -45,7 +46,7 @@ export class GetProjectGalleries implements UseCase<
   ): Promise<Either<[ProjectGallery[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {

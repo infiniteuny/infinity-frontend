@@ -66,6 +66,8 @@ export * from './delete-user';
 export * from './delete-user-group';
 export * from './extend-user-membership';
 export * from './get-achievement';
+export * from './get-achievement-leaderboard-years';
+export * from './get-achievement-leaderboards';
 export * from './get-achievements';
 export * from './get-community-group';
 export * from './get-community-groups';

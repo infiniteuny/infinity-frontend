@@ -1,5 +1,7 @@
+import { AchievementDto, AchievementMapper } from './achievement.dto';
 import { DateTime } from 'luxon';
 import { MajorDto, MajorMapper } from './major.dto';
+import { PersonaDto, PersonaMapper } from './persona.dto';
 import { User } from '@infiniteuny/infinity-domain';
 
 export interface UserDto {
@@ -19,6 +21,8 @@ export interface UserDto {
   created_at: string;
   updated_at: string;
   major?: MajorDto;
+  personas?: PersonaDto[];
+  achievements?: AchievementDto[];
 }
 
 export class UserMapper {
@@ -40,6 +44,12 @@ export class UserMapper {
       created_at: user.createdAt?.toISOString(),
       updated_at: user.updatedAt?.toISOString(),
       major: user.major ? (MajorMapper.fromDomainToDto(user.major) as MajorDto) : undefined,
+      personas: user.personas
+        ? (user.personas.map(PersonaMapper.fromDomainToDto) as PersonaDto[])
+        : undefined,
+      achievements: user.achievements
+        ? (user.achievements.map(AchievementMapper.fromDomainToDto) as AchievementDto[])
+        : undefined,
     };
   }
 
@@ -61,6 +71,8 @@ export class UserMapper {
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.major ? MajorMapper.fromDtoToDomain(dto.major) : undefined,
+      dto.personas ? dto.personas.map(PersonaMapper.fromDtoToDomain) : undefined,
+      dto.achievements ? dto.achievements.map(AchievementMapper.fromDtoToDomain) : undefined,
     );
   }
 }

@@ -1,6 +1,6 @@
 import type { CommunityGroupAdminRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import {
   PaginationOptions,
   CommunityGroupAdmin,
@@ -24,13 +24,14 @@ export class GetCommunityGroupAdmins implements UseCase<
   GetCommunityGroupAdminsParams
 > {
   private readonly communityGroupAdminRepository: CommunityGroupAdminRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CommunityGroupAdminRepository)
     communityGroupAdminRepository: CommunityGroupAdminRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.communityGroupAdminRepository = communityGroupAdminRepository;
     this.authRepository = authRepository;
@@ -45,7 +46,7 @@ export class GetCommunityGroupAdmins implements UseCase<
   ): Promise<Either<[CommunityGroupAdmin[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {

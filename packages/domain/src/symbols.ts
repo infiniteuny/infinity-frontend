@@ -68,6 +68,8 @@ export const SYMBOLS = {
   DeleteUserPersona: Symbol.for('DeleteUserPersona'),
   ExtendUserMembership: Symbol.for('ExtendUserMembership'),
   GetAchievement: Symbol.for('GetAchievement'),
+  GetAchievementLeaderboardYears: Symbol.for('GetAchievementLeaderboardYears'),
+  GetAchievementLeaderboards: Symbol.for('GetAchievementLeaderboards'),
   GetAchievements: Symbol.for('GetAchievements'),
   GetCommunityGroup: Symbol.for('GetCommunityGroup'),
   GetCommunityGroupAdmin: Symbol.for('GetCommunityGroupAdmin'),
@@ -170,6 +172,7 @@ export const SYMBOLS = {
   AuthController: Symbol.for('AuthController'),
 
   // Repositories
+  AchievementLeaderboardRepository: Symbol.for('AchievementLeaderboardRepository'),
   AchievementRepository: Symbol.for('AchievementRepository'),
   AuthRepository: Symbol.for('AuthRepository'),
   CommunityGroupAdminMemberRepository: Symbol.for('CommunityGroupAdminMemberRepository'),

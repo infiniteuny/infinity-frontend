@@ -1,6 +1,6 @@
 import type { PersonaRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import {
   PaginationOptions,
   Persona,
@@ -24,13 +24,14 @@ export class GetPersonas implements UseCase<
   GetPersonasParams
 > {
   private readonly personaRepository: PersonaRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.PersonaRepository)
     personaRepository: PersonaRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.personaRepository = personaRepository;
     this.authRepository = authRepository;
@@ -45,7 +46,7 @@ export class GetPersonas implements UseCase<
   ): Promise<Either<[Persona[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {

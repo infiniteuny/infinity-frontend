@@ -31,7 +31,7 @@ export default function LandingError({ error, unstable_retry }: Props) {
     <Box
       id="content"
       component="main"
-      className="flex min-h-screen w-full flex-col items-center justify-center gap-6 p-8"
+      className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col items-center justify-center gap-6 p-8"
     >
       <Typography variant="h5" className="font-medium">
         Something went wrong

@@ -16,10 +16,79 @@ export class AuthRepositoryImpl implements AuthRepository {
     private authDataSource: AuthServerDataSource | AuthClientDataSource,
   ) {}
 
-  public async signIn(callbackUrl?: string): Promise<Either<void, Error>> {
+  public async signIn(callbackUrl?: string, silent?: boolean): Promise<Either<void, Error>> {
     try {
       if (this.isServer) {
         return left(new Error('Sign-in is not supported on the server side'));
+      } else if (silent) {
+        const silentCallbackUrl = callbackUrl || '/_health';
+        const { data, error } = await (this.authDataSource as AuthClientDataSource).signIn.social({
+          provider: 'infinite-sso',
+          callbackURL: silentCallbackUrl,
+          errorCallbackURL: silentCallbackUrl,
+          disableRedirect: true,
+          additionalParams: {
+            prompt: 'none',
+          },
+        });
+
+        if (error || !data?.url) {
+          return left(new Error(error?.message || 'Failed to initiate silent sign-in'));
+        }
+
+        await new Promise<void>((resolve, reject) => {
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.setAttribute('aria-hidden', 'true');
+
+          const cleanup = () => {
+            window.clearTimeout(timeoutId);
+            iframe.onload = null;
+            iframe.onerror = null;
+            if (iframe.parentNode) {
+              iframe.parentNode.removeChild(iframe);
+            }
+          };
+
+          const timeoutId = window.setTimeout(() => {
+            cleanup();
+            reject(new Error('Silent sign-in timed out'));
+          }, 10000);
+
+          iframe.onload = () => {
+            try {
+              const iframeUrl = iframe.contentWindow?.location.href;
+              if (!iframeUrl || iframeUrl === 'about:blank') {
+                return;
+              }
+
+              const parsedUrl = new URL(iframeUrl);
+              if (parsedUrl.origin !== window.location.origin) {
+                return;
+              }
+
+              const oauthError = parsedUrl.searchParams.get('error');
+              cleanup();
+
+              if (oauthError) {
+                reject(new Error(oauthError));
+              } else {
+                resolve();
+              }
+            } catch {
+              cleanup();
+              reject(new Error('Silent sign-in failed'));
+            }
+          };
+
+          iframe.onerror = () => {
+            cleanup();
+            reject(new Error('Silent sign-in iframe error'));
+          };
+
+          iframe.src = data.url;
+          document.body.appendChild(iframe);
+        });
       } else {
         await (this.authDataSource as AuthClientDataSource).signIn.social({
           provider: 'infinite-sso',

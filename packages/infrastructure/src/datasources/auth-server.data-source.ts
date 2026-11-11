@@ -58,39 +58,52 @@ const createRedisClient = () => {
     });
   }
 
-  return new Redis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379,
-    password: process.env.REDIS_PASSWORD,
-    db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
-  });
-};
+  const redisHost = process.env.REDIS_HOST;
 
-const redis = createRedisClient();
+  if (redisHost) {
+    return new Redis({
+      host: redisHost,
+      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379,
+      password: process.env.REDIS_PASSWORD,
+      db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
+    });
+  }
+
+  return undefined;
+};
 
 export const authServerDataSourceImpl = (
   getUsers: GetUsersWithToken,
   getUserPermissions: GetUserPermissionsWithToken,
 ) => {
+  const redis = createRedisClient();
+
   return betterAuth({
     ...additionalOptions,
     secret: isCIBuild ? 'some-ci-default-secret-please-change' : process.env.BETTER_AUTH_SECRET!,
     baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
     basePath: '/auth',
-    secondaryStorage: !redis
-      ? undefined
-      : redisStorage({
+    secondaryStorage: redis
+      ? redisStorage({
           client: redis,
           keyPrefix: 'auth:',
-        }),
+        })
+      : undefined,
     session: {
       expiresIn: 2 * 60 * 60, // 2 hours
       updateAge: 10 * 60, // 10 minutes
-      cookieCache: {
-        enabled: false,
-        maxAge: 2 * 60 * 60,
-        refreshCache: false,
-      },
+      cookieCache: redis
+        ? {
+            enabled: false,
+            maxAge: 2 * 60 * 60,
+            refreshCache: false,
+          }
+        : {
+            enabled: true,
+            maxAge: 2 * 60 * 60,
+            strategy: 'jwe',
+            refreshCache: true,
+          },
     },
     account: {
       storeStateStrategy: 'cookie',

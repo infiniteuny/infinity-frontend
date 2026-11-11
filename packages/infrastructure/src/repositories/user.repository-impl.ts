@@ -42,6 +42,7 @@ export class UserRepositoryImpl implements UserRepository {
             .join(','),
           'filters[sso_id]': filterOptions?.ssoId,
           'filters[name]': filterOptions?.name,
+          'filters[username]': filterOptions?.username,
           'filters[email_address]': filterOptions?.emailAddress,
           'filters[phone_number]': filterOptions?.phoneNumber,
           'filters[student_id]': filterOptions?.studentId,

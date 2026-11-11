@@ -1,6 +1,6 @@
 import type { CompetitionInstanceRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import {
   CompetitionInstance,
   CompetitionInstanceFilterOptions,
@@ -26,13 +26,14 @@ export class GetCompetitionInstances implements UseCase<
   GetCompetitionInstancesParams
 > {
   private readonly competitionInstanceRepository: CompetitionInstanceRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.CompetitionInstanceRepository)
     competitionInstanceRepository: CompetitionInstanceRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.competitionInstanceRepository = competitionInstanceRepository;
     this.authRepository = authRepository;
@@ -48,7 +49,7 @@ export class GetCompetitionInstances implements UseCase<
   ): Promise<Either<[CompetitionInstance[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {

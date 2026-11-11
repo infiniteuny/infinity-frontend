@@ -1,8 +1,16 @@
+import { Achievement } from './achievement';
 import { FilterOperator } from '.';
 import { Major } from './major';
+import { Persona } from './persona';
 
 export type UserIncludeOptions = (
-  'major' | 'major.degree' | 'major.faculty' | 'personas' | 'groups' | 'permissions'
+  | 'major'
+  | 'major.degree'
+  | 'major.faculty'
+  | 'personas'
+  | 'groups'
+  | 'permissions'
+  | 'achievements'
 )[];
 
 export interface UserFilterOptions {
@@ -58,6 +66,8 @@ export class User {
   public createdAt: Date;
   public updatedAt: Date;
   public major?: Major;
+  public personas?: Persona[];
+  public achievements?: Achievement[];
 
   public constructor(
     id: string,
@@ -76,6 +86,8 @@ export class User {
     createdAt: Date,
     updatedAt: Date,
     major?: Major,
+    personas?: Persona[],
+    achievements?: Achievement[],
   ) {
     this.id = id;
     this.name = name;
@@ -93,5 +105,7 @@ export class User {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.major = major;
+    this.personas = personas;
+    this.achievements = achievements;
   }
 }

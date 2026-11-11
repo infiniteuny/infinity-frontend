@@ -75,6 +75,7 @@ export class Achievement {
   public competitionTimeRange?: CompetitionTimeRange;
   public competitionOutput?: CompetitionOutput;
   public competitionRank?: CompetitionRank;
+  public point?: number;
 
   public constructor(
     id: string,
@@ -98,6 +99,7 @@ export class Achievement {
     competitionTimeRange?: CompetitionTimeRange,
     competitionOutput?: CompetitionOutput,
     competitionRank?: CompetitionRank,
+    point?: number,
   ) {
     this.id = id;
     this.teamId = teamId;
@@ -120,5 +122,6 @@ export class Achievement {
     this.competitionTimeRange = competitionTimeRange;
     this.competitionOutput = competitionOutput;
     this.competitionRank = competitionRank;
+    this.point = point;
   }
 }

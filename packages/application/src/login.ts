@@ -4,7 +4,7 @@ import { Either } from 'effect/Either';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 import { UseCase } from './use-case';
 
-export type LoginParams = [callbackUrl?: string];
+export type LoginParams = [callbackUrl?: string, silent?: boolean];
 
 @injectable()
 export class Login implements UseCase<Promise<Either<void, Error>>, LoginParams> {
@@ -17,11 +17,11 @@ export class Login implements UseCase<Promise<Either<void, Error>>, LoginParams>
     this.authRepository = authRepository;
   }
 
-  public async execute(callbackUrl?: string): Promise<Either<void, Error>> {
+  public async execute(callbackUrl?: string, silent?: boolean): Promise<Either<void, Error>> {
     const redirectUrl = callbackUrl
       ? new URL(callbackUrl).pathname + new URL(callbackUrl).searchParams.toString()
       : undefined;
 
-    return this.authRepository.signIn(redirectUrl);
+    return this.authRepository.signIn(redirectUrl, silent);
   }
 }

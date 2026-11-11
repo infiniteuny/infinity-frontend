@@ -29,6 +29,7 @@ export interface AchievementDto {
   competition_time_range?: CompetitionTimeRangeDto;
   competition_output?: CompetitionOutputDto;
   competition_rank?: CompetitionRankDto;
+  point?: number;
 }
 
 export class AchievementMapper {
@@ -75,6 +76,7 @@ export class AchievementMapper {
       competition_rank: achievement.competitionRank
         ? (CompetitionRankMapper.fromDomainToDto(achievement.competitionRank) as CompetitionRankDto)
         : undefined,
+      point: achievement.point,
     };
   }
 
@@ -111,6 +113,7 @@ export class AchievementMapper {
       dto.competition_rank
         ? CompetitionRankMapper.fromDtoToDomain(dto.competition_rank)
         : undefined,
+      dto.point,
     );
   }
 }

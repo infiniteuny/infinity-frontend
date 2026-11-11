@@ -1,3 +1,4 @@
+export * from './achievement-leaderboard.dto';
 export * from './achievement.dto';
 export * from './config.dto';
 export * from './community-group-admin-member.dto';

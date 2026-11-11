@@ -1,3 +1,4 @@
+export * from './achievement-leaderboard.repository';
 export * from './achievement.repository';
 export * from './config.repository';
 export * from './auth.repository';

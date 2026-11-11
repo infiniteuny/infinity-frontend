@@ -1,3 +1,4 @@
+export * from './discord-icon';
 export * from './icon';
 export * from './infinite-logo';
 export * from './infinite-text-logo';

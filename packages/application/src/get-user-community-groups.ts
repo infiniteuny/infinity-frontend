@@ -1,6 +1,6 @@
 import type { UserCommunityGroupRepository, AuthRepository } from '@infiniteuny/infinity-domain';
 import { Either, left, isRight } from 'effect/Either';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 import { UseCase } from './use-case';
 import {
@@ -25,13 +25,14 @@ export class GetUserCommunityGroups implements UseCase<
   GetUserCommunityGroupsParams
 > {
   private readonly userCommunityGroupRepository: UserCommunityGroupRepository;
-  private readonly authRepository: AuthRepository;
+  private readonly authRepository?: AuthRepository;
 
   public constructor(
     @inject(SYMBOLS.UserCommunityGroupRepository)
     userCommunityGroupRepository: UserCommunityGroupRepository,
     @inject(SYMBOLS.AuthRepository)
-    authRepository: AuthRepository,
+    @optional()
+    authRepository?: AuthRepository,
   ) {
     this.userCommunityGroupRepository = userCommunityGroupRepository;
     this.authRepository = authRepository;
@@ -47,7 +48,7 @@ export class GetUserCommunityGroups implements UseCase<
   ): Promise<Either<[UserCommunityGroup[], PaginationOptions], Error>> {
     let accessToken: string | undefined;
 
-    if (authenticate) {
+    if (authenticate && this.authRepository) {
       const accessTokenResult = await this.authRepository.getAccessToken();
 
       if (isRight(accessTokenResult)) {
