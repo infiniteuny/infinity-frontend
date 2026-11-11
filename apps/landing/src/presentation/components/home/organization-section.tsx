@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 import { ArrowForwardRounded } from '@mui/icons-material';
 import { Box, Button, Chip, Container, Stack, Typography } from '@mui/material';
 import { CoreTeam } from '@infiniteuny/infinity-domain';
-import { CoreTeamMemberCard } from '@app/presentation/components/team';
+import { CoreTeamMemberCard } from '@app/presentation/components/core-teams';
 import { CoreTeamMemberDto } from '@infiniteuny/infinity-infrastructure';
 import {
   MouseEvent as ReactMouseEvent,
