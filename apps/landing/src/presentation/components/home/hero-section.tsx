@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { ArrowForwardRounded } from '@mui/icons-material';
 import { Box, Button, Chip, Container, Grid, Stack, Typography } from '@mui/material';
+import { InfiniteLogo3D } from '@infiniteuny/infinity-ui';
 
 export function HeroSection() {
   return (
@@ -52,14 +52,7 @@ export function HeroSection() {
           </Grid>
 
           <Grid size={{ xs: 12, lg: 5 }} className="flex justify-center">
-            <Image
-              src="/assets/images/infinite-3d.png"
-              alt="INFINITE 3D Logo"
-              width={400}
-              height={400}
-              className="h-auto w-full max-w-sm object-contain"
-              priority
-            />
+            <InfiniteLogo3D className="max-w-sm lg:max-w-[420px]" />
           </Grid>
         </Grid>
       </Container>
