@@ -114,9 +114,7 @@ export function CompetitionInstanceFilterInput({ item, applyValue }: GridFilterI
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       loading={isLoading}
-      noOptionsText={
-        searchQuery ? 'No competition instances found' : 'Type to search competition instance'
-      }
+      noOptionsText={searchQuery ? 'No competitions found' : 'Type to search competition'}
       filterOptions={(opts) => opts}
       renderInput={(params) => (
         <TextField {...params} label="Value" fullWidth margin="none" size="small" />

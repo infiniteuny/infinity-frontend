@@ -225,7 +225,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competitions/${params.row.id}`);
+    router.push(`/competition-series/${params.row.id}`);
   };
 
   const handleDeleteClick = (competitionId: string, competitionName?: string) => {
@@ -265,7 +265,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
 
   return (
     <>
-      <SectionHeader title="Competitions">
+      <SectionHeader title="Series" backUrl="/settings">
         <CompetitionsToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
@@ -273,7 +273,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCompetitionName || 'this competition'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedCompetitionName || 'this competition series'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
@@ -333,7 +333,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      href={`/competitions/${params.row.actions.id}`}
+                      href={`/competition-series/${params.row.actions.id}`}
                     />
                     {['update-competition'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -342,7 +342,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        href={`/competitions/${params.row.actions.id}/edit`}
+                        href={`/competition-series/${params.row.actions.id}/edit`}
                       />
                     ) : null}
                     {['delete-competition'].some((p) => userPermissions.has(p)) ? (
@@ -371,7 +371,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
             }}
             slotProps={{
-              noRowsOverlay: { text: 'No competitions found.' },
+              noRowsOverlay: { text: 'No competition series found.' },
               loadingOverlay: {
                 variant: 'skeleton',
                 noRowsVariant: 'skeleton',

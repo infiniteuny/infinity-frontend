@@ -26,7 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const fundApplicationInputSchema = z
   .object({
     teamId: z.uuidv7('Team must be selected'),
-    competitionInstanceId: z.uuidv7('Competition instance must be selected'),
+    competitionInstanceId: z.uuidv7('Competition must be selected'),
     competitionScaleId: z.uuidv7('Scale must be selected'),
     competitionBranch: z.string().min(1, 'Competition branch must not be empty'),
     competitionStartDate: z.date('Start date must be a valid date'),

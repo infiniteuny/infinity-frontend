@@ -1,14 +1,23 @@
 import { cache } from 'react';
-import { GetCompetition, GetSession } from '@infiniteuny/infinity-application';
+import {
+  CompetitionInstanceDto,
+  CompetitionInstanceMapper,
+  CompetitionOrganizerTypeDto,
+  CompetitionOrganizerTypeMapper,
+} from '@infiniteuny/infinity-infrastructure';
+import { CompetitionInstanceForm } from '@app/presentation/components/internal/single-competition-instance';
+import {
+  GetCompetitionInstance,
+  GetCompetitionOrganizerTypes,
+  GetSession,
+} from '@infiniteuny/infinity-application';
+import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
-import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure';
-import { CompetitionForm } from '@app/presentation/components/internal/single-competition';
 
 type Props = {
   params: Promise<{
@@ -30,12 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const userPermissions = new Set(session.permissions);
 
   if (['update-competition'].some((p) => userPermissions.has(p))) {
-    const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+    const getCompetitionInstance = serverContainer.get<GetCompetitionInstance>(
+      SYMBOLS.GetCompetitionInstance,
+    );
 
-    const competitionResult = await cache(
-      async () => await getCompetition.execute(competitionId),
+    const instanceResult = await cache(
+      async () =>
+        await getCompetitionInstance.execute(competitionId, ['competition', 'organizer_type']),
     )();
-    const competition = match(competitionResult, {
+    const competitionInstance = match(instanceResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
           notFound();
@@ -47,17 +59,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     });
 
     return {
-      title: `Edit ${competition.shortname || competition.name}`,
+      title: `Edit ${competitionInstance.shortname || competitionInstance.name}`,
     };
   } else {
-    return {
-      title: 'Create Competition',
-    };
+    notFound();
   }
 }
 
 export default async function SingleCompetitionEditPage({ params }: Props) {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const competitionId = (await params).competitionId;
 
   const sessionResult = await cache(async () => await getSession.execute())();
   const session = match(sessionResult, {
@@ -69,13 +80,28 @@ export default async function SingleCompetitionEditPage({ params }: Props) {
   const userPermissions = new Set(session.permissions);
 
   if (['update-competition'].some((p) => userPermissions.has(p))) {
-    const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
-    const competitionId = (await params).competitionId;
+    const getCompetitionOrganizerTypes = serverContainer.get<GetCompetitionOrganizerTypes>(
+      SYMBOLS.GetCompetitionOrganizerTypes,
+    );
+    const getCompetitionInstance = serverContainer.get<GetCompetitionInstance>(
+      SYMBOLS.GetCompetitionInstance,
+    );
 
-    const competitionResult = await cache(
-      async () => await getCompetition.execute(competitionId),
-    )();
-    const competition = match(competitionResult, {
+    const [instanceResult, organizerTypesResult] = await Promise.all([
+      cache(
+        async () =>
+          await getCompetitionInstance.execute(competitionId, ['competition', 'organizer_type']),
+      )(),
+      getCompetitionOrganizerTypes.execute(undefined, undefined, { perPage: 100 }),
+    ]);
+
+    const [competitionOrganizerTypes] = match(organizerTypesResult, {
+      onLeft: (error) => {
+        throw error;
+      },
+      onRight: (data) => data,
+    });
+    const competitionInstance = match(instanceResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
           notFound();
@@ -92,14 +118,24 @@ export default async function SingleCompetitionEditPage({ params }: Props) {
           { label: 'Overview', url: '/' },
           { label: 'Competitions', url: '/competitions' },
           {
-            label: competition.shortname || competition.name,
-            url: `/competitions/${competition.id}`,
+            label: competitionInstance.shortname || competitionInstance.name,
+            url: `/competitions/${competitionInstance.id}`,
           },
-          { label: 'Edit', url: `/competitions/${competition.id}/edit` },
+          {
+            label: 'Edit',
+            url: `/competitions/${competitionInstance.id}/edit`,
+          },
         ]}
       >
-        <CompetitionForm
-          initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
+        <CompetitionInstanceForm
+          initialCompetitionInstance={
+            CompetitionInstanceMapper.fromDomainToDto(competitionInstance) as CompetitionInstanceDto
+          }
+          competitionOrganizerTypes={
+            competitionOrganizerTypes.map(
+              CompetitionOrganizerTypeMapper.fromDomainToDto,
+            ) as CompetitionOrganizerTypeDto[]
+          }
         />
       </InternalMain>
     );

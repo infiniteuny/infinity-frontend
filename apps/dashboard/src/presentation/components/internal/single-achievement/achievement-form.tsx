@@ -29,7 +29,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const achievementInputSchema = z
   .object({
     teamId: z.uuidv7('Team must be selected'),
-    competitionInstanceId: z.uuidv7('Competition instance must be selected'),
+    competitionInstanceId: z.uuidv7('Competition must be selected'),
     competitionScaleId: z.uuidv7('Competition scale must be selected'),
     competitionTimeRangeId: z.uuidv7('Competition time range must be selected'),
     competitionOutputId: z.uuidv7('Competition output must be selected'),

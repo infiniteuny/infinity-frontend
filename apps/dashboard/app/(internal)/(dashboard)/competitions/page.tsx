@@ -1,11 +1,11 @@
 import {
-  CompetitionDto,
-  CompetitionMapper,
+  CompetitionInstanceDto,
+  CompetitionInstanceMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
-import { CompetitionsList } from '@app/presentation/components/internal/competitions';
-import { GetCompetitions } from '@infiniteuny/infinity-application';
+import { CompetitionInstancesList } from '@app/presentation/components/internal/competition-instances';
+import { GetCompetitionInstances } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
@@ -19,10 +19,17 @@ export const metadata: Metadata = {
 };
 
 export default async function CompetitionsPage() {
-  const getCompetitions = serverContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions);
+  const getCompetitionInstances = serverContainer.get<GetCompetitionInstances>(
+    SYMBOLS.GetCompetitionInstances,
+  );
 
-  const result = await getCompetitions.execute(undefined, undefined, { perPage: 25 });
-  const [competitions, paginationOptions] = match(result, {
+  const result = await getCompetitionInstances.execute(
+    ['competition', 'organizer_type'],
+    undefined,
+    undefined,
+    { perPage: 25 },
+  );
+  const [competitionInstances, paginationOptions] = match(result, {
     onLeft: (error) => {
       throw error;
     },
@@ -36,9 +43,11 @@ export default async function CompetitionsPage() {
         { label: 'Competitions', url: '/competitions' },
       ]}
     >
-      <CompetitionsList
-        initialCompetitions={
-          competitions.map(CompetitionMapper.fromDomainToDto) as CompetitionDto[]
+      <CompetitionInstancesList
+        initialCompetitionInstances={
+          competitionInstances.map(
+            CompetitionInstanceMapper.fromDomainToDto,
+          ) as CompetitionInstanceDto[]
         }
         initialPaginationOptions={
           PaginationOptionsMapper.fromDomainToDto(paginationOptions) as PaginationOptionsDto

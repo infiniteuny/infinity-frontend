@@ -30,9 +30,9 @@ export function CompetitionsToolbar({ dataGridApiRef }: Props) {
           <Button
             variant="filled"
             className="ml-4"
-            aria-label="Add competition"
+            aria-label="Add competition series"
             LinkComponent={Link}
-            href="/competitions/new"
+            href="/competition-series/new"
             startIcon={<AddRounded />}
           >
             Add

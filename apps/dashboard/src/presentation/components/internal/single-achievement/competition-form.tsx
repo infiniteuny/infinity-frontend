@@ -168,8 +168,8 @@ export function CompetitionForm({
                   loading={isCompetitionInstanceLoading}
                   noOptionsText={
                     competitionInstanceInput
-                      ? 'No competition instances found'
-                      : 'Type to search competition instance'
+                      ? 'No competitions found'
+                      : 'Type to search competition'
                   }
                   disabled={isSubmitting}
                   filterOptions={(options) => options}

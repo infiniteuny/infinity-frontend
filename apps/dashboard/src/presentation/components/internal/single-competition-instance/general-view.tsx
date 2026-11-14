@@ -38,7 +38,7 @@ export function GeneralView({ competitionInstance }: Props) {
           </Grid>
           <Grid size={12}>
             <ViewTile
-              title="Competition"
+              title="Series"
               subtitle={competitionInstance.competition?.name || 'N/A'}
               position="middle"
             />

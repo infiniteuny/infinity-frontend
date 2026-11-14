@@ -11,7 +11,6 @@ import { useInternalStore } from '@app/presentation/hooks';
 
 type ViewProps = {
   competitionInstanceId: string;
-  competitionId: string;
 };
 
 type FormProps = {
@@ -21,7 +20,6 @@ type FormProps = {
 
 export function CompetitionInstanceToolbar({
   competitionInstanceId,
-  competitionId,
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
@@ -35,9 +33,9 @@ export function CompetitionInstanceToolbar({
           <Button
             variant="filled"
             className="ml-4"
-            aria-label="Edit competition instance"
+            aria-label="Edit competition"
             LinkComponent={Link}
-            href={`/competitions/${competitionId}/instances/${competitionInstanceId}/edit`}
+            href={`/competitions/${competitionInstanceId}/edit`}
             startIcon={<EditRounded />}
           >
             Edit
@@ -63,7 +61,7 @@ export function CompetitionInstanceToolbar({
         <Button
           variant="filled"
           className="ml-4"
-          aria-label="Save competition instance"
+          aria-label="Save competition"
           startIcon={<SaveRounded />}
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}

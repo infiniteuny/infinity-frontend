@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Container,
   FormControl,
@@ -11,19 +12,27 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { clientContainer } from '@app/client-injection';
+import { Competition } from '@infiniteuny/infinity-domain';
 import { CompetitionInstanceInput } from './competition-instance-form';
 import {
+  CompetitionDto,
+  CompetitionMapper,
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
-import { useMemo } from 'react';
+import { GetCompetitions } from '@infiniteuny/infinity-application';
+import { match } from 'effect/Either';
+import { SYMBOLS } from '@config';
+import { useEffect, useMemo, useState } from 'react';
 
 type Props = {
   methods: UseFormReturn<CompetitionInstanceInput>;
   competitionOrganizerTypes: CompetitionOrganizerTypeDto[];
+  competitions?: CompetitionDto[];
 };
 
 export function GeneralForm({
@@ -33,11 +42,61 @@ export function GeneralForm({
     formState: { isSubmitting, errors },
   },
   competitionOrganizerTypes,
+  competitions,
 }: Props) {
+  const getCompetitions = useMemo(
+    () => clientContainer.get<GetCompetitions>(SYMBOLS.GetCompetitions),
+    [],
+  );
   const parsedCompetitionOrganizerTypes = useMemo(
     () => competitionOrganizerTypes.map(CompetitionOrganizerTypeMapper.fromDtoToDomain),
     [competitionOrganizerTypes],
   );
+  const parsedCompetitions = useMemo(
+    () => competitions?.map(CompetitionMapper.fromDtoToDomain) ?? [],
+    [competitions],
+  );
+
+  const [competitionInput, setCompetitionInput] = useState(parsedCompetitions[0]?.name ?? '');
+  const [competitionOptions, setCompetitionOptions] = useState<Competition[]>(parsedCompetitions);
+  const [isCompetitionLoading, setIsCompetitionLoading] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const query = competitionInput.trim();
+
+    if (query.length < 1) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIsCompetitionLoading(true);
+
+      const competitionsResult = await getCompetitions.execute({ name: query }, undefined, {
+        perPage: 10,
+      });
+
+      if (!active) return;
+
+      match(competitionsResult, {
+        onLeft: () => {
+          setCompetitionOptions([]);
+        },
+        onRight: ([competitionsData]) => {
+          setCompetitionOptions(competitionsData);
+        },
+      });
+
+      setIsCompetitionLoading(false);
+    }, 300);
+
+    return () => {
+      active = false;
+      clearTimeout(timeoutId);
+    };
+  }, [competitionInput, getCompetitions]);
 
   return (
     <Box component="section" className="mb-4 w-full px-6">
@@ -48,7 +107,6 @@ export function GeneralForm({
           </Typography>
         </Toolbar>
         <Grid container spacing={2}>
-          <input type="hidden" {...register('competitionId')} />
           <Grid size={12}>
             <TextField
               {...register('name')}
@@ -85,6 +143,55 @@ export function GeneralForm({
               helperText={errors.description?.message}
               error={!!errors.description}
               disabled={isSubmitting}
+            />
+          </Grid>
+          <Grid size={12}>
+            <Controller
+              name="competitionId"
+              control={control}
+              defaultValue={''}
+              render={({ field }) => (
+                <Autocomplete
+                  options={competitionOptions}
+                  value={
+                    competitionOptions.find((competition) => competition.id === field.value) ?? null
+                  }
+                  onChange={(_, competition) => {
+                    field.onChange(competition?.id ?? '');
+                  }}
+                  inputValue={competitionInput}
+                  onInputChange={(_, value) => {
+                    setCompetitionInput(value);
+
+                    if (value.trim().length < 1) {
+                      setCompetitionOptions([]);
+                      setIsCompetitionLoading(false);
+                    }
+                  }}
+                  getOptionLabel={(option) => option.name}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  loading={isCompetitionLoading}
+                  noOptionsText={
+                    competitionInput
+                      ? 'No competition series found'
+                      : 'Type to search competition series'
+                  }
+                  disabled={isSubmitting}
+                  filterOptions={(options) => options}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="competitionId"
+                      label="Series"
+                      fullWidth
+                      margin="none"
+                      helperText={errors.competitionId?.message}
+                      error={!!errors.competitionId}
+                      disabled={isSubmitting}
+                    />
+                  )}
+                />
+              )}
             />
           </Grid>
           <Grid size={12}>

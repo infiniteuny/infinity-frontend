@@ -168,7 +168,7 @@ export const APP: {
           icon: 'settings',
           path: '/settings',
           matcher:
-            '^\\/(settings|degrees|faculties|majors|personas|team-types|core-team-divisions|community-groups|competition-organizer-types|competition-scales|competition-time-ranges|competition-outputs|competition-ranks)',
+            '^\\/(settings|degrees|faculties|majors|personas|team-types|core-team-divisions|community-groups|competition-series|competition-organizer-types|competition-scales|competition-time-ranges|competition-outputs|competition-ranks)',
         },
       ],
     },

@@ -10,6 +10,7 @@ import {
   Diversity2Rounded,
   Groups3Rounded,
   GroupsRounded,
+  LayersRounded,
   PersonRounded,
   SchoolRounded,
   SquareFootRounded,
@@ -151,20 +152,7 @@ export function SettingsView({ user }: Props) {
           </Container>
         </Box>
       ) : null}
-      <Box
-        component="section"
-        className={`w-full px-6 ${
-          [
-            'read-competition-organizer-type',
-            'read-competition-scale',
-            'read-competition-time-range',
-            'read-competition-output',
-            'read-competition-rank',
-          ].some((p) => userPermissions.has(p))
-            ? 'mb-4'
-            : 'mb-6'
-        }`}
-      >
+      <Box component="section" className="mb-4 w-full px-6">
         <Container maxWidth={false} className="max-w-2xl p-0">
           <Toolbar component="header" className="h-auto min-h-10 p-3">
             <Typography component="h2" variant="h6" className="font-medium">
@@ -197,85 +185,87 @@ export function SettingsView({ user }: Props) {
           </Grid>
         </Container>
       </Box>
-      {[
-        'read-competition-organizer-type',
-        'read-competition-scale',
-        'read-competition-time-range',
-        'read-competition-output',
-        'read-competition-rank',
-      ].some((p) => userPermissions.has(p)) ? (
-        <Box component="section" className="mb-6 w-full px-6">
-          <Container maxWidth={false} className="max-w-2xl p-0">
-            <Toolbar component="header" className="h-auto min-h-10 p-3">
-              <Typography component="h2" variant="h6" className="font-medium">
-                Competitions
-              </Typography>
-            </Toolbar>
-            <Grid container spacing={0.5} className="tiles-rounded-dynamic">
-              {['read-competition-organizer-type'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Organizer Types"
-                    subtitle="Types of competition organizers"
-                    position="top"
-                    icon={<BusinessRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/competition-organizer-types"
-                  />
-                </Grid>
-              ) : null}
-              {['read-competition-scale'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Scales"
-                    subtitle="Regional level of the competition"
-                    position="middle"
-                    icon={<SquareFootRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/competition-scales"
-                  />
-                </Grid>
-              ) : null}
-              {['read-competition-time-range'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Time Ranges"
-                    subtitle="Duration of the competition"
-                    position="middle"
-                    icon={<TimelapseRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/competition-time-ranges"
-                  />
-                </Grid>
-              ) : null}
-              {['read-competition-output'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Outputs"
-                    subtitle="Types of outputs produced by the competition"
-                    position="middle"
-                    icon={<CategoryRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/competition-outputs"
-                  />
-                </Grid>
-              ) : null}
-              {['read-competition-rank'].some((p) => userPermissions.has(p)) ? (
-                <Grid size={12}>
-                  <ClickableViewTile
-                    title="Ranks"
-                    subtitle="Winning ranks in the competition"
-                    position="bottom"
-                    icon={<WorkspacePremiumRounded />}
-                    trailingIcon={<ChevronRightRounded />}
-                    href="/competition-ranks"
-                  />
-                </Grid>
-              ) : null}
+      <Box component="section" className="mb-6 w-full px-6">
+        <Container maxWidth={false} className="max-w-2xl p-0">
+          <Toolbar component="header" className="h-auto min-h-10 p-3">
+            <Typography component="h2" variant="h6" className="font-medium">
+              Competitions
+            </Typography>
+          </Toolbar>
+          <Grid container spacing={0.5} className="tiles-rounded-dynamic">
+            <Grid size={12}>
+              <ClickableViewTile
+                title="Series"
+                subtitle="Recurring group of competitions"
+                position="top"
+                icon={<LayersRounded />}
+                trailingIcon={<ChevronRightRounded />}
+                href="/competition-series"
+              />
             </Grid>
-          </Container>
-        </Box>
-      ) : null}
+            {['read-competition-organizer-type'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Organizer Types"
+                  subtitle="Types of competition organizers"
+                  position="middle"
+                  icon={<BusinessRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/competition-organizer-types"
+                />
+              </Grid>
+            ) : null}
+            {['read-competition-scale'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Scales"
+                  subtitle="Regional level of the competition"
+                  position="middle"
+                  icon={<SquareFootRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/competition-scales"
+                />
+              </Grid>
+            ) : null}
+            {['read-competition-time-range'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Time Ranges"
+                  subtitle="Duration of the competition"
+                  position="middle"
+                  icon={<TimelapseRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/competition-time-ranges"
+                />
+              </Grid>
+            ) : null}
+            {['read-competition-output'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Outputs"
+                  subtitle="Types of outputs produced by the competition"
+                  position="middle"
+                  icon={<CategoryRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/competition-outputs"
+                />
+              </Grid>
+            ) : null}
+            {['read-competition-rank'].some((p) => userPermissions.has(p)) ? (
+              <Grid size={12}>
+                <ClickableViewTile
+                  title="Ranks"
+                  subtitle="Winning ranks in the competition"
+                  position="bottom"
+                  icon={<WorkspacePremiumRounded />}
+                  trailingIcon={<ChevronRightRounded />}
+                  href="/competition-ranks"
+                />
+              </Grid>
+            ) : null}
+          </Grid>
+        </Container>
+      </Box>
     </>
   );
 }

@@ -29,9 +29,9 @@ export function CompetitionToolbar({ competitionId, ref, methods }: OneOf<[ViewP
           <Button
             variant="filled"
             className="ml-4"
-            aria-label="Edit competition"
+            aria-label="Edit competition series"
             LinkComponent={Link}
-            href={`/competitions/${competitionId}/edit`}
+            href={`/competition-series/${competitionId}/edit`}
             startIcon={<EditRounded />}
           >
             Edit
@@ -57,7 +57,7 @@ export function CompetitionToolbar({ competitionId, ref, methods }: OneOf<[ViewP
         <Button
           variant="filled"
           className="ml-4"
-          aria-label="Save competition"
+          aria-label="Save competition series"
           startIcon={<SaveRounded />}
           disabled={!isDirty || isSubmitting}
           onClick={() => ref.current?.requestSubmit()}

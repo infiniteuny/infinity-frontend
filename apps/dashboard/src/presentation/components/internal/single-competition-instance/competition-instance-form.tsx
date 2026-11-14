@@ -14,10 +14,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import {
-  CompetitionDto,
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
-  CompetitionMapper,
   CompetitionOrganizerTypeDto,
 } from '@infiniteuny/infinity-infrastructure';
 import { CompetitionInstanceToolbar } from './competition-instance-toolbar';
@@ -29,7 +27,7 @@ import { Resolver, useForm, useWatch } from 'react-hook-form';
 
 const competitionInstanceInputSchema = z
   .object({
-    competitionId: z.uuidv7('Competition must be selected'),
+    competitionId: z.uuidv7('Competition series must be selected'),
     name: z.string().min(1, 'Name must not be empty'),
     shortname: z.union([
       z.string().min(2, 'Shortname must be at least 2 characters'),
@@ -62,13 +60,11 @@ const competitionInstanceInputSchema = z
 export type CompetitionInstanceInput = z.infer<typeof competitionInstanceInputSchema>;
 
 type Props = {
-  competition: CompetitionDto;
   initialCompetitionInstance?: CompetitionInstanceDto;
   competitionOrganizerTypes: CompetitionOrganizerTypeDto[];
 };
 
 export function CompetitionInstanceForm({
-  competition,
   initialCompetitionInstance,
   competitionOrganizerTypes,
 }: Props) {
@@ -79,10 +75,6 @@ export function CompetitionInstanceForm({
   const updateCompetitionInstance = useMemo(
     () => clientContainer.get<UpdateCompetitionInstance>(SYMBOLS.UpdateCompetitionInstance),
     [],
-  );
-  const parsedCompetition = useMemo(
-    () => CompetitionMapper.fromDomainToDto(competition),
-    [competition],
   );
   const router = useRouter();
 
@@ -99,7 +91,7 @@ export function CompetitionInstanceForm({
           ...competitionInstance,
         }
       : {
-          competitionId: parsedCompetition.id,
+          competitionId: '',
           name: '',
           shortname: '',
           description: '',
@@ -133,7 +125,7 @@ export function CompetitionInstanceForm({
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${parsedCompetition.id}/instances/${data.id}`);
+              router.push(`/competitions/${data.id}`);
             },
           });
         } else {
@@ -148,7 +140,7 @@ export function CompetitionInstanceForm({
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${parsedCompetition.id}/instances/${data.id}`);
+              router.push(`/competitions/${data.id}`);
             },
           });
         }
@@ -161,18 +153,22 @@ export function CompetitionInstanceForm({
   return (
     <>
       <SectionHeader
-        title={
-          competitionInstance
-            ? `Edit ${shortname || name}`
-            : `Add ${parsedCompetition.shortname || parsedCompetition.name}'s Instance`
-        }
-        backUrl={`/competitions/${parsedCompetition.id}/instances`}
+        title={competitionInstance ? `Edit ${shortname || name}` : 'Create Competition'}
+        backUrl={competitionInstance ? `/competitions/${competitionInstance.id}` : '/competitions'}
       >
         <CompetitionInstanceToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
-          <GeneralForm methods={methods} competitionOrganizerTypes={competitionOrganizerTypes} />
+          <GeneralForm
+            methods={methods}
+            competitionOrganizerTypes={competitionOrganizerTypes}
+            competitions={
+              initialCompetitionInstance?.competition
+                ? [initialCompetitionInstance.competition]
+                : undefined
+            }
+          />
           <AttachmentForm methods={methods} />
         </Box>
       </LocalizationProvider>

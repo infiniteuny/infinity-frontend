@@ -1,6 +1,5 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
-import { ChevronRightRounded } from '@mui/icons-material';
-import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
+import { ViewTile } from '@app/presentation/components/internal/shared';
 import { Competition } from '@infiniteuny/infinity-domain';
 
 type Props = {
@@ -26,16 +25,7 @@ export function GeneralView({ competition }: Props) {
             </Grid>
           ) : null}
           <Grid size={12}>
-            <ViewTile title="Description" subtitle={competition.description} position="middle" />
-          </Grid>
-          <Grid size={12}>
-            <ClickableViewTile
-              title="Instances"
-              subtitle="View and manage instances of this competition"
-              position="bottom"
-              trailingIcon={<ChevronRightRounded />}
-              href={`/competitions/${competition.id}/instances`}
-            />
+            <ViewTile title="Description" subtitle={competition.description} position="bottom" />
           </Grid>
         </Grid>
       </Container>

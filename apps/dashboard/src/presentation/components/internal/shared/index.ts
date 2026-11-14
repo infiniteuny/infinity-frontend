@@ -16,6 +16,7 @@ export * from './store-provider';
 export * from './view-tile';
 
 export * from './community-group-filter-input';
+export * from './competition-filter-input';
 export * from './competition-instance-filter-input';
 export * from './competition-organizer-type-filter-input';
 export * from './competition-output-filter-input';

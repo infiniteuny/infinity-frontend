@@ -1,0 +1,140 @@
+import { cache } from 'react';
+import { GetCompetition, GetSession } from '@infiniteuny/infinity-application';
+import { match } from 'effect/Either';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { NotFoundError } from '@infiniteuny/infinity-domain';
+import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import { serverContainer } from '@app/server-injection';
+import { SYMBOLS } from '@config';
+import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CompetitionForm,
+  CompetitionToolbar,
+  CompetitionView,
+} from '@app/presentation/components/internal/single-competition';
+
+type Props = {
+  params: Promise<{
+    competitionSeriesId: string;
+  }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const competitionSeriesId = (await params).competitionSeriesId;
+
+  const sessionResult = await cache(async () => await getSession.execute())();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (competitionSeriesId !== 'new') {
+    const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+
+    const competitionResult = await cache(
+      async () => await getCompetition.execute(competitionSeriesId),
+    )();
+    const competition = match(competitionResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return {
+      title: competition.shortname || competition.name,
+    };
+  } else if (
+    competitionSeriesId === 'new' &&
+    ['create-competition'].some((p) => userPermissions.has(p))
+  ) {
+    return {
+      title: 'Create Competition Series',
+    };
+  } else {
+    notFound();
+  }
+}
+
+export default async function SingleCompetitionSeriesPage({ params }: Props) {
+  const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
+  const competitionSeriesId = (await params).competitionSeriesId;
+
+  const sessionResult = await cache(async () => await getSession.execute())();
+  const session = match(sessionResult, {
+    onLeft: (error) => {
+      throw error;
+    },
+    onRight: (session) => session,
+  });
+  const userPermissions = new Set(session.permissions);
+
+  if (competitionSeriesId !== 'new') {
+    const getCompetition = serverContainer.get<GetCompetition>(SYMBOLS.GetCompetition);
+
+    const competitionResult = await cache(
+      async () => await getCompetition.execute(competitionSeriesId),
+    )();
+    const competition = match(competitionResult, {
+      onLeft: (error) => {
+        if (error instanceof NotFoundError) {
+          notFound();
+        } else {
+          throw error;
+        }
+      },
+      onRight: (data) => data,
+    });
+
+    return (
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Series', url: '/competition-series' },
+          {
+            label: competition.shortname || competition.name,
+            url: `/competition-series/${competition.id}`,
+          },
+        ]}
+      >
+        <SectionHeader
+          title={competition.shortname || competition.name}
+          backUrl="/competition-series"
+        >
+          <CompetitionToolbar competitionId={competition.id} />
+        </SectionHeader>
+        <CompetitionView
+          initialCompetition={CompetitionMapper.fromDomainToDto(competition) as CompetitionDto}
+        />
+      </InternalMain>
+    );
+  } else if (
+    competitionSeriesId === 'new' &&
+    ['create-competition'].some((p) => userPermissions.has(p))
+  ) {
+    return (
+      <InternalMain
+        breadcrumbs={[
+          { label: 'Overview', url: '/' },
+          { label: 'Settings', url: '/settings' },
+          { label: 'Competition Series', url: '/competition-series' },
+          { label: 'Create Competition Series', url: '/competition-series/new' },
+        ]}
+      >
+        <CompetitionForm />
+      </InternalMain>
+    );
+  } else {
+    notFound();
+  }
+}

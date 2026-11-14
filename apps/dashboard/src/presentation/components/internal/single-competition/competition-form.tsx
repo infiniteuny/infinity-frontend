@@ -78,7 +78,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${data.id}`);
+              router.push(`/competition-series/${data.id}`);
             },
           });
         } else {
@@ -92,7 +92,7 @@ export function CompetitionForm({ initialCompetition }: Props) {
               throw error;
             },
             onRight: (data) => {
-              router.push(`/competitions/${data.id}`);
+              router.push(`/competition-series/${data.id}`);
             },
           });
         }
@@ -105,8 +105,8 @@ export function CompetitionForm({ initialCompetition }: Props) {
   return (
     <>
       <SectionHeader
-        title={competition ? `Edit ${shortname || name}` : 'Create Competition'}
-        backUrl={competition ? `/competitions/${competition.id}` : '/competitions'}
+        title={competition ? `Edit ${shortname || name}` : 'Create Competition Series'}
+        backUrl={competition ? `/competition-series/${competition.id}` : '/competition-series'}
       >
         <CompetitionToolbar ref={ref} methods={methods} />
       </SectionHeader>

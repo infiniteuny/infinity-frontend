@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {
   AlertDialog,
+  CompetitionFilterInput,
   CompetitionOrganizerTypeFilterInput,
   DateOperators,
   SectionHeader,
@@ -19,10 +20,8 @@ import {
   PaginationOptions,
 } from '@infiniteuny/infinity-domain';
 import {
-  CompetitionDto,
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
-  CompetitionMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
@@ -54,13 +53,11 @@ import { CompetitionInstancesToolbar } from './competition-instances-toolbar';
 type Props = {
   initialCompetitionInstances: CompetitionInstanceDto[];
   initialPaginationOptions: PaginationOptionsDto;
-  competition: CompetitionDto;
 };
 
 export function CompetitionInstancesList({
   initialCompetitionInstances,
   initialPaginationOptions,
-  competition,
 }: Props) {
   const getCompetitionInstances = useMemo(
     () => clientContainer.get<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances),
@@ -74,10 +71,6 @@ export function CompetitionInstancesList({
     CompetitionInstanceMapper.fromDtoToDomain,
   );
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
-  const parsedCompetition = useMemo(
-    () => CompetitionMapper.fromDtoToDomain(competition),
-    [competition],
-  );
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = new Set(userSession?.permissions || []);
@@ -128,6 +121,7 @@ export function CompetitionInstancesList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof CompetitionInstanceSortOptions> = {
+      id: 'id',
       name: 'name',
       shortname: 'shortname',
       organizer: 'organizer',
@@ -159,6 +153,11 @@ export function CompetitionInstancesList({
         case 'name':
           if (filterItem.value != null) {
             filterOptions.name = String(filterItem.value);
+          }
+          break;
+        case 'competition':
+          if (filterItem.value != null) {
+            filterOptions.competitionId = String(filterItem.value);
           }
           break;
         case 'organizer':
@@ -233,16 +232,12 @@ export function CompetitionInstancesList({
     (async () => {
       setIsLoading(true);
       const sortOptions = convertSortModelToDomain(sortModel);
-      const userFilterOptions = convertFilterModelToDomain(filterModel);
-      const baseFilterOptions: CompetitionInstanceFilterOptions = {
-        ...(parsedCompetition ? { competitionId: parsedCompetition.id } : {}),
-        ...userFilterOptions,
-      };
+      const filterOptions = convertFilterModelToDomain(filterModel);
 
       try {
         const result = await getCompetitionInstances.execute(
           ['competition', 'organizer_type'],
-          Object.keys(baseFilterOptions).length > 0 ? baseFilterOptions : undefined,
+          filterOptions,
           sortOptions,
           { perPage: paginationModel.pageSize, cursor },
         );
@@ -274,7 +269,7 @@ export function CompetitionInstancesList({
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionInstances, parsedCompetition]);
+  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionInstances]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
@@ -319,7 +314,7 @@ export function CompetitionInstancesList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competitions/${parsedCompetition.id}/instances/${params.row.id}`);
+    router.push(`/competitions/${params.row.id}`);
   };
 
   const handleDeleteClick = (competitionInstanceId: string, competitionInstanceName?: string) => {
@@ -362,21 +357,15 @@ export function CompetitionInstancesList({
 
   return (
     <>
-      <SectionHeader
-        title={`${parsedCompetition.shortname || parsedCompetition.name}'s Instances`}
-        backUrl={`/competitions/${parsedCompetition.id}`}
-      >
-        <CompetitionInstancesToolbar
-          competitionId={parsedCompetition.id}
-          dataGridApiRef={dataGridApiRef}
-        />
+      <SectionHeader title="Competitions">
+        <CompetitionInstancesToolbar dataGridApiRef={dataGridApiRef} />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCompetitionInstanceName || 'this instance'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedCompetitionInstanceName || 'this competition'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
@@ -400,7 +389,7 @@ export function CompetitionInstancesList({
                 field: 'name',
                 headerName: 'Name',
                 flex: 2,
-                minWidth: 200,
+                minWidth: 300,
                 filterable: true,
                 sortable: true,
                 filterOperators: [StringOperators.contains],
@@ -412,6 +401,30 @@ export function CompetitionInstancesList({
                 minWidth: 120,
                 filterable: false,
                 sortable: true,
+              },
+              {
+                field: 'competition',
+                headerName: 'Series',
+                flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: false,
+                filterOperators: [
+                  {
+                    label: 'is',
+                    value: 'is',
+                    getApplyFilterFn: (filterItem) => {
+                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                        return null;
+                      }
+
+                      return (value) => {
+                        return value === filterItem.value;
+                      };
+                    },
+                    InputComponent: CompetitionFilterInput,
+                  },
+                ],
               },
               {
                 field: 'organizer',
@@ -508,7 +521,7 @@ export function CompetitionInstancesList({
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}`}
+                      href={`/competitions/${params.row.actions.id}`}
                     />
                     {['update-competition'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -517,7 +530,7 @@ export function CompetitionInstancesList({
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        href={`/competitions/${parsedCompetition.id}/instances/${params.row.actions.id}/edit`}
+                        href={`/competitions/${params.row.actions.id}/edit`}
                       />
                     ) : null}
                     {['delete-competition'].some((p) => userPermissions.has(p)) ? (
@@ -539,6 +552,7 @@ export function CompetitionInstancesList({
               id: instance.id,
               name: instance.name,
               shortname: instance.shortname,
+              competition: instance.competition?.name || 'N/A',
               organizer: instance.organizer,
               organizerType: instance.organizerType?.name || 'N/A',
               location: instance.location,
@@ -550,7 +564,7 @@ export function CompetitionInstancesList({
               noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
             }}
             slotProps={{
-              noRowsOverlay: { text: 'No competition instances found.' },
+              noRowsOverlay: { text: 'No competitions found.' },
               loadingOverlay: {
                 variant: 'skeleton',
                 noRowsVariant: 'skeleton',
@@ -564,6 +578,7 @@ export function CompetitionInstancesList({
               columns: {
                 columnVisibilityModel: {
                   id: false,
+                  competition: false,
                 },
               },
             }}

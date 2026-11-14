@@ -9,10 +9,9 @@ import { RefObject } from 'react';
 
 type Props = {
   dataGridApiRef: RefObject<GridApiCommunity | null>;
-  competitionId: string;
 };
 
-export function CompetitionInstancesToolbar({ competitionId, dataGridApiRef }: Props) {
+export function CompetitionInstancesToolbar({ dataGridApiRef }: Props) {
   const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
 
   return (
@@ -31,9 +30,9 @@ export function CompetitionInstancesToolbar({ competitionId, dataGridApiRef }: P
           <Button
             variant="filled"
             className="ml-4"
-            aria-label="Add competition instance"
+            aria-label="Add competition"
             LinkComponent={Link}
-            href={`/competitions/${competitionId}/instances/new`}
+            href="/competitions/new"
             startIcon={<AddRounded />}
           >
             Add
