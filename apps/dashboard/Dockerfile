@@ -17,20 +17,13 @@ COPY packages/ui/package.json ./packages/ui/package.json
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --prefer-offline --no-audit --no-fund;
 
-FROM node:26.13.0-alpine AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Copy project dependencies from dependencies stage
-COPY --from=dependencies /app/node_modules ./node_modules
+FROM dependencies AS builder
 
 # Copy application source code
 COPY . .
 
 # Accept NEXT_PUBLIC_ env vars as build args so they are baked in at build time
 ARG NEXT_PUBLIC_APP_URL \
-    NEXT_PUBLIC_BETTER_AUTH_URL \
     NEXT_PUBLIC_INFINITY_API_URL \
     NEXT_PUBLIC_INFINITY_API_TIMEOUT
 
@@ -40,13 +33,12 @@ ENV NODE_ENV=production \
     # Disable telemetry during the build.
     NEXT_TELEMETRY_DISABLED=1 \
     NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL} \
-    NEXT_PUBLIC_BETTER_AUTH_URL=${NEXT_PUBLIC_BETTER_AUTH_URL} \
     NEXT_PUBLIC_INFINITY_API_URL=${NEXT_PUBLIC_INFINITY_API_URL} \
     NEXT_PUBLIC_INFINITY_API_TIMEOUT=${NEXT_PUBLIC_INFINITY_API_TIMEOUT}
 
 # Build Next.js application
 RUN --mount=type=cache,target=/app/apps/dashboard/.next/cache \
-    npx nx build dashboard
+    npm run build:dashboard
 
 FROM oven/bun:1.4.4 AS runner
 
@@ -61,16 +53,17 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
 
 # Copy production assets
-COPY --from=builder --chown=bun:bun /app/apps/dashboard/public ./apps/dashboard/public
+COPY --from=builder --chown=bun:bun /app/apps/dashboard/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir -p apps/dashboard/.next && \
-    chown -R bun:bun apps/dashboard/.next
+RUN mkdir -p .next && \
+    chown -R bun:bun .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=bun:bun /app/apps/dashboard/.next/standalone ./
-COPY --from=builder --chown=bun:bun /app/apps/dashboard/.next/static ./apps/dashboard/.next/static
+COPY --from=builder --chown=bun:bun /app/apps/dashboard/.next/standalone/node_modules ./node_modules
+COPY --from=builder --chown=bun:bun /app/apps/dashboard/.next/standalone/apps/dashboard ./
+COPY --from=builder --chown=bun:bun /app/apps/dashboard/.next/static ./.next/static
 
 # Switch to non-root user for security best practices
 USER bun
@@ -79,4 +72,4 @@ USER bun
 EXPOSE 3000
 
 # Start Next.js standalone server with Bun
-CMD ["bun", "apps/dashboard/server.js"]
+CMD ["bun", "server.js"]

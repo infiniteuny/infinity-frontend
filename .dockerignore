@@ -4,7 +4,7 @@
 ############################################################
 
 # Dependencies (installed inside Docker, never copied)
-node_modules/
+**/node_modules/
 .pnpm-store/
 npm-debug.log*
 yarn-debug.log*
@@ -13,10 +13,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Next.js build outputs (always generated during `next build`)
-.next/
-out/
-dist/
-build/
+**/.next/
+**/out/
+**/dist/
+**/build/
 .vercel/
 
 # Tests and testing output (not needed in production images)
@@ -88,7 +88,7 @@ Jenkinsfile
 .temp/
 
 # TypeScript build metadata
-*.tsbuildinfo
+**/*.tsbuildinfo
 
 # Sensitive or unnecessary configuration files
 *.pem

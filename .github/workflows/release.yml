@@ -206,8 +206,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.app }}-${{ matrix.arch }}
           cache-to: type=gha,scope=${{ matrix.app }}-${{ matrix.arch }},mode=max
           build-args: |
-            NEXT_PUBLIC_APP_URL=${{ matrix.app == 'landing' && secrets.NEXT_PUBLIC_LANDING_APP_URL || secrets.NEXT_PUBLIC_APP_URL }}
-            NEXT_PUBLIC_BETTER_AUTH_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+            NEXT_PUBLIC_APP_URL=${{ matrix.app == 'landing' && secrets.NEXT_PUBLIC_LANDING_APP_URL || secrets.NEXT_PUBLIC_DASHBOARD_APP_URL }}
             NEXT_PUBLIC_INFINITY_API_URL=${{ secrets.NEXT_PUBLIC_INFINITY_API_URL }}
             NEXT_PUBLIC_INFINITY_API_TIMEOUT=${{ secrets.NEXT_PUBLIC_INFINITY_API_TIMEOUT }}
 
