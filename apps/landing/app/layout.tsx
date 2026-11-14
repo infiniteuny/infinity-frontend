@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: Props) {
       suppressHydrationWarning
     >
       <body id="__next" className="bg-(--m3-palette-surfaceContainer-main)">
-        <InitColorSchemeScript attribute="class" />
+        <InitColorSchemeScript attribute="class" modeStorageKey="theme-mode" />
         <MuiSetup>
           <SkipToContentButton />
           <Header session={session} />

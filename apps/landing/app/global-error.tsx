@@ -37,7 +37,7 @@ export default function LandingGlobalError({ error, unstable_retry }: Props) {
       suppressHydrationWarning
     >
       <body id="__next" className="bg-(--m3-palette-surfaceContainer-main)">
-        <InitColorSchemeScript attribute="class" />
+        <InitColorSchemeScript attribute="class" modeStorageKey="theme-mode" />
         <Box className="flex h-screen w-full flex-col items-center justify-center gap-6 p-8">
           <Typography variant="h4" className="font-medium">
             Something went wrong

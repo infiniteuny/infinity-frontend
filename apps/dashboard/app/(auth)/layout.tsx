@@ -29,7 +29,7 @@ export default function AuthLayout({ children }: Props) {
       suppressHydrationWarning
     >
       <body id="__next">
-        <InitColorSchemeScript attribute="class" />
+        <InitColorSchemeScript attribute="class" modeStorageKey="theme-mode" />
         <MuiSetup>
           <SkipToContentButton />
           <AuthMain>{children}</AuthMain>

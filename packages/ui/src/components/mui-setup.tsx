@@ -9,12 +9,13 @@ import { THEMES } from '../theme';
 type Props = {
   children: ReactNode;
   theme?: Theme;
+  modeStorageKey?: string;
 };
 
-export function MuiSetup({ children, theme = THEMES }: Props) {
+export function MuiSetup({ children, theme = THEMES, modeStorageKey = 'theme-mode' }: Props) {
   return (
     <AppRouterCacheProvider options={{ key: 'css', enableCssLayer: true }}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme} modeStorageKey={modeStorageKey}>
         <CssBaseline enableColorScheme />
         {children}
       </ThemeProvider>

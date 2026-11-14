@@ -42,7 +42,7 @@ export default async function InternalLayout({ children }: Props) {
       suppressHydrationWarning
     >
       <body id="__next" className="bg-(--m3-palette-surfaceContainer-main)">
-        <InitColorSchemeScript attribute="class" />
+        <InitColorSchemeScript attribute="class" modeStorageKey="theme-mode" />
         <MuiSetup>
           <InternalStoreProvider session={SessionMapper.fromDomainToDto(session) as SessionDto}>
             <SkipToContentButton />

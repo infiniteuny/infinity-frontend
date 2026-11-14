@@ -25,6 +25,7 @@ import {
   LogoutRounded,
   OpenInNewRounded,
   PersonRounded,
+  ContrastOutlined,
 } from '@mui/icons-material';
 import { ClickableViewTile } from './clickable-view-tile';
 import { clientContainer } from '@app/client-injection';
@@ -40,6 +41,26 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 let hasCheckedSilentSso = false;
+
+type ThemeMode = 'light' | 'dark' | 'system';
+
+const NEXT_THEME_MODE: Record<ThemeMode, ThemeMode> = {
+  light: 'dark',
+  dark: 'system',
+  system: 'light',
+};
+
+const THEME_LABELS: Record<ThemeMode, string> = {
+  light: 'Light',
+  dark: 'Dark',
+  system: 'System',
+};
+
+const THEME_TOOLTIPS: Record<ThemeMode, string> = {
+  light: 'Beralih ke Mode Gelap',
+  dark: 'Beralih ke Mode Sistem',
+  system: 'Beralih ke Mode Terang',
+};
 
 type Props = {
   menus?: (PathMenu | UrlMenu | NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>)[];
@@ -60,7 +81,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
   const parsedSession = clientSession === undefined ? serverSession : (clientSession ?? undefined);
   const [isCheckingSso, setIsCheckingSso] = useState(() => !serverSession && !hasCheckedSilentSso);
   const router = useRouter();
-  const { mode, systemMode, setMode } = useColorScheme();
+  const { mode, setMode } = useColorScheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -87,10 +108,10 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
     })();
   }, [getSession, login, parsedSession, router]);
 
-  const resolvedMode = mode === 'system' ? systemMode : mode;
+  const currentMode: ThemeMode = mode ?? 'system';
 
   const handleToggleTheme = () => {
-    setMode(resolvedMode === 'dark' ? 'light' : 'dark');
+    setMode(NEXT_THEME_MODE[currentMode]);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -126,17 +147,19 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
           })}
       </List>
 
-      <Tooltip title={resolvedMode === 'dark' ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}>
+      <Tooltip title={THEME_TOOLTIPS[currentMode]}>
         <IconButton
           onClick={handleToggleTheme}
           aria-label="Toggle color scheme"
           size="small"
           className="hidden text-(--m3-palette-onSurfaceVariant-main) md:inline-flex"
         >
-          {resolvedMode === 'dark' ? (
+          {currentMode === 'light' ? (
             <LightModeOutlined fontSize="small" />
-          ) : (
+          ) : currentMode === 'dark' ? (
             <DarkModeOutlined fontSize="small" />
+          ) : (
+            <ContrastOutlined fontSize="small" />
           )}
         </IconButton>
       </Tooltip>
@@ -231,10 +254,18 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
         <ClickableViewTile
           title="Theme"
           position={parsedSession ? 'bottom' : 'single'}
-          icon={resolvedMode === 'dark' ? <DarkModeOutlined /> : <LightModeOutlined />}
+          icon={
+            currentMode === 'light' ? (
+              <LightModeOutlined />
+            ) : currentMode === 'dark' ? (
+              <DarkModeOutlined />
+            ) : (
+              <ContrastOutlined />
+            )
+          }
           trailingIcon={
             <Typography variant="body2" color="textSecondary">
-              {resolvedMode === 'dark' ? 'Dark' : 'Light'}
+              {THEME_LABELS[currentMode]}
             </Typography>
           }
           onClick={(e) => {
