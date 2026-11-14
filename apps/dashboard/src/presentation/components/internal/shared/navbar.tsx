@@ -1,10 +1,26 @@
 'use client';
 
-import { Avatar, Button, IconButton, List, Popover, Typography } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  IconButton,
+  List,
+  Popover,
+  Tooltip,
+  Typography,
+  useColorScheme,
+} from '@mui/material';
 import { NestedMenu, PathMenu, UrlMenu } from '@infiniteuny/infinity-domain';
 import { NavbarDropdownMenu } from './navbar-dropdown-menu';
 import { NavbarMenu } from './navbar-menu';
-import { CloseRounded, LogoutRounded, PersonRounded } from '@mui/icons-material';
+import {
+  CloseRounded,
+  DarkModeOutlined,
+  LightModeOutlined,
+  LogoutRounded,
+  PersonRounded,
+  ContrastOutlined,
+} from '@mui/icons-material';
 import { ClickableViewTile } from './clickable-view-tile';
 import { useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
@@ -13,6 +29,26 @@ import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useRouter } from 'next/navigation';
 import { useShallow } from 'zustand/shallow';
+
+type ThemeMode = 'light' | 'dark' | 'system';
+
+const NEXT_THEME_MODE: Record<ThemeMode, ThemeMode> = {
+  light: 'dark',
+  dark: 'system',
+  system: 'light',
+};
+
+const THEME_LABELS: Record<ThemeMode, string> = {
+  light: 'Light',
+  dark: 'Dark',
+  system: 'System',
+};
+
+const THEME_TOOLTIPS: Record<ThemeMode, string> = {
+  light: 'Switch to dark mode',
+  dark: 'Switch to system mode',
+  system: 'Switch to light mode',
+};
 
 type Props = {
   menus?: Required<
@@ -23,10 +59,17 @@ type Props = {
 export function InternalNavbar({ menus }: Props) {
   const logout = useMemo(() => clientContainer.get<Logout>(SYMBOLS.Logout), []);
   const router = useRouter();
+  const { mode, setMode } = useColorScheme();
 
   const [session] = useInternalStore(useShallow((s) => [s.session]));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const currentMode: ThemeMode = mode ?? 'system';
+
+  const handleToggleTheme = () => {
+    setMode(NEXT_THEME_MODE[currentMode]);
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -43,8 +86,8 @@ export function InternalNavbar({ menus }: Props) {
   };
 
   return (
-    <nav className="flex grow items-center justify-end md:ml-4">
-      <List dense={true} disablePadding={true} className="hidden text-center md:flex">
+    <nav className="flex grow items-center justify-end gap-2 md:ml-4">
+      <List dense={true} disablePadding={true} className="hidden items-center text-center md:flex">
         {menus &&
           menus.map((menu, i) => {
             if (menu.hasOwnProperty('path') || menu.hasOwnProperty('url')) {
@@ -54,6 +97,22 @@ export function InternalNavbar({ menus }: Props) {
             }
           })}
       </List>
+      <Tooltip title={THEME_TOOLTIPS[currentMode]}>
+        <IconButton
+          onClick={handleToggleTheme}
+          aria-label="Toggle color scheme"
+          size="small"
+          className="hidden text-(--m3-palette-onSurfaceVariant-main) md:inline-flex"
+        >
+          {currentMode === 'light' ? (
+            <LightModeOutlined fontSize="small" />
+          ) : currentMode === 'dark' ? (
+            <DarkModeOutlined fontSize="small" />
+          ) : (
+            <ContrastOutlined fontSize="small" />
+          )}
+        </IconButton>
+      </Tooltip>
       <IconButton
         onClick={handleClick}
         size="small"
@@ -110,10 +169,34 @@ export function InternalNavbar({ menus }: Props) {
         </Typography>
         <ClickableViewTile
           title="Profile"
-          position="single"
+          position="top"
           icon={<PersonRounded />}
           href="/settings/profile"
-          className="mt-6"
+          className="mt-6 md:rounded-2xl!"
+          sx={{ bgcolor: 'surfaceContainer.main' }}
+        />
+        <ClickableViewTile
+          title="Theme"
+          position="bottom"
+          icon={
+            currentMode === 'light' ? (
+              <LightModeOutlined />
+            ) : currentMode === 'dark' ? (
+              <DarkModeOutlined />
+            ) : (
+              <ContrastOutlined />
+            )
+          }
+          trailingIcon={
+            <Typography variant="body2" color="textSecondary">
+              {THEME_LABELS[currentMode]}
+            </Typography>
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggleTheme();
+          }}
+          className="mt-1 md:hidden!"
           sx={{ bgcolor: 'surfaceContainer.main' }}
         />
         <Button
