@@ -40,7 +40,7 @@ export const APP: {
       'INFINITE merupakan Divisi Teknologi Informasi di bawah naungan UKM Rekayasa Teknologi UNY.',
     image: 'https://www.infiniteuny.id/assets/images/og-image.png',
     locale: 'id-ID',
-    youtubeEmbedUrl: 'https://www.youtube.com/embed/LfaMVlDaQ24',
+    youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/rnZxIhRKM6k?si=yB3e5CQeBJoNuHlC',
   },
   nav: {
     menus: [

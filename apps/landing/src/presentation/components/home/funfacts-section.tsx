@@ -110,7 +110,8 @@ export function FunfactsSection({
             src={APP.site.youtubeEmbedUrl}
             title="INFINITE UNY Video"
             className="aspect-video w-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
           />
         </DialogContent>
