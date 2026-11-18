@@ -12,6 +12,7 @@ export const APP: {
     description: string;
     image: string;
     locale: string;
+    gtmId: string;
   };
   internal: {
     nav: {
@@ -32,6 +33,7 @@ export const APP: {
       'INFINITE Dashboard is a platform for our members to manage their day-to-day activities.',
     image: 'https://www.infiniteuny.id/assets/images/og-image.png',
     locale: 'id-ID',
+    gtmId: 'GTM-PTGT2T49',
   },
   internal: {
     nav: {

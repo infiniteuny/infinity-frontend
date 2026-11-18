@@ -1,6 +1,7 @@
 import '@infiniteuny/infinity-ui/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { GetSession } from '@infiniteuny/infinity-application';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { InitColorSchemeScript } from '@mui/material';
 import { InternalFooter, InternalHeader } from '@app/presentation/components/internal/shared';
 import { InternalStoreProvider } from '@app/presentation/components/internal/shared/store-provider';
@@ -52,6 +53,7 @@ export default async function InternalLayout({ children }: Props) {
           </InternalStoreProvider>
         </MuiSetup>
       </body>
+      <GoogleTagManager gtmId={APP.site.gtmId} />
     </html>
   );
 }

@@ -1,6 +1,7 @@
 import '@infiniteuny/infinity-ui/styles/globals.css';
 import { APP, FONTS } from '@config';
 import { AuthFooter, AuthMain } from '@app/presentation/components/auth/shared';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { InitColorSchemeScript } from '@mui/material';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@infiniteuny/infinity-ui';
@@ -36,6 +37,7 @@ export default function AuthLayout({ children }: Props) {
           <AuthFooter />
         </MuiSetup>
       </body>
+      <GoogleTagManager gtmId={APP.site.gtmId} />
     </html>
   );
 }

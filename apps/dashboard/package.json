@@ -16,6 +16,7 @@
     "@mui/material-nextjs": "9.5.0",
     "@mui/x-data-grid": "9.18.0",
     "@mui/x-date-pickers": "9.18.0",
+    "@next/third-parties": "16.4.6",
     "axios": "1.21.1",
     "better-auth": "1.7.25",
     "effect": "3.22.4",
