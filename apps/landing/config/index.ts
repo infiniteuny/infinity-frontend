@@ -18,6 +18,7 @@ export const APP: {
     image: string;
     locale: string;
     youtubeEmbedUrl: string;
+    gtmId: string;
   };
   nav: {
     menus: (PathMenu | UrlMenu | NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>)[];
@@ -41,6 +42,7 @@ export const APP: {
     image: 'https://www.infiniteuny.id/assets/images/og-image.png',
     locale: 'id-ID',
     youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/rnZxIhRKM6k?si=yB3e5CQeBJoNuHlC',
+    gtmId: 'GTM-PTQ7KNKZ',
   },
   nav: {
     menus: [

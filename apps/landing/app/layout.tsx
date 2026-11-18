@@ -2,6 +2,7 @@ import '@infiniteuny/infinity-ui/styles/globals.css';
 import { APP, FONTS, SYMBOLS } from '@config';
 import { Footer, Header } from '@app/presentation/components/shared';
 import { GetSession } from '@infiniteuny/infinity-application';
+import { GoogleTagManager } from '@next/third-parties/google';
 import { InitColorSchemeScript } from '@mui/material';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
@@ -54,6 +55,7 @@ export default async function RootLayout({ children }: Props) {
           <Footer />
         </MuiSetup>
       </body>
+      <GoogleTagManager gtmId={APP.site.gtmId} />
     </html>
   );
 }
