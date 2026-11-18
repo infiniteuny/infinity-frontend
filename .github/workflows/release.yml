@@ -22,6 +22,9 @@ on:
         required: false
         type: number
 
+permissions:
+  contents: read
+
 jobs:
   guard:
     name: Validate branch and release type
