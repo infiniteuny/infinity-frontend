@@ -409,6 +409,15 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                 ],
               },
               {
+                field: 'competitionBranch',
+                headerName: 'Branch',
+                flex: 2,
+                minWidth: 200,
+                filterable: true,
+                sortable: true,
+                filterOperators: [StringOperators.contains],
+              },
+              {
                 field: 'competitionScale',
                 headerName: 'Scale',
                 flex: 1,
@@ -503,15 +512,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                     InputComponent: CompetitionRankFilterInput,
                   },
                 ],
-              },
-              {
-                field: 'competitionBranch',
-                headerName: 'Branch',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
               },
               {
                 field: 'competitionStartDate',
