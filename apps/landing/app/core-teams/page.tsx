@@ -15,9 +15,9 @@ import { SYMBOLS } from '@config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Tim Pengurus',
+  title: 'Core Team',
   description:
-    'Direktori pengurus inti komunitas Teknologi Informasi INFINITE Universitas Negeri Yogyakarta.',
+    'Profil anggota pengurus inti yang berdedikasi mengembangkan organisasi INFINITE dari masa ke masa.',
 };
 
 type Props = {

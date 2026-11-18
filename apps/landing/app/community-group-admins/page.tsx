@@ -18,9 +18,9 @@ import { SYMBOLS } from '@config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'CG Administrator',
+  title: 'Community Group Administrator',
   description:
-    'Kenali para pengelola dan fasilitator grup komunitas teknologi di INFINITE Universitas Negeri Yogyakarta.',
+    'Profil para pengelola dan fasilitator grup komunitas di INFINITE yang membimbing eksplorasi bidang keahlian anggota.',
 };
 
 type Props = {
