@@ -86,6 +86,18 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
   const open = Boolean(anchorEl);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches && !parsedSession) {
+        setAnchorEl(null);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [parsedSession]);
+
+  useEffect(() => {
     if (parsedSession || hasCheckedSilentSso) {
       return;
     }
@@ -135,8 +147,8 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
   };
 
   return (
-    <Box component="nav" className="flex items-center justify-end gap-2 md:ml-4 md:grow">
-      <List dense={true} disablePadding={true} className="hidden items-center text-center md:flex">
+    <Box component="nav" className="flex items-center justify-end gap-2 lg:ml-4 lg:grow">
+      <List dense={true} disablePadding={true} className="hidden items-center text-center lg:flex">
         {menus &&
           menus.map((menu, i) => {
             if (menu.hasOwnProperty('path') || menu.hasOwnProperty('url')) {
@@ -152,7 +164,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
           onClick={handleToggleTheme}
           aria-label="Toggle color scheme"
           size="small"
-          className="hidden text-(--m3-palette-onSurfaceVariant-main) md:inline-flex"
+          className="hidden text-(--m3-palette-onSurfaceVariant-main) lg:inline-flex"
         >
           {currentMode === 'light' ? (
             <LightModeOutlined fontSize="small" />
@@ -176,7 +188,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
               size="medium"
               startIcon={<LoginRounded fontSize="small" />}
               onClick={handleLogin}
-              className="hidden md:inline-flex"
+              className="hidden lg:inline-flex"
             >
               Sign In
             </Button>
@@ -185,7 +197,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
           <IconButton
             onClick={handleClick}
             size="small"
-            className={parsedSession ? 'p-1' : 'p-1 md:hidden'}
+            className={parsedSession ? 'p-1' : 'p-1 lg:hidden'}
             aria-label="INFINITE Account"
             aria-controls={open ? 'account-menu' : undefined}
             aria-haspopup="true"
@@ -246,7 +258,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
             position="top"
             icon={<PersonRounded />}
             href="https://dash.infiniteuny.id/settings/profile"
-            className="mt-6 md:rounded-2xl!"
+            className="mt-6 lg:rounded-2xl!"
             sx={{ bgcolor: 'surfaceContainer.main' }}
           />
         )}
@@ -272,7 +284,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
             e.stopPropagation();
             handleToggleTheme();
           }}
-          className={`${parsedSession ? 'mt-1' : 'mt-6'} md:hidden!`}
+          className={`${parsedSession ? 'mt-1' : 'mt-6'} lg:hidden!`}
           sx={{ bgcolor: 'surfaceContainer.main' }}
         />
 
@@ -313,6 +325,7 @@ export function Navbar({ menus, session, mobileOpen = false, onToggleDrawer }: P
         anchor="left"
         open={mobileOpen}
         onClose={onToggleDrawer}
+        className="lg:hidden"
         slotProps={{
           paper: {
             className: 'w-72 bg-(--m3-palette-surfaceContainerLow-main) p-4',

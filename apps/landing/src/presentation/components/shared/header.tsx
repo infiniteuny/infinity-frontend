@@ -7,7 +7,7 @@ import { InfiniteTextLogo } from '@infiniteuny/infinity-ui';
 import { MenuRounded } from '@mui/icons-material';
 import { Navbar } from './navbar';
 import { SessionDto } from '@infiniteuny/infinity-infrastructure';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
   session?: SessionDto;
@@ -15,6 +15,18 @@ type Props = {
 
 export function Header({ session }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setMobileOpen(false);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const handleToggleDrawer = () => {
     setMobileOpen((prev) => !prev);
@@ -37,7 +49,7 @@ export function Header({ session }: Props) {
         <IconButton
           onClick={handleToggleDrawer}
           aria-label="Open navigation menu"
-          className="md:hidden"
+          className="lg:hidden"
         >
           <MenuRounded />
         </IconButton>
