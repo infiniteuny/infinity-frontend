@@ -237,7 +237,7 @@ export function CompetitionTeamTypesList({
   }, []);
 
   const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competition-team-types/${params.row.id}`);
+    router.push(`/team-types/${params.row.id}`);
   };
 
   const handleDeleteClick = (teamTypeId: string, teamTypeName?: string) => {
@@ -337,7 +337,7 @@ export function CompetitionTeamTypesList({
                       icon={<VisibilityRounded />}
                       label="View"
                       component={Link}
-                      href={`/competition-team-types/${params.row.actions.id}`}
+                      href={`/team-types/${params.row.actions.id}`}
                     />
                     {['update-competition-team-type'].some((p) => userPermissions.has(p)) ? (
                       <GridActionsCellItem
@@ -346,7 +346,7 @@ export function CompetitionTeamTypesList({
                         icon={<EditRounded />}
                         label="Edit"
                         component={Link}
-                        href={`/competition-team-types/${params.row.actions.id}/edit`}
+                        href={`/team-types/${params.row.actions.id}/edit`}
                       />
                     ) : null}
                     {['delete-competition-team-type'].some((p) => userPermissions.has(p)) ? (
