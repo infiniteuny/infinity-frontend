@@ -45,20 +45,6 @@ export function GeneralForm({
               disabled={isSubmitting}
             />
           </Grid>
-          <Grid size={12}>
-            <TextField
-              {...register('description')}
-              id="description"
-              label="Description"
-              fullWidth
-              margin="none"
-              multiline
-              minRows={4}
-              helperText={errors.description?.message}
-              error={!!errors.description}
-              disabled={isSubmitting}
-            />
-          </Grid>
         </Grid>
       </Container>
     </Box>

@@ -19,6 +19,7 @@ export interface CommunityGroupAdminSortOptions {
 
 export class CommunityGroupAdmin {
   public id: string;
+  public groupId: string;
   public year: number;
   public isActive: boolean;
   public createdAt: Date;
@@ -26,12 +27,14 @@ export class CommunityGroupAdmin {
 
   public constructor(
     id: string,
+    groupId: string,
     year: number,
     isActive: boolean,
     createdAt: Date,
     updatedAt: Date,
   ) {
     this.id = id;
+    this.groupId = groupId;
     this.year = year;
     this.isActive = isActive;
     this.createdAt = createdAt;

@@ -3,14 +3,10 @@ import {
   Box,
   Container,
   FormControl,
-  FormControlLabel,
   FormHelperText,
-  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   TextField,
   Toolbar,
@@ -187,27 +183,6 @@ export function GeneralForm({
               />
               <FormHelperText error={!!errors.teamTypeId}>
                 {errors.teamTypeId?.message}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid size={12}>
-            <FormControl fullWidth margin="none" disabled={isSubmitting} className="px-3">
-              <FormLabel component="legend" error={!!errors.isPersonal}>
-                Personal Team
-              </FormLabel>
-              <Controller
-                name="isPersonal"
-                control={control}
-                defaultValue={false}
-                render={({ field: { onChange, ...field } }) => (
-                  <RadioGroup {...field} row onChange={(e) => onChange(e.target.value === 'true')}>
-                    <FormControlLabel value={true} control={<Radio />} label="Yes" />
-                    <FormControlLabel value={false} control={<Radio />} label="No" />
-                  </RadioGroup>
-                )}
-              />
-              <FormHelperText error={!!errors.isPersonal}>
-                {errors.isPersonal?.message}
               </FormHelperText>
             </FormControl>
           </Grid>

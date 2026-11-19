@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import {
   AlertDialog,
-  BooleanOperators,
   CompetitionTeamTypeFilterInput,
   SectionHeader,
   EmptyRowOverlay,
@@ -100,7 +99,6 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
 
     const fieldMap: Record<string, keyof TeamSortOptions> = {
       name: 'name',
-      isPersonal: 'isPersonal',
     };
 
     const sortOptions: TeamSortOptions = {};
@@ -134,11 +132,6 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
         case 'team_type':
           if (filterItem.value != null) {
             filterOptions.teamTypeId = String(filterItem.value);
-          }
-          break;
-        case 'isPersonal':
-          if (filterItem.value != null) {
-            filterOptions.isPersonal = Boolean(filterItem.value);
           }
           break;
       }
@@ -383,16 +376,6 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
                 ],
               },
               {
-                field: 'isPersonal',
-                headerName: 'Personal',
-                type: 'boolean',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
                 field: 'actions',
                 type: 'actions',
                 headerName: '',
@@ -443,7 +426,6 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
               name: team.name,
               leader: team.leader?.name || 'N/A',
               team_type: team.teamType?.name || 'N/A',
-              isPersonal: team.isPersonal,
               actions: team,
             }))}
             slots={{
@@ -464,7 +446,6 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
               columns: {
                 columnVisibilityModel: {
                   id: false,
-                  isPersonal: false,
                 },
               },
             }}

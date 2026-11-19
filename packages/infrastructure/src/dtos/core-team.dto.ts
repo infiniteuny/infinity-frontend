@@ -3,6 +3,7 @@ import { CoreTeam } from '@infiniteuny/infinity-domain';
 
 export interface CoreTeamDto {
   id: string;
+  group_id: string;
   year: number;
   is_active: boolean;
   created_at: string;
@@ -13,6 +14,7 @@ export class CoreTeamMapper {
   public static fromDomainToDto(coreTeam: Partial<CoreTeam>): Partial<CoreTeamDto> {
     return {
       id: coreTeam.id,
+      group_id: coreTeam.groupId,
       year: coreTeam.year,
       is_active: coreTeam.isActive,
       created_at: coreTeam.createdAt?.toISOString(),
@@ -23,6 +25,7 @@ export class CoreTeamMapper {
   public static fromDtoToDomain(dto: CoreTeamDto): CoreTeam {
     return new CoreTeam(
       dto.id,
+      dto.group_id,
       dto.year,
       dto.is_active,
       DateTime.fromISO(dto.created_at).toJSDate(),

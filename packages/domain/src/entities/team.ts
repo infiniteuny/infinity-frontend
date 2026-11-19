@@ -11,7 +11,6 @@ export interface TeamFilterOptions {
   leaderId?: string;
   teamTypeId?: string;
   name?: string;
-  isPersonal?: boolean;
   createdAtOperator?: FilterOperator;
   createdAt?: Date;
   updatedAtOperator?: FilterOperator;
@@ -23,7 +22,6 @@ export interface TeamSortOptions {
   leaderId?: 'ASC' | 'DESC';
   teamTypeId?: 'ASC' | 'DESC';
   name?: 'ASC' | 'DESC';
-  isPersonal?: 'ASC' | 'DESC';
   createdAt?: 'ASC' | 'DESC';
   updatedAt?: 'ASC' | 'DESC';
 }
@@ -33,7 +31,6 @@ export class Team {
   public leaderId: string;
   public teamTypeId: string;
   public name: string;
-  public isPersonal: boolean;
   public createdAt: Date;
   public updatedAt: Date;
   public leader?: User;
@@ -45,7 +42,6 @@ export class Team {
     leaderId: string,
     teamTypeId: string,
     name: string,
-    isPersonal: boolean,
     createdAt: Date,
     updatedAt: Date,
     leader?: User,
@@ -56,7 +52,6 @@ export class Team {
     this.leaderId = leaderId;
     this.teamTypeId = teamTypeId;
     this.name = name;
-    this.isPersonal = isPersonal;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.leader = leader;

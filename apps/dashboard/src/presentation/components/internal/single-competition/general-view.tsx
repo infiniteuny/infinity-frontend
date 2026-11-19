@@ -17,16 +17,17 @@ export function GeneralView({ competition }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <ViewTile title="Name" subtitle={competition.name} position="top" />
+            <ViewTile
+              title="Name"
+              subtitle={competition.name}
+              position={competition.shortname ? 'top' : 'single'}
+            />
           </Grid>
           {competition.shortname ? (
             <Grid size={12}>
-              <ViewTile title="Shortname" subtitle={competition.shortname} position="middle" />
+              <ViewTile title="Shortname" subtitle={competition.shortname} position="bottom" />
             </Grid>
           ) : null}
-          <Grid size={12}>
-            <ViewTile title="Description" subtitle={competition.description} position="bottom" />
-          </Grid>
         </Grid>
       </Container>
     </Box>

@@ -30,13 +30,6 @@ export function GeneralView({ team }: Props) {
           <Grid size={12}>
             <ViewTile title="Team Type" subtitle={team.teamType?.name ?? 'N/A'} position="middle" />
           </Grid>
-          <Grid size={12}>
-            <ViewTile
-              title="Personal Team"
-              subtitle={team.isPersonal ? 'Yes' : 'No'}
-              position="middle"
-            />
-          </Grid>
           {['read-team-member'].some((p) => userPermissions.has(p)) ||
           (['read-own-team-member'].some((p) => userPermissions.has(p)) &&
             team.members?.some((member) => member.id === userSession?.user.id)) ? (

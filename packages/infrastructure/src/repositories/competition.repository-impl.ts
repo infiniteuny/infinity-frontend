@@ -36,7 +36,6 @@ export class CompetitionRepositoryImpl implements CompetitionRepository {
           per_page: paginationOptions?.perPage,
           cursor: paginationOptions?.cursor,
           'filters[name]': filterOptions?.name,
-          'filters[description]': filterOptions?.description,
           'filters[created_at]':
             filterOptions?.createdAt != null
               ? (filterOptions.createdAtOperator ?? '') + filterOptions.createdAt.toISOString()

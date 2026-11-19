@@ -9,7 +9,6 @@ export interface TeamDto {
   leader_id: string;
   team_type_id: string;
   name: string;
-  is_personal: boolean;
   created_at: string;
   updated_at: string;
   leader?: UserDto;
@@ -24,7 +23,6 @@ export class TeamMapper {
       leader_id: team.leaderId,
       team_type_id: team.teamTypeId,
       name: team.name,
-      is_personal: team.isPersonal,
       created_at: team.createdAt?.toISOString(),
       updated_at: team.updatedAt?.toISOString(),
       leader: team.leader ? (UserMapper.fromDomainToDto(team.leader) as UserDto) : undefined,
@@ -43,7 +41,6 @@ export class TeamMapper {
       dto.leader_id,
       dto.team_type_id,
       dto.name,
-      dto.is_personal,
       DateTime.fromISO(dto.created_at).toJSDate(),
       DateTime.fromISO(dto.updated_at).toJSDate(),
       dto.leader ? UserMapper.fromDtoToDomain(dto.leader) : undefined,

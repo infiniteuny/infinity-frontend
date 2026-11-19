@@ -19,7 +19,6 @@ const teamInputSchema = z.object({
   name: z.string().min(1, 'Name must not be empty'),
   leaderId: z.uuidv7('Leader must be selected'),
   teamTypeId: z.uuidv7('Team type must be selected'),
-  isPersonal: z.boolean(),
 });
 
 export type TeamInput = z.infer<typeof teamInputSchema>;
@@ -48,7 +47,6 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
           name: '',
           leaderId: '',
           teamTypeId: '0',
-          isPersonal: false,
         },
   });
 

@@ -21,7 +21,6 @@ const competitionInputSchema = z.object({
     z.string().min(2, 'Shortname must be at least 2 characters'),
     z.literal('').nullable(),
   ]),
-  description: z.string().min(1, 'Description must not be empty'),
 });
 
 export type CompetitionInput = z.infer<typeof competitionInputSchema>;
@@ -55,7 +54,6 @@ export function CompetitionForm({ initialCompetition }: Props) {
       : {
           name: '',
           shortname: '',
-          description: '',
         },
   });
 

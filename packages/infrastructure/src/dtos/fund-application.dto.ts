@@ -8,7 +8,6 @@ export interface FundApplicationDto {
   id: string;
   team_id: string;
   competition_instance_id: string;
-  competition_team_type_id: string;
   competition_scale_id: string;
   competition_branch: string;
   competition_start_date: string;

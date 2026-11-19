@@ -311,14 +311,6 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
                 sortable: true,
               },
               {
-                field: 'description',
-                headerName: 'Description',
-                flex: 3,
-                minWidth: 400,
-                filterable: false,
-                sortable: false,
-              },
-              {
                 field: 'actions',
                 type: 'actions',
                 headerName: '',
@@ -364,7 +356,6 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
               id: competition.id,
               name: competition.name,
               shortname: competition.shortname,
-              description: competition.description,
               actions: competition,
             }))}
             slots={{
