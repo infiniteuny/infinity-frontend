@@ -23,6 +23,7 @@ export const APP: {
     sidebar: {
       menus: RequiredBy<PathMenu | NestedMenu<RequiredBy<PathMenu, 'icon'>>, 'icon'>[];
     };
+    individualTeamTypeId: string;
   };
 } = {
   site: {
@@ -174,5 +175,6 @@ export const APP: {
         },
       ],
     },
+    individualTeamTypeId: '0198857c-ba97-7367-8751-cbed3f5a5b56',
   },
 };

@@ -47,9 +47,14 @@ import { TeamsToolbar } from './teams-toolbar';
 type Props = {
   initialTeams: TeamDto[];
   initialPaginationOptions: PaginationOptionsDto;
+  defaultTeamTypeIdFilter?: string;
 };
 
-export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
+export function TeamsList({
+  initialTeams,
+  initialPaginationOptions,
+  defaultTeamTypeIdFilter,
+}: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
   const deleteTeam = useMemo(() => clientContainer.get<DeleteTeam>(SYMBOLS.DeleteTeam), []);
   const initTeams = initialTeams.map(TeamMapper.fromDtoToDomain);
@@ -112,33 +117,36 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     return Object.keys(sortOptions).length > 0 ? sortOptions : undefined;
   };
 
-  const convertFilterModelToDomain = (model: GridFilterModel): TeamFilterOptions | undefined => {
-    if (model.items.length === 0) return undefined;
+  const convertFilterModelToDomain = useCallback(
+    (model: GridFilterModel): TeamFilterOptions | undefined => {
+      const filterOptions: TeamFilterOptions = defaultTeamTypeIdFilter
+        ? { teamTypeId: defaultTeamTypeIdFilter }
+        : {};
 
-    const filterOptions: TeamFilterOptions = {};
-
-    for (const filterItem of model.items) {
-      switch (filterItem.field) {
-        case 'name':
-          if (filterItem.value != null) {
-            filterOptions.name = String(filterItem.value);
-          }
-          break;
-        case 'leader':
-          if (filterItem.value != null) {
-            filterOptions.leaderId = String(filterItem.value);
-          }
-          break;
-        case 'team_type':
-          if (filterItem.value != null) {
-            filterOptions.teamTypeId = String(filterItem.value);
-          }
-          break;
+      for (const filterItem of model.items) {
+        switch (filterItem.field) {
+          case 'name':
+            if (filterItem.value != null) {
+              filterOptions.name = String(filterItem.value);
+            }
+            break;
+          case 'leader':
+            if (filterItem.value != null) {
+              filterOptions.leaderId = String(filterItem.value);
+            }
+            break;
+          case 'team_type':
+            if (filterItem.value != null && filterItem.value !== '') {
+              filterOptions.teamTypeId = String(filterItem.value);
+            }
+            break;
+        }
       }
-    }
 
-    return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
-  };
+      return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
+    },
+    [defaultTeamTypeIdFilter],
+  );
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -202,7 +210,7 @@ export function TeamsList({ initialTeams, initialPaginationOptions }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [paginationModel, sortModel, filterModel, cursor, getTeams]);
+  }, [paginationModel, sortModel, filterModel, cursor, getTeams, convertFilterModelToDomain]);
 
   const handlePaginationModelChange = useCallback(
     (newPaginationModel: GridPaginationModel) => {
