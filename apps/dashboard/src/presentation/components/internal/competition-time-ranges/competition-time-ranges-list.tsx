@@ -138,6 +138,7 @@ export function CompetitionTimeRangesList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedTimeRangeName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -261,6 +262,8 @@ export function CompetitionTimeRangesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedTimeRangeName || 'this time range'}? This action cannot be undone.`}
         acceptText="Delete"

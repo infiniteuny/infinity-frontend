@@ -132,6 +132,7 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedRankName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -255,6 +256,8 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedRankName || 'this rank'}? This action cannot be undone.`}
         acceptText="Delete"

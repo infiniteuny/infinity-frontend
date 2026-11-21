@@ -122,6 +122,7 @@ export function CommunityGroupAdminsList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedCommunityGroupAdminYear,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -233,6 +234,8 @@ export function CommunityGroupAdminsList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCommunityGroupAdminYear || 'this community group administrator'}? This action cannot be undone.`}
         acceptText="Delete"

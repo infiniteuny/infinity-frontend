@@ -124,6 +124,7 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedCoreTeamYear,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -245,6 +246,8 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCoreTeamYear || 'this core team'}? This action cannot be undone.`}
         acceptText="Delete"

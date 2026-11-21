@@ -110,6 +110,7 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedDegreeName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -234,6 +235,8 @@ export function DegreesList({ initialDegrees, initialPaginationOptions }: Props)
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedDegreeName || 'this degree'}? This action cannot be undone.`}
         acceptText="Delete"

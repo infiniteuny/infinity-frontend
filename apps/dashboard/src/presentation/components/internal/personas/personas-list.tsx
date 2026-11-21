@@ -102,6 +102,7 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedPersonaName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -227,6 +228,8 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedPersonaName || 'this persona'}? This action cannot be undone.`}
         acceptText="Delete"

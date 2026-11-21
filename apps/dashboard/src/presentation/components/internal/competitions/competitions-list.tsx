@@ -128,6 +128,7 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedCompetitionName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -246,6 +247,8 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCompetitionName || 'this competition series'}? This action cannot be undone.`}
         acceptText="Delete"

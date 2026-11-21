@@ -200,6 +200,7 @@ export function CompetitionInstancesList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedCompetitionInstanceName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -430,6 +431,8 @@ export function CompetitionInstancesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCompetitionInstanceName || 'this competition'}? This action cannot be undone.`}
         acceptText="Delete"

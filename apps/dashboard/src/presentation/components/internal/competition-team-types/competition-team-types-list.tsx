@@ -138,6 +138,7 @@ export function CompetitionTeamTypesList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedTeamTypeName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -261,6 +262,8 @@ export function CompetitionTeamTypesList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedTeamTypeName || 'this team type'}? This action cannot be undone.`}
         acceptText="Delete"

@@ -151,6 +151,7 @@ export function UserPersonasList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedUserPersonaName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -291,6 +292,8 @@ export function UserPersonasList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedUserPersonaName || 'this persona'}? This action cannot be undone.`}
         acceptText="Delete"

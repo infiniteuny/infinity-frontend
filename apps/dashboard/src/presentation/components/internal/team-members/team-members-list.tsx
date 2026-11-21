@@ -220,6 +220,7 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedTeamMemberName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -495,6 +496,8 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedTeamMemberName || 'this member'}? This action cannot be undone.`}
         acceptText="Delete"

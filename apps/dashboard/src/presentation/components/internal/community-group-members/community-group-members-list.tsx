@@ -230,6 +230,7 @@ export function CommunityGroupMembersList({
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedCommunityGroupMemberName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -508,6 +509,8 @@ export function CommunityGroupMembersList({
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCommunityGroupMemberName || 'this member'}? This action cannot be undone.`}
         acceptText="Delete"

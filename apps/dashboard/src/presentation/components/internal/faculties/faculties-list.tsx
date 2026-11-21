@@ -103,6 +103,7 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedFacultyName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -215,6 +216,8 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedFacultyName || 'this faculty'}? This action cannot be undone.`}
         acceptText="Delete"

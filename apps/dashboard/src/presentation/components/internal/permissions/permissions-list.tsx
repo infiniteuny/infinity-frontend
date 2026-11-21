@@ -110,6 +110,7 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
     handleFilterModelChange,
     openDeleteDialog,
     selectedName: selectedPermissionName,
+    isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
     handleDeleteCancel,
@@ -228,6 +229,8 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
         onExited={handleDeleteDialogExited}
+        isLoading={isDeleting}
+        confirmColor="error"
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedPermissionName || 'this permission'}? This action cannot be undone.`}
         acceptText="Delete"
