@@ -99,7 +99,12 @@ export function StartReregistrationPeriodTile({ initialValue, endDate, onChange 
       className={`flex w-full justify-start rounded-md p-4 text-left select-text`}
     >
       <Box className="flex-1">
-        <Typography variant="body1" component="p" className="font-medium">
+        <Typography
+          id="start-reregistration-period-label"
+          variant="body1"
+          component="p"
+          className="font-medium"
+        >
           Start of re-registration period
         </Typography>
         <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -119,6 +124,10 @@ export function StartReregistrationPeriodTile({ initialValue, endDate, onChange 
                 slotProps: {
                   input: {
                     disableUnderline: true,
+                    'aria-labelledby': 'start-reregistration-period-label',
+                  },
+                  htmlInput: {
+                    'aria-label': 'Start of re-registration period',
                   },
                   inputLabel: {
                     hidden: true,

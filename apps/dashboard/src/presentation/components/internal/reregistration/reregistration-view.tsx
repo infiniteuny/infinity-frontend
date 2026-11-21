@@ -138,8 +138,14 @@ export function ReregistrationView({
               },
             }}
           >
-            <DialogTitle className="pt-6">Extend INFINITE membership?</DialogTitle>
-            <DialogContent dividers className="space-y-4 text-justify text-sm">
+            <DialogTitle id="tnc-dialog-title" className="pt-6">
+              Extend INFINITE membership?
+            </DialogTitle>
+            <DialogContent
+              id="tnc-dialog-description"
+              dividers
+              className="space-y-4 text-justify text-sm"
+            >
               <Container maxWidth={false} className="p-0">
                 <Typography variant="body1" component="p">
                   By proceeding with the process for INFINITE membership extension, I hereby

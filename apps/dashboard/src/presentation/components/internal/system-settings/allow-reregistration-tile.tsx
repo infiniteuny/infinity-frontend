@@ -66,7 +66,16 @@ export function AllowReregistrationTile({ initialValue }: Props) {
         </Typography>
       </Box>
       <Box className="flex shrink-0 items-center pl-4">
-        <Switch checked={checked} disabled={disabled} onChange={handleToggle} />
+        <Switch
+          checked={checked}
+          disabled={disabled}
+          onChange={handleToggle}
+          slotProps={{
+            input: {
+              'aria-label': 'Allow re-registration',
+            },
+          }}
+        />
       </Box>
     </Container>
   );

@@ -24,6 +24,7 @@ export function SectionHeader({ title, backUrl, children }: Props) {
             component={Link}
             size="small"
             href={backUrl}
+            aria-label="Back"
             className="-my-2 mr-3 -ml-2 box-content inline-flex"
           >
             <ArrowBackRounded />

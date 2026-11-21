@@ -99,7 +99,12 @@ export function EndReregistrationPeriodTile({ initialValue, startDate, onChange 
       className={`flex w-full justify-start rounded-t-md rounded-b-2xl p-4 text-left select-text`}
     >
       <Box className="flex-1">
-        <Typography variant="body1" component="p" className="font-medium">
+        <Typography
+          id="end-reregistration-period-label"
+          variant="body1"
+          component="p"
+          className="font-medium"
+        >
           End of re-registration period
         </Typography>
         <LocalizationProvider dateAdapter={AdapterLuxon}>
@@ -119,6 +124,10 @@ export function EndReregistrationPeriodTile({ initialValue, startDate, onChange 
                 slotProps: {
                   input: {
                     disableUnderline: true,
+                    'aria-labelledby': 'end-reregistration-period-label',
+                  },
+                  htmlInput: {
+                    'aria-label': 'End of re-registration period',
                   },
                   inputLabel: {
                     hidden: true,

@@ -240,7 +240,12 @@ export function PdfViewer({ file, title = 'PDF Document', height = 720, classNam
         <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
           <Tooltip title="Zoom out" slotProps={tooltipSlotProps}>
             <span>
-              <IconButton size="small" onClick={handleZoomOut} disabled={zoomScale <= 0.5}>
+              <IconButton
+                size="small"
+                aria-label="Zoom out"
+                onClick={handleZoomOut}
+                disabled={zoomScale <= 0.5}
+              >
                 <ZoomOutRounded fontSize="small" />
               </IconButton>
             </span>
@@ -250,20 +255,30 @@ export function PdfViewer({ file, title = 'PDF Document', height = 720, classNam
           </Typography>
           <Tooltip title="Zoom in" slotProps={tooltipSlotProps}>
             <span>
-              <IconButton size="small" onClick={handleZoomIn} disabled={zoomScale >= 2.5}>
+              <IconButton
+                size="small"
+                aria-label="Zoom in"
+                onClick={handleZoomIn}
+                disabled={zoomScale >= 2.5}
+              >
                 <ZoomInRounded fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Reset zoom" slotProps={tooltipSlotProps}>
             <span>
-              <IconButton size="small" onClick={handleZoomReset} disabled={zoomScale === 1}>
+              <IconButton
+                size="small"
+                aria-label="Reset zoom"
+                onClick={handleZoomReset}
+                disabled={zoomScale === 1}
+              >
                 <RestartAltRounded fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Full screen" slotProps={tooltipSlotProps}>
-            <IconButton size="small" onClick={handleFullscreen}>
+            <IconButton size="small" aria-label="Full screen" onClick={handleFullscreen}>
               <FullscreenRounded fontSize="small" />
             </IconButton>
           </Tooltip>
