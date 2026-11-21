@@ -10,7 +10,15 @@ type Props = {
 };
 
 export default function DashboardError({ error, unstable_retry }: Props) {
-  const errorMessage = useMemo(() => error.message ?? 'An unexpected error occurred', [error]);
+  const errorMessage = useMemo(() => {
+    if (process.env.NODE_ENV === 'production') {
+      return error.digest
+        ? `An unexpected error occurred (Ref: ${error.digest}).`
+        : 'An unexpected error occurred.';
+    }
+
+    return error.message || 'An unexpected error occurred.';
+  }, [error]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
