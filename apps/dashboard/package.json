@@ -18,7 +18,6 @@
     "@next/third-parties": "16.4.6",
     "better-auth": "1.7.25",
     "effect": "3.22.4",
-    "immer": "11.2.10",
     "inversify": "8.3.0",
     "luxon": "3.7.2",
     "next": "16.4.6",

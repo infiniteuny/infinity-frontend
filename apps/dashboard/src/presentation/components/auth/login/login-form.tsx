@@ -3,15 +3,16 @@
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { Login } from '@infiniteuny/infinity-application';
-import { SYMBOLS } from '@infiniteuny/infinity-domain';
 import { LoginRounded } from '@mui/icons-material';
+import { SYMBOLS } from '@infiniteuny/infinity-domain';
+import { useMemo } from 'react';
 
 type Props = {
   callbackUrl?: string;
 };
 
 export function LoginForm({ callbackUrl }: Props) {
-  const login = clientContainer.get<Login>(SYMBOLS.Login);
+  const login = useMemo(() => clientContainer.get<Login>(SYMBOLS.Login), []);
 
   return (
     <Paper

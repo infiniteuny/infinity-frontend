@@ -1,5 +1,6 @@
 'use client';
 
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { ConfigDto, ConfigMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { AllowReregistrationTile } from './allow-reregistration-tile';
 import { AllowExpiredReregistrationTile } from './allow-expired-reregistration-tile';
@@ -7,6 +8,7 @@ import { StartReregistrationPeriodTile } from './start-reregistration-period-til
 import { EndReregistrationPeriodTile } from './end-reregistration-period-tile';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { useMemo, useState } from 'react';
 
 type Props = {
@@ -53,20 +55,22 @@ export function SystemSettingsView({ configs }: Props) {
             <Grid size={12}>
               <AllowExpiredReregistrationTile initialValue={allowExpiredReregistration} />
             </Grid>
-            <Grid size={12}>
-              <StartReregistrationPeriodTile
-                initialValue={startReregistrationPeriod}
-                endDate={endDate}
-                onChange={setStartDate}
-              />
-            </Grid>
-            <Grid size={12}>
-              <EndReregistrationPeriodTile
-                initialValue={endReregistrationPeriod}
-                startDate={startDate}
-                onChange={setEndDate}
-              />
-            </Grid>
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <Grid size={12}>
+                <StartReregistrationPeriodTile
+                  initialValue={startReregistrationPeriod}
+                  endDate={endDate}
+                  onChange={setStartDate}
+                />
+              </Grid>
+              <Grid size={12}>
+                <EndReregistrationPeriodTile
+                  initialValue={endReregistrationPeriod}
+                  startDate={startDate}
+                  onChange={setEndDate}
+                />
+              </Grid>
+            </LocalizationProvider>
           </Grid>
         </Container>
       </Box>

@@ -14,7 +14,7 @@ export function NavbarMenu({ menu }: Props) {
     <ListItem disableGutters={true} className="mr-3">
       <ListItemButton
         LinkComponent={Link}
-        href={menu.hasOwnProperty('path') ? (menu as PathMenu).path : (menu as UrlMenu).url}
+        href={'path' in menu ? menu.path : menu.url}
         className="py-1.5"
       >
         {menu.icon ? (

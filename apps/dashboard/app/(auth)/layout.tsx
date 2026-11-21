@@ -17,9 +17,6 @@ export const metadata: Metadata = {
     template: `%s - ${APP.site.title}`,
   },
   description: APP.site.description,
-  icons: {
-    icon: '/favicon.ico',
-  },
 };
 
 export default function AuthLayout({ children }: Props) {

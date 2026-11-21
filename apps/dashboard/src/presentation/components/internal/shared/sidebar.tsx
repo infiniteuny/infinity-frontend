@@ -79,11 +79,11 @@ export function InternalSidebar({ menus }: Props) {
         <Box className="flex min-h-full flex-col justify-between">
           <List>
             {sanitizedMenus
-              ? sanitizedMenus.map((menu, i) => {
-                  if (menu.hasOwnProperty('path')) {
-                    return <SidebarMenu key={i} menu={menu as PathMenu} />;
-                  } else if (menu.hasOwnProperty('items')) {
-                    return <SidebarDropdownMenu key={i} menu={menu as NestedMenu<PathMenu>} />;
+              ? sanitizedMenus.map((menu) => {
+                  if ('path' in menu) {
+                    return <SidebarMenu key={menu.name} menu={menu} />;
+                  } else if ('items' in menu) {
+                    return <SidebarDropdownMenu key={menu.name} menu={menu} />;
                   }
                 })
               : null}

@@ -18,7 +18,7 @@ export interface InternalSidebarActions {
 
 type InternalSidebarStateCreator = StateCreator<
   InternalStates & InternalActions,
-  [['zustand/immer', never]],
+  [],
   [],
   InternalSidebarStates & InternalSidebarActions
 >;
@@ -26,6 +26,8 @@ type InternalSidebarStateCreator = StateCreator<
 export function createInternalSidebarSlice(
   ...[set]: Parameters<InternalSidebarStateCreator>
 ): ReturnType<InternalSidebarStateCreator> {
+  let setSidebarExtendedStateUseCase: SetSidebarExtendedState | null = null;
+
   return {
     sidebarOpened: false,
     sidebarExtended: true,
@@ -33,11 +35,13 @@ export function createInternalSidebarSlice(
 
     setSidebarOpenedState: (state: boolean) => set(() => ({ sidebarOpened: state })),
     setSidebarExtendedState: (state: boolean) => {
-      const setSidebarExtendedState = clientContainer.get<SetSidebarExtendedState>(
-        SYMBOLS.SetSidebarExtendedState,
-      );
+      if (!setSidebarExtendedStateUseCase) {
+        setSidebarExtendedStateUseCase = clientContainer.get<SetSidebarExtendedState>(
+          SYMBOLS.SetSidebarExtendedState,
+        );
+      }
 
-      setSidebarExtendedState.execute(state);
+      setSidebarExtendedStateUseCase.execute(state);
       set(() => ({ sidebarExtended: state }));
     },
     setSidebarHoveredState: (state: boolean) => set(() => ({ sidebarHovered: state })),

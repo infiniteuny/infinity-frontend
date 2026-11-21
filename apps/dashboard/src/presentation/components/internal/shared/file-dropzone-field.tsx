@@ -10,7 +10,7 @@ import {
   Input,
   Typography,
 } from '@mui/material';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Control, Controller, FieldValues, Path, useWatch } from 'react-hook-form';
 import { formatBytes } from '@infiniteuny/infinity-utils';
 import { PdfViewer } from './pdf-viewer-dynamic';
@@ -51,28 +51,44 @@ export function FileDropzoneField<
   nullable = false,
 }: Props<TFieldValues, TName>) {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const objectUrlRef = useRef<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const [previewEntry, setPreviewEntry] = useState<{ file: File; url: string } | null>(null);
   const selectedValue = useWatch({ control, name }) as unknown;
 
+  const updateFilePreview = useCallback(
+    (file: File | null) => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
+
+      if (previewType === 'image' && file) {
+        const url = URL.createObjectURL(file);
+        objectUrlRef.current = url;
+        setPreviewEntry({ file, url });
+      } else {
+        setPreviewEntry(null);
+      }
+    },
+    [previewType],
+  );
+
   useEffect(() => {
-    if (previewType !== 'image' || !(selectedValue instanceof File)) {
-      return;
-    }
-
-    const url = URL.createObjectURL(selectedValue);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setObjectUrl(url);
-
     return () => {
-      URL.revokeObjectURL(url);
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
     };
-  }, [previewType, selectedValue]);
+  }, []);
 
   const imagePreviewUrl =
     previewType === 'image'
       ? selectedValue instanceof File
-        ? objectUrl
+        ? previewEntry?.file === selectedValue
+          ? previewEntry.url
+          : null
         : typeof selectedValue === 'string' && selectedValue.trim().length > 0
           ? selectedValue
           : null
@@ -131,6 +147,7 @@ export function FileDropzoneField<
 
                   const file = event.dataTransfer.files?.[0];
                   if (file) {
+                    updateFilePreview(file);
                     onChange(file);
                   }
                 }}
@@ -217,6 +234,7 @@ export function FileDropzoneField<
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const file = event.target.files?.[0];
                     if (file) {
+                      updateFilePreview(file);
                       onChange(file);
                     }
                   }}
@@ -283,6 +301,7 @@ export function FileDropzoneField<
                         if (inputRef.current) {
                           inputRef.current.value = '';
                         }
+                        updateFilePreview(null);
                         onChange(nullable ? null : undefined);
                       }}
                     >

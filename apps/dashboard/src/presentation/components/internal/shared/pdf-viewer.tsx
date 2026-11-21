@@ -22,7 +22,7 @@ import type { PDFDocumentProxy } from 'pdfjs-dist';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 type Props = {
   file: string | File;
@@ -226,7 +226,7 @@ export function PdfViewer({ file, title = 'PDF Document', height = 720, classNam
     <Paper
       ref={viewerRootRef}
       variant="outlined"
-      className={`relative flex flex-col overflow-hidden rounded-lg border-0 ${className}`}
+      className={`relative flex flex-col overflow-hidden rounded-lg border-0 ${className ?? ''}`}
       sx={{
         height,
       }}

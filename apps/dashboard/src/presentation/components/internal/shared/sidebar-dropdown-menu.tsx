@@ -16,7 +16,6 @@ import { MouseEvent, useMemo, useState } from 'react';
 import { NestedMenu, PathMenu } from '@infiniteuny/infinity-domain';
 import { useInternalStore, useSidebarExtended } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
-import { useShallow } from 'zustand/shallow';
 
 type Props = {
   menu: NestedMenu<PathMenu>;
@@ -31,7 +30,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
   const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const [manualExpanded, setManualExpanded] = useState(false);
   const sidebarExtended = useSidebarExtended();
-  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
+  const sidebarHovered = useInternalStore((s) => s.sidebarHovered);
 
   const active = useMemo(() => {
     return menu.items.some(
@@ -89,8 +88,8 @@ export function SidebarDropdownMenu({ menu }: Props) {
         unmountOnExit
       >
         <List disablePadding>
-          {menu.items.map((item, i) => (
-            <SidebarDropdownItemMenu key={i} menu={item} />
+          {menu.items.map((item) => (
+            <SidebarDropdownItemMenu key={item.path} menu={item} />
           ))}
         </List>
       </Collapse>
@@ -101,7 +100,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
 function SidebarDropdownItemMenu({ menu }: ItemProps) {
   const path = usePathname();
   const sidebarExtended = useSidebarExtended();
-  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
+  const sidebarHovered = useInternalStore((s) => s.sidebarHovered);
 
   const selected = useMemo(() => {
     return menu.path === path || (menu.matcher ? RegExp(menu.matcher).test(path) : false);

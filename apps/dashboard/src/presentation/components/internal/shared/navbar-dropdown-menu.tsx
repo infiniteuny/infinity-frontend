@@ -109,16 +109,12 @@ export function NavbarDropdownMenu({ menu }: Props) {
                   onKeyDown={handleListKeyDown}
                 >
                   {menu.items
-                    ? menu.items.map((item, i) => {
+                    ? menu.items.map((item) => {
                         return (
                           <MenuItem
-                            key={i}
+                            key={item.name}
                             component={Link}
-                            href={
-                              item.hasOwnProperty('path')
-                                ? (item as PathMenu).path
-                                : (item as UrlMenu).url
-                            }
+                            href={'path' in item ? item.path : item.url}
                             onClick={handleClose}
                           >
                             {item.name}

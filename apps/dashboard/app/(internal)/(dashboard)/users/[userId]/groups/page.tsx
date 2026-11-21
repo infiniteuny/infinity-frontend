@@ -43,7 +43,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     (['read-own-user-group'].some((p) => userPermissions.has(p)) && userId === session.user.id)
   ) {
     const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
-    const userId = (await params).userId;
 
     const userResult = await cache(async () => await getUser.execute(userId))();
     const user = match(userResult, {

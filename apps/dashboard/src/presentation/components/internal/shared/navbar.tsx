@@ -28,7 +28,6 @@ import { Logout } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useRouter } from 'next/navigation';
-import { useShallow } from 'zustand/shallow';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -61,7 +60,7 @@ export function InternalNavbar({ menus }: Props) {
   const router = useRouter();
   const { mode, setMode } = useColorScheme();
 
-  const [session] = useInternalStore(useShallow((s) => [s.session]));
+  const session = useInternalStore((s) => s.session);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -89,11 +88,11 @@ export function InternalNavbar({ menus }: Props) {
     <nav className="flex grow items-center justify-end gap-2 md:ml-4">
       <List dense={true} disablePadding={true} className="hidden items-center text-center md:flex">
         {menus &&
-          menus.map((menu, i) => {
-            if (menu.hasOwnProperty('path') || menu.hasOwnProperty('url')) {
-              return <NavbarMenu key={i} menu={menu as PathMenu | UrlMenu} />;
+          menus.map((menu) => {
+            if ('path' in menu || 'url' in menu) {
+              return <NavbarMenu key={menu.name} menu={menu as PathMenu | UrlMenu} />;
             } else {
-              return <NavbarDropdownMenu key={i} menu={menu as NestedMenu} />;
+              return <NavbarDropdownMenu key={menu.name} menu={menu as NestedMenu} />;
             }
           })}
       </List>

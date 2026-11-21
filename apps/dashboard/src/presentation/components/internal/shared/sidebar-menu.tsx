@@ -7,7 +7,6 @@ import { PathMenu } from '@infiniteuny/infinity-domain';
 import { useMemo } from 'react';
 import { useInternalStore, useSidebarExtended } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
-import { useShallow } from 'zustand/shallow';
 
 type Props = {
   menu: PathMenu;
@@ -16,7 +15,7 @@ type Props = {
 export function SidebarMenu({ menu }: Props) {
   const path = usePathname();
   const sidebarExtended = useSidebarExtended();
-  const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
+  const sidebarHovered = useInternalStore((s) => s.sidebarHovered);
 
   const selected = useMemo(() => {
     return menu.path === path || (menu.matcher ? RegExp(menu.matcher).test(path) : false);

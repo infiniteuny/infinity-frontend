@@ -12,7 +12,7 @@ export interface InternalSessionActions {
 
 type InternalSessionSlice = StateCreator<
   InternalStates & InternalActions,
-  [['zustand/immer', never]],
+  [],
   [],
   InternalSessionStates & InternalSessionActions
 >;

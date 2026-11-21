@@ -3,8 +3,7 @@ import { clientContainer } from '@app/client-injection';
 import { Config } from '@infiniteuny/infinity-domain';
 import { SYMBOLS } from '@config';
 import { Box, Container, Typography } from '@mui/material';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { match } from 'effect/Either';
 import { useMemo, useState } from 'react';
@@ -107,36 +106,34 @@ export function StartReregistrationPeriodTile({ initialValue, endDate, onChange 
         >
           Start of re-registration period
         </Typography>
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <DatePicker
-            timezone="UTC"
-            disabled={disabled}
-            format="dd/LL/yyyy"
-            value={dateValue}
-            onAccept={handleAccept}
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                variant: 'standard',
-                hiddenLabel: true,
-                error: !!error,
-                helperText: error,
-                slotProps: {
-                  input: {
-                    disableUnderline: true,
-                    'aria-labelledby': 'start-reregistration-period-label',
-                  },
-                  htmlInput: {
-                    'aria-label': 'Start of re-registration period',
-                  },
-                  inputLabel: {
-                    hidden: true,
-                  },
+        <DatePicker
+          timezone="UTC"
+          disabled={disabled}
+          format="dd/LL/yyyy"
+          value={dateValue}
+          onAccept={handleAccept}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              variant: 'standard',
+              hiddenLabel: true,
+              error: !!error,
+              helperText: error,
+              slotProps: {
+                input: {
+                  disableUnderline: true,
+                  'aria-labelledby': 'start-reregistration-period-label',
+                },
+                htmlInput: {
+                  'aria-label': 'Start of re-registration period',
+                },
+                inputLabel: {
+                  hidden: true,
                 },
               },
-            }}
-          />
-        </LocalizationProvider>
+            },
+          }}
+        />
       </Box>
     </Container>
   );

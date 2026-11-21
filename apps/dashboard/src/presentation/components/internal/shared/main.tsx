@@ -25,13 +25,13 @@ export function InternalMain({ breadcrumbs, children }: Props) {
         >
           {breadcrumbs.map((breadcrumb, index) =>
             index === breadcrumbs.length - 1 ? (
-              <Typography sx={{ color: 'text.primary' }} key={index}>
+              <Typography sx={{ color: 'text.primary' }} key={breadcrumb.url}>
                 {breadcrumb.label}
               </Typography>
             ) : (
               <Link
                 component={NextLink}
-                key={index}
+                key={breadcrumb.url}
                 href={breadcrumb.url}
                 underline="hover"
                 color="text.secondary"
