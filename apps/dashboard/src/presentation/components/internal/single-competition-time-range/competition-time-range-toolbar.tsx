@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteCompetitionTimeRange } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { CompetitionTimeRangeInput } from './competition-time-range-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -20,6 +23,10 @@ export function CompetitionTimeRangeToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteCompetitionTimeRange = useMemo(
+    () => clientContainer.get<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (competitionTimeRangeId) {
@@ -29,6 +36,13 @@ export function CompetitionTimeRangeToolbar({
         canEdit={['update-competition-time-range'].some((p) => userPermissions.has(p))}
         editHref={`/competition-time-ranges/${competitionTimeRangeId}/edit`}
         editAriaLabel="Edit competition time range"
+        canDelete={userPermissions.has('delete-competition-time-range')}
+        deleteAriaLabel={'Delete competition time range'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this competition time range? This action cannot be undone.'
+        }
+        onDelete={() => deleteCompetitionTimeRange.execute(competitionTimeRangeId)}
+        deleteRedirectHref={'/competition-time-ranges'}
       />
     );
   } else if (ref && methods) {

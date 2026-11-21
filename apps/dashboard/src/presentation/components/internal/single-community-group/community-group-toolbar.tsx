@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteCommunityGroup } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { CommunityGroupInput } from './community-group-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -20,6 +23,10 @@ export function CommunityGroupToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteCommunityGroup = useMemo(
+    () => clientContainer.get<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (communityGroupId) {
@@ -29,6 +36,13 @@ export function CommunityGroupToolbar({
         canEdit={['update-community-group'].some((p) => userPermissions.has(p))}
         editHref={`/community-groups/${communityGroupId}/edit`}
         editAriaLabel="Edit community group"
+        canDelete={userPermissions.has('delete-community-group')}
+        deleteAriaLabel={'Delete community group'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this community group? This action cannot be undone.'
+        }
+        onDelete={() => deleteCommunityGroup.execute(communityGroupId)}
+        deleteRedirectHref={'/community-groups'}
       />
     );
   } else if (ref && methods) {

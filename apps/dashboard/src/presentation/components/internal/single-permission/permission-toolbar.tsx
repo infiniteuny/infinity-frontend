@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeletePermission } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { PermissionInput } from './permission-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -16,6 +19,10 @@ type FormProps = {
 };
 
 export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+  const deletePermission = useMemo(
+    () => clientContainer.get<DeletePermission>(SYMBOLS.DeletePermission),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (permissionId) {
@@ -25,6 +32,13 @@ export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewPro
         canEdit={['update-permission'].some((p) => userPermissions.has(p))}
         editHref={`/permissions/${permissionId}/edit`}
         editAriaLabel="Edit permission"
+        canDelete={userPermissions.has('delete-permission')}
+        deleteAriaLabel={'Delete permission'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this permission? This action cannot be undone.'
+        }
+        onDelete={() => deletePermission.execute(permissionId)}
+        deleteRedirectHref={'/permissions'}
       />
     );
   } else if (ref && methods) {

@@ -1,5 +1,8 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteFundApplication } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { FundApplicationDto, FundApplicationMapper } from '@infiniteuny/infinity-infrastructure';
 import { FundApplicationInput } from './fund-application-form';
 import { RefObject, useMemo } from 'react';
@@ -21,6 +24,10 @@ export function FundApplicationToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteFundApplication = useMemo(
+    () => clientContainer.get<DeleteFundApplication>(SYMBOLS.DeleteFundApplication),
+    [],
+  );
   const session = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
   const parsedFundApplication = useMemo(
@@ -39,6 +46,15 @@ export function FundApplicationToolbar({
         )}
         editHref={`/fund-applications/${parsedFundApplication.id}/edit`}
         editAriaLabel="Edit fund application"
+        canDelete={Boolean(
+          userPermissions.has('delete-fund-application') ||
+          (userPermissions.has('delete-own-fund-application') &&
+            parsedFundApplication.team?.members?.some((member) => member.id === session?.user.id)),
+        )}
+        deleteAriaLabel={'Delete fund application'}
+        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedFundApplication.team?.name || 'this fund application'}? This action cannot be undone.`}
+        onDelete={() => deleteFundApplication.execute(parsedFundApplication.id)}
+        deleteRedirectHref={'/fund-applications'}
       />
     );
   } else if (ref && methods) {

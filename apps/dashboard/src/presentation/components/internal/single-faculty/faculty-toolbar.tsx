@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteFaculty } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { FacultyInput } from './faculty-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -16,6 +19,10 @@ type FormProps = {
 };
 
 export function FacultyToolbar({ facultyId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+  const deleteFaculty = useMemo(
+    () => clientContainer.get<DeleteFaculty>(SYMBOLS.DeleteFaculty),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (facultyId) {
@@ -25,6 +32,13 @@ export function FacultyToolbar({ facultyId, ref, methods }: OneOf<[ViewProps, Fo
         canEdit={['update-faculty'].some((p) => userPermissions.has(p))}
         editHref={`/faculties/${facultyId}/edit`}
         editAriaLabel="Edit faculty"
+        canDelete={userPermissions.has('delete-faculty')}
+        deleteAriaLabel={'Delete faculty'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this faculty? This action cannot be undone.'
+        }
+        onDelete={() => deleteFaculty.execute(facultyId)}
+        deleteRedirectHref={'/faculties'}
       />
     );
   } else if (ref && methods) {

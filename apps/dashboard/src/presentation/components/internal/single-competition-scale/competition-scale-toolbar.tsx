@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteCompetitionScale } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { CompetitionScaleInput } from './competition-scale-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -20,6 +23,10 @@ export function CompetitionScaleToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteCompetitionScale = useMemo(
+    () => clientContainer.get<DeleteCompetitionScale>(SYMBOLS.DeleteCompetitionScale),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (competitionScaleId) {
@@ -29,6 +36,13 @@ export function CompetitionScaleToolbar({
         canEdit={['update-competition-scale'].some((p) => userPermissions.has(p))}
         editHref={`/competition-scales/${competitionScaleId}/edit`}
         editAriaLabel="Edit competition scale"
+        canDelete={userPermissions.has('delete-competition-scale')}
+        deleteAriaLabel={'Delete competition scale'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this competition scale? This action cannot be undone.'
+        }
+        onDelete={() => deleteCompetitionScale.execute(competitionScaleId)}
+        deleteRedirectHref={'/competition-scales'}
       />
     );
   } else if (ref && methods) {

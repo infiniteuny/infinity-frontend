@@ -1,5 +1,8 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteTeam } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
 import { TeamInput } from './team-form';
 import { RefObject, useMemo } from 'react';
@@ -17,6 +20,7 @@ type FormProps = {
 };
 
 export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+  const deleteTeam = useMemo(() => clientContainer.get<DeleteTeam>(SYMBOLS.DeleteTeam), []);
   const session = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
   const parsedTeam = useMemo(() => (team ? TeamMapper.fromDtoToDomain(team) : undefined), [team]);
@@ -31,6 +35,14 @@ export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]
         }
         editHref={`/teams/${parsedTeam.id}/edit`}
         editAriaLabel="Edit team"
+        canDelete={
+          userPermissions.has('delete-team') ||
+          (userPermissions.has('delete-own-team') && parsedTeam.leaderId === session?.user.id)
+        }
+        deleteAriaLabel={'Delete team'}
+        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedTeam.name || 'this team'}? This action cannot be undone.`}
+        onDelete={() => deleteTeam.execute(parsedTeam.id)}
+        deleteRedirectHref={'/teams'}
       />
     );
   } else if (ref && methods) {

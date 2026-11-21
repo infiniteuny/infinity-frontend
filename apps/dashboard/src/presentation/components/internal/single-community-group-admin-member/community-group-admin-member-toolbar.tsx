@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteCommunityGroupAdminMember } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { CommunityGroupAdminMemberInput } from './community-group-admin-member-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -22,6 +25,11 @@ export function CommunityGroupAdminMemberToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteCommunityGroupAdminMember = useMemo(
+    () =>
+      clientContainer.get<DeleteCommunityGroupAdminMember>(SYMBOLS.DeleteCommunityGroupAdminMember),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (communityGroupAdminId && communityGroupAdminMemberId) {
@@ -31,6 +39,13 @@ export function CommunityGroupAdminMemberToolbar({
         canEdit={['update-community-group-admin-member'].some((p) => userPermissions.has(p))}
         editHref={`/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMemberId}/edit`}
         editAriaLabel="Edit community group admin member"
+        canDelete={userPermissions.has('delete-community-group-admin-member')}
+        deleteAriaLabel={'Delete community group administrator member'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this member? This action cannot be undone.'
+        }
+        onDelete={() => deleteCommunityGroupAdminMember.execute(communityGroupAdminMemberId)}
+        deleteRedirectHref={`/community-group-admins/${communityGroupAdminId}/members`}
       />
     );
   } else if (ref && methods) {

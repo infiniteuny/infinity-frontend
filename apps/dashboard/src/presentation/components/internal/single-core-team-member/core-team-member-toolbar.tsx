@@ -1,7 +1,10 @@
 'use client';
 
+import { clientContainer } from '@app/client-injection';
+import { DeleteCoreTeamMember } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
 import { CoreTeamMemberInput } from './core-team-member-form';
-import { RefObject } from 'react';
+import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
@@ -22,6 +25,10 @@ export function CoreTeamMemberToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
+  const deleteCoreTeamMember = useMemo(
+    () => clientContainer.get<DeleteCoreTeamMember>(SYMBOLS.DeleteCoreTeamMember),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (coreTeamId && coreTeamMemberId) {
@@ -31,6 +38,13 @@ export function CoreTeamMemberToolbar({
         canEdit={['update-core-team-member'].some((p) => userPermissions.has(p))}
         editHref={`/core-teams/${coreTeamId}/members/${coreTeamMemberId}/edit`}
         editAriaLabel="Edit core team member"
+        canDelete={userPermissions.has('delete-core-team-member')}
+        deleteAriaLabel={'Delete core team member'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this member? This action cannot be undone.'
+        }
+        onDelete={() => deleteCoreTeamMember.execute(coreTeamMemberId)}
+        deleteRedirectHref={`/core-teams/${coreTeamId}/members`}
       />
     );
   } else if (ref && methods) {

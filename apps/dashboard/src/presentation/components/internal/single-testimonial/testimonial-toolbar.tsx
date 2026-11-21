@@ -1,6 +1,9 @@
 'use client';
 
-import { RefObject } from 'react';
+import { clientContainer } from '@app/client-injection';
+import { DeleteTestimonial } from '@infiniteuny/infinity-application';
+import { SYMBOLS } from '@config';
+import { RefObject, useMemo } from 'react';
 import { TestimonialInput } from './testimonial-form';
 import { UseFormReturn } from 'react-hook-form';
 import { useUserPermissions } from '@app/presentation/hooks';
@@ -16,6 +19,10 @@ type FormProps = {
 };
 
 export function TestimonialToolbar({ testimonialId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
+  const deleteTestimonial = useMemo(
+    () => clientContainer.get<DeleteTestimonial>(SYMBOLS.DeleteTestimonial),
+    [],
+  );
   const userPermissions = useUserPermissions();
 
   if (testimonialId) {
@@ -25,6 +32,13 @@ export function TestimonialToolbar({ testimonialId, ref, methods }: OneOf<[ViewP
         canEdit={['update-testimonial'].some((p) => userPermissions.has(p))}
         editHref={`/testimonials/${testimonialId}/edit`}
         editAriaLabel="Edit testimonial"
+        canDelete={userPermissions.has('delete-testimonial')}
+        deleteAriaLabel={'Delete testimonial'}
+        deleteConfirmDescription={
+          'Are you sure you want to permanently delete this testimonial? This action cannot be undone.'
+        }
+        onDelete={() => deleteTestimonial.execute(testimonialId)}
+        deleteRedirectHref={'/testimonials'}
       />
     );
   } else if (ref && methods) {
