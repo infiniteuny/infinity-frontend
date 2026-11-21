@@ -66,16 +66,14 @@ export default async function ReregistrationPage() {
       onRight: (data) => data.value === 'true',
     });
     const startReregistrationDate = match(startReregistrationDateResult, {
-      onLeft: (error) => {
-        console.log(error);
-        return null;
-      },
-      onRight: (data) => DateTime.fromISO(data.value, { zone: 'UTC' }).toJSDate(),
+      onLeft: () => null,
+      onRight: (data) => DateTime.fromISO(data.value, { zone: 'UTC' }).toISO(),
     });
     const endReregistrationDate = match(endReregistrationDateResult, {
       onLeft: () => null,
-      onRight: (data) => DateTime.fromISO(data.value, { zone: 'UTC' }).toJSDate(),
+      onRight: (data) => DateTime.fromISO(data.value, { zone: 'UTC' }).toISO(),
     });
+    const serverTimestamp = DateTime.utc().toMillis();
 
     return (
       <InternalMain
@@ -92,6 +90,7 @@ export default async function ReregistrationPage() {
           allowExpiredReregistration={allowExpiredReregistration}
           startReregistrationDate={startReregistrationDate}
           endReregistrationDate={endReregistrationDate}
+          serverTimestamp={serverTimestamp}
         />
       </InternalMain>
     );

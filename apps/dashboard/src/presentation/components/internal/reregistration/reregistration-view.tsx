@@ -25,8 +25,9 @@ type Props = {
   user: UserDto;
   allowReregistration: boolean;
   allowExpiredReregistration: boolean;
-  startReregistrationDate: Date | null;
-  endReregistrationDate: Date | null;
+  startReregistrationDate: string | null;
+  endReregistrationDate: string | null;
+  serverTimestamp: number;
 };
 
 export function ReregistrationView({
@@ -35,6 +36,7 @@ export function ReregistrationView({
   allowExpiredReregistration,
   startReregistrationDate,
   endReregistrationDate,
+  serverTimestamp,
 }: Props) {
   const extendUserMembership = useMemo(
     () => clientContainer.get<ExtendUserMembership>(SYMBOLS.ExtendUserMembership),
@@ -42,8 +44,21 @@ export function ReregistrationView({
   );
   const router = useRouter();
 
-  const now = new Date().getTime();
   const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
+  const parsedStartDate = useMemo(
+    () =>
+      startReregistrationDate
+        ? DateTime.fromISO(startReregistrationDate, { zone: 'UTC' }).toJSDate()
+        : null,
+    [startReregistrationDate],
+  );
+  const parsedEndDate = useMemo(
+    () =>
+      endReregistrationDate
+        ? DateTime.fromISO(endReregistrationDate, { zone: 'UTC' }).toJSDate()
+        : null,
+    [endReregistrationDate],
+  );
   const [tncOpen, setTncOpen] = useState(false);
   const [isExtending, setIsExtending] = useState(false);
 
@@ -64,8 +79,8 @@ export function ReregistrationView({
 
   if (
     allowReregistration &&
-    now >= (startReregistrationDate?.getTime() ?? 0) &&
-    now <= (endReregistrationDate?.getTime() ?? Infinity)
+    serverTimestamp >= (parsedStartDate?.getTime() ?? 0) &&
+    serverTimestamp <= (parsedEndDate?.getTime() ?? Infinity)
   ) {
     if (!allowExpiredReregistration && !parsedUser.isActive) {
       return (
@@ -92,7 +107,7 @@ export function ReregistrationView({
         </Box>
       );
     } else if (
-      (endReregistrationDate?.getTime() ?? 0) + 335 * 24 * 60 * 60 * 1000 <
+      (parsedEndDate?.getTime() ?? 0) + 335 * 24 * 60 * 60 * 1000 <
       (parsedUser.endDate?.getTime() ?? 0)
     ) {
       return (
@@ -113,7 +128,7 @@ export function ReregistrationView({
               You&apos;re all set! Let&apos;s push something to production!
             </Typography>
             {parsedUser.endDate ? (
-              <Typography variant="body1" align="center" className="mt-2">
+              <Typography variant="body1" align="center" className="mt-2" suppressHydrationWarning>
                 Your membership is valid until{' '}
                 {DateTime.fromJSDate(parsedUser.endDate).toFormat('dd/LL/yyyy, HH:mm:ss ZZZZ')}.
               </Typography>
@@ -381,11 +396,11 @@ export function ReregistrationView({
           <Typography variant="h6" component="p" align="center" className="mt-8">
             Membership extension is currently unavailable.
           </Typography>
-          {allowReregistration && startReregistrationDate && endReregistrationDate ? (
-            <Typography variant="body1" align="center" className="mt-2">
+          {allowReregistration && parsedStartDate && parsedEndDate ? (
+            <Typography variant="body1" align="center" className="mt-2" suppressHydrationWarning>
               The membership extension period is from{' '}
-              {DateTime.fromJSDate(startReregistrationDate).toFormat('dd/LL/yyyy, HH:mm:ss ZZZZ')}{' '}
-              to {DateTime.fromJSDate(endReregistrationDate).toFormat('dd/LL/yyyy, HH:mm:ss ZZZZ')}.
+              {DateTime.fromJSDate(parsedStartDate).toFormat('dd/LL/yyyy, HH:mm:ss ZZZZ')} to{' '}
+              {DateTime.fromJSDate(parsedEndDate).toFormat('dd/LL/yyyy, HH:mm:ss ZZZZ')}.
             </Typography>
           ) : null}
         </Container>

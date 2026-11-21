@@ -70,6 +70,7 @@ export function GeneralView({ competitionInstance }: Props) {
                 'cccc, d LLLL yyyy',
               )}
               position="middle"
+              suppressSubtitleHydrationWarning
             />
           </Grid>
           <Grid size={12}>
@@ -79,6 +80,7 @@ export function GeneralView({ competitionInstance }: Props) {
                 'cccc, d LLLL yyyy',
               )}
               position="bottom"
+              suppressSubtitleHydrationWarning
             />
           </Grid>
         </Grid>

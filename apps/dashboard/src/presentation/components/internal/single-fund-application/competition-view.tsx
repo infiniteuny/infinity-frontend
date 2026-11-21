@@ -45,6 +45,7 @@ export function CompetitionView({ fundApplication }: Props) {
                 'dd/LL/yyyy',
               )}
               position="middle"
+              suppressSubtitleHydrationWarning
             />
           </Grid>
           <Grid size={12}>
@@ -54,6 +55,7 @@ export function CompetitionView({ fundApplication }: Props) {
                 'dd/LL/yyyy',
               )}
               position="bottom"
+              suppressSubtitleHydrationWarning
             />
           </Grid>
         </Grid>

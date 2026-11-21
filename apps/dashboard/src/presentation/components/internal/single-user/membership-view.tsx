@@ -42,6 +42,7 @@ export function MembershipView({ user, isProfileView }: Props) {
                           : 'N/A'
                       }
                       position="middle"
+                      suppressSubtitleHydrationWarning
                     />
                   </Grid>
                   <Grid size={12}>
@@ -53,6 +54,7 @@ export function MembershipView({ user, isProfileView }: Props) {
                           : 'N/A'
                       }
                       position="middle"
+                      suppressSubtitleHydrationWarning
                     />
                   </Grid>
                 </>
