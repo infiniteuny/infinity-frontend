@@ -550,13 +550,16 @@ serverContainer
 serverContainer.bind<UserRepository>(SYMBOLS.UserRepository).to(UserRepositoryImpl);
 
 // Data sources
-serverContainer.bind<AuthServerDataSource>(SYMBOLS.AuthDataSource).toDynamicValue(() => {
-  const getUsers = serverContainer.get<GetUsersWithToken>(SYMBOLS.GetUsersWithToken);
-  const getUserPermissionsWithToken = serverContainer.get<GetUserPermissionsWithToken>(
-    SYMBOLS.GetUserPermissionsWithToken,
-  );
-  return authServerDataSourceImpl(getUsers, getUserPermissionsWithToken);
-});
+serverContainer
+  .bind<AuthServerDataSource>(SYMBOLS.AuthDataSource)
+  .toDynamicValue(() => {
+    const getUsers = serverContainer.get<GetUsersWithToken>(SYMBOLS.GetUsersWithToken);
+    const getUserPermissionsWithToken = serverContainer.get<GetUserPermissionsWithToken>(
+      SYMBOLS.GetUserPermissionsWithToken,
+    );
+    return authServerDataSourceImpl(getUsers, getUserPermissionsWithToken);
+  })
+  .inSingletonScope();
 serverContainer
   .bind<InfinityApiDataSource>(SYMBOLS.InfinityApiDataSource)
   .toConstantValue(infinityApiDataSourceImpl);
