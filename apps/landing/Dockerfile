@@ -1,4 +1,4 @@
-FROM node:26.13.1-alpine AS dependencies
+FROM node:26.13.1-slim AS dependencies
 
 # Set working directory
 WORKDIR /app
@@ -48,7 +48,7 @@ WORKDIR /app
 # Set production environment variables
 ENV NODE_ENV=production \
     PORT=3000 \
-    HOSTNAME="[::]" \
+    HOSTNAME="::" \
     # Disable telemetry during the run time.
     NEXT_TELEMETRY_DISABLED=1
 
@@ -70,6 +70,10 @@ USER bun
 
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
+
+# Verify server health via /_health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD bun -e "fetch('http://127.0.0.1:' + (process.env.PORT || 3000) + '/_health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
 
 # Start Next.js standalone server with Bun
 CMD ["bun", "server.js"]
