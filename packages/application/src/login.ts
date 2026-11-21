@@ -18,9 +18,16 @@ export class Login implements UseCase<Promise<Either<void, Error>>, LoginParams>
   }
 
   public async execute(callbackUrl?: string, silent?: boolean): Promise<Either<void, Error>> {
-    const redirectUrl = callbackUrl
-      ? new URL(callbackUrl).pathname + new URL(callbackUrl).searchParams.toString()
-      : undefined;
+    let redirectUrl: string | undefined;
+
+    if (callbackUrl) {
+      try {
+        const parsed = new URL(callbackUrl, 'http://localhost');
+        redirectUrl = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+      } catch {
+        redirectUrl = undefined;
+      }
+    }
 
     return this.authRepository.signIn(redirectUrl, silent);
   }
