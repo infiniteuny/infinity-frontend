@@ -1,6 +1,6 @@
 'use client';
 
-import { ConfigDto, ConfigMapper } from '@infiniteuny/infinity-infrastructure';
+import { ConfigDto, ConfigMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { AllowReregistrationTile } from './allow-reregistration-tile';
 import { AllowExpiredReregistrationTile } from './allow-expired-reregistration-tile';
 import { StartReregistrationPeriodTile } from './start-reregistration-period-tile';

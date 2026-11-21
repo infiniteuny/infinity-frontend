@@ -2,7 +2,10 @@
 
 import { CompetitionView } from './competition-view';
 import { DocumentsView } from './documents-view';
-import { FundApplicationDto, FundApplicationMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  FundApplicationDto,
+  FundApplicationMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
 

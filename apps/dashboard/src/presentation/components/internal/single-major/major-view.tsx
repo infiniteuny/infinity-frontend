@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { MajorDto, MajorMapper } from '@infiniteuny/infinity-infrastructure';
+import { MajorDto, MajorMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialMajor: MajorDto;

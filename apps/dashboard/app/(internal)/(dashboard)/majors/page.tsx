@@ -5,7 +5,7 @@ import {
   MajorMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { MajorsList } from '@app/presentation/components/internal/majors';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';

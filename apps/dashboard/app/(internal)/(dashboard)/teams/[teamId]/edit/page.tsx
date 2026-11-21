@@ -4,7 +4,7 @@ import {
   CompetitionTeamTypeMapper,
   TeamDto,
   TeamMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetCompetitionTeamTypes, GetSession, GetTeam } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';

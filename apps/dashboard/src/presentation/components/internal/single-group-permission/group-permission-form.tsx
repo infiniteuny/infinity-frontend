@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateGroupPermission } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
-import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';

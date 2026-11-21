@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetGroup, GetSession } from '@infiniteuny/infinity-application';
-import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GroupPermissionForm } from '@app/presentation/components/internal/single-group-permission';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

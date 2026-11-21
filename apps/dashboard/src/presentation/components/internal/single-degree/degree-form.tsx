@@ -3,7 +3,7 @@
 import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateDegree, UpdateDegree } from '@infiniteuny/infinity-application';
-import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure';
+import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { DegreeToolbar } from './degree-toolbar';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';

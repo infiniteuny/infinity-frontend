@@ -6,7 +6,7 @@ import {
   CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamMemberForm } from '@app/presentation/components/internal/single-core-team-member';
 import {
   GetCoreTeam,

@@ -19,7 +19,7 @@ import { GetTeams } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
 import { Team } from '@infiniteuny/infinity-domain';
-import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useEffect, useMemo, useState } from 'react';
 import { useUserPermissions } from '@app/presentation/hooks';
 

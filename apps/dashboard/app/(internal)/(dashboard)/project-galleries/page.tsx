@@ -7,7 +7,7 @@ import {
   PaginationOptionsMapper,
   ProjectGalleryDto,
   ProjectGalleryMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { ProjectGalleriesList } from '@app/presentation/components/internal/project-galleries';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

@@ -12,7 +12,7 @@ import {
   TeamMapper,
   TeamMemberDto,
   TeamMemberMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { TeamMembersList } from '@app/presentation/components/internal/team-members';

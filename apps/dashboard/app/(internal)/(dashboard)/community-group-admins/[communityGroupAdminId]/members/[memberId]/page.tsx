@@ -6,7 +6,7 @@ import {
   CommunityGroupAdminMemberMapper,
   CommunityGroupDto,
   CommunityGroupMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   CommunityGroupAdminMemberForm,
   CommunityGroupAdminMemberToolbar,

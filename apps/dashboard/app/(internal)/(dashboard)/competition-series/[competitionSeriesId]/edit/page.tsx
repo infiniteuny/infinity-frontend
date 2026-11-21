@@ -7,7 +7,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure';
+import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionForm } from '@app/presentation/components/internal/single-competition';
 
 type Props = {

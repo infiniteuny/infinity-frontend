@@ -9,7 +9,7 @@ import {
   CompetitionScaleMapper,
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   AchievementForm,
   AchievementToolbar,

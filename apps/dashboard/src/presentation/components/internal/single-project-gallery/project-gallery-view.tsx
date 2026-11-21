@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure';
+import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialProjectGallery: ProjectGalleryDto;

@@ -27,7 +27,7 @@ import {
   CompetitionInstanceMapper,
   CompetitionScaleDto,
   CompetitionScaleMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   methods: UseFormReturn<FundApplicationInput>;

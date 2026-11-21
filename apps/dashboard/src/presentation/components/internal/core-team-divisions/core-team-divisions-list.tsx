@@ -18,7 +18,7 @@ import {
   CoreTeamDivisionDto,
   CoreTeamDivisionMapper,
   PaginationOptionsDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   DataGrid,
   DataGridProps,

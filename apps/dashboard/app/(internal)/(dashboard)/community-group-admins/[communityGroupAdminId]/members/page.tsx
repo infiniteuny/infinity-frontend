@@ -6,7 +6,7 @@ import {
   CommunityGroupAdminMemberMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupAdminMembersList } from '@app/presentation/components/internal/community-group-admin-members';
 import {
   GetCommunityGroupAdmin,

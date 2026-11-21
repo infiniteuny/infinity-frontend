@@ -8,7 +8,7 @@ import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure';
+import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { PersonaToolbar } from './persona-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

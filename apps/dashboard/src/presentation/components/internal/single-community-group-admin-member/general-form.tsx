@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CommunityGroupAdminMemberInput } from './community-group-admin-member-form';
-import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { FileDropzoneField } from '@app/presentation/components/internal/shared';
 import { GetUsers } from '@infiniteuny/infinity-application';

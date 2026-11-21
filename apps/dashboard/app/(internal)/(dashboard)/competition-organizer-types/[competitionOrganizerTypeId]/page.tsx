@@ -10,7 +10,7 @@ import { SYMBOLS } from '@config';
 import {
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   CompetitionOrganizerTypeForm,
   CompetitionOrganizerTypeToolbar,

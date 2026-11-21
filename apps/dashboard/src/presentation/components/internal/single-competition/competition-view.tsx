@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure';
+import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialCompetition: CompetitionDto;

@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure';
+import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialDegree: DegreeDto;

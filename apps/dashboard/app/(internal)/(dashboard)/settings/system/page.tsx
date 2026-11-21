@@ -1,4 +1,4 @@
-import { ConfigDto, ConfigMapper } from '@infiniteuny/infinity-infrastructure';
+import { ConfigDto, ConfigMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetConfigs, GetSession } from '@infiniteuny/infinity-application';
 import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

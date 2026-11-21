@@ -17,7 +17,7 @@ import {
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
   CompetitionOrganizerTypeDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionInstanceToolbar } from './competition-instance-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

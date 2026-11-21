@@ -1,6 +1,6 @@
 'use client';
 
-import { CoreTeamMemberDto, CoreTeamMemberMapper } from '@infiniteuny/infinity-infrastructure';
+import { CoreTeamMemberDto, CoreTeamMemberMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
 

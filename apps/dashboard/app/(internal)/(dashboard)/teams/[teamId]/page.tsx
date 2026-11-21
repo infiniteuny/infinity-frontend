@@ -12,7 +12,7 @@ import {
   TeamMapper,
   CompetitionTeamTypeDto,
   CompetitionTeamTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { TeamForm, TeamToolbar, TeamView } from '@app/presentation/components/internal/single-team';
 
 type Props = {

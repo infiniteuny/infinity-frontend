@@ -8,7 +8,10 @@ import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { CompetitionRankDto, CompetitionRankMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CompetitionRankDto,
+  CompetitionRankMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionRankToolbar } from './competition-rank-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

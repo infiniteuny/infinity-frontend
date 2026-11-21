@@ -7,7 +7,10 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { CoreTeamDivisionDto, CoreTeamDivisionMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CoreTeamDivisionDto,
+  CoreTeamDivisionMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamDivisionForm } from '@app/presentation/components/internal/single-core-team-division';
 
 type Props = {

@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { PermissionDto, PermissionMapper } from '@infiniteuny/infinity-infrastructure';
+import { PermissionDto, PermissionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialPermission: PermissionDto;

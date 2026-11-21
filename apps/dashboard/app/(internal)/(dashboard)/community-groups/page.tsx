@@ -4,7 +4,7 @@ import {
   CommunityGroupMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetCommunityGroups } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

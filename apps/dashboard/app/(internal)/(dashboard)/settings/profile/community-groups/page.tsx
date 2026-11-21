@@ -11,7 +11,7 @@ import {
   UserCommunityGroupMapper,
   UserDto,
   UserMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UserCommunityGroupsList } from '@app/presentation/components/internal/user-community-groups';

@@ -10,7 +10,7 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserPersonaToolbar } from './user-persona-toolbar';
 import { useMemo, useRef } from 'react';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

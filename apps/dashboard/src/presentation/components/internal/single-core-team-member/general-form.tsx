@@ -14,7 +14,10 @@ import {
 } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { CoreTeamDivisionDto, CoreTeamDivisionMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CoreTeamDivisionDto,
+  CoreTeamDivisionMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamMemberInput } from './core-team-member-form';
 import { FileDropzoneField } from '@app/presentation/components/internal/shared';
 import { GetUsers } from '@infiniteuny/infinity-application';

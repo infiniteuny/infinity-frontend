@@ -5,7 +5,7 @@ import { ContactsView } from './contacts-view';
 import { GeneralView } from './general-view';
 import { MembershipView } from './membership-view';
 import { MetadataView } from './metadata-view';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialUser: UserDto;

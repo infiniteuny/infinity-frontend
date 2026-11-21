@@ -5,7 +5,7 @@ import { createInternalStore } from '@app/presentation/stores';
 import { GetSidebarExtendedState } from '@infiniteuny/infinity-application';
 import { InternalStoreContext } from './store-context';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure';
+import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 
 type Props = {

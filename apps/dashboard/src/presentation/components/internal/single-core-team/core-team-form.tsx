@@ -2,7 +2,7 @@
 
 import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamToolbar } from './core-team-toolbar';
 import { CreateCoreTeam, UpdateCoreTeam } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';

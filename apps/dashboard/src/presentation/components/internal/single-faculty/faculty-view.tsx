@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure';
+import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialFaculty: FacultyDto;

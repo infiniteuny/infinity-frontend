@@ -5,7 +5,7 @@ import { clientContainer } from '@app/client-injection';
 import {
   CommunityGroupAdminDto,
   CommunityGroupAdminMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupAdminToolbar } from './community-group-admin-toolbar';
 import {
   CreateCommunityGroupAdmin,

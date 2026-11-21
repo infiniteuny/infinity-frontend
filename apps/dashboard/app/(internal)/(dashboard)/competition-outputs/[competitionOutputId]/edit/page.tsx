@@ -10,7 +10,7 @@ import { SYMBOLS } from '@config';
 import {
   CompetitionOutputDto,
   CompetitionOutputMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionOutputForm } from '@app/presentation/components/internal/single-competition-output';
 
 type Props = {

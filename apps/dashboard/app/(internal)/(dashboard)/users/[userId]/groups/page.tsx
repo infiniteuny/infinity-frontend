@@ -12,7 +12,7 @@ import {
   UserMapper,
   UserGroupDto,
   UserGroupMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UserGroupsList } from '@app/presentation/components/internal/user-groups';

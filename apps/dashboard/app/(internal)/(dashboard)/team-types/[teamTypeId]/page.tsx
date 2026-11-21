@@ -2,7 +2,7 @@ import { cache } from 'react';
 import {
   CompetitionTeamTypeDto,
   CompetitionTeamTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   CompetitionTeamTypeForm,
   CompetitionTeamTypeToolbar,

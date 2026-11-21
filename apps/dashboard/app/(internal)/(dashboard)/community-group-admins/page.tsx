@@ -3,7 +3,7 @@ import {
   CommunityGroupAdminMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupAdminsList } from '@app/presentation/components/internal/community-group-admins';
 import { GetCommunityGroupAdmins } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

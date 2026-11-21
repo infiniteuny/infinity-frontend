@@ -3,7 +3,7 @@
 import { clientContainer } from '@app/client-injection';
 import { DeleteTeam } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
-import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { TeamInput } from './team-form';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';

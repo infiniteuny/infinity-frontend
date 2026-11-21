@@ -7,7 +7,7 @@ import {
   PaginationOptionsMapper,
   PersonaDto,
   PersonaMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { PersonasList } from '@app/presentation/components/internal/personas';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

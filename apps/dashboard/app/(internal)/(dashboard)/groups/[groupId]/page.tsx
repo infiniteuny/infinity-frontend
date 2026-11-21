@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { GetGroup, GetSession } from '@infiniteuny/infinity-application';
-import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   GroupForm,
   GroupToolbar,

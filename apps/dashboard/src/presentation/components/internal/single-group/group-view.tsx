@@ -1,6 +1,6 @@
 'use client';
 
-import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
 

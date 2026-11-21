@@ -6,7 +6,7 @@ import {
   AchievementDto,
   AchievementMapper,
   PaginationOptionsDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   AlertDialog,
   CompetitionInstanceFilterInput,

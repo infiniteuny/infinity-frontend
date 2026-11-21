@@ -3,7 +3,7 @@
 import {
   CommunityGroupAdminDto,
   CommunityGroupAdminMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
 

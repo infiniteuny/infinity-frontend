@@ -7,7 +7,7 @@ import {
   CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetCoreTeam, GetCoreTeamMembers } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

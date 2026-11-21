@@ -5,7 +5,7 @@ import { clientContainer } from '@app/client-injection';
 import { CreateProjectGallery, UpdateProjectGallery } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
 import { match } from 'effect/Either';
-import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure';
+import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { ProjectGalleryToolbar } from './project-gallery-toolbar';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';

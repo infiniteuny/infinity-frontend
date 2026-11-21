@@ -18,7 +18,7 @@ import {
   TestimonialDto,
   TestimonialMapper,
   PaginationOptionsDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   DataGrid,
   DataGridProps,

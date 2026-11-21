@@ -4,7 +4,7 @@ import {
   GroupMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GroupsList } from '@app/presentation/components/internal/groups';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

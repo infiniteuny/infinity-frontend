@@ -5,7 +5,7 @@ import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
-import { PermissionDto, PermissionMapper } from '@infiniteuny/infinity-infrastructure';
+import { PermissionDto, PermissionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { PermissionForm } from '@app/presentation/components/internal/single-permission';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

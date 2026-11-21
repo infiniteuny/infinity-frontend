@@ -3,7 +3,7 @@
 import { clientContainer } from '@app/client-injection';
 import { DeleteGroup } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
-import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GroupInput } from './group-form';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';

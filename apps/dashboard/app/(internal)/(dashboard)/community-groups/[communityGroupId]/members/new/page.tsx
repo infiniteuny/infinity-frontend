@@ -1,4 +1,4 @@
-import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupMemberForm } from '@app/presentation/components/internal/single-community-group-member';
 import { GetCommunityGroup, GetSession } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

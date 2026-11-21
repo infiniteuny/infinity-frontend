@@ -4,7 +4,7 @@ import {
   CompetitionRankMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetCompetitionRanks, GetSession } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';

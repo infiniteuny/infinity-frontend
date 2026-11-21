@@ -4,7 +4,7 @@ import {
   CompetitionInstanceMapper,
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionInstanceForm } from '@app/presentation/components/internal/single-competition-instance';
 import {
   GetCompetitionInstance,

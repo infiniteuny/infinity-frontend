@@ -10,7 +10,7 @@ import { SYMBOLS } from '@config';
 import {
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionTimeRangeForm } from '@app/presentation/components/internal/single-competition-time-range';
 
 type Props = {

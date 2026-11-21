@@ -38,7 +38,7 @@ import {
   TeamMapper,
   TeamMemberDto,
   TeamMemberMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useCursorDataGrid, useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useMemo } from 'react';

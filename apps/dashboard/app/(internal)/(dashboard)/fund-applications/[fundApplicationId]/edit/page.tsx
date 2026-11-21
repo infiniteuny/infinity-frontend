@@ -11,7 +11,7 @@ import {
   CompetitionScaleMapper,
   FundApplicationDto,
   FundApplicationMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { FundApplicationForm } from '@app/presentation/components/internal/single-fund-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';

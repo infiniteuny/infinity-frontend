@@ -7,7 +7,7 @@ import {
   PaginationOptionsMapper,
   TestimonialDto,
   TestimonialMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { TestimonialsList } from '@app/presentation/components/internal/testimonials';

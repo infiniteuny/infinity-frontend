@@ -7,7 +7,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { ProfileToolbar } from '@app/presentation/components/internal/profile';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { UserView } from '@app/presentation/components/internal/single-user';
 
 export const metadata: Metadata = {

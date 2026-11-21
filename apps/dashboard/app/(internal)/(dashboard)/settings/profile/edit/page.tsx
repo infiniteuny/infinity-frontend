@@ -5,7 +5,7 @@ import {
   MajorMapper,
   UserDto,
   UserMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetFaculties, GetMajors, GetSession, GetUser } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

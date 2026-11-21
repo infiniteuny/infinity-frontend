@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DateTime } from 'luxon';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useMemo, useState } from 'react';
 import { RocketLaunchRounded } from '@mui/icons-material';
 import { clientContainer } from '@app/client-injection';

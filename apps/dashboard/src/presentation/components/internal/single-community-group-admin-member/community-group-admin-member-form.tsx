@@ -8,7 +8,7 @@ import {
   CommunityGroupAdminMemberDto,
   CommunityGroupAdminMemberMapper,
   CommunityGroupDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupAdminMemberToolbar } from './community-group-admin-member-toolbar';
 import {
   CreateCommunityGroupAdminMember,

@@ -7,7 +7,7 @@ import {
   PaginationOptionsMapper,
   UserDto,
   UserMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UsersList } from '@app/presentation/components/internal/users';

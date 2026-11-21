@@ -14,7 +14,7 @@ import { SYMBOLS } from '@config';
 import {
   CompetitionTeamTypeDto,
   CompetitionTeamTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionTeamTypeToolbar } from './competition-team-type-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

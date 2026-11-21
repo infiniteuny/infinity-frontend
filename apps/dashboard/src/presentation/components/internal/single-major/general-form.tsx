@@ -17,7 +17,7 @@ import {
   DegreeMapper,
   FacultyDto,
   FacultyMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { useMemo } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 

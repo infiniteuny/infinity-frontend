@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   CoreTeamForm,
   CoreTeamToolbar,

@@ -14,7 +14,7 @@ import { SYMBOLS } from '@config';
 import {
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionTimeRangeToolbar } from './competition-time-range-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

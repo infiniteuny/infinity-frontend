@@ -2,7 +2,7 @@
 
 import { CompetitionView } from './competition-view';
 import { DocumentsView } from './documents-view';
-import { AchievementDto, AchievementMapper } from '@infiniteuny/infinity-infrastructure';
+import { AchievementDto, AchievementMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
 

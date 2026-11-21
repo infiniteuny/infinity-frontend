@@ -3,7 +3,7 @@ import {
   CoreTeamMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamsList } from '@app/presentation/components/internal/core-teams';
 import { GetCoreTeams } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

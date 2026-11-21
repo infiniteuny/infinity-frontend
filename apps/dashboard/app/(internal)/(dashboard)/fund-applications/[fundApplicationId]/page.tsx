@@ -4,7 +4,7 @@ import {
   CompetitionScaleMapper,
   FundApplicationDto,
   FundApplicationMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   FundApplicationForm,
   FundApplicationToolbar,

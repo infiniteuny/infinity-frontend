@@ -5,7 +5,7 @@ import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
-import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { TeamMemberForm } from '@app/presentation/components/internal/single-team-member';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

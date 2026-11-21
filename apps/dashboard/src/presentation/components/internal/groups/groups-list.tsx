@@ -10,7 +10,11 @@ import {
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { Group, GroupFilterOptions, GroupSortOptions } from '@infiniteuny/infinity-domain';
-import { GroupDto, GroupMapper, PaginationOptionsDto } from '@infiniteuny/infinity-infrastructure';
+import {
+  GroupDto,
+  GroupMapper,
+  PaginationOptionsDto,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   DataGrid,
   DataGridProps,

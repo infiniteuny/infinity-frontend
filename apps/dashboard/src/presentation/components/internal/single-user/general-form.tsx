@@ -18,7 +18,7 @@ import {
   FacultyMapper,
   MajorDto,
   MajorMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetMajors } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';

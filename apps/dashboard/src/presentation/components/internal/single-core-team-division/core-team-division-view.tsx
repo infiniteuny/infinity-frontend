@@ -2,7 +2,10 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { CoreTeamDivisionDto, CoreTeamDivisionMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CoreTeamDivisionDto,
+  CoreTeamDivisionMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialCoreTeamDivision: CoreTeamDivisionDto;

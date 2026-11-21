@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure';
+import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialPersona: PersonaDto;

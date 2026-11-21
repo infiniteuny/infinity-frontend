@@ -3,7 +3,10 @@
 import { clientContainer } from '@app/client-injection';
 import { DeleteFundApplication } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
-import { FundApplicationDto, FundApplicationMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  FundApplicationDto,
+  FundApplicationMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { FundApplicationInput } from './fund-application-form';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';

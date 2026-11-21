@@ -25,7 +25,11 @@ import {
 import { DeleteTeam, GetTeams } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { Team, TeamFilterOptions, TeamSortOptions } from '@infiniteuny/infinity-domain';
-import { PaginationOptionsDto, TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  PaginationOptionsDto,
+  TeamDto,
+  TeamMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useCursorDataGrid, useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useMemo } from 'react';

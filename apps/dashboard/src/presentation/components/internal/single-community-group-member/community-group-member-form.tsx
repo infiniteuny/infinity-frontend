@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GeneralForm } from './general-form';
-import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 const communityGroupMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),

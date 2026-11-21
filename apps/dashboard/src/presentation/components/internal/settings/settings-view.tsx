@@ -22,7 +22,7 @@ import {
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ClickableViewTile } from '@app/presentation/components/internal/shared';
 import { useUserPermissions } from '@app/presentation/hooks';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   user: UserDto;

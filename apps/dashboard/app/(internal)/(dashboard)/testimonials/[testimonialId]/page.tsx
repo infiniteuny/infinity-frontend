@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure';
+import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   TestimonialForm,
   TestimonialToolbar,

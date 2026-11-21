@@ -32,7 +32,11 @@ import {
   UserFilterOptions,
   UserSortOptions,
 } from '@infiniteuny/infinity-domain';
-import { PaginationOptionsDto, UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  PaginationOptionsDto,
+  UserDto,
+  UserMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useCursorDataGrid, useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useMemo } from 'react';

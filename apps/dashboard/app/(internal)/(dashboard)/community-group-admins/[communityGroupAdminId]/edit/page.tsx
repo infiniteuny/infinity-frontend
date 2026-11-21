@@ -2,7 +2,7 @@ import { cache } from 'react';
 import {
   CommunityGroupAdminDto,
   CommunityGroupAdminMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupAdminForm } from '@app/presentation/components/internal/single-community-group-admin';
 import { GetCommunityGroupAdmin, GetSession } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';

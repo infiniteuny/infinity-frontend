@@ -5,7 +5,7 @@ import { MetadataView } from './metadata-view';
 import {
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialCompetitionOrganizerType: CompetitionOrganizerTypeDto;

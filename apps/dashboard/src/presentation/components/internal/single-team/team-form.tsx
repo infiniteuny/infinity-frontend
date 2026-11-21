@@ -8,7 +8,11 @@ import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { CompetitionTeamTypeDto, TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  CompetitionTeamTypeDto,
+  TeamDto,
+  TeamMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { TeamToolbar } from './team-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

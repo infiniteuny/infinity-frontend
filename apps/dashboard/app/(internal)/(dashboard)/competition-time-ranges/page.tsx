@@ -4,7 +4,7 @@ import {
   CompetitionTimeRangeMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GetCompetitionTimeRanges, GetSession } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';

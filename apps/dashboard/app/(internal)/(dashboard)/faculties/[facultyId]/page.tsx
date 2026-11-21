@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure';
+import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   FacultyForm,
   FacultyToolbar,

@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure';
+import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { FacultyForm } from '@app/presentation/components/internal/single-faculty';
 import { GetFaculty, GetSession } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

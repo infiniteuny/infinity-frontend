@@ -5,7 +5,7 @@ import { MetadataView } from './metadata-view';
 import {
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialCompetitionTimeRange: CompetitionTimeRangeDto;

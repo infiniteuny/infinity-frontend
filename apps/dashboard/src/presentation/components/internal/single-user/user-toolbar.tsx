@@ -5,7 +5,7 @@ import { DeleteUser } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { UserInput } from './user-form';
 import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';

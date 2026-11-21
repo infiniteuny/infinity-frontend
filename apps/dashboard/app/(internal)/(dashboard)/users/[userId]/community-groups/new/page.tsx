@@ -8,7 +8,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 import { UserCommunityGroupForm } from '@app/presentation/components/internal/single-user-community-group';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   params: Promise<{

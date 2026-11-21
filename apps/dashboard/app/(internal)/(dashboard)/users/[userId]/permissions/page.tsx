@@ -10,7 +10,7 @@ import {
   UserMapper,
   UserPermissionDto,
   UserPermissionMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

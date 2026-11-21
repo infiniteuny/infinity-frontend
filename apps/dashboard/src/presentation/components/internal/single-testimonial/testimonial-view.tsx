@@ -2,7 +2,7 @@
 
 import { GeneralView } from './general-view';
 import { MetadataView } from './metadata-view';
-import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure';
+import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialTestimonial: TestimonialDto;

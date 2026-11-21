@@ -7,7 +7,7 @@ import {
   CompetitionRankDto,
   CompetitionScaleDto,
   CompetitionTimeRangeDto,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { AchievementToolbar } from './achievement-toolbar';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { Box } from '@mui/material';

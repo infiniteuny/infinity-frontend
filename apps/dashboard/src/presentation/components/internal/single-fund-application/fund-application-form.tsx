@@ -10,7 +10,7 @@ import {
   CompetitionScaleDto,
   FundApplicationDto,
   FundApplicationMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { FundApplicationToolbar } from './fund-application-toolbar';
 import { GeneralForm } from './general-form';
 import { LocalizationProvider } from '@mui/x-date-pickers';

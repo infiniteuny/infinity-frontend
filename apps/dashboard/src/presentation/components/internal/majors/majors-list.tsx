@@ -25,7 +25,11 @@ import {
 import { DeleteMajor, GetMajors } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { Major, MajorFilterOptions, MajorSortOptions } from '@infiniteuny/infinity-domain';
-import { MajorDto, MajorMapper, PaginationOptionsDto } from '@infiniteuny/infinity-infrastructure';
+import {
+  MajorDto,
+  MajorMapper,
+  PaginationOptionsDto,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useMemo } from 'react';

@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure';
+import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { DegreeForm } from '@app/presentation/components/internal/single-degree';
 
 type Props = {

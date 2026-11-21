@@ -8,7 +8,7 @@ import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
-import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure';
+import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupToolbar } from './community-group-toolbar';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

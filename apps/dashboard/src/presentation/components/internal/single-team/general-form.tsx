@@ -19,7 +19,7 @@ import {
   CompetitionTeamTypeMapper,
   UserDto,
   UserMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { useEffect, useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
 import { GetUsers } from '@infiniteuny/infinity-application';

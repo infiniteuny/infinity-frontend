@@ -3,7 +3,7 @@
 import { clientContainer } from '@app/client-injection';
 import { DeleteAchievement } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
-import { AchievementDto, AchievementMapper } from '@infiniteuny/infinity-infrastructure';
+import { AchievementDto, AchievementMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { AchievementInput } from './achievement-form';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';

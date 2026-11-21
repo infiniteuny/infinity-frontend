@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { GetSession, GetTestimonial } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
-import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure';
+import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { TestimonialForm } from '@app/presentation/components/internal/single-testimonial';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';

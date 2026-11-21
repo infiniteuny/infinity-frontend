@@ -6,7 +6,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { ContactsForm } from './contacts-form';
 import { CreateUser, UpdateUser } from '@infiniteuny/infinity-application';
-import { FacultyDto, MajorDto, UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import {
+  FacultyDto,
+  MajorDto,
+  UserDto,
+  UserMapper,
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralForm } from './general-form';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';

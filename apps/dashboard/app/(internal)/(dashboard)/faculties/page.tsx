@@ -3,7 +3,7 @@ import {
   FacultyMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { FacultiesList } from '@app/presentation/components/internal/faculties';
 import { GetFaculties, GetSession } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

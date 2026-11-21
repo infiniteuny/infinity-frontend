@@ -7,7 +7,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { UserPersonaForm } from '@app/presentation/components/internal/single-user-persona';
 
 type Props = {

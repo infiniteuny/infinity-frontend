@@ -7,7 +7,7 @@ import {
   GroupPermissionMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { GroupPermissionsList } from '@app/presentation/components/internal/group-permissions';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';

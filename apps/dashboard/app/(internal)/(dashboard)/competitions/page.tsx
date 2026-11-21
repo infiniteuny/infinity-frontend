@@ -3,7 +3,7 @@ import {
   CompetitionInstanceMapper,
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionInstancesList } from '@app/presentation/components/internal/competition-instances';
 import { GetCompetitionInstances } from '@infiniteuny/infinity-application';
 import { InternalMain } from '@app/presentation/components/internal/shared';

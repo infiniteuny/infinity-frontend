@@ -8,7 +8,7 @@ import {
   PaginationOptionsMapper,
   TeamDto,
   TeamMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { serverContainer } from '@app/server-injection';
 import { APP, SYMBOLS } from '@config';
 import { TeamsList } from '@app/presentation/components/internal/teams';

@@ -11,7 +11,7 @@ import { MuiSetup, SkipToContentButton } from '@infiniteuny/infinity-ui';
 import { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { serverContainer } from '@app/server-injection';
-import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure';
+import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 
 type Props = {

@@ -11,7 +11,7 @@ import {
   CompetitionInstanceMapper,
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

@@ -5,7 +5,7 @@ import { MetadataView } from './metadata-view';
 import {
   CompetitionOutputDto,
   CompetitionOutputMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 
 type Props = {
   initialCompetitionOutput: CompetitionOutputDto;

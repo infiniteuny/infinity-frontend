@@ -8,7 +8,7 @@ import {
   PaginationOptionsMapper,
   PermissionDto,
   PermissionMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { PermissionsList } from '@app/presentation/components/internal/permissions';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

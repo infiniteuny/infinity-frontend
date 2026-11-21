@@ -29,7 +29,7 @@ import {
   UserMapper,
   UserGroupDto,
   UserGroupMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
 import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useMemo } from 'react';

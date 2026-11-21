@@ -5,7 +5,7 @@ import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
-import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure';
+import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { ProjectGalleryForm } from '@app/presentation/components/internal/single-project-gallery';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';

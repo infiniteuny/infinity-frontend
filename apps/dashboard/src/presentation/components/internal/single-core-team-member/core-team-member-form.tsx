@@ -8,7 +8,7 @@ import {
   CoreTeamMapper,
   CoreTeamMemberDto,
   CoreTeamMemberMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamMemberToolbar } from './core-team-member-toolbar';
 import { CreateCoreTeamMember, UpdateCoreTeamMember } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';

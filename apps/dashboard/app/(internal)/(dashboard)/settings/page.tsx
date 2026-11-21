@@ -7,7 +7,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { serverContainer } from '@app/server-injection';
 import { SettingsView } from '@app/presentation/components/internal/settings';
 import { SYMBOLS } from '@config';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 
 export const metadata: Metadata = {
   title: 'Settings',

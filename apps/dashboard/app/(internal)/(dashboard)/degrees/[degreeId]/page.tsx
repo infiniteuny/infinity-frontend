@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure';
+import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   DegreeForm,
   DegreeToolbar,

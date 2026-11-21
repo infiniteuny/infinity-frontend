@@ -7,7 +7,7 @@ import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure';
+import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   PersonaForm,
   PersonaToolbar,

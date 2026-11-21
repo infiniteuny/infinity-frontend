@@ -10,7 +10,7 @@ import { PaginationOptions } from '@infiniteuny/infinity-domain';
 import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type FetchPageParams = {

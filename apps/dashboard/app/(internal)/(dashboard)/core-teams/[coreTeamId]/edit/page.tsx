@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { GetCoreTeam, GetSession } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
-import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure';
+import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CoreTeamForm } from '@app/presentation/components/internal/single-core-team';
 import { InternalMain } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';

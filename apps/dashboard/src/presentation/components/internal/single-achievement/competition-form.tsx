@@ -26,7 +26,7 @@ import {
   CompetitionScaleMapper,
   CompetitionTimeRangeDto,
   CompetitionTimeRangeMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';

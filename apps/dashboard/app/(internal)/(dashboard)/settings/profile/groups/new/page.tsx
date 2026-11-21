@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
-import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
+import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { UserGroupForm } from '@app/presentation/components/internal/single-user-group';
 
 export const metadata: Metadata = {

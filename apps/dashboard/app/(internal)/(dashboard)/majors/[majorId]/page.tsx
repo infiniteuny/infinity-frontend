@@ -14,7 +14,7 @@ import {
   FacultyMapper,
   MajorDto,
   MajorMapper,
-} from '@infiniteuny/infinity-infrastructure';
+} from '@infiniteuny/infinity-infrastructure/dtos';
 import {
   MajorForm,
   MajorToolbar,
