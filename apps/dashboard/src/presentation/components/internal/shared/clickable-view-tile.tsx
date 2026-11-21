@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { MouseEventHandler, ReactNode } from 'react';

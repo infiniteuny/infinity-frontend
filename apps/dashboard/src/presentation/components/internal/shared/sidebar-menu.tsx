@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Icon } from '@infiniteuny/infinity-ui';
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';

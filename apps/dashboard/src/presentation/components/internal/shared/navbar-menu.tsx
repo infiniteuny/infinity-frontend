@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Icon } from '@infiniteuny/infinity-ui';
 import { PathMenu, UrlMenu } from '@infiniteuny/infinity-domain';

@@ -1,7 +1,3 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
 export * from './alert-dialog';
 export * from './clickable-view-tile';
 export * from './empty-row-overlay';
@@ -10,6 +6,7 @@ export * from './grid-operators';
 export * from './header';
 export * from './main';
 export * from './main-container';
+export * from './pdf-viewer-dynamic';
 export * from './section-header';
 export * from './sidebar';
 export * from './store-provider';
@@ -30,7 +27,3 @@ export * from './faculty-filter-input';
 export * from './major-filter-input';
 export * from './team-filter-input';
 export * from './user-filter-input';
-
-export const PdfViewer = dynamic(() => import('./pdf-viewer').then((mod) => mod.PdfViewer), {
-  ssr: false,
-});

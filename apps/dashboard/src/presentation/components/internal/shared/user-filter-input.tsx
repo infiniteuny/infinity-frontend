@@ -1,3 +1,5 @@
+'use client';
+
 import { clientContainer } from '@app/client-injection';
 import { Autocomplete, TextField } from '@mui/material';
 import { GetUser, GetUsers } from '@infiniteuny/infinity-application';

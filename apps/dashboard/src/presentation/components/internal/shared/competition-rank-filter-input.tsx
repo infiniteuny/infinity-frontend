@@ -1,3 +1,5 @@
+'use client';
+
 import { clientContainer } from '@app/client-injection';
 import { CompetitionRank } from '@infiniteuny/infinity-domain';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';

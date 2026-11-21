@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowBackRounded } from '@mui/icons-material';
 import { Container, IconButton, Toolbar, Typography } from '@mui/material';

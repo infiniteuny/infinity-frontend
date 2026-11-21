@@ -1,3 +1,5 @@
+'use client';
+
 import { clientContainer } from '@app/client-injection';
 import { CoreTeamDivision } from '@infiniteuny/infinity-domain';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
