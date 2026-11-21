@@ -40,7 +40,7 @@ ENV NODE_ENV=production \
 RUN --mount=type=cache,target=/app/apps/dashboard/.next/cache \
     npm run build:dashboard
 
-FROM oven/bun:1.4.4 AS runner
+FROM oven/bun:1.4.5 AS runner
 
 # Set working directory
 WORKDIR /app
