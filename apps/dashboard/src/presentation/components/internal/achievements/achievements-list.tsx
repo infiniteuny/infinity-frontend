@@ -392,14 +392,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         sortable: false,
       },
       {
-        field: 'image',
-        headerName: 'Image',
-        flex: 0.5,
-        minWidth: 100,
-        filterable: false,
-        sortable: false,
-      },
-      {
         field: 'status',
         headerName: 'Status',
         flex: 1,
@@ -474,7 +466,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         competitionBranch: achievement.competitionBranch,
         competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
         competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
-        image: achievement.image,
         status: achievement.status,
         actions: achievement,
       })),
