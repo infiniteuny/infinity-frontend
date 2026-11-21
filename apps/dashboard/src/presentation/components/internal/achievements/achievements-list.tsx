@@ -174,7 +174,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedAchievementName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -486,7 +486,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedAchievementName || 'this achievement'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this achievement'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

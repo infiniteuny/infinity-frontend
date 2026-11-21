@@ -90,7 +90,7 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedGroupName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -225,7 +225,7 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedGroupName || 'this group'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this group'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

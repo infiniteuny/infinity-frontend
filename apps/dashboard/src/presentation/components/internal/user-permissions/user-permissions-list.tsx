@@ -145,7 +145,7 @@ export function UserPermissionsList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedUserPermissionName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -267,7 +267,7 @@ export function UserPermissionsList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedUserPermissionName || 'this permission'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this permission'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

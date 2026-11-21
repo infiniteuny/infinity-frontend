@@ -136,7 +136,7 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedMajorName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -316,7 +316,7 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedMajorName || 'this major'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this major'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

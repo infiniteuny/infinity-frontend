@@ -199,7 +199,7 @@ export function CompetitionInstancesList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedCompetitionInstanceName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -434,7 +434,7 @@ export function CompetitionInstancesList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCompetitionInstanceName || 'this competition'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this competition'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

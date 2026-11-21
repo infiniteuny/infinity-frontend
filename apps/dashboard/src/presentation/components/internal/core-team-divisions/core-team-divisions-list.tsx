@@ -127,7 +127,7 @@ export function CoreTeamDivisionsList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedCoreTeamDivisionName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -255,7 +255,7 @@ export function CoreTeamDivisionsList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCoreTeamDivisionName || 'this core team division'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this core team division'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

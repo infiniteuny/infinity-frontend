@@ -114,7 +114,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedTestimonialName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -254,7 +254,7 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedTestimonialName || 'this testimonial'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this testimonial'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

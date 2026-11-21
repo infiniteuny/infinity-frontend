@@ -139,7 +139,7 @@ export function TeamsList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedTeamName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -310,7 +310,7 @@ export function TeamsList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedTeamName || 'this team'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this team'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

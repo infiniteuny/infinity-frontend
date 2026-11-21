@@ -143,7 +143,7 @@ export function GroupPermissionsList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedGroupPermissionName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -267,7 +267,7 @@ export function GroupPermissionsList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedGroupPermissionName || 'this permission'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this permission'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

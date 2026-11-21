@@ -144,7 +144,7 @@ export function CompetitionOrganizerTypesList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedOrganizerTypeName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -273,7 +273,7 @@ export function CompetitionOrganizerTypesList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedOrganizerTypeName || 'this organizer type'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this organizer type'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

@@ -118,7 +118,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedCommunityGroupName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -250,7 +250,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCommunityGroupName || 'this community group'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this community group'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

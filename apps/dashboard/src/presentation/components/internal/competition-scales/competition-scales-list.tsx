@@ -134,7 +134,7 @@ export function CompetitionScalesList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedScaleName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -262,7 +262,7 @@ export function CompetitionScalesList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedScaleName || 'this scale'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this scale'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

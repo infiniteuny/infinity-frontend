@@ -222,7 +222,7 @@ export function CoreTeamMembersList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedCoreTeamMemberName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -508,7 +508,7 @@ export function CoreTeamMembersList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedCoreTeamMemberName || 'this member'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this member'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

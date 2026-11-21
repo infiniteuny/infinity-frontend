@@ -111,7 +111,7 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedProjectGalleryTitle,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -250,7 +250,7 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedProjectGalleryTitle || 'this project gallery'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this project gallery'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

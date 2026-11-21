@@ -209,7 +209,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedUserName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -499,7 +499,7 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedUserName || 'this user'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this user'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

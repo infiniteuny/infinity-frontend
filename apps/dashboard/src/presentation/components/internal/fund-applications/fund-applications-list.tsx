@@ -162,7 +162,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedFundApplicationName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -410,7 +410,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedFundApplicationName || 'this fund application'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this fund application'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />

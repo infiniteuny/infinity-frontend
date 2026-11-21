@@ -137,7 +137,7 @@ export function CompetitionTeamTypesList({
     handleSortModelChange,
     handleFilterModelChange,
     openDeleteDialog,
-    selectedName: selectedTeamTypeName,
+    selectedName,
     isDeleting,
     handleDeleteClick,
     handleDeleteAccept,
@@ -265,7 +265,7 @@ export function CompetitionTeamTypesList({
         isLoading={isDeleting}
         confirmColor="error"
         title="Permanently delete?"
-        description={`Are you sure you want to permanently delete ${selectedTeamTypeName || 'this team type'}? This action cannot be undone.`}
+        description={`Are you sure you want to permanently delete ${selectedName || 'this team type'}? This action cannot be undone.`}
         acceptText="Delete"
         cancelText="Cancel"
       />
