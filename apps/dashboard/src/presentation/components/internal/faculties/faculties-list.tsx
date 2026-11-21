@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -42,6 +44,26 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FacultiesToolbar } from './faculties-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No faculties found.' },
+  loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: { columnVisibilityModel: { id: false } },
+};
+
 type Props = { initialFaculties: FacultyDto[]; initialPaginationOptions: PaginationOptionsDto };
 
 export function FacultiesList({ initialFaculties, initialPaginationOptions }: Props) {
@@ -50,14 +72,17 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
     () => clientContainer.get<DeleteFaculty>(SYMBOLS.DeleteFaculty),
     [],
   );
-  const initFaculties = initialFaculties.map(FacultyMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<Faculty[]>(initFaculties);
+  const [rows, setRows] = useState<Faculty[]>(() =>
+    initialFaculties.map(FacultyMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initFaculties.length,
+    initPaginationOptions.nextCursor ? -1 : initialFaculties.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -191,14 +216,17 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
     setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
     setFilterModel(m);
   }, []);
-  const handleRowClick = (p: GridRowParams) => {
-    router.push(`/faculties/${p.row.id}`);
-  };
-  const handleDeleteClick = (id: string, name?: string) => {
+  const handleRowClick = useCallback(
+    (p: GridRowParams) => {
+      router.push(`/faculties/${p.row.id}`);
+    },
+    [router],
+  );
+  const handleDeleteClick = useCallback((id: string, name?: string) => {
     setSelectedFacultyId(id);
     setSelectedFacultyName(name || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
   const handleDeleteAccept = async () => {
     if (!selectedFacultyId) return;
     const r = await deleteFaculty.execute(selectedFacultyId);
@@ -224,6 +252,82 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'code',
+        headerName: 'Code',
+        flex: 1,
+        minWidth: 120,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.equals],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (p) => (
+          <GridActionsCell {...p}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/faculties/${p.row.actions.id}`}
+            />
+            {['update-faculty'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/faculties/${p.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-faculty'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () => rows.map((x) => ({ id: x.id, code: x.code, name: x.name, actions: x })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Faculties" backUrl="/settings">
@@ -241,88 +345,16 @@ export function FacultiesList({ initialFaculties, initialPaginationOptions }: Pr
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'code',
-                headerName: 'Code',
-                flex: 1,
-                minWidth: 120,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.equals],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (p) => (
-                  <GridActionsCell {...p}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/faculties/${p.row.actions.id}`}
-                    />
-                    {['update-faculty'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/faculties/${p.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-faculty'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((x) => ({ id: x.id, code: x.code, name: x.name, actions: x }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{
-              noRowsOverlay: { text: 'No faculties found.' },
-              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{ columns: { columnVisibilityModel: { id: false } } }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

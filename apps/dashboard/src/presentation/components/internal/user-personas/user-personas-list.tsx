@@ -11,8 +11,10 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -44,6 +46,39 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserPersonasToolbar } from './user-personas-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': {
+    display: 'none',
+  },
+  '.MuiDataGrid-row': {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No user personas found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialUserPersonas: UserPersonaDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -57,8 +92,6 @@ export function UserPersonasList({
   user,
   isProfileView,
 }: Props) {
-  const initUserPersonas = initialUserPersonas.map(UserPersonaMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const getUserPersonas = useMemo(
     () => clientContainer.get<GetUserPersonas>(SYMBOLS.GetUserPersonas),
@@ -72,10 +105,15 @@ export function UserPersonasList({
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<UserPersona[]>(initUserPersonas);
+  const [rows, setRows] = useState<UserPersona[]>(() =>
+    initialUserPersonas.map(UserPersonaMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUserPersonas.length,
+    initPaginationOptions.nextCursor ? -1 : initialUserPersonas.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -250,15 +288,18 @@ export function UserPersonasList({
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/personas/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/personas/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (userPersonaId: string, userPersonaName?: string) => {
+  const handleDeleteClick = useCallback((userPersonaId: string, userPersonaName?: string) => {
     setSelectedUserPersonaId(userPersonaId);
     setSelectedUserPersonaName(userPersonaName || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedUserPersonaId) {
@@ -291,6 +332,102 @@ export function UserPersonasList({
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 3,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'priority',
+        headerName: 'Priority',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'description',
+        headerName: 'Description',
+        flex: 3,
+        minWidth: 400,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/personas/${params.row.actions.id}`}
+            />
+            {['update-user-persona'].some((p) => userPermissions.has(p)) ||
+            (['update-own-user-persona'].some((p) => userPermissions.has(p)) &&
+              parsedUser.id === userSession?.user?.id) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/personas/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-user-persona'].some((p) => userPermissions.has(p)) ||
+            (['delete-own-user-persona'].some((p) => userPermissions.has(p)) &&
+              parsedUser.id === userSession?.user?.id) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.entitlement.id, params.row.actions.name)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, userSession?.user?.id, parsedUser.id, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((userPersona) => ({
+        id: userPersona.id,
+        name: userPersona.name,
+        priority: userPersona.priority,
+        description: userPersona.description,
+        actions: userPersona,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader
@@ -315,127 +452,16 @@ export function UserPersonasList({
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': {
-                display: 'none',
-              },
-              '.MuiDataGrid-row': {
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 3,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'priority',
-                headerName: 'Priority',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'description',
-                headerName: 'Description',
-                flex: 3,
-                minWidth: 400,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/personas/${params.row.actions.id}`}
-                    />
-                    {['update-user-persona'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-user-persona'].some((p) => userPermissions.has(p)) &&
-                      parsedUser.id === userSession?.user?.id) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/personas/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-user-persona'].some((p) => userPermissions.has(p)) ||
-                    (['delete-own-user-persona'].some((p) => userPermissions.has(p)) &&
-                      parsedUser.id === userSession?.user?.id) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(
-                            params.row.actions.entitlement.id,
-                            params.row.actions.name,
-                          )
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((userPersona) => ({
-              id: userPersona.id,
-              name: userPersona.name,
-              priority: userPersona.priority,
-              description: userPersona.description,
-              actions: userPersona,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No user personas found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

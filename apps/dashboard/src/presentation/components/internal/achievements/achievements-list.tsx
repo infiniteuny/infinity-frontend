@@ -24,8 +24,10 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -44,6 +46,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AchievementsToolbar } from './achievements-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No achievements found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialAchievements: AchievementDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -58,16 +87,19 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     () => clientContainer.get<DeleteAchievement>(SYMBOLS.DeleteAchievement),
     [],
   );
-  const initAchievements = initialAchievements.map(AchievementMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<Achievement[]>(initAchievements);
+  const [rows, setRows] = useState<Achievement[]>(() =>
+    initialAchievements.map(AchievementMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initAchievements.length,
+    initPaginationOptions.nextCursor ? -1 : initialAchievements.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -289,15 +321,18 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/achievements/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/achievements/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (achievementId: string, achievementName?: string) => {
+  const handleDeleteClick = useCallback((achievementId: string, achievementName?: string) => {
     setSelectedAchievementId(achievementId);
     setSelectedAchievementName(achievementName || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedAchievementId) {
@@ -331,6 +366,275 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'team',
+        headerName: 'Team',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: TeamFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competition',
+        headerName: 'Competition',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionInstanceFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionBranch',
+        headerName: 'Branch',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'competitionScale',
+        headerName: 'Scale',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionScaleFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionTimeRange',
+        headerName: 'Time Range',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionTimeRangeFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionOutput',
+        headerName: 'Output',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionOutputFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionRank',
+        headerName: 'Rank',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionRankFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionStartDate',
+        headerName: 'Start Date',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'competitionEndDate',
+        headerName: 'End Date',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'image',
+        headerName: 'Image',
+        flex: 0.5,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        flex: 1,
+        minWidth: 120,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.equals],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/achievements/${params.row.actions.id}`}
+            />
+            {['update-achievement'].some((p) => userPermissions.has(p)) ||
+            (['update-own-achievement'].some((p) => userPermissions.has(p)) &&
+              params.row.actions.team?.members?.some(
+                (member: User) => member.id === userSession?.user?.id,
+              )) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/achievements/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-achievement'].some((p) => userPermissions.has(p)) ||
+            (['delete-own-achievement'].some((p) => userPermissions.has(p)) &&
+              params.row.actions.team?.members?.some(
+                (member: User) => member.id === userSession?.user?.id,
+              )) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.id, params.row.actions.team?.name)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, userSession?.user?.id, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((achievement) => ({
+        id: achievement.id,
+        team: achievement.team?.name || 'N/A',
+        competition: achievement.competitionInstance?.name || 'N/A',
+        competitionScale: achievement.competitionScale?.name || 'N/A',
+        competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
+        competitionOutput: achievement.competitionOutput?.name || 'N/A',
+        competitionRank: achievement.competitionRank?.name || 'N/A',
+        competitionBranch: achievement.competitionBranch,
+        competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
+        competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
+        image: achievement.image,
+        status: achievement.status,
+        actions: achievement,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Achievements">
@@ -348,291 +652,16 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'team',
-                headerName: 'Team',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: TeamFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competition',
-                headerName: 'Competition',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionInstanceFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionBranch',
-                headerName: 'Branch',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'competitionScale',
-                headerName: 'Scale',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionScaleFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionTimeRange',
-                headerName: 'Time Range',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionTimeRangeFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionOutput',
-                headerName: 'Output',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionOutputFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionRank',
-                headerName: 'Rank',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionRankFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionStartDate',
-                headerName: 'Start Date',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'competitionEndDate',
-                headerName: 'End Date',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'image',
-                headerName: 'Image',
-                flex: 0.5,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'status',
-                headerName: 'Status',
-                flex: 1,
-                minWidth: 120,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.equals],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/achievements/${params.row.actions.id}`}
-                    />
-                    {['update-achievement'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-achievement'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.team?.members?.some(
-                        (member: User) => member.id === userSession?.user?.id,
-                      )) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/achievements/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-achievement'].some((p) => userPermissions.has(p)) ||
-                    (['delete-own-achievement'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.team?.members?.some(
-                        (member: User) => member.id === userSession?.user?.id,
-                      )) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.team?.name)
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((achievement) => ({
-              id: achievement.id,
-              team: achievement.team?.name || 'N/A',
-              competition: achievement.competitionInstance?.name || 'N/A',
-              competitionScale: achievement.competitionScale?.name || 'N/A',
-              competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
-              competitionOutput: achievement.competitionOutput?.name || 'N/A',
-              competitionRank: achievement.competitionRank?.name || 'N/A',
-              competitionBranch: achievement.competitionBranch,
-              competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
-              competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
-              image: achievement.image,
-              status: achievement.status,
-              actions: achievement,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No achievements found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

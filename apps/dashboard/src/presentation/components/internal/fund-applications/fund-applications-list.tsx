@@ -14,8 +14,10 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -46,6 +48,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FundApplicationsToolbar } from './fund-applications-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No fund applications found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialFundApplications: FundApplicationDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -60,16 +89,19 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     () => clientContainer.get<DeleteFundApplication>(SYMBOLS.DeleteFundApplication),
     [],
   );
-  const initFundApplications = initialFundApplications.map(FundApplicationMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<FundApplication[]>(initFundApplications);
+  const [rows, setRows] = useState<FundApplication[]>(() =>
+    initialFundApplications.map(FundApplicationMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initFundApplications.length,
+    initPaginationOptions.nextCursor ? -1 : initialFundApplications.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -272,11 +304,14 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleDeleteClick = (fundApplicationId: string, fundApplicationName?: string) => {
-    setSelectedFundApplicationId(fundApplicationId);
-    setSelectedFundApplicationName(fundApplicationName || null);
-    setOpenDeleteDialog(true);
-  };
+  const handleDeleteClick = useCallback(
+    (fundApplicationId: string, fundApplicationName?: string) => {
+      setSelectedFundApplicationId(fundApplicationId);
+      setSelectedFundApplicationName(fundApplicationName || null);
+      setOpenDeleteDialog(true);
+    },
+    [],
+  );
 
   const handleDeleteAccept = async () => {
     if (!selectedFundApplicationId) {
@@ -310,9 +345,215 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     }, 1000);
   };
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/fund-applications/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/fund-applications/${params.row.id}`);
+    },
+    [router],
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'team',
+        headerName: 'Team',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: TeamFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competition',
+        headerName: 'Competition',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionInstanceFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionScale',
+        headerName: 'Scale',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionScaleFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'competitionBranch',
+        headerName: 'Branch',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'competitionStartDate',
+        headerName: 'Start Date',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'competitionEndDate',
+        headerName: 'End Date',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'letterOfAcceptance',
+        headerName: 'LoA',
+        flex: 0.5,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'proposal',
+        headerName: 'Proposal',
+        flex: 0.5,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        flex: 1,
+        minWidth: 120,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.equals],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/fund-applications/${params.row.actions.id}`}
+            />
+            {['update-fund-application'].some((p) => userPermissions.has(p)) ||
+            (['update-own-fund-application'].some((p) => userPermissions.has(p)) &&
+              params.row.actions.team?.members?.some(
+                (member: User) => member.id === userSession?.user?.id,
+              )) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/fund-applications/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-fund-application'].some((p) => userPermissions.has(p)) ||
+            (['delete-own-fund-application'].some((p) => userPermissions.has(p)) &&
+              params.row.actions.team?.members?.some(
+                (member: User) => member.id === userSession?.user?.id,
+              )) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.id, params.row.actions.team?.name)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, userSession?.user?.id, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((fundApplication) => ({
+        id: fundApplication.id,
+        team: fundApplication.team?.name || 'N/A',
+        competition: fundApplication.competitionInstance?.name || 'N/A',
+        competitionScale: fundApplication.competitionScale?.name || 'N/A',
+        competitionBranch: fundApplication.competitionBranch,
+        competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),
+        competitionEndDate: fundApplication.competitionEndDate.toLocaleDateString(),
+        letterOfAcceptance: fundApplication.letterOfAcceptance,
+        proposal: fundApplication.proposal,
+        status: fundApplication.status,
+        actions: fundApplication,
+      })),
+    [rows],
+  );
 
   return (
     <>
@@ -331,225 +572,16 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'team',
-                headerName: 'Team',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: TeamFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competition',
-                headerName: 'Competition',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionInstanceFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionScale',
-                headerName: 'Scale',
-                flex: 1,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: CompetitionScaleFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'competitionBranch',
-                headerName: 'Branch',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'competitionStartDate',
-                headerName: 'Start Date',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'competitionEndDate',
-                headerName: 'End Date',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'letterOfAcceptance',
-                headerName: 'LoA',
-                flex: 0.5,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'proposal',
-                headerName: 'Proposal',
-                flex: 0.5,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'status',
-                headerName: 'Status',
-                flex: 1,
-                minWidth: 120,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.equals],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/fund-applications/${params.row.actions.id}`}
-                    />
-                    {['update-fund-application'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-fund-application'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.team?.members?.some(
-                        (member: User) => member.id === userSession?.user?.id,
-                      )) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/fund-applications/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-fund-application'].some((p) => userPermissions.has(p)) ||
-                    (['delete-own-fund-application'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.team?.members?.some(
-                        (member: User) => member.id === userSession?.user?.id,
-                      )) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.team?.name)
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((fundApplication) => ({
-              id: fundApplication.id,
-              team: fundApplication.team?.name || 'N/A',
-              competition: fundApplication.competitionInstance?.name || 'N/A',
-              competitionScale: fundApplication.competitionScale?.name || 'N/A',
-              competitionBranch: fundApplication.competitionBranch,
-              competitionStartDate: fundApplication.competitionStartDate.toLocaleDateString(),
-              competitionEndDate: fundApplication.competitionEndDate.toLocaleDateString(),
-              letterOfAcceptance: fundApplication.letterOfAcceptance,
-              proposal: fundApplication.proposal,
-              status: fundApplication.status,
-              actions: fundApplication,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No fund applications found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

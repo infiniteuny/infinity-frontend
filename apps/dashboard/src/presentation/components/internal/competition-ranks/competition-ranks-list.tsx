@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -42,6 +44,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CompetitionRanksToolbar } from './competition-ranks-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No competition ranks found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialCompetitionRanks: CompetitionRankDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -56,15 +85,18 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     () => clientContainer.get<DeleteCompetitionRank>(SYMBOLS.DeleteCompetitionRank),
     [],
   );
-  const initCompetitionRanks = initialCompetitionRanks.map(CompetitionRankMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CompetitionRank[]>(initCompetitionRanks);
+  const [rows, setRows] = useState<CompetitionRank[]>(() =>
+    initialCompetitionRanks.map(CompetitionRankMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCompetitionRanks.length,
+    initPaginationOptions.nextCursor ? -1 : initialCompetitionRanks.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -227,15 +259,18 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competition-ranks/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/competition-ranks/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (rankId: string, rankName?: string) => {
+  const handleDeleteClick = useCallback((rankId: string, rankName?: string) => {
     setSelectedrankId(rankId);
     setSelectedrankName(rankName || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedRankId) {
@@ -266,6 +301,87 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'weight',
+        headerName: 'Weight',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/competition-ranks/${params.row.actions.id}`}
+            />
+            {['update-competition-rank'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/competition-ranks/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-competition-rank'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(params.row.actions.id, params.row.actions.name)}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((rank) => ({
+        id: rank.id,
+        name: rank.name,
+        weight: rank.weight,
+        actions: rank,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Ranks" backUrl="/settings">
@@ -283,105 +399,16 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'weight',
-                headerName: 'Weight',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/competition-ranks/${params.row.actions.id}`}
-                    />
-                    {['update-competition-rank'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/competition-ranks/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-competition-rank'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((rank) => ({
-              id: rank.id,
-              name: rank.name,
-              weight: rank.weight,
-              actions: rank,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No competition ranks found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

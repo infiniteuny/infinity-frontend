@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -45,6 +47,26 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommunityGroupAdminsToolbar } from './community-group-admins-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No community group administrators found.' },
+  loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: { columnVisibilityModel: { id: false, group: false } },
+};
+
 type Props = {
   initialCommunityGroupAdmins: CommunityGroupAdminDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -62,16 +84,17 @@ export function CommunityGroupAdminsList({
     () => clientContainer.get<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin),
     [],
   );
-  const initCommunityGroupAdmins = initialCommunityGroupAdmins.map(
-    CommunityGroupAdminMapper.fromDtoToDomain,
-  );
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CommunityGroupAdmin[]>(initCommunityGroupAdmins);
+  const [rows, setRows] = useState<CommunityGroupAdmin[]>(() =>
+    initialCommunityGroupAdmins.map(CommunityGroupAdminMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCommunityGroupAdmins.length,
+    initPaginationOptions.nextCursor ? -1 : initialCommunityGroupAdmins.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -212,14 +235,17 @@ export function CommunityGroupAdminsList({
     setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
     setFilterModel(m);
   }, []);
-  const handleRowClick = (p: GridRowParams) => {
-    router.push(`/community-group-admins/${p.row.id}`);
-  };
-  const handleDeleteClick = (id: string, year?: string) => {
+  const handleRowClick = useCallback(
+    (p: GridRowParams) => {
+      router.push(`/community-group-admins/${p.row.id}`);
+    },
+    [router],
+  );
+  const handleDeleteClick = useCallback((id: string, year?: string) => {
     setSelectedCommunityGroupAdminId(id);
     setSelectedCommunityGroupAdminYear(year || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
   const handleDeleteAccept = async () => {
     if (!selectedCommunityGroupAdminId) return;
     const r = await deleteCommunityGroupAdmin.execute(selectedCommunityGroupAdminId);
@@ -245,6 +271,82 @@ export function CommunityGroupAdminsList({
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'year',
+        headerName: 'Year',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'isActive',
+        headerName: 'Active',
+        type: 'boolean',
+        flex: 0.5,
+        minWidth: 80,
+        filterable: true,
+        sortable: true,
+        filterOperators: [BooleanOperators.is],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (p) => (
+          <GridActionsCell {...p}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/community-group-admins/${p.row.actions.id}`}
+            />
+            {['update-community-group-admin'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/community-group-admins/${p.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-community-group-admin'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(p.row.actions.id, `${p.row.actions.year}`)}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () => rows.map((x) => ({ id: x.id, year: x.year, isActive: x.isActive, actions: x })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Community Group Admins">
@@ -262,88 +364,16 @@ export function CommunityGroupAdminsList({
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'year',
-                headerName: 'Year',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                type: 'boolean',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (p) => (
-                  <GridActionsCell {...p}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/community-group-admins/${p.row.actions.id}`}
-                    />
-                    {['update-community-group-admin'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/community-group-admins/${p.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-community-group-admin'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() => handleDeleteClick(p.row.actions.id, `${p.row.actions.year}`)}
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((x) => ({ id: x.id, year: x.year, isActive: x.isActive, actions: x }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{
-              noRowsOverlay: { text: 'No community group administrators found.' },
-              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{ columns: { columnVisibilityModel: { id: false, group: false } } }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

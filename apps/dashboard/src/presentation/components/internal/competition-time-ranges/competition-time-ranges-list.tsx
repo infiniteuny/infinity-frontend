@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -45,6 +47,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CompetitionTimeRangesToolbar } from './competition-time-ranges-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No competition time ranges found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialCompetitionTimeRanges: CompetitionTimeRangeDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -62,17 +91,18 @@ export function CompetitionTimeRangesList({
     () => clientContainer.get<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange),
     [],
   );
-  const initCompetitionTimeRanges = initialCompetitionTimeRanges.map(
-    CompetitionTimeRangeMapper.fromDtoToDomain,
-  );
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CompetitionTimeRange[]>(initCompetitionTimeRanges);
+  const [rows, setRows] = useState<CompetitionTimeRange[]>(() =>
+    initialCompetitionTimeRanges.map(CompetitionTimeRangeMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCompetitionTimeRanges.length,
+    initPaginationOptions.nextCursor ? -1 : initialCompetitionTimeRanges.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -235,15 +265,18 @@ export function CompetitionTimeRangesList({
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/competition-time-ranges/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/competition-time-ranges/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (timeRangeId: string, timeRangeName?: string) => {
+  const handleDeleteClick = useCallback((timeRangeId: string, timeRangeName?: string) => {
     setSelectedtimeRangeId(timeRangeId);
     setSelectedtimeRangeName(timeRangeName || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedTimeRangeId) {
@@ -274,6 +307,87 @@ export function CompetitionTimeRangesList({
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'weight',
+        headerName: 'Weight',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/competition-time-ranges/${params.row.actions.id}`}
+            />
+            {['update-competition-time-range'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/competition-time-ranges/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-competition-time-range'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(params.row.actions.id, params.row.actions.name)}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((timeRange) => ({
+        id: timeRange.id,
+        name: timeRange.name,
+        weight: timeRange.weight,
+        actions: timeRange,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Time Ranges" backUrl="/settings">
@@ -291,105 +405,16 @@ export function CompetitionTimeRangesList({
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'weight',
-                headerName: 'Weight',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/competition-time-ranges/${params.row.actions.id}`}
-                    />
-                    {['update-competition-time-range'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/competition-time-ranges/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-competition-time-range'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((timeRange) => ({
-              id: timeRange.id,
-              name: timeRange.name,
-              weight: timeRange.weight,
-              actions: timeRange,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No competition time ranges found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

@@ -11,8 +11,10 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -44,6 +46,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserGroupsToolbar } from './user-groups-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No user groups found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialUserGroups: UserGroupDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -57,8 +86,6 @@ export function UserGroupsList({
   user,
   isProfileView,
 }: Props) {
-  const initUserGroups = initialUserGroups.map(UserGroupMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const getUserGroups = useMemo(
     () => clientContainer.get<GetUserGroups>(SYMBOLS.GetUserGroups),
@@ -71,10 +98,15 @@ export function UserGroupsList({
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<UserGroup[]>(initUserGroups);
+  const [rows, setRows] = useState<UserGroup[]>(() =>
+    initialUserGroups.map(UserGroupMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUserGroups.length,
+    initPaginationOptions.nextCursor ? -1 : initialUserGroups.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -249,15 +281,18 @@ export function UserGroupsList({
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/groups/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/groups/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (userGroupId: string, userGroupName?: string) => {
+  const handleDeleteClick = useCallback((userGroupId: string, userGroupName?: string) => {
     setSelectedUserGroupId(userGroupId);
     setSelectedUserGroupName(userGroupName || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedUserGroupId) {
@@ -290,6 +325,79 @@ export function UserGroupsList({
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 3,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'guardName',
+        headerName: 'Guard Name',
+        flex: 1,
+        minWidth: 120,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/groups/${params.row.actions.id}`}
+            />
+            {['delete-user-group'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.entitlement.id, params.row.actions.name)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((userGroup) => ({
+        id: userGroup.id,
+        name: userGroup.name,
+        guardName: userGroup.guardName,
+        actions: userGroup,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader
@@ -314,98 +422,16 @@ export function UserGroupsList({
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 3,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'guardName',
-                headerName: 'Guard Name',
-                flex: 1,
-                minWidth: 120,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/groups/${params.row.actions.id}`}
-                    />
-                    {['delete-user-group'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(
-                            params.row.actions.entitlement.id,
-                            params.row.actions.name,
-                          )
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((userGroup) => ({
-              id: userGroup.id,
-              name: userGroup.name,
-              guardName: userGroup.guardName,
-              actions: userGroup,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No user groups found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

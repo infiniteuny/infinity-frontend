@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -42,6 +44,34 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CoreTeamsToolbar } from './core-teams-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No core teams found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+      group: false,
+    },
+  },
+};
+
 type Props = {
   initialCoreTeams: CoreTeamDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -53,8 +83,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     () => clientContainer.get<DeleteCoreTeam>(SYMBOLS.DeleteCoreTeam),
     [],
   );
-  const initCoreTeams = initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
@@ -62,10 +90,15 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
   const [selectedCoreTeamId, setSelectedCoreTeamId] = useState<string | null>(null);
   const [selectedCoreTeamYear, setSelectedCoreTeamYear] = useState<string | null>(null);
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CoreTeam[]>(initCoreTeams);
+  const [rows, setRows] = useState<CoreTeam[]>(() =>
+    initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initCoreTeams.length,
+    initPaginationOptions.nextCursor ? -1 : initialCoreTeams.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -222,15 +255,18 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/core-teams/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/core-teams/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (coreTeamId: string, coreTeamYear?: string) => {
+  const handleDeleteClick = useCallback((coreTeamId: string, coreTeamYear?: string) => {
     setSelectedCoreTeamId(coreTeamId);
     setSelectedCoreTeamYear(coreTeamYear || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedCoreTeamId) {
@@ -261,6 +297,90 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'year',
+        headerName: 'Year',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'isActive',
+        headerName: 'Active',
+        type: 'boolean',
+        flex: 0.5,
+        minWidth: 80,
+        filterable: true,
+        sortable: true,
+        filterOperators: [BooleanOperators.is],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/core-teams/${params.row.actions.id}`}
+            />
+            {['update-core-team'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/core-teams/${params.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-core-team'].some((p) => userPermissions.has(p)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.id, `${params.row.actions.year}`)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((coreTeam) => ({
+        id: coreTeam.id,
+        year: coreTeam.year,
+        isActive: coreTeam.isActive,
+        actions: coreTeam,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Core Teams">
@@ -278,107 +398,16 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'year',
-                headerName: 'Year',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                type: 'boolean',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/core-teams/${params.row.actions.id}`}
-                    />
-                    {['update-core-team'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/core-teams/${params.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-core-team'].some((p) => userPermissions.has(p)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, `${params.row.actions.year}`)
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((coreTeam) => ({
-              id: coreTeam.id,
-              year: coreTeam.year,
-              isActive: coreTeam.isActive,
-              actions: coreTeam,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No core teams found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  group: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

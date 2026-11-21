@@ -14,14 +14,16 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
-  GridSlots,
-  GridPaginationModel,
-  GridPaginationMeta,
-  GridRowParams,
-  GridActionsCellItem,
+  DataGridProps,
   GridActionsCell,
-  GridSortModel,
+  GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
+  GridPaginationMeta,
+  GridPaginationModel,
+  GridRowParams,
+  GridSlots,
+  GridSortModel,
   useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -49,6 +51,43 @@ import { DateTime } from 'luxon';
 import { convertDateFilterOperator } from '@infiniteuny/infinity-utils';
 import { UsersToolbar } from './users-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': {
+    display: 'none',
+  },
+  '.MuiDataGrid-row': {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No users found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+      username: false,
+      emailAddress: false,
+      phoneNumber: false,
+      isExtraordinary: false,
+    },
+  },
+};
+
 type Props = {
   initialUsers: UserDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -57,16 +96,17 @@ type Props = {
 export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
   const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
   const deleteUser = useMemo(() => clientContainer.get<DeleteUser>(SYMBOLS.DeleteUser), []);
-  const initUsers = initialUsers.map(UserMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<User[]>(initUsers);
+  const [rows, setRows] = useState<User[]>(() => initialUsers.map(UserMapper.fromDtoToDomain));
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUsers.length,
+    initPaginationOptions.nextCursor ? -1 : initialUsers.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -311,15 +351,18 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/users/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/users/${params.row.id}`);
+    },
+    [router],
+  );
 
-  const handleDeleteClick = (userId: string, userName: string) => {
+  const handleDeleteClick = useCallback((userId: string, userName: string) => {
     setSelectedUserId(userId);
     setSelectedUserName(userName);
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteAccept = async () => {
     if (!selectedUserId) {
@@ -353,6 +396,254 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 2,
+        minWidth: 300,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'username',
+        headerName: 'Username',
+        flex: 1,
+        minWidth: 150,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'emailAddress',
+        headerName: 'Email Address',
+        flex: 2,
+        minWidth: 300,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'phoneNumber',
+        headerName: 'Phone Number',
+        flex: 1,
+        minWidth: 150,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'studentId',
+        headerName: 'Student ID',
+        flex: 0.8,
+        minWidth: 120,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'major',
+        headerName: 'Major',
+        flex: 1.2,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: MajorFilterInput,
+          },
+        ],
+      },
+      {
+        field: 'faculty',
+        headerName: 'Faculty',
+        flex: 1.2,
+        minWidth: 170,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'startDate',
+        type: 'date',
+        headerName: 'Start Date',
+        flex: 0.7,
+        minWidth: 100,
+        filterable: true,
+        sortable: true,
+        filterOperators: [
+          DateOperators.is,
+          DateOperators.not,
+          DateOperators.after,
+          DateOperators.onOrAfter,
+          DateOperators.before,
+          DateOperators.onOrBefore,
+          DateOperators.isEmpty,
+          DateOperators.isNotEmpty,
+        ],
+        valueFormatter: (value) => {
+          if (!value) return 'N/A';
+          return DateTime.fromJSDate(value).toFormat('dd/LL/yyyy');
+        },
+      },
+      {
+        field: 'endDate',
+        type: 'date',
+        headerName: 'End Date',
+        flex: 0.7,
+        minWidth: 100,
+        filterable: true,
+        sortable: true,
+        filterOperators: [
+          DateOperators.is,
+          DateOperators.not,
+          DateOperators.after,
+          DateOperators.onOrAfter,
+          DateOperators.before,
+          DateOperators.onOrBefore,
+          DateOperators.isEmpty,
+          DateOperators.isNotEmpty,
+        ],
+        valueFormatter: (value) => {
+          if (!value) return 'N/A';
+          return DateTime.fromJSDate(value).toFormat('dd/LL/yyyy');
+        },
+      },
+      {
+        field: 'isMember',
+        type: 'boolean',
+        headerName: 'Member',
+        flex: 0.5,
+        minWidth: 80,
+        filterable: true,
+        sortable: true,
+        filterOperators: [BooleanOperators.is],
+      },
+      {
+        field: 'isExtraordinary',
+        type: 'boolean',
+        headerName: 'Extraordinary',
+        flex: 0.5,
+        minWidth: 80,
+        filterable: true,
+        sortable: true,
+        filterOperators: [BooleanOperators.is],
+      },
+      {
+        field: 'isActive',
+        type: 'boolean',
+        headerName: 'Active',
+        flex: 0.5,
+        minWidth: 80,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={
+                params.row.actions.id === userSession?.user?.id
+                  ? '/settings/profile'
+                  : `/users/${params.row.actions.id}`
+              }
+            />
+            {['update-user'].some((p) => userPermissions.has(p)) ||
+            (['update-own-user'].some((p) => userPermissions.has(p)) &&
+              params.row.actions.id === userSession?.user?.id) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={
+                  params.row.actions.id === userSession?.user?.id
+                    ? '/settings/profile/edit'
+                    : `/users/${params.row.actions.id}/edit`
+                }
+              />
+            ) : null}
+            {['delete-user'].some((p) => userPermissions.has(p)) &&
+            params.row.actions.id !== userSession?.user?.id ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(params.row.actions.id, params.row.actions.name)}
+              />
+            ) : null}
+            {['delete-own-user'].some((p) => userPermissions.has(p)) &&
+            params.row.actions.id === userSession?.user?.id ? (
+              <GridActionsCellItem
+                key="delete-own"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                component={Link}
+                href={`/settings/profile/delete`}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, userSession?.user?.id, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((user) => ({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        emailAddress: user.emailAddress,
+        phoneNumber: user.phoneNumber,
+        studentId: user.studentId,
+        major: (user.major as Major)?.name || 'N/A',
+        faculty: (user.major as Major)?.faculty?.name || 'N/A',
+        startDate: user.startDate,
+        endDate: user.endDate,
+        isMember: user.isMember,
+        isExtraordinary: user.isExtraordinary,
+        isActive: user.isActive,
+        actions: user,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Users">
@@ -370,282 +661,16 @@ export function UsersList({ initialUsers, initialPaginationOptions }: Props) {
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': {
-                display: 'none',
-              },
-              '.MuiDataGrid-row': {
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-                minWidth: 300,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'username',
-                headerName: 'Username',
-                flex: 1,
-                minWidth: 150,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'emailAddress',
-                headerName: 'Email Address',
-                flex: 2,
-                minWidth: 300,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'phoneNumber',
-                headerName: 'Phone Number',
-                flex: 1,
-                minWidth: 150,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'studentId',
-                headerName: 'Student ID',
-                flex: 0.8,
-                minWidth: 120,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'major',
-                headerName: 'Major',
-                flex: 1.2,
-                minWidth: 170,
-                filterable: true,
-                sortable: false,
-                filterOperators: [
-                  {
-                    label: 'is',
-                    value: 'is',
-                    getApplyFilterFn: (filterItem) => {
-                      if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                        return null;
-                      }
-
-                      return (value) => {
-                        return value === filterItem.value;
-                      };
-                    },
-                    InputComponent: MajorFilterInput,
-                  },
-                ],
-              },
-              {
-                field: 'faculty',
-                headerName: 'Faculty',
-                flex: 1.2,
-                minWidth: 170,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'startDate',
-                type: 'date',
-                headerName: 'Start Date',
-                flex: 0.7,
-                minWidth: 100,
-                filterable: true,
-                sortable: true,
-                filterOperators: [
-                  DateOperators.is,
-                  DateOperators.not,
-                  DateOperators.after,
-                  DateOperators.onOrAfter,
-                  DateOperators.before,
-                  DateOperators.onOrBefore,
-                  DateOperators.isEmpty,
-                  DateOperators.isNotEmpty,
-                ],
-                valueFormatter: (value) => {
-                  if (!value) return 'N/A';
-                  return DateTime.fromJSDate(value).toFormat('dd/LL/yyyy');
-                },
-              },
-              {
-                field: 'endDate',
-                type: 'date',
-                headerName: 'End Date',
-                flex: 0.7,
-                minWidth: 100,
-                filterable: true,
-                sortable: true,
-                filterOperators: [
-                  DateOperators.is,
-                  DateOperators.not,
-                  DateOperators.after,
-                  DateOperators.onOrAfter,
-                  DateOperators.before,
-                  DateOperators.onOrBefore,
-                  DateOperators.isEmpty,
-                  DateOperators.isNotEmpty,
-                ],
-                valueFormatter: (value) => {
-                  if (!value) return 'N/A';
-                  return DateTime.fromJSDate(value).toFormat('dd/LL/yyyy');
-                },
-              },
-              {
-                field: 'isMember',
-                type: 'boolean',
-                headerName: 'Member',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
-                field: 'isExtraordinary',
-                type: 'boolean',
-                headerName: 'Extraordinary',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
-                field: 'isActive',
-                type: 'boolean',
-                headerName: 'Active',
-                flex: 0.5,
-                minWidth: 80,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={
-                        params.row.actions.id === userSession?.user?.id
-                          ? '/settings/profile'
-                          : `/users/${params.row.actions.id}`
-                      }
-                    />
-                    {['update-user'].some((p) => userPermissions.has(p)) ||
-                    (['update-own-user'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.id === userSession?.user?.id) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={
-                          params.row.actions.id === userSession?.user?.id
-                            ? '/settings/profile/edit'
-                            : `/users/${params.row.actions.id}/edit`
-                        }
-                      />
-                    ) : null}
-                    {['delete-user'].some((p) => userPermissions.has(p)) &&
-                    params.row.actions.id !== userSession?.user?.id ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(params.row.actions.id, params.row.actions.name)
-                        }
-                      />
-                    ) : null}
-                    {['delete-own-user'].some((p) => userPermissions.has(p)) &&
-                    params.row.actions.id === userSession?.user?.id ? (
-                      <GridActionsCellItem
-                        key="delete-own"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        component={Link}
-                        href={`/settings/profile/delete`}
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((user) => ({
-              id: user.id,
-              name: user.name,
-              username: user.username,
-              emailAddress: user.emailAddress,
-              phoneNumber: user.phoneNumber,
-              studentId: user.studentId,
-              major: (user.major as Major)?.name || 'N/A',
-              faculty: (user.major as Major)?.faculty?.name || 'N/A',
-              startDate: user.startDate,
-              endDate: user.endDate,
-              isMember: user.isMember,
-              isExtraordinary: user.isExtraordinary,
-              isActive: user.isActive,
-              actions: user,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No users found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                  username: false,
-                  emailAddress: false,
-                  phoneNumber: false,
-                  isExtraordinary: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

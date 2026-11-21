@@ -23,8 +23,10 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -42,6 +44,26 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PermissionsToolbar } from './permissions-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No permissions found.' },
+  loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: { columnVisibilityModel: { id: false } },
+};
+
 type Props = {
   initialPermissions: PermissionDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -56,14 +78,17 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
     () => clientContainer.get<DeletePermission>(SYMBOLS.DeletePermission),
     [],
   );
-  const initPermissions = initialPermissions.map(PermissionMapper.fromDtoToDomain);
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userPermissions = useUserPermissions();
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<Permission[]>(initPermissions);
+  const [rows, setRows] = useState<Permission[]>(() =>
+    initialPermissions.map(PermissionMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initPermissions.length,
+    initPaginationOptions.nextCursor ? -1 : initialPermissions.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -194,14 +219,17 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
     setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
     setFilterModel(m);
   }, []);
-  const handleRowClick = (p: GridRowParams) => {
-    router.push(`/permissions/${p.row.id}`);
-  };
-  const handleDeleteClick = (id: string, name?: string) => {
+  const handleRowClick = useCallback(
+    (p: GridRowParams) => {
+      router.push(`/permissions/${p.row.id}`);
+    },
+    [router],
+  );
+  const handleDeleteClick = useCallback((id: string, name?: string) => {
     setSelectedPermissionId(id);
     setSelectedPermissionName(name || null);
     setOpenDeleteDialog(true);
-  };
+  }, []);
   const handleDeleteAccept = async () => {
     if (!selectedPermissionId) return;
     const r = await deletePermission.execute(selectedPermissionId);
@@ -227,6 +255,88 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
     }, 1000);
   };
 
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 3,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'guardName',
+        headerName: 'Guard Name',
+        flex: 1,
+        minWidth: 120,
+        filterable: false,
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (p) => (
+          <GridActionsCell {...p}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/permissions/${p.row.actions.id}`}
+            />
+            {['update-permission'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="edit"
+                showInMenu
+                icon={<EditRounded />}
+                label="Edit"
+                component={Link}
+                href={`/permissions/${p.row.actions.id}/edit`}
+              />
+            ) : null}
+            {['delete-permission'].some((x) => userPermissions.has(x)) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((x) => ({
+        id: x.id,
+        name: x.name,
+        guardName: x.guardName,
+        createdAt: x.createdAt.toLocaleDateString(),
+        actions: x,
+      })),
+    [rows],
+  );
+
   return (
     <>
       <SectionHeader title="Permissions">
@@ -244,93 +354,16 @@ export function PermissionsList({ initialPermissions, initialPaginationOptions }
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 3,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'guardName',
-                headerName: 'Guard Name',
-                flex: 1,
-                minWidth: 120,
-                filterable: false,
-                sortable: false,
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (p) => (
-                  <GridActionsCell {...p}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/permissions/${p.row.actions.id}`}
-                    />
-                    {['update-permission'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="edit"
-                        showInMenu
-                        icon={<EditRounded />}
-                        label="Edit"
-                        component={Link}
-                        href={`/permissions/${p.row.actions.id}/edit`}
-                      />
-                    ) : null}
-                    {['delete-permission'].some((x) => userPermissions.has(x)) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() => handleDeleteClick(p.row.actions.id, p.row.actions.name)}
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((x) => ({
-              id: x.id,
-              name: x.name,
-              guardName: x.guardName,
-              createdAt: x.createdAt.toLocaleDateString(),
-              actions: x,
-            }))}
-            slots={{ noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'] }}
-            slotProps={{
-              noRowsOverlay: { text: 'No permissions found.' },
-              loadingOverlay: { variant: 'skeleton', noRowsVariant: 'skeleton' },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{ columns: { columnVisibilityModel: { id: false } } }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}

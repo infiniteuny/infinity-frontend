@@ -12,8 +12,10 @@ import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import {
   DataGrid,
+  DataGridProps,
   GridActionsCell,
   GridActionsCellItem,
+  GridColDef,
   GridFilterModel,
   GridPaginationMeta,
   GridPaginationModel,
@@ -48,6 +50,33 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserCommunityGroupsToolbar } from './user-community-groups-toolbar';
 
+const DATA_GRID_SX: DataGridProps['sx'] = {
+  '.MuiTablePagination-displayedRows': { display: 'none' },
+  '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
+};
+
+const DATA_GRID_SLOTS: Partial<GridSlots> = {
+  noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
+};
+
+const DATA_GRID_SLOT_PROPS: DataGridProps['slotProps'] = {
+  noRowsOverlay: { text: 'No user community groups found.' },
+  loadingOverlay: {
+    variant: 'skeleton',
+    noRowsVariant: 'skeleton',
+  },
+};
+
+const DATA_GRID_PAGE_SIZE_OPTIONS = [25, 50, 100];
+
+const DATA_GRID_INITIAL_STATE: DataGridProps['initialState'] = {
+  columns: {
+    columnVisibilityModel: {
+      id: false,
+    },
+  },
+};
+
 type Props = {
   initialUserCommunityGroups: UserCommunityGroupDto[];
   initialPaginationOptions: PaginationOptionsDto;
@@ -69,19 +98,20 @@ export function UserCommunityGroupsList({
     () => clientContainer.get<DeleteCommunityGroupMember>(SYMBOLS.DeleteCommunityGroupMember),
     [],
   );
-  const initUserCommunityGroups = initialUserCommunityGroups.map(
-    UserCommunityGroupMapper.fromDtoToDomain,
-  );
-  const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const parsedUser = useMemo(() => UserMapper.fromDtoToDomain(user), [user]);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
 
+  const [initPaginationOptions] = useState(() =>
+    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<UserCommunityGroup[]>(initUserCommunityGroups);
+  const [rows, setRows] = useState<UserCommunityGroup[]>(() =>
+    initialUserCommunityGroups.map(UserCommunityGroupMapper.fromDtoToDomain),
+  );
   const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initUserCommunityGroups.length,
+    initPaginationOptions.nextCursor ? -1 : initialUserCommunityGroups.length,
   );
   const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -275,11 +305,14 @@ export function UserCommunityGroupsList({
     setFilterModel(newFilterModel);
   }, []);
 
-  const handleDeleteClick = (userCommunityGroupId: string, userCommunityGroupName?: string) => {
-    setSelectedUserCommunityGroupId(userCommunityGroupId);
-    setSelectedUserCommunityGroupName(userCommunityGroupName || null);
-    setOpenDeleteDialog(true);
-  };
+  const handleDeleteClick = useCallback(
+    (userCommunityGroupId: string, userCommunityGroupName?: string) => {
+      setSelectedUserCommunityGroupId(userCommunityGroupId);
+      setSelectedUserCommunityGroupName(userCommunityGroupName || null);
+      setOpenDeleteDialog(true);
+    },
+    [],
+  );
 
   const handleDeleteAccept = async () => {
     if (!selectedUserCommunityGroupId) {
@@ -321,9 +354,98 @@ export function UserCommunityGroupsList({
     }, 1000);
   };
 
-  const handleRowClick = (params: GridRowParams) => {
-    router.push(`/community-groups/${params.row.id}`);
-  };
+  const handleRowClick = useCallback(
+    (params: GridRowParams) => {
+      router.push(`/community-groups/${params.row.id}`);
+    },
+    [router],
+  );
+
+  const columns = useMemo<GridColDef[]>(
+    () => [
+      {
+        field: 'id',
+        headerName: 'ID',
+        flex: 1,
+        minWidth: 300,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        headerName: 'Name',
+        flex: 2,
+        minWidth: 200,
+        filterable: true,
+        sortable: true,
+        filterOperators: [StringOperators.contains],
+      },
+      {
+        field: 'priority',
+        headerName: 'Priority',
+        flex: 1,
+        minWidth: 100,
+        filterable: false,
+        sortable: true,
+      },
+      {
+        field: 'isActive',
+        headerName: 'Active',
+        type: 'boolean',
+        flex: 1,
+        minWidth: 80,
+        filterable: true,
+        sortable: true,
+        filterOperators: [BooleanOperators.is],
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        flex: 0.5,
+        minWidth: 50,
+        maxWidth: 50,
+        renderCell: (params) => (
+          <GridActionsCell {...params}>
+            <GridActionsCellItem
+              key="view"
+              showInMenu
+              icon={<VisibilityRounded />}
+              label="View"
+              component={Link}
+              href={`/community-groups/${params.row.actions.id}`}
+            />
+            {['delete-community-group-member'].some((p) => userPermissions.has(p)) ||
+            (['delete-own-community-group-member'].some((p) => userPermissions.has(p)) &&
+              parsedUser.id === userSession?.user?.id) ? (
+              <GridActionsCellItem
+                key="delete"
+                showInMenu
+                icon={<DeleteRounded />}
+                label="Delete"
+                onClick={() =>
+                  handleDeleteClick(params.row.actions.membership.id, params.row.actions.name)
+                }
+              />
+            ) : null}
+          </GridActionsCell>
+        ),
+      },
+    ],
+    [userPermissions, userSession?.user?.id, parsedUser.id, handleDeleteClick],
+  );
+
+  const gridRows = useMemo(
+    () =>
+      rows.map((userCommunityGroup) => ({
+        id: userCommunityGroup.id,
+        name: userCommunityGroup.name,
+        priority: userCommunityGroup.priority,
+        isActive: userCommunityGroup.isActive,
+        actions: userCommunityGroup,
+      })),
+    [rows],
+  );
 
   return (
     <>
@@ -349,111 +471,16 @@ export function UserCommunityGroupsList({
       <Box component="section" className="mb-6 w-full px-6">
         <NoSsr>
           <DataGrid
-            sx={{
-              '.MuiTablePagination-displayedRows': { display: 'none' },
-              '.MuiDataGrid-row': { '&:hover': { cursor: 'pointer' } },
-            }}
-            columns={[
-              {
-                field: 'id',
-                headerName: 'ID',
-                flex: 1,
-                minWidth: 300,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'name',
-                headerName: 'Name',
-                flex: 2,
-                minWidth: 200,
-                filterable: true,
-                sortable: true,
-                filterOperators: [StringOperators.contains],
-              },
-              {
-                field: 'priority',
-                headerName: 'Priority',
-                flex: 1,
-                minWidth: 100,
-                filterable: false,
-                sortable: true,
-              },
-              {
-                field: 'isActive',
-                headerName: 'Active',
-                type: 'boolean',
-                flex: 1,
-                minWidth: 80,
-                filterable: true,
-                sortable: true,
-                filterOperators: [BooleanOperators.is],
-              },
-              {
-                field: 'actions',
-                type: 'actions',
-                headerName: '',
-                flex: 0.5,
-                minWidth: 50,
-                maxWidth: 50,
-                renderCell: (params) => (
-                  <GridActionsCell {...params}>
-                    <GridActionsCellItem
-                      key="view"
-                      showInMenu
-                      icon={<VisibilityRounded />}
-                      label="View"
-                      component={Link}
-                      href={`/community-groups/${params.row.actions.id}`}
-                    />
-                    {['delete-community-group-member'].some((p) => userPermissions.has(p)) ||
-                    (['delete-own-community-group-member'].some((p) => userPermissions.has(p)) &&
-                      parsedUser.id === userSession?.user?.id) ? (
-                      <GridActionsCellItem
-                        key="delete"
-                        showInMenu
-                        icon={<DeleteRounded />}
-                        label="Delete"
-                        onClick={() =>
-                          handleDeleteClick(
-                            params.row.actions.membership.id,
-                            params.row.actions.name,
-                          )
-                        }
-                      />
-                    ) : null}
-                  </GridActionsCell>
-                ),
-              },
-            ]}
-            rows={rows.map((userCommunityGroup) => ({
-              id: userCommunityGroup.id,
-              name: userCommunityGroup.name,
-              priority: userCommunityGroup.priority,
-              isActive: userCommunityGroup.isActive,
-              actions: userCommunityGroup,
-            }))}
-            slots={{
-              noRowsOverlay: EmptyRowOverlay as GridSlots['noRowsOverlay'],
-            }}
-            slotProps={{
-              noRowsOverlay: { text: 'No user community groups found.' },
-              loadingOverlay: {
-                variant: 'skeleton',
-                noRowsVariant: 'skeleton',
-              },
-            }}
-            pageSizeOptions={[25, 50, 100]}
+            sx={DATA_GRID_SX}
+            columns={columns}
+            rows={gridRows}
+            slots={DATA_GRID_SLOTS}
+            slotProps={DATA_GRID_SLOT_PROPS}
+            pageSizeOptions={DATA_GRID_PAGE_SIZE_OPTIONS}
             paginationMode="server"
             sortingMode="server"
             filterMode="server"
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  id: false,
-                },
-              },
-            }}
+            initialState={DATA_GRID_INITIAL_STATE}
             loading={isLoading}
             rowCount={rowCount}
             apiRef={dataGridApiRef}
