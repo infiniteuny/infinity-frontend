@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { Icon } from '@infiniteuny/infinity-ui';
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { PathMenu } from '@infiniteuny/infinity-domain';
-import { useMemo, useSyncExternalStore } from 'react';
-import { useInternalStore, useInternalStoreContext } from '@app/presentation/hooks';
+import { useMemo } from 'react';
+import { useInternalStore, useSidebarExtended } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
 import { useShallow } from 'zustand/shallow';
 
@@ -13,12 +13,7 @@ type Props = {
 
 export function SidebarMenu({ menu }: Props) {
   const path = usePathname();
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
   const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   const selected = useMemo(() => {

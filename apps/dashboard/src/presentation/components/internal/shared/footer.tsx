@@ -1,16 +1,10 @@
 'use client';
 
 import { Container, Typography } from '@mui/material';
-import { useInternalStoreContext } from '@app/presentation/hooks';
-import { useSyncExternalStore } from 'react';
+import { useSidebarExtended } from '@app/presentation/hooks';
 
 export function InternalFooter() {
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
 
   return (
     <Container

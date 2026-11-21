@@ -5,18 +5,14 @@ import { AppBar, IconButton, useMediaQuery } from '@mui/material';
 import { InfiniteLogo, InfiniteTextLogo } from '@infiniteuny/infinity-ui';
 import { InternalNavbar } from './navbar';
 import { MenuRounded } from '@mui/icons-material';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useSidebarExtended } from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
 export function InternalHeader() {
   const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
-  const [sidebarExtended, sidebarHovered, sidebarOpened, setSidebarOpenedState] = useInternalStore(
-    useShallow((s) => [
-      s.sidebarExtended,
-      s.sidebarHovered,
-      s.sidebarOpened,
-      s.setSidebarOpenedState,
-    ]),
+  const sidebarExtended = useSidebarExtended();
+  const [sidebarHovered, sidebarOpened, setSidebarOpenedState] = useInternalStore(
+    useShallow((s) => [s.sidebarHovered, s.sidebarOpened, s.setSidebarOpenedState]),
   );
 
   return (

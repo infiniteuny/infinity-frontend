@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import { ExpandLessRounded, ExpandMoreRounded } from '@mui/icons-material';
 import { Icon } from '@infiniteuny/infinity-ui';
-import { MouseEvent, useMemo, useState, useSyncExternalStore } from 'react';
+import { MouseEvent, useMemo, useState } from 'react';
 import { NestedMenu, PathMenu } from '@infiniteuny/infinity-domain';
-import { useInternalStore, useInternalStoreContext } from '@app/presentation/hooks';
+import { useInternalStore, useSidebarExtended } from '@app/presentation/hooks';
 import { usePathname } from 'next/navigation';
 import { useShallow } from 'zustand/shallow';
 
@@ -28,12 +28,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
   const path = usePathname();
   const mediaQueryGreaterThanLg = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const [manualExpanded, setManualExpanded] = useState(false);
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
   const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   const active = useMemo(() => {
@@ -102,12 +97,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
 
 function SidebarDropdownItemMenu({ menu }: ItemProps) {
   const path = usePathname();
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
   const sidebarHovered = useInternalStore(useShallow((s) => s.sidebarHovered));
 
   const selected = useMemo(() => {

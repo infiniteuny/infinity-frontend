@@ -6,8 +6,9 @@ export interface InternalSessionStates {
   session: Session | undefined;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface InternalSessionActions {}
+export interface InternalSessionActions {
+  setSession: (session: Session | undefined) => void;
+}
 
 type InternalSessionSlice = StateCreator<
   InternalStates & InternalActions,
@@ -17,10 +18,11 @@ type InternalSessionSlice = StateCreator<
 >;
 
 export function createInternalSessionSlice(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ...[_]: Parameters<InternalSessionSlice>
+  ...[set]: Parameters<InternalSessionSlice>
 ): ReturnType<InternalSessionSlice> {
   return {
     session: undefined,
+
+    setSession: (session: Session | undefined) => set(() => ({ session })),
   };
 }

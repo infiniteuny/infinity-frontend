@@ -1,20 +1,15 @@
 'use client';
 
 import { Container } from '@mui/material';
-import { ReactNode, useSyncExternalStore } from 'react';
-import { useInternalStoreContext } from '@app/presentation/hooks';
+import { ReactNode } from 'react';
+import { useSidebarExtended } from '@app/presentation/hooks';
 
 type Props = {
   children: ReactNode;
 };
 
 export function InternalMainContainer({ children }: Props) {
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
 
   return (
     <Container

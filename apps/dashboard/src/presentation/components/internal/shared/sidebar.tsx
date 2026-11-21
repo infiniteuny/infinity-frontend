@@ -18,12 +18,8 @@ import { NestedMenu, PathMenu } from '@infiniteuny/infinity-domain';
 import { sanitizeMenus } from '@infiniteuny/infinity-utils';
 import { SidebarDropdownMenu } from './sidebar-dropdown-menu';
 import { SidebarMenu } from './sidebar-menu';
-import { useMemo, useSyncExternalStore } from 'react';
-import {
-  useInternalStore,
-  useInternalStoreContext,
-  useUserPermissions,
-} from '@app/presentation/hooks';
+import { useMemo } from 'react';
+import { useInternalStore, useSidebarExtended, useUserPermissions } from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
 type Props = {
@@ -31,12 +27,7 @@ type Props = {
 };
 
 export function InternalSidebar({ menus }: Props) {
-  const store = useInternalStoreContext();
-  const sidebarExtended = useSyncExternalStore(
-    store.subscribe,
-    () => store.getState().sidebarExtended,
-    () => true,
-  );
+  const sidebarExtended = useSidebarExtended();
   const [
     sidebarOpened,
     sidebarHovered,
