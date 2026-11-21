@@ -7,6 +7,7 @@ import {
   CompetitionScaleFilterInput,
   EmptyRowOverlay,
   SectionHeader,
+  StatusChip,
   StringOperators,
   TeamFilterInput,
 } from '@app/presentation/components/internal/shared';
@@ -325,6 +326,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
         filterable: true,
         sortable: true,
         filterOperators: [StringOperators.equals],
+        renderCell: (params) => <StatusChip status={String(params.value ?? '')} />,
       },
       {
         field: 'actions',

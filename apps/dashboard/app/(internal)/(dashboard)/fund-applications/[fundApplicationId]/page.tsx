@@ -19,7 +19,11 @@ import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import {
+  InternalMain,
+  SectionHeader,
+  StatusChip,
+} from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -149,7 +153,11 @@ export default async function SingleFundApplicationPage({ params }: Props) {
           { label: title, url: `/fund-applications/${fundApplication.id}` },
         ]}
       >
-        <SectionHeader title={title} backUrl="/fund-applications">
+        <SectionHeader
+          title={title}
+          badge={<StatusChip status={fundApplication.status} />}
+          backUrl="/fund-applications"
+        >
           <FundApplicationToolbar
             fundApplication={
               FundApplicationMapper.fromDomainToDto(fundApplication) as FundApplicationDto

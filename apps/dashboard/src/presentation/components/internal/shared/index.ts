@@ -15,6 +15,7 @@ export * from './pdf-viewer-dynamic';
 export * from './section-header';
 export * from './sidebar';
 export * from './single-entity-toolbar';
+export * from './status-chip';
 export * from './store-provider';
 export * from './view-tile';
 

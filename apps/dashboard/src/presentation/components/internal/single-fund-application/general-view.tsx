@@ -17,10 +17,11 @@ export function GeneralView({ fundApplication }: Props) {
         </Toolbar>
         <Grid container spacing={0.5}>
           <Grid size={12}>
-            <ViewTile title="Team" subtitle={fundApplication.team?.name ?? 'N/A'} position="top" />
-          </Grid>
-          <Grid size={12}>
-            <ViewTile title="Status" subtitle={fundApplication.status} position="bottom" />
+            <ViewTile
+              title="Team"
+              subtitle={fundApplication.team?.name ?? 'N/A'}
+              position="single"
+            />
           </Grid>
         </Grid>
       </Container>

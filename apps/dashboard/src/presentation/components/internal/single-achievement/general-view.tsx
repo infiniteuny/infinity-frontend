@@ -20,9 +20,6 @@ export function GeneralView({ achievement }: Props) {
             <ViewTile title="Team" subtitle={achievement.team?.name ?? 'N/A'} position="top" />
           </Grid>
           <Grid size={12}>
-            <ViewTile title="Status" subtitle={achievement.status} position="middle" />
-          </Grid>
-          <Grid size={12}>
             <ViewTile title="Description" subtitle={achievement.description} position="bottom" />
           </Grid>
         </Grid>

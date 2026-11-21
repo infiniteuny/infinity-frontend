@@ -24,7 +24,11 @@ import {
   GetCompetitionTimeRanges,
   GetSession,
 } from '@infiniteuny/infinity-application';
-import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
+import {
+  InternalMain,
+  SectionHeader,
+  StatusChip,
+} from '@app/presentation/components/internal/shared';
 import { match } from 'effect/Either';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
@@ -147,7 +151,11 @@ export default async function SingleAchievementPage({ params }: Props) {
           { label: title, url: `/achievements/${achievement.id}` },
         ]}
       >
-        <SectionHeader title={title} backUrl="/achievements">
+        <SectionHeader
+          title={title}
+          badge={<StatusChip status={achievement.status} />}
+          backUrl="/achievements"
+        >
           <AchievementToolbar
             achievement={AchievementMapper.fromDomainToDto(achievement) as AchievementDto}
           />
