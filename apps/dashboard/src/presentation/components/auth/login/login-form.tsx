@@ -2,6 +2,7 @@
 
 import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
+import { InfiniteTextLogo } from '@infiniteuny/infinity-ui';
 import { Login } from '@infiniteuny/infinity-application';
 import { LoginRounded } from '@mui/icons-material';
 import { match } from 'effect/Either';
@@ -51,12 +52,17 @@ export function LoginForm({ callbackUrl }: Props) {
           }),
         }),
       ]}
-      className="mx-auto max-w-sm rounded-xl p-0 sm:p-8"
+      className="mx-auto w-full max-w-md rounded-2xl p-0 sm:p-10"
     >
+      <InfiniteTextLogo
+        width={150}
+        height={46}
+        className="fill-infinite-light-green dark:fill-infinite-dark-green mx-auto mb-6 block"
+      />
       <Typography component="h1" variant="h5" className="text-center font-medium">
         Login
       </Typography>
-      <Typography component="p" className="my-2 text-center text-sm">
+      <Typography component="p" color="text.secondary" className="my-2 text-center text-sm">
         to continue to the app
       </Typography>
 
