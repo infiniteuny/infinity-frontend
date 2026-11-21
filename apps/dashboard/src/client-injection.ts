@@ -119,7 +119,6 @@ import {
   DeleteCompetitionScale,
   DeleteCompetitionTeamType,
   DeleteCompetitionTimeRange,
-  DeleteConfig,
   DeleteCommunityGroup,
   DeleteCommunityGroupAdmin,
   DeleteCommunityGroupAdminMember,
@@ -145,28 +144,18 @@ import {
   DeleteUserPersona,
   ExtendUserMembership,
   GetAchievements,
-  GetCommunityGroup,
   GetCommunityGroupAdmins,
   GetCommunityGroups,
   GetCompetition,
   GetCompetitionInstance,
   GetCompetitionInstances,
-  GetCompetitionOrganizerType,
   GetCompetitionOrganizerTypes,
-  GetCompetitionOutput,
   GetCompetitions,
   GetCompetitionOutputs,
-  GetCompetitionRank,
   GetCompetitionRanks,
-  GetCompetitionScale,
   GetCompetitionScales,
-  GetCompetitionTeamType,
   GetCompetitionTeamTypes,
-  GetCompetitionTimeRange,
   GetCompetitionTimeRanges,
-  GetConfig,
-  GetConfigs,
-  GetCoreTeamDivision,
   GetCoreTeamDivisions,
   GetCoreTeams,
   GetDegree,
@@ -181,7 +170,6 @@ import {
   GetPermissions,
   GetUserPermissions,
   GetUserPersonas,
-  GetPersona,
   GetPersonas,
   GetProjectGalleries,
   GetSidebarExtendedState,
@@ -223,12 +211,9 @@ import {
   UpdateUser,
   Login,
   Logout,
-  GetCoreTeamMember,
   GetCoreTeamMembers,
   GetCommunityGroupAdminMembers,
-  GetCommunityGroupAdminMember,
   GetCommunityGroupMembers,
-  GetSession,
 } from '@infiniteuny/infinity-application';
 import {
   AuthClientDataSource,
@@ -327,7 +312,6 @@ clientContainer
 clientContainer
   .bind<DeleteCompetitionTimeRange>(SYMBOLS.DeleteCompetitionTimeRange)
   .to(DeleteCompetitionTimeRange);
-clientContainer.bind<DeleteConfig>(SYMBOLS.DeleteConfig).to(DeleteConfig);
 clientContainer.bind<DeleteCommunityGroup>(SYMBOLS.DeleteCommunityGroup).to(DeleteCommunityGroup);
 clientContainer
   .bind<DeleteCommunityGroupAdmin>(SYMBOLS.DeleteCommunityGroupAdmin)
@@ -363,7 +347,6 @@ clientContainer.bind<DeleteUserPermission>(SYMBOLS.DeleteUserPermission).to(Dele
 clientContainer.bind<DeleteUserPersona>(SYMBOLS.DeleteUserPersona).to(DeleteUserPersona);
 clientContainer.bind<ExtendUserMembership>(SYMBOLS.ExtendUserMembership).to(ExtendUserMembership);
 clientContainer.bind<GetAchievements>(SYMBOLS.GetAchievements).to(GetAchievements);
-clientContainer.bind<GetCommunityGroup>(SYMBOLS.GetCommunityGroup).to(GetCommunityGroup);
 clientContainer.bind<GetCommunityGroups>(SYMBOLS.GetCommunityGroups).to(GetCommunityGroups);
 clientContainer
   .bind<GetCommunityGroupMembers>(SYMBOLS.GetCommunityGroupMembers)
@@ -371,9 +354,6 @@ clientContainer
 clientContainer
   .bind<GetCommunityGroupAdmins>(SYMBOLS.GetCommunityGroupAdmins)
   .to(GetCommunityGroupAdmins);
-clientContainer
-  .bind<GetCommunityGroupAdminMember>(SYMBOLS.GetCommunityGroupAdminMember)
-  .to(GetCommunityGroupAdminMember);
 clientContainer
   .bind<GetCommunityGroupAdminMembers>(SYMBOLS.GetCommunityGroupAdminMembers)
   .to(GetCommunityGroupAdminMembers);
@@ -385,38 +365,22 @@ clientContainer
   .bind<GetCompetitionInstances>(SYMBOLS.GetCompetitionInstances)
   .to(GetCompetitionInstances);
 clientContainer
-  .bind<GetCompetitionOrganizerType>(SYMBOLS.GetCompetitionOrganizerType)
-  .to(GetCompetitionOrganizerType);
-clientContainer
   .bind<GetCompetitionOrganizerTypes>(SYMBOLS.GetCompetitionOrganizerTypes)
   .to(GetCompetitionOrganizerTypes);
-clientContainer.bind<GetCompetitionOutput>(SYMBOLS.GetCompetitionOutput).to(GetCompetitionOutput);
 clientContainer.bind<GetCompetitions>(SYMBOLS.GetCompetitions).to(GetCompetitions);
 clientContainer
   .bind<GetCompetitionOutputs>(SYMBOLS.GetCompetitionOutputs)
   .to(GetCompetitionOutputs);
 clientContainer.bind<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks).to(GetCompetitionRanks);
-clientContainer.bind<GetCompetitionRank>(SYMBOLS.GetCompetitionRank).to(GetCompetitionRank);
-clientContainer.bind<GetCompetitionScale>(SYMBOLS.GetCompetitionScale).to(GetCompetitionScale);
 clientContainer.bind<GetCompetitionScales>(SYMBOLS.GetCompetitionScales).to(GetCompetitionScales);
-clientContainer
-  .bind<GetCompetitionTeamType>(SYMBOLS.GetCompetitionTeamType)
-  .to(GetCompetitionTeamType);
 clientContainer
   .bind<GetCompetitionTeamTypes>(SYMBOLS.GetCompetitionTeamTypes)
   .to(GetCompetitionTeamTypes);
 clientContainer
-  .bind<GetCompetitionTimeRange>(SYMBOLS.GetCompetitionTimeRange)
-  .to(GetCompetitionTimeRange);
-clientContainer
   .bind<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges)
   .to(GetCompetitionTimeRanges);
-clientContainer.bind<GetConfig>(SYMBOLS.GetConfig).to(GetConfig);
-clientContainer.bind<GetConfigs>(SYMBOLS.GetConfigs).to(GetConfigs);
-clientContainer.bind<GetCoreTeamDivision>(SYMBOLS.GetCoreTeamDivision).to(GetCoreTeamDivision);
 clientContainer.bind<GetCoreTeamDivisions>(SYMBOLS.GetCoreTeamDivisions).to(GetCoreTeamDivisions);
 clientContainer.bind<GetCoreTeams>(SYMBOLS.GetCoreTeams).to(GetCoreTeams);
-clientContainer.bind<GetCoreTeamMember>(SYMBOLS.GetCoreTeamMember).to(GetCoreTeamMember);
 clientContainer.bind<GetCoreTeamMembers>(SYMBOLS.GetCoreTeamMembers).to(GetCoreTeamMembers);
 clientContainer.bind<GetDegree>(SYMBOLS.GetDegree).to(GetDegree);
 clientContainer.bind<GetDegrees>(SYMBOLS.GetDegrees).to(GetDegrees);
@@ -428,10 +392,8 @@ clientContainer.bind<GetGroupPermissions>(SYMBOLS.GetGroupPermissions).to(GetGro
 clientContainer.bind<GetMajor>(SYMBOLS.GetMajor).to(GetMajor);
 clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
-clientContainer.bind<GetPersona>(SYMBOLS.GetPersona).to(GetPersona);
 clientContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
-clientContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 clientContainer
   .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
   .to(GetSidebarExtendedState);
