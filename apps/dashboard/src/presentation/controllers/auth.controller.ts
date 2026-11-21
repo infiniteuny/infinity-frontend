@@ -11,17 +11,13 @@ export interface AuthController {
 
 @injectable()
 export class AuthControllerImpl implements AuthController {
-  private readonly authDataSource: AuthServerDataSource;
+  private readonly handlers: ReturnType<typeof toNextJsHandler>;
 
   public constructor(
     @inject(SYMBOLS.AuthDataSource)
     authDataSource: AuthServerDataSource,
   ) {
-    this.authDataSource = authDataSource;
-  }
-
-  private get handlers() {
-    return toNextJsHandler(this.authDataSource);
+    this.handlers = toNextJsHandler(authDataSource);
   }
 
   public async get(request: NextRequest): Promise<Response> {

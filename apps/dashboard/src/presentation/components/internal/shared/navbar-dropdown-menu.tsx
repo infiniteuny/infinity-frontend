@@ -15,17 +15,30 @@ import {
   Paper,
 } from '@mui/material';
 import { NestedMenu, PathMenu, UrlMenu } from '@infiniteuny/infinity-domain';
-import { KeyboardEvent, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import {
+  KeyboardEvent,
+  MouseEvent,
+  SyntheticEvent,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 
 type Props = {
   menu: NestedMenu<Omit<PathMenu, 'icon'> | Omit<UrlMenu, 'icon'>>;
 };
 
 export function NavbarDropdownMenu({ menu }: Props) {
+  const id = useId();
+  const buttonId = `${id}-button`;
+  const menuId = `${id}-menu`;
   const anchorRef = useRef<HTMLButtonElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
+  const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
     setOpen((open) => !open);
   };
 
@@ -62,8 +75,8 @@ export function NavbarDropdownMenu({ menu }: Props) {
         <ListItemButton
           ref={anchorRef}
           component="button"
-          id="dropdown-button"
-          aria-controls={open ? 'dropdown-menu' : undefined}
+          id={buttonId}
+          aria-controls={open ? menuId : undefined}
           aria-expanded={open ? 'true' : undefined}
           aria-haspopup="true"
           onClick={handleOpen}
@@ -79,8 +92,7 @@ export function NavbarDropdownMenu({ menu }: Props) {
       </ListItem>
       <Popper
         open={open}
-        // eslint-disable-next-line react-hooks/refs
-        anchorEl={anchorRef.current}
+        anchorEl={anchorEl}
         role={undefined}
         placement="bottom"
         disablePortal
@@ -92,8 +104,8 @@ export function NavbarDropdownMenu({ menu }: Props) {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
                   autoFocusItem={open}
-                  id="dropdown-menu"
-                  aria-labelledby="dropdown-button"
+                  id={menuId}
+                  aria-labelledby={buttonId}
                   onKeyDown={handleListKeyDown}
                 >
                   {menu.items

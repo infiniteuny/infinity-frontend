@@ -34,7 +34,7 @@ export function InternalMain({ breadcrumbs, children }: Props) {
                 key={index}
                 href={breadcrumb.url}
                 underline="hover"
-                color="text.disabled"
+                color="text.secondary"
               >
                 {breadcrumb.label}
               </Link>

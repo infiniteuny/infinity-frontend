@@ -54,6 +54,7 @@ export function SidebarDropdownMenu({ menu }: Props) {
       <ListItem>
         <ListItemButton
           component="button"
+          aria-expanded={expanded}
           sx={{
             bgcolor:
               active && (mediaQueryGreaterThanLg ? sidebarExtended || sidebarHovered : true)

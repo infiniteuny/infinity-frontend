@@ -63,6 +63,7 @@ export function ClickableViewTile({
       component={href ? Link : 'button'}
       href={href}
       target={target}
+      rel={target === '_blank' ? 'noopener noreferrer' : undefined}
       onClick={onClick}
     >
       {icon ? (

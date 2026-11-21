@@ -462,7 +462,10 @@ serverContainer.bind<UpdateTeam>(SYMBOLS.UpdateTeam).to(UpdateTeam);
 serverContainer.bind<UpdateTestimonial>(SYMBOLS.UpdateTestimonial).to(UpdateTestimonial);
 
 // Controllers
-serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerImpl);
+serverContainer
+  .bind<AuthController>(SYMBOLS.AuthController)
+  .to(AuthControllerImpl)
+  .inSingletonScope();
 
 // Repositories
 serverContainer
