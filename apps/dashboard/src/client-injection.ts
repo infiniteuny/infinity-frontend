@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Container } from 'inversify';
 import {
   AchievementRepository,
@@ -188,6 +189,7 @@ import {
   GetTeams,
   GetTeamMembers,
   GetTestimonials,
+  GetUser,
   GetUserCommunityGroups,
   GetUserGroups,
   GetUsers,
@@ -437,6 +439,7 @@ clientContainer.bind<GetTeam>(SYMBOLS.GetTeam).to(GetTeam);
 clientContainer.bind<GetTeams>(SYMBOLS.GetTeams).to(GetTeams);
 clientContainer.bind<GetTeamMembers>(SYMBOLS.GetTeamMembers).to(GetTeamMembers);
 clientContainer.bind<GetTestimonials>(SYMBOLS.GetTestimonials).to(GetTestimonials);
+clientContainer.bind<GetUser>(SYMBOLS.GetUser).to(GetUser);
 clientContainer.bind<GetUsers>(SYMBOLS.GetUsers).to(GetUsers);
 clientContainer
   .bind<GetUserCommunityGroups>(SYMBOLS.GetUserCommunityGroups)
