@@ -174,7 +174,11 @@ export function CommunityGroupAdminMemberForm({
         <CommunityGroupAdminMemberToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
-        <GeneralForm methods={methods} communityGroups={communityGroups} />
+        <GeneralForm
+          methods={methods}
+          communityGroups={communityGroups}
+          user={communityGroupAdminMember ?? undefined}
+        />
       </Box>
     </>
   );

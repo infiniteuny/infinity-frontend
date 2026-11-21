@@ -156,7 +156,11 @@ export function CoreTeamMemberForm({ coreTeam, initialCoreTeamMember, coreTeamDi
         <CoreTeamMemberToolbar ref={ref} methods={methods} />
       </SectionHeader>
       <Box component="form" ref={ref} noValidate onSubmit={handleSubmit}>
-        <GeneralForm methods={methods} coreTeamDivisions={coreTeamDivisions} />
+        <GeneralForm
+          methods={methods}
+          coreTeamDivisions={coreTeamDivisions}
+          user={coreTeamMember ?? undefined}
+        />
       </Box>
     </>
   );

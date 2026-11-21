@@ -26,6 +26,7 @@ import { User } from '@infiniteuny/infinity-domain';
 type Props = {
   methods: UseFormReturn<CommunityGroupAdminMemberInput>;
   communityGroups: CommunityGroupDto[];
+  user?: User;
 };
 
 export function GeneralForm({
@@ -34,6 +35,7 @@ export function GeneralForm({
     formState: { isSubmitting, errors },
   },
   communityGroups,
+  user,
 }: Props) {
   const getUsers = useMemo(() => clientContainer.get<GetUsers>(SYMBOLS.GetUsers), []);
   const parsedCommunityGroups = useMemo(
@@ -41,12 +43,13 @@ export function GeneralForm({
     [communityGroups],
   );
 
-  const [userInput, setUserInput] = useState('');
-  const [userOptions, setUserOptions] = useState<User[]>([]);
+  const [userInput, setUserInput] = useState(user?.name ?? '');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userOptions, setUserOptions] = useState<User[]>(() => (user ? [user] : []));
   const [isUserLoading, setIsUserLoading] = useState(false);
 
   useEffect(() => {
-    const query = userInput.trim();
+    const query = userSearchQuery.trim();
 
     if (query.length < 1) {
       return;
@@ -83,7 +86,7 @@ export function GeneralForm({
       controller.abort();
       clearTimeout(timeoutId);
     };
-  }, [getUsers, userInput]);
+  }, [getUsers, userSearchQuery]);
 
   return (
     <Box component="section" className="mb-6 w-full px-6">
@@ -104,14 +107,28 @@ export function GeneralForm({
                   value={userOptions.find((user) => user.id === field.value) ?? null}
                   onChange={(_, user) => {
                     field.onChange(user?.id ?? '');
+                    if (user) {
+                      setUserInput(user.name);
+                      setUserSearchQuery('');
+                      setIsUserLoading(false);
+                    }
                   }}
                   inputValue={userInput}
-                  onInputChange={(_, value) => {
+                  onInputChange={(_, value, reason) => {
                     setUserInput(value);
 
-                    if (value.trim().length < 1) {
-                      setUserOptions([]);
+                    if (reason === 'input') {
+                      setUserSearchQuery(value);
+                      if (value.trim().length < 1) {
+                        setUserOptions([]);
+                        setIsUserLoading(false);
+                      }
+                    } else {
+                      setUserSearchQuery('');
                       setIsUserLoading(false);
+                      if (reason === 'clear') {
+                        setUserOptions([]);
+                      }
                     }
                   }}
                   getOptionLabel={(option) => option.name}
