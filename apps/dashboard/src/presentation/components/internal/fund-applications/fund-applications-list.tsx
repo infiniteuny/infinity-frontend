@@ -41,7 +41,7 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FundApplicationsToolbar } from './fund-applications-toolbar';
@@ -64,7 +64,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<FundApplication[]>(initFundApplications);

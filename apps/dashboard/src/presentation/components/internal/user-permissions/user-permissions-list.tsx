@@ -39,7 +39,7 @@ import {
   UserPermissionMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserPermissionsToolbar } from './user-permissions-toolbar';
@@ -69,8 +69,7 @@ export function UserPermissionsList({
     [],
   );
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<UserPermission[]>(initUserPermissions);

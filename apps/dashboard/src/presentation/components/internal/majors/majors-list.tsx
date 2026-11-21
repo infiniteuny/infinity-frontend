@@ -39,7 +39,7 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MajorsToolbar } from './majors-toolbar';
@@ -55,8 +55,7 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
   const initMajors = initialMajors.map(MajorMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Major[]>(initMajors);

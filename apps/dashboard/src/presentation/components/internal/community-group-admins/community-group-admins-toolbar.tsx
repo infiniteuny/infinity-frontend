@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { AddRounded, SearchRounded } from '@mui/icons-material';
 import { Box, Button, IconButton } from '@mui/material';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { GridApiCommunity } from '@mui/x-data-grid/internals';
 import { RefObject } from 'react';
 
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function CommunityGroupAdminsToolbar({ dataGridApiRef }: Props) {
-  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const userPermissions = useUserPermissions();
 
   return (
     <>

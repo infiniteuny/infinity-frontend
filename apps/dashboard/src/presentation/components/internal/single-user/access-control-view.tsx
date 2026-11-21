@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ChevronRightRounded } from '@mui/icons-material';
 import { ClickableViewTile } from '@app/presentation/components/internal/shared';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { User } from '@infiniteuny/infinity-domain';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 
 export function AccessControlView({ user, isProfileView }: Props) {
   const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   return ['read-user-permission', 'read-user-group'].some((p) => userPermissions.has(p)) ||
     (['read-own-user-permission', 'read-own-user-group'].some((p) => userPermissions.has(p)) &&

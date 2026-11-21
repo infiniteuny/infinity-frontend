@@ -5,14 +5,14 @@ import { AddRounded, SearchRounded } from '@mui/icons-material';
 import { Box, Button, IconButton } from '@mui/material';
 import { GridApiCommunity } from '@mui/x-data-grid/internals';
 import { RefObject } from 'react';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type Props = {
   dataGridApiRef: RefObject<GridApiCommunity | null>;
 };
 
 export function UsersToolbar({ dataGridApiRef }: Props) {
-  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const userPermissions = useUserPermissions();
 
   return (
     <>

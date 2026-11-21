@@ -7,7 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   competitionOrganizerTypeId: string;
@@ -24,12 +24,12 @@ export function CompetitionOrganizerTypeToolbar({
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
-  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   if (competitionOrganizerTypeId) {
     return (
       <Box className="ml-auto">
-        {['update-competition-organizer-type'].some((p) => userPermissions.includes(p)) ? (
+        {['update-competition-organizer-type'].some((p) => userPermissions.has(p)) ? (
           <Button
             variant="filled"
             className="ml-4"

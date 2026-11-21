@@ -47,7 +47,7 @@ import {
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
@@ -83,8 +83,7 @@ export function CommunityGroupAdminMembersList({
     [communityGroupAdmin],
   );
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<CommunityGroupAdminMember[]>(initCommunityGroupAdminMembers);

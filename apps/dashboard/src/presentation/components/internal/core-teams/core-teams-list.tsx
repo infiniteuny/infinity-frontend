@@ -37,7 +37,7 @@ import { DeleteCoreTeam, GetCoreTeams } from '@infiniteuny/infinity-application'
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CoreTeamsToolbar } from './core-teams-toolbar';
@@ -56,8 +56,7 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
   const initCoreTeams = initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedCoreTeamId, setSelectedCoreTeamId] = useState<string | null>(null);

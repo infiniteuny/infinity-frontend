@@ -8,7 +8,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   achievement: AchievementDto;
@@ -22,7 +22,7 @@ type FormProps = {
 export function AchievementToolbar({ achievement, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
   const session = useInternalStore((s) => s.session);
-  const userPermissions = session?.permissions || [];
+  const userPermissions = useUserPermissions();
   const parsedAchievement = useMemo(
     () => (achievement ? AchievementMapper.fromDtoToDomain(achievement) : undefined),
     [achievement],
@@ -31,8 +31,8 @@ export function AchievementToolbar({ achievement, ref, methods }: OneOf<[ViewPro
   if (achievement && parsedAchievement) {
     return (
       <Box className="ml-auto">
-        {userPermissions.includes('update-achievement') ||
-        (userPermissions.includes('update-own-achievement') &&
+        {userPermissions.has('update-achievement') ||
+        (userPermissions.has('update-own-achievement') &&
           parsedAchievement.team?.members?.some((member) => member.id === session?.user.id)) ? (
           <Button
             variant="filled"

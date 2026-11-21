@@ -8,7 +8,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   team: TeamDto;
@@ -22,15 +22,14 @@ type FormProps = {
 export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
   const session = useInternalStore((s) => s.session);
-  const userPermissions = session?.permissions || [];
+  const userPermissions = useUserPermissions();
   const parsedTeam = useMemo(() => (team ? TeamMapper.fromDtoToDomain(team) : undefined), [team]);
 
   if (team && parsedTeam) {
     return (
       <Box className="ml-auto">
-        {userPermissions.includes('update-team') ||
-        (userPermissions.includes('update-own-team') &&
-          parsedTeam.leaderId === session?.user.id) ? (
+        {userPermissions.has('update-team') ||
+        (userPermissions.has('update-own-team') && parsedTeam.leaderId === session?.user.id) ? (
           <Button
             variant="filled"
             className="ml-4"

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { AddRounded, SearchRounded } from '@mui/icons-material';
 import { Box, Button, IconButton } from '@mui/material';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { GridApiCommunity } from '@mui/x-data-grid/internals';
 import { RefObject } from 'react';
 
@@ -15,7 +15,7 @@ type Props = {
 
 export function TeamMembersToolbar({ teamId, leaderId, dataGridApiRef }: Props) {
   const session = useInternalStore((s) => s.session);
-  const userPermissions = new Set(session?.permissions ?? []);
+  const userPermissions = useUserPermissions();
 
   return (
     <>

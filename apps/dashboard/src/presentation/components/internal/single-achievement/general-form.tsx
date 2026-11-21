@@ -21,7 +21,7 @@ import { SYMBOLS } from '@config';
 import { Team } from '@infiniteuny/infinity-domain';
 import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
 import { useEffect, useMemo, useState } from 'react';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type Props = {
   methods: UseFormReturn<AchievementInput>;
@@ -38,7 +38,7 @@ export function GeneralForm({
 }: Props) {
   const getTeams = useMemo(() => clientContainer.get<GetTeams>(SYMBOLS.GetTeams), []);
   const parsedTeams = useMemo(() => teams?.map(TeamMapper.fromDtoToDomain) ?? [], [teams]);
-  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [teamInput, setTeamInput] = useState(parsedTeams[0]?.name ?? '');
   const [teamOptions, setTeamOptions] = useState<Team[]>(parsedTeams);
@@ -133,7 +133,7 @@ export function GeneralForm({
               )}
             />
           </Grid>
-          {userPermissions.includes('approve-achievement') ? (
+          {userPermissions.has('approve-achievement') ? (
             <Grid size={12}>
               <FormControl fullWidth margin="none" disabled={isSubmitting}>
                 <InputLabel id="status-label" error={!!errors.status}>

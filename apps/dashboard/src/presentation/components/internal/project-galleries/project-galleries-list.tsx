@@ -37,7 +37,7 @@ import { DeleteProjectGallery, GetProjectGalleries } from '@infiniteuny/infinity
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProjectGalleriesToolbar } from './project-galleries-toolbar';
@@ -59,8 +59,7 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
   const initProjectGalleries = initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<ProjectGallery[]>(initProjectGalleries);
   const [rowCount, setRowCount] = useState<number>(

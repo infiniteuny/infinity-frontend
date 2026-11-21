@@ -8,7 +8,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   group: GroupDto;
@@ -21,7 +21,7 @@ type FormProps = {
 
 export function GroupToolbar({ group, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
-  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const userPermissions = useUserPermissions();
   const parsedGroup = useMemo(
     () => (group ? GroupMapper.fromDtoToDomain(group) : undefined),
     [group],
@@ -30,7 +30,7 @@ export function GroupToolbar({ group, ref, methods }: OneOf<[ViewProps, FormProp
   if (group && parsedGroup) {
     return (
       <Box className="ml-auto">
-        {['update-group'].some((p) => userPermissions.includes(p)) && !parsedGroup.isManaged ? (
+        {['update-group'].some((p) => userPermissions.has(p)) && !parsedGroup.isManaged ? (
           <Button
             variant="filled"
             className="ml-4"

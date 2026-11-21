@@ -8,7 +8,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
 import { UserInput } from './user-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   user: UserDto;
@@ -22,14 +22,14 @@ type FormProps = {
 export function UserToolbar({ user, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
   const session = useInternalStore((s) => s.session);
-  const userPermissions = session?.permissions || [];
+  const userPermissions = useUserPermissions();
   const parsedUser = useMemo(() => (user ? UserMapper.fromDtoToDomain(user) : undefined), [user]);
 
   if (user && parsedUser) {
     return (
       <Box className="ml-auto">
-        {userPermissions.includes('update-user') ||
-        (userPermissions.includes('update-own-user') && parsedUser.id === session?.user.id) ? (
+        {userPermissions.has('update-user') ||
+        (userPermissions.has('update-own-user') && parsedUser.id === session?.user.id) ? (
           <Button
             variant="filled"
             className="ml-4"

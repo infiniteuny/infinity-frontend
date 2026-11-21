@@ -37,7 +37,7 @@ import { DeleteGroup, GetGroups } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GroupsToolbar } from './groups-toolbar';
@@ -50,8 +50,7 @@ export function GroupsList({ initialGroups, initialPaginationOptions }: Props) {
   const initGroups = initialGroups.map(GroupMapper.fromDtoToDomain);
   const initPaginationOptions = PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions);
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<Group[]>(initGroups);
   const [rowCount, setRowCount] = useState<number>(

@@ -2,7 +2,7 @@ import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ChevronRightRounded } from '@mui/icons-material';
 import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { Team } from '@infiniteuny/infinity-domain';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 
 type Props = {
   team: Team;
@@ -10,7 +10,7 @@ type Props = {
 
 export function GeneralView({ team }: Props) {
   const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   return (
     <Box component="section" className="mb-4 w-full px-6">

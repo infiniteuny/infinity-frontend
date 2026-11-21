@@ -2,14 +2,14 @@ import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ChevronRightRounded } from '@mui/icons-material';
 import { ClickableViewTile, ViewTile } from '@app/presentation/components/internal/shared';
 import { Group } from '@infiniteuny/infinity-domain';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type Props = {
   group: Group;
 };
 
 export function GeneralView({ group }: Props) {
-  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const userPermissions = useUserPermissions();
 
   return (
     <Box component="section" className="mb-4 w-full px-6">

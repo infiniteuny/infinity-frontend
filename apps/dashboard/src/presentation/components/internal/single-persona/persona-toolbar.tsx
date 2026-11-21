@@ -7,7 +7,7 @@ import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   personaId: string;
@@ -20,12 +20,12 @@ type FormProps = {
 
 export function PersonaToolbar({ personaId, ref, methods }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
-  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   if (personaId) {
     return (
       <Box className="ml-auto">
-        {['update-persona'].some((p) => userPermissions.includes(p)) ? (
+        {['update-persona'].some((p) => userPermissions.has(p)) ? (
           <Button
             variant="filled"
             className="ml-4"

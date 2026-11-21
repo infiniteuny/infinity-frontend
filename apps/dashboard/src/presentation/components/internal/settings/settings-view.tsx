@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { ClickableViewTile } from '@app/presentation/components/internal/shared';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
 
 type Props = {
@@ -29,7 +29,7 @@ type Props = {
 };
 
 export function SettingsView({ user }: Props) {
-  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+  const userPermissions = useUserPermissions();
   const parsedUser = UserMapper.fromDtoToDomain(user);
 
   return (

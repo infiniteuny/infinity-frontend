@@ -39,7 +39,7 @@ import {
 } from '@infiniteuny/infinity-infrastructure';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GroupPermissionsToolbar } from './group-permissions-toolbar';
@@ -67,8 +67,7 @@ export function GroupPermissionsList({
     [],
   );
   const router = useRouter();
-  const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<GroupPermission[]>(initGroupPermissions);

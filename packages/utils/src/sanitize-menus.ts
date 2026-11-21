@@ -2,9 +2,10 @@ import { PathMenu, NestedMenu } from '@infiniteuny/infinity-domain';
 
 export function sanitizeMenus(
   menus: (PathMenu | NestedMenu<PathMenu>)[],
-  userPermissions: string[],
+  userPermissions: readonly string[] | ReadonlySet<string>,
 ): (PathMenu | NestedMenu<PathMenu>)[] {
-  const userPermissionsSet = new Set(userPermissions);
+  const userPermissionsSet =
+    userPermissions instanceof Set ? userPermissions : new Set(userPermissions);
 
   const isNestedMenu = (menu: PathMenu | NestedMenu<PathMenu>): menu is NestedMenu<PathMenu> => {
     return 'items' in menu;

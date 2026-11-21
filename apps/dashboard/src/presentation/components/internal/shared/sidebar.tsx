@@ -19,7 +19,11 @@ import { sanitizeMenus } from '@infiniteuny/infinity-utils';
 import { SidebarDropdownMenu } from './sidebar-dropdown-menu';
 import { SidebarMenu } from './sidebar-menu';
 import { useMemo, useSyncExternalStore } from 'react';
-import { useInternalStore, useInternalStoreContext } from '@app/presentation/hooks';
+import {
+  useInternalStore,
+  useInternalStoreContext,
+  useUserPermissions,
+} from '@app/presentation/hooks';
 import { useShallow } from 'zustand/shallow';
 
 type Props = {
@@ -48,7 +52,7 @@ export function InternalSidebar({ menus }: Props) {
       s.setSidebarHoveredState,
     ]),
   );
-  const userPermissions = useInternalStore((s) => s.session?.permissions || []);
+  const userPermissions = useUserPermissions();
   const sanitizedMenus = useMemo(
     () => sanitizeMenus(menus, userPermissions),
     [menus, userPermissions],

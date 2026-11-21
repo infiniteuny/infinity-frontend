@@ -44,7 +44,7 @@ import {
   TeamMemberMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
@@ -71,7 +71,7 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
   );
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
-  const userPermissions = new Set(userSession?.permissions || []);
+  const userPermissions = useUserPermissions();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<TeamMember[]>(initTeamMembers);

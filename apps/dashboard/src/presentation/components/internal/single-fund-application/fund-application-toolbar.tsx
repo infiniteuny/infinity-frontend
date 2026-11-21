@@ -8,7 +8,7 @@ import { FundApplicationInput } from './fund-application-form';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useInternalStore } from '@app/presentation/hooks';
+import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
 
 type ViewProps = {
   fundApplication: FundApplicationDto;
@@ -26,7 +26,7 @@ export function FundApplicationToolbar({
 }: OneOf<[ViewProps, FormProps]>) {
   const router = useRouter();
   const session = useInternalStore((s) => s.session);
-  const userPermissions = session?.permissions || [];
+  const userPermissions = useUserPermissions();
   const parsedFundApplication = useMemo(
     () => (fundApplication ? FundApplicationMapper.fromDtoToDomain(fundApplication) : undefined),
     [fundApplication],
@@ -35,8 +35,8 @@ export function FundApplicationToolbar({
   if (fundApplication && parsedFundApplication) {
     return (
       <Box className="ml-auto">
-        {userPermissions.includes('update-fund-application') ||
-        (userPermissions.includes('update-own-fund-application') &&
+        {userPermissions.has('update-fund-application') ||
+        (userPermissions.has('update-own-fund-application') &&
           parsedFundApplication.team?.members?.some((member) => member.id === session?.user.id)) ? (
           <Button
             variant="filled"
