@@ -102,10 +102,15 @@ export function EntityAutocompleteFilterInput<T extends { id: string }>({
     };
   }, [search, searchQuery]);
 
-  const handleInputChange = useCallback((_: unknown, value: string) => {
+  const handleInputChange = useCallback((_: unknown, value: string, reason: string) => {
     setInputValue(value);
-    setSearchQuery(value);
-    if (value.trim().length < 1) {
+    if (reason === 'input') {
+      setSearchQuery(value);
+      if (value.trim().length < 1) {
+        setIsLoading(false);
+      }
+    } else {
+      setSearchQuery('');
       setIsLoading(false);
     }
   }, []);

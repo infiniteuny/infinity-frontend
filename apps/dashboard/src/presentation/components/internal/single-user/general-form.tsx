@@ -22,7 +22,7 @@ import {
 import { GetMajors } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { UserInput } from './user-form';
 
 type Props = {
@@ -48,29 +48,55 @@ export function GeneralForm({
 
   const [majorOptions, setMajorOptions] = useState(majors ? parsedMajors : []);
   const [majorDisabled, setMajorDisabled] = useState(false);
+  const majorAbortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      majorAbortRef.current?.abort();
+    };
+  }, []);
 
   const handleFacultyChange = useCallback(
     async (facultyId: string) => {
+      majorAbortRef.current?.abort();
+      const controller = new AbortController();
+      majorAbortRef.current = controller;
+
       setMajorDisabled(true);
 
-      const majorsResult = await getMajors.execute(['degree'], { facultyId }, undefined, {
-        perPage: 100,
-      });
+      try {
+        const majorsResult = await getMajors.execute(
+          ['degree'],
+          { facultyId },
+          undefined,
+          { perPage: 100 },
+          controller.signal,
+        );
 
-      match(majorsResult, {
-        onLeft: (error) => {
+        if (controller.signal.aborted) return;
+
+        match(majorsResult, {
+          onLeft: (error) => {
+            console.error(error);
+            setMajorOptions([]);
+          },
+          onRight: (data) => {
+            if (!data[0].find((major) => major.id === getValues('majorId'))) {
+              setValue('majorId', '0');
+            }
+            setMajorOptions(data[0]);
+          },
+        });
+      } catch (error) {
+        if (!controller.signal.aborted) {
           console.error(error);
           setMajorOptions([]);
-        },
-        onRight: (data) => {
-          if (!data[0].find((major) => major.id === getValues('majorId'))) {
-            setValue('majorId', '0');
-          }
-          setMajorOptions(data[0]);
-        },
-      });
-
-      setMajorDisabled(false);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setMajorDisabled(false);
+        }
+      }
     },
     [getMajors, getValues, setValue],
   );
