@@ -6,10 +6,12 @@ import { CoreTeamDto, CoreTeamMapper } from '@infiniteuny/infinity-infrastructur
 import { CoreTeamToolbar } from './core-team-toolbar';
 import { CreateCoreTeam, UpdateCoreTeam } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -79,10 +81,10 @@ export function CoreTeamForm({ initialCoreTeam }: Props) {
 
           match(coreTeamResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create core team.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Core team created successfully.');
               router.push(`/core-teams/${data.id}`);
             },
           });
@@ -91,17 +93,16 @@ export function CoreTeamForm({ initialCoreTeam }: Props) {
 
           match(coreTeamResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update core team.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Core team updated successfully.');
               router.push(`/core-teams/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting core team form:', error);
+        handleFormError(error, methods, 'Failed to save core team.');
       }
     }
   });

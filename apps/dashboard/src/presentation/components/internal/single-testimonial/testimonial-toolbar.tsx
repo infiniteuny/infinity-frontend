@@ -31,12 +31,8 @@ export function TestimonialToolbar({ testimonialId, ref, methods }: OneOf<[ViewP
         mode="view"
         canEdit={['update-testimonial'].some((p) => userPermissions.has(p))}
         editHref={`/testimonials/${testimonialId}/edit`}
-        editAriaLabel="Edit testimonial"
         canDelete={userPermissions.has('delete-testimonial')}
-        deleteAriaLabel={'Delete testimonial'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this testimonial? This action cannot be undone.'
-        }
+        entityName="testimonial"
         onDelete={() => deleteTestimonial.execute(testimonialId)}
         deleteRedirectHref={'/testimonials'}
       />

@@ -8,11 +8,13 @@ import {
   UpdateCompetitionInstance,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { AttachmentForm } from './attachment-form';
 import { match } from 'effect/Either';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CompetitionInstanceDto,
   CompetitionInstanceMapper,
@@ -135,9 +137,10 @@ export function CompetitionInstanceForm({
 
           match(result, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create competition.');
             },
             onRight: (data) => {
+              toast.success('Competition created successfully.');
               router.push(`/competitions/${data.id}`);
             },
           });
@@ -150,15 +153,16 @@ export function CompetitionInstanceForm({
 
           match(result, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update competition.');
             },
             onRight: (data) => {
+              toast.success('Competition updated successfully.');
               router.push(`/competitions/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting competition instance form:', error);
+        handleFormError(error, methods, 'Failed to save competition.');
       }
     }
   });

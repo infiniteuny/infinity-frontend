@@ -35,12 +35,8 @@ export function ProjectGalleryToolbar({
         mode="view"
         canEdit={['update-project-gallery'].some((p) => userPermissions.has(p))}
         editHref={`/project-galleries/${projectGalleryId}/edit`}
-        editAriaLabel="Edit project gallery"
         canDelete={userPermissions.has('delete-project-gallery')}
-        deleteAriaLabel={'Delete project gallery'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this project gallery? This action cannot be undone.'
-        }
+        entityName="project gallery"
         onDelete={() => deleteProjectGallery.execute(projectGalleryId)}
         deleteRedirectHref={'/project-galleries'}
       />

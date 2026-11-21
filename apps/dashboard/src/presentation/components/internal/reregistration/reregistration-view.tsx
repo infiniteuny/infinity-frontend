@@ -19,6 +19,7 @@ import { clientContainer } from '@app/client-injection';
 import { ExtendUserMembership } from '@infiniteuny/infinity-application';
 import { SYMBOLS } from '@config';
 import { match } from 'effect/Either';
+import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -64,17 +65,25 @@ export function ReregistrationView({
 
   const handleExtendAccept = async () => {
     setIsExtending(true);
-    const result = await extendUserMembership.execute(parsedUser.id);
-    match(result, {
-      onRight: () => {
-        setTncOpen(false);
-        router.refresh();
-      },
-      onLeft: (error) => {
-        console.error('Failed to extend membership:', error);
-      },
-    });
-    setIsExtending(false);
+    try {
+      const result = await extendUserMembership.execute(parsedUser.id);
+      match(result, {
+        onRight: () => {
+          setTncOpen(false);
+          toast.success('Membership extended successfully.');
+          router.refresh();
+        },
+        onLeft: (error) => {
+          toast.error(error.message || 'Failed to extend membership.');
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message ? error.message : 'Failed to extend membership.',
+      );
+    } finally {
+      setIsExtending(false);
+    }
   };
 
   if (

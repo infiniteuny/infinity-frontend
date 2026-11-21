@@ -31,12 +31,8 @@ export function PersonaToolbar({ personaId, ref, methods }: OneOf<[ViewProps, Fo
         mode="view"
         canEdit={['update-persona'].some((p) => userPermissions.has(p))}
         editHref={`/personas/${personaId}/edit`}
-        editAriaLabel="Edit persona"
         canDelete={userPermissions.has('delete-persona')}
-        deleteAriaLabel={'Delete persona'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this persona? This action cannot be undone.'
-        }
+        entityName="persona"
         onDelete={() => deletePersona.execute(personaId)}
         deleteRedirectHref={'/personas'}
       />

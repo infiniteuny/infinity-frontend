@@ -12,10 +12,12 @@ import {
   UpdateCommunityGroupAdmin,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -87,10 +89,10 @@ export function CommunityGroupAdminForm({ initialCommunityGroupAdmin }: Props) {
 
           match(communityGroupAdminResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create community group administrator.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Community group administrator created successfully.');
               router.push(`/community-group-admins/${data.id}`);
             },
           });
@@ -102,17 +104,16 @@ export function CommunityGroupAdminForm({ initialCommunityGroupAdmin }: Props) {
 
           match(communityGroupAdminResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update community group administrator.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Community group administrator updated successfully.');
               router.push(`/community-group-admins/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting community group admin form:', error);
+        handleFormError(error, methods, 'Failed to save community group administrator.');
       }
     }
   });

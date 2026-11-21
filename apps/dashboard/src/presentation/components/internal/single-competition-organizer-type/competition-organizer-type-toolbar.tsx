@@ -36,12 +36,8 @@ export function CompetitionOrganizerTypeToolbar({
         mode="view"
         canEdit={['update-competition-organizer-type'].some((p) => userPermissions.has(p))}
         editHref={`/competition-organizer-types/${competitionOrganizerTypeId}/edit`}
-        editAriaLabel="Edit competition organizer type"
         canDelete={userPermissions.has('delete-competition-organizer-type')}
-        deleteAriaLabel={'Delete competition organizer type'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this competition organizer type? This action cannot be undone.'
-        }
+        entityName="competition organizer type"
         onDelete={() => deleteCompetitionOrganizerType.execute(competitionOrganizerTypeId)}
         deleteRedirectHref={'/competition-organizer-types'}
       />

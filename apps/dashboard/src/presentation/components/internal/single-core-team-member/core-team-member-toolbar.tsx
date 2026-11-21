@@ -37,12 +37,8 @@ export function CoreTeamMemberToolbar({
         mode="view"
         canEdit={['update-core-team-member'].some((p) => userPermissions.has(p))}
         editHref={`/core-teams/${coreTeamId}/members/${coreTeamMemberId}/edit`}
-        editAriaLabel="Edit core team member"
         canDelete={userPermissions.has('delete-core-team-member')}
-        deleteAriaLabel={'Delete core team member'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this member? This action cannot be undone.'
-        }
+        entityName="member"
         onDelete={() => deleteCoreTeamMember.execute(coreTeamMemberId)}
         deleteRedirectHref={`/core-teams/${coreTeamId}/members`}
       />

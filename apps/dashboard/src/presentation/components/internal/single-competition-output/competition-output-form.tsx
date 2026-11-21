@@ -7,10 +7,12 @@ import {
   UpdateCompetitionOutput,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CompetitionOutputDto,
   CompetitionOutputMapper,
@@ -73,9 +75,10 @@ export function CompetitionOutputForm({ initialCompetitionOutput }: Props) {
 
           match(competitionOutputResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create competition output.');
             },
             onRight: (data) => {
+              toast.success('Competition output created successfully.');
               router.push(`/competition-outputs/${data.id}`);
             },
           });
@@ -87,15 +90,16 @@ export function CompetitionOutputForm({ initialCompetitionOutput }: Props) {
 
           match(competitionOutputResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update competition output.');
             },
             onRight: (data) => {
+              toast.success('Competition output updated successfully.');
               router.push(`/competition-outputs/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting competition output form:', error);
+        handleFormError(error, methods, 'Failed to save competition output.');
       }
     }
   });

@@ -10,6 +10,8 @@ import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { TeamMemberToolbar } from './team-member-toolbar';
+import { handleFormError } from '@app/presentation/utils';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -50,16 +52,21 @@ export function TeamMemberForm({ team }: Props) {
       return;
     }
 
-    const result = await createTeamMember.execute(parsedTeam.id, data);
+    try {
+      const result = await createTeamMember.execute(parsedTeam.id, data);
 
-    match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: () => {
-        router.push(`/teams/${parsedTeam.id}/members`);
-      },
-    });
+      match(result, {
+        onLeft: (error) => {
+          handleFormError(error, methods, 'Failed to add team member.');
+        },
+        onRight: () => {
+          toast.success('Team member added successfully.');
+          router.push(`/teams/${parsedTeam.id}/members`);
+        },
+      });
+    } catch (error) {
+      handleFormError(error, methods, 'Failed to add team member.');
+    }
   });
 
   return (

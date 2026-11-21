@@ -9,6 +9,8 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserCommunityGroupToolbar } from './user-community-group-toolbar';
+import { handleFormError } from '@app/presentation/utils';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useRouter } from 'next/navigation';
@@ -51,22 +53,27 @@ export function UserCommunityGroupForm({ user, isProfileForm }: Props) {
       return;
     }
 
-    const result = await createCommunityGroupMember.execute(data.communityGroupId, {
-      userId: parsedUser.id,
-    });
+    try {
+      const result = await createCommunityGroupMember.execute(data.communityGroupId, {
+        userId: parsedUser.id,
+      });
 
-    match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: () => {
-        router.push(
-          isProfileForm
-            ? `/settings/profile/community-groups`
-            : `/users/${parsedUser.id}/community-groups`,
-        );
-      },
-    });
+      match(result, {
+        onLeft: (error) => {
+          handleFormError(error, methods, 'Failed to add community group.');
+        },
+        onRight: () => {
+          toast.success('Community group added successfully.');
+          router.push(
+            isProfileForm
+              ? `/settings/profile/community-groups`
+              : `/users/${parsedUser.id}/community-groups`,
+          );
+        },
+      });
+    } catch (error) {
+      handleFormError(error, methods, 'Failed to add community group.');
+    }
   });
 
   return (

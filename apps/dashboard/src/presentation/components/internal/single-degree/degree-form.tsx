@@ -6,10 +6,12 @@ import { CreateDegree, UpdateDegree } from '@infiniteuny/infinity-application';
 import { DegreeDto, DegreeMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { DegreeToolbar } from './degree-toolbar';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -59,9 +61,10 @@ export function DegreeForm({ initialDegree }: Props) {
 
           match(degreeResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create degree.');
             },
             onRight: (data) => {
+              toast.success('Degree created successfully.');
               router.push(`/degrees/${data.id}`);
             },
           });
@@ -70,15 +73,16 @@ export function DegreeForm({ initialDegree }: Props) {
 
           match(degreeResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update degree.');
             },
             onRight: (data) => {
+              toast.success('Degree updated successfully.');
               router.push(`/degrees/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting degree form:', error);
+        handleFormError(error, methods, 'Failed to save degree.');
       }
     }
   });

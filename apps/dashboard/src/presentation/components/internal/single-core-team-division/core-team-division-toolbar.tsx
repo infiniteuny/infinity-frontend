@@ -35,12 +35,8 @@ export function CoreTeamDivisionToolbar({
         mode="view"
         canEdit={['update-core-team-division'].some((p) => userPermissions.has(p))}
         editHref={`/core-team-divisions/${coreTeamDivisionId}/edit`}
-        editAriaLabel="Edit core team division"
         canDelete={userPermissions.has('delete-core-team-division')}
-        deleteAriaLabel={'Delete core team division'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this core team division? This action cannot be undone.'
-        }
+        entityName="core team division"
         onDelete={() => deleteCoreTeamDivision.execute(coreTeamDivisionId)}
         deleteRedirectHref={'/core-team-divisions'}
       />

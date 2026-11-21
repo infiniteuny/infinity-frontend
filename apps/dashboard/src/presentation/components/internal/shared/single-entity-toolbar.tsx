@@ -6,18 +6,18 @@ import { Box, Button } from '@mui/material';
 import { DeleteRounded, EditRounded, SaveRounded } from '@mui/icons-material';
 import { Either, match } from 'effect/Either';
 import { RefObject, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 
 type ViewModeProps = {
   mode: 'view';
+  entityName: string;
+  entityDisplayName?: string;
   canEdit: boolean;
   editHref: string;
-  editAriaLabel: string;
   editLabel?: string;
   canDelete?: boolean;
-  deleteAriaLabel?: string;
   deleteLabel?: string;
-  deleteConfirmDescription?: string;
   onDelete?: () => Promise<Either<unknown, Error>>;
   deleteRedirectHref?: string;
 };
@@ -44,24 +44,32 @@ export function SingleEntityToolbar(props: Props) {
       return;
     }
 
+    const entityLabel = props.entityName?.trim() || 'item';
+    const capitalizedEntityLabel = entityLabel.charAt(0).toUpperCase() + entityLabel.slice(1);
+
     setIsDeleting(true);
     try {
       const result = await props.onDelete();
       match(result, {
         onRight: () => {
           setOpenDeleteDialog(false);
+          toast.success(`${capitalizedEntityLabel} deleted successfully.`);
           if (props.deleteRedirectHref) {
             router.push(props.deleteRedirectHref);
           }
           router.refresh();
         },
         onLeft: (error) => {
-          console.error('Failed to delete item:', error);
+          toast.error(error.message || `Failed to delete ${entityLabel}.`);
           setOpenDeleteDialog(false);
         },
       });
     } catch (error) {
-      console.error('Failed to delete item:', error);
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : `Failed to delete ${entityLabel}.`,
+      );
       setOpenDeleteDialog(false);
     } finally {
       setIsDeleting(false);
@@ -69,6 +77,9 @@ export function SingleEntityToolbar(props: Props) {
   };
 
   if (props.mode === 'view') {
+    const entityLabel = props.entityName.trim() || 'item';
+    const deleteTarget = props.entityDisplayName?.trim() || `this ${entityLabel}`;
+
     return (
       <>
         {props.canDelete && props.onDelete ? (
@@ -83,10 +94,7 @@ export function SingleEntityToolbar(props: Props) {
             isLoading={isDeleting}
             confirmColor="error"
             title="Permanently delete?"
-            description={
-              props.deleteConfirmDescription ??
-              'Are you sure you want to permanently delete this item? This action cannot be undone.'
-            }
+            description={`Are you sure you want to permanently delete ${deleteTarget}? This action cannot be undone.`}
             acceptText="Delete"
             cancelText="Cancel"
           />
@@ -97,7 +105,7 @@ export function SingleEntityToolbar(props: Props) {
               variant="outlined"
               color="error"
               className="ml-4"
-              aria-label={props.deleteAriaLabel ?? 'Delete'}
+              aria-label={`Delete ${entityLabel}`}
               startIcon={<DeleteRounded />}
               disabled={isDeleting}
               onClick={() => setOpenDeleteDialog(true)}
@@ -109,7 +117,7 @@ export function SingleEntityToolbar(props: Props) {
             <Button
               variant="filled"
               className="ml-4"
-              aria-label={props.editAriaLabel}
+              aria-label={`Edit ${entityLabel}`}
               LinkComponent={Link}
               href={props.editHref}
               startIcon={<EditRounded />}

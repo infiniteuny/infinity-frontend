@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateCoreTeamDivision, UpdateCoreTeamDivision } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CoreTeamDivisionDto,
   CoreTeamDivisionMapper,
@@ -70,9 +72,10 @@ export function CoreTeamDivisionForm({ initialCoreTeamDivision }: Props) {
 
           match(coreTeamDivisionResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create core team division.');
             },
             onRight: (data) => {
+              toast.success('Core team division created successfully.');
               router.push(`/core-team-divisions/${data.id}`);
             },
           });
@@ -84,15 +87,16 @@ export function CoreTeamDivisionForm({ initialCoreTeamDivision }: Props) {
 
           match(coreTeamDivisionResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update core team division.');
             },
             onRight: (data) => {
+              toast.success('Core team division updated successfully.');
               router.push(`/core-team-divisions/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting core team division form:', error);
+        handleFormError(error, methods, 'Failed to save core team division.');
       }
     }
   });

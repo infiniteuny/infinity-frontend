@@ -31,12 +31,8 @@ export function PermissionToolbar({ permissionId, ref, methods }: OneOf<[ViewPro
         mode="view"
         canEdit={['update-permission'].some((p) => userPermissions.has(p))}
         editHref={`/permissions/${permissionId}/edit`}
-        editAriaLabel="Edit permission"
         canDelete={userPermissions.has('delete-permission')}
-        deleteAriaLabel={'Delete permission'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this permission? This action cannot be undone.'
-        }
+        entityName="permission"
         onDelete={() => deletePermission.execute(permissionId)}
         deleteRedirectHref={'/permissions'}
       />

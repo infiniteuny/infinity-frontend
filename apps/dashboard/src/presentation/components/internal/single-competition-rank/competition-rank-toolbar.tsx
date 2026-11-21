@@ -35,12 +35,8 @@ export function CompetitionRankToolbar({
         mode="view"
         canEdit={['update-competition-rank'].some((p) => userPermissions.has(p))}
         editHref={`/competition-ranks/${competitionRankId}/edit`}
-        editAriaLabel="Edit competition rank"
         canDelete={userPermissions.has('delete-competition-rank')}
-        deleteAriaLabel={'Delete competition rank'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this competition rank? This action cannot be undone.'
-        }
+        entityName="competition rank"
         onDelete={() => deleteCompetitionRank.execute(competitionRankId)}
         deleteRedirectHref={'/competition-ranks'}
       />

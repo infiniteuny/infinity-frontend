@@ -15,10 +15,12 @@ import {
   UpdateCommunityGroupAdminMember,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -122,9 +124,10 @@ export function CommunityGroupAdminMemberForm({
 
         match(result, {
           onLeft: (error) => {
-            throw error;
+            handleFormError(error, methods, 'Failed to add member.');
           },
           onRight: () => {
+            toast.success('Member added successfully.');
             router.push(`/community-group-admins/${parsedCommunityGroupAdmin.id}/members`);
           },
         });
@@ -143,9 +146,10 @@ export function CommunityGroupAdminMemberForm({
 
         match(result, {
           onLeft: (error) => {
-            throw error;
+            handleFormError(error, methods, 'Failed to update member.');
           },
           onRight: () => {
+            toast.success('Member updated successfully.');
             router.push(
               `/community-group-admins/${parsedCommunityGroupAdmin.id}/members/${communityGroupAdminMember.membership.id}`,
             );
@@ -153,7 +157,7 @@ export function CommunityGroupAdminMemberForm({
         });
       }
     } catch (error) {
-      console.error('Error submitting community group admin member form:', error);
+      handleFormError(error, methods, 'Failed to save member.');
     }
   });
 

@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateCompetition, UpdateCompetition } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { CompetitionDto, CompetitionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CompetitionToolbar } from './competition-toolbar';
 import { useMemo, useRef } from 'react';
@@ -74,9 +76,10 @@ export function CompetitionForm({ initialCompetition }: Props) {
 
           match(competitionResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create competition series.');
             },
             onRight: (data) => {
+              toast.success('Competition series created successfully.');
               router.push(`/competition-series/${data.id}`);
             },
           });
@@ -88,15 +91,16 @@ export function CompetitionForm({ initialCompetition }: Props) {
 
           match(competitionResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update competition series.');
             },
             onRight: (data) => {
+              toast.success('Competition series updated successfully.');
               router.push(`/competition-series/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting competition form:', error);
+        handleFormError(error, methods, 'Failed to save competition series.');
       }
     }
   });

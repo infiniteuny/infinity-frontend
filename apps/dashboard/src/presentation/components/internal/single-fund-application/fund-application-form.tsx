@@ -13,11 +13,13 @@ import {
 } from '@infiniteuny/infinity-infrastructure/dtos';
 import { FundApplicationToolbar } from './fund-application-toolbar';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -144,10 +146,10 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
 
           match(fundApplicationResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create fund application.');
             },
             onRight: (result) => {
-              // TODO: Add snackbar for success state
+              toast.success('Fund application created successfully.');
               router.push(`/fund-applications/${result.id}`);
             },
           });
@@ -159,17 +161,16 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
 
           match(fundApplicationResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update fund application.');
             },
             onRight: (result) => {
-              // TODO: Add snackbar for success state
+              toast.success('Fund application updated successfully.');
               router.push(`/fund-applications/${result.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting fund application form:', error);
+        handleFormError(error, methods, 'Failed to save fund application.');
       }
     }
   });

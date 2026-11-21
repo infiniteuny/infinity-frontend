@@ -6,6 +6,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { match } from 'effect/Either';
+import { toast } from 'react-toastify';
 import { useMemo, useState } from 'react';
 
 type Props = {
@@ -36,59 +37,65 @@ export function EndReregistrationPeriodTile({ initialValue, startDate, onChange 
     setError(null);
     setDisabled(true);
 
-    if (!date) {
-      setDateValue(null);
-      onChange?.(null);
-      if (created) {
-        const result = await updateConfig.execute(key, { value: '' });
-        match(result, {
-          onLeft: (err) => {
-            console.error('Failed to update config:', err);
-            setDateValue(
-              initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
-            );
-            onChange?.(
-              initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
-            );
-          },
-          onRight: () => {},
-        });
+    try {
+      if (!date) {
+        setDateValue(null);
+        onChange?.(null);
+        if (created) {
+          const result = await updateConfig.execute(key, { value: '' });
+          match(result, {
+            onLeft: (err) => {
+              toast.error(err.message || 'Failed to update setting.');
+              setDateValue(
+                initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
+              );
+              onChange?.(
+                initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
+              );
+            },
+            onRight: () => {
+              toast.success('End of re-registration period cleared.');
+            },
+          });
+        }
+        return;
       }
+
+      const isoValue = date.toISODate();
+
+      const result = !created
+        ? await createConfig.execute({
+            key: key,
+            value: isoValue ?? '',
+            type: 'STRING',
+            isPrivate: true,
+          })
+        : await updateConfig.execute(key, {
+            value: isoValue ?? '',
+          });
+
+      match(result, {
+        onLeft: (err) => {
+          toast.error(err.message || 'Failed to update setting.');
+          setDateValue(
+            initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
+          );
+        },
+        onRight: () => {
+          setCreated(true);
+          setDateValue(date);
+          onChange?.(date);
+          toast.success('End of re-registration period updated.');
+        },
+      });
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : 'Failed to update setting.');
+      setDateValue(
+        initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
+      );
+    } finally {
       setDisabled(false);
-      return;
     }
-
-    const isoValue = date.toISODate();
-
-    let result;
-    if (!created) {
-      result = await createConfig.execute({
-        key: key,
-        value: isoValue ?? '',
-        type: 'STRING',
-        isPrivate: true,
-      });
-    } else {
-      result = await updateConfig.execute(key, {
-        value: isoValue ?? '',
-      });
-    }
-
-    match(result, {
-      onLeft: (err) => {
-        console.error('Failed to update config:', err);
-        setDateValue(
-          initialValue?.value ? DateTime.fromISO(initialValue.value, { zone: 'UTC' }) : null,
-        );
-      },
-      onRight: () => {
-        setCreated(true);
-        setDateValue(date);
-        onChange?.(date);
-      },
-    });
-
-    setDisabled(false);
   };
 
   return (

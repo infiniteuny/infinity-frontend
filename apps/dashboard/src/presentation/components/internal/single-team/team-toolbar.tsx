@@ -34,13 +34,12 @@ export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]
           (userPermissions.has('update-own-team') && parsedTeam.leaderId === session?.user.id)
         }
         editHref={`/teams/${parsedTeam.id}/edit`}
-        editAriaLabel="Edit team"
+        entityName="team"
+        entityDisplayName={parsedTeam.name}
         canDelete={
           userPermissions.has('delete-team') ||
           (userPermissions.has('delete-own-team') && parsedTeam.leaderId === session?.user.id)
         }
-        deleteAriaLabel={'Delete team'}
-        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedTeam.name || 'this team'}? This action cannot be undone.`}
         onDelete={() => deleteTeam.execute(parsedTeam.id)}
         deleteRedirectHref={'/teams'}
       />

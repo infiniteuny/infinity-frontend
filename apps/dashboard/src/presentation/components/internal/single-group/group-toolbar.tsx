@@ -33,10 +33,9 @@ export function GroupToolbar({ group, ref, methods }: OneOf<[ViewProps, FormProp
         mode="view"
         canEdit={['update-group'].some((p) => userPermissions.has(p)) && !parsedGroup.isManaged}
         editHref={`/groups/${group.id}/edit`}
-        editAriaLabel="Edit group"
+        entityName="group"
+        entityDisplayName={parsedGroup.name}
         canDelete={userPermissions.has('delete-group') && !parsedGroup.isManaged}
-        deleteAriaLabel={'Delete group'}
-        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedGroup.name || 'this group'}? This action cannot be undone.`}
         onDelete={() => deleteGroup.execute(parsedGroup.id)}
         deleteRedirectHref={'/groups'}
       />

@@ -35,12 +35,8 @@ export function CompetitionTimeRangeToolbar({
         mode="view"
         canEdit={['update-competition-time-range'].some((p) => userPermissions.has(p))}
         editHref={`/competition-time-ranges/${competitionTimeRangeId}/edit`}
-        editAriaLabel="Edit competition time range"
         canDelete={userPermissions.has('delete-competition-time-range')}
-        deleteAriaLabel={'Delete competition time range'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this competition time range? This action cannot be undone.'
-        }
+        entityName="competition time range"
         onDelete={() => deleteCompetitionTimeRange.execute(competitionTimeRangeId)}
         deleteRedirectHref={'/competition-time-ranges'}
       />

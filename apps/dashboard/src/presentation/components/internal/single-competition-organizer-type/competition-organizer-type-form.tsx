@@ -7,10 +7,12 @@ import {
   UpdateCompetitionOrganizerType,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CompetitionOrganizerTypeDto,
   CompetitionOrganizerTypeMapper,
@@ -77,9 +79,10 @@ export function CompetitionOrganizerTypeForm({ initialCompetitionOrganizerType }
 
           match(competitionOrganizerTypeResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create competition organizer type.');
             },
             onRight: (data) => {
+              toast.success('Competition organizer type created successfully.');
               router.push(`/competition-organizer-types/${data.id}`);
             },
           });
@@ -91,15 +94,16 @@ export function CompetitionOrganizerTypeForm({ initialCompetitionOrganizerType }
 
           match(competitionOrganizerTypeResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update competition organizer type.');
             },
             onRight: (data) => {
+              toast.success('Competition organizer type updated successfully.');
               router.push(`/competition-organizer-types/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting competition organizer type form:', error);
+        handleFormError(error, methods, 'Failed to save competition organizer type.');
       }
     }
   });

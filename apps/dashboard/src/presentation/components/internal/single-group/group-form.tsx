@@ -5,10 +5,12 @@ import { clientContainer } from '@app/client-injection';
 import { CreateGroup, UpdateGroup } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
 import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -63,9 +65,10 @@ export function GroupForm({ initialGroup }: Props) {
 
         match(groupResult, {
           onLeft: (error) => {
-            throw error;
+            handleFormError(error, methods, 'Failed to create group.');
           },
           onRight: (result) => {
+            toast.success('Group created successfully.');
             router.push(`/groups/${result.id}`);
           },
         });
@@ -74,15 +77,16 @@ export function GroupForm({ initialGroup }: Props) {
 
         match(groupResult, {
           onLeft: (error) => {
-            throw error;
+            handleFormError(error, methods, 'Failed to update group.');
           },
           onRight: (result) => {
+            toast.success('Group updated successfully.');
             router.push(`/groups/${result.id}`);
           },
         });
       }
     } catch (error) {
-      console.error('Error submitting group form:', error);
+      handleFormError(error, methods, 'Failed to save group.');
     }
   });
 

@@ -28,12 +28,8 @@ export function DegreeToolbar({ degreeId, ref, methods }: OneOf<[ViewProps, Form
         mode="view"
         canEdit={['update-degree'].some((p) => userPermissions.has(p))}
         editHref={`/degrees/${degreeId}/edit`}
-        editAriaLabel="Edit degree"
         canDelete={userPermissions.has('delete-degree')}
-        deleteAriaLabel={'Delete degree'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this degree? This action cannot be undone.'
-        }
+        entityName="degree"
         onDelete={() => deleteDegree.execute(degreeId)}
         deleteRedirectHref={'/degrees'}
       />

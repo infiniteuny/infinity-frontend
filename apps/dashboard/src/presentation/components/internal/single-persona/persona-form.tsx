@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreatePersona, UpdatePersona } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { PersonaDto, PersonaMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { PersonaToolbar } from './persona-toolbar';
 import { useMemo, useRef } from 'react';
@@ -81,9 +83,10 @@ export function PersonaForm({ initialPersona }: Props) {
 
           match(personaResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create persona.');
             },
             onRight: (data) => {
+              toast.success('Persona created successfully.');
               router.push(`/personas/${data.id}`);
             },
           });
@@ -92,15 +95,16 @@ export function PersonaForm({ initialPersona }: Props) {
 
           match(personaResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update persona.');
             },
             onRight: (data) => {
+              toast.success('Persona updated successfully.');
               router.push(`/personas/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting persona form:', error);
+        handleFormError(error, methods, 'Failed to save persona.');
       }
     }
   });

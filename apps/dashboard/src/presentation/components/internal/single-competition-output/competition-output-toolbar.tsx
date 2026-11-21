@@ -35,12 +35,8 @@ export function CompetitionOutputToolbar({
         mode="view"
         canEdit={['update-competition-output'].some((p) => userPermissions.has(p))}
         editHref={`/competition-outputs/${competitionOutputId}/edit`}
-        editAriaLabel="Edit competition output"
         canDelete={userPermissions.has('delete-competition-output')}
-        deleteAriaLabel={'Delete competition output'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this competition output? This action cannot be undone.'
-        }
+        entityName="competition output"
         onDelete={() => deleteCompetitionOutput.execute(competitionOutputId)}
         deleteRedirectHref={'/competition-outputs'}
       />

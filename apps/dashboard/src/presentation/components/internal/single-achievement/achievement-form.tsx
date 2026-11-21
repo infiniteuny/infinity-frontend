@@ -16,10 +16,12 @@ import { clientContainer } from '@app/client-injection';
 import { CreateAchievement, UpdateAchievement } from '@infiniteuny/infinity-application';
 import { DocumentsForm } from './documents-form';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { Resolver, useForm } from 'react-hook-form';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -153,9 +155,10 @@ export function AchievementForm({
 
           match(achievementResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create achievement.');
             },
             onRight: (result) => {
+              toast.success('Achievement created successfully.');
               router.push(`/achievements/${result.id}`);
             },
           });
@@ -164,16 +167,16 @@ export function AchievementForm({
 
           match(achievementResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update achievement.');
             },
             onRight: (result) => {
+              toast.success('Achievement updated successfully.');
               router.push(`/achievements/${result.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting achievement form:', error);
+        handleFormError(error, methods, 'Failed to save achievement.');
       }
     }
   });

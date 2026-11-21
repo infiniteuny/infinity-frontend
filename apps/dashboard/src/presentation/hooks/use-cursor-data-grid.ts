@@ -11,6 +11,7 @@ import {
   PaginationOptionsDto,
   PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure/dtos';
+import { toast } from 'react-toastify';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type FetchPageParams = {
@@ -134,12 +135,16 @@ export function useCursorDataGrid<T extends { id: string }>({
             setPaginationOptions(nextPaginationOptions);
           },
           onLeft: (error) => {
-            console.error(`Failed to fetch ${entityLabel}:`, error);
+            toast.error(error.message || `Failed to load ${entityLabel}.`);
           },
         });
       } catch (error) {
         if (!controller.signal.aborted) {
-          console.error(`Failed to fetch ${entityLabel}:`, error);
+          toast.error(
+            error instanceof Error && error.message
+              ? error.message
+              : `Failed to load ${entityLabel}.`,
+          );
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -213,19 +218,28 @@ export function useCursorDataGrid<T extends { id: string }>({
         match(result, {
           onRight: () => {
             setRows((prevRows) => prevRows.filter((row) => row.id !== selectedId));
+            toast.success(
+              selectedName
+                ? `Successfully deleted "${selectedName}".`
+                : 'Item deleted successfully.',
+            );
           },
           onLeft: (error) => {
-            console.error(`Failed to delete ${entityLabel}:`, error);
+            toast.error(error.message || `Failed to delete ${entityLabel}.`);
           },
         });
       }
     } catch (error) {
-      console.error(`Failed to delete ${entityLabel}:`, error);
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : `Failed to delete ${entityLabel}.`,
+      );
     } finally {
       setIsDeleting(false);
       setOpenDeleteDialog(false);
     }
-  }, [entityLabel, isDeleting, rows, selectedId]);
+  }, [entityLabel, isDeleting, rows, selectedId, selectedName]);
 
   const handleDeleteCancel = useCallback(() => {
     if (isDeleting) return;

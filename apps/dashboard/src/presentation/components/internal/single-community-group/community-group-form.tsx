@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateCommunityGroup, UpdateCommunityGroup } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { CommunityGroupDto, CommunityGroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { CommunityGroupToolbar } from './community-group-toolbar';
 import { useMemo, useRef } from 'react';
@@ -86,9 +88,10 @@ export function CommunityGroupForm({ initialCommunityGroup }: Props) {
 
           match(communityGroupResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create community group.');
             },
             onRight: (data) => {
+              toast.success('Community group created successfully.');
               router.push(`/community-groups/${data.id}`);
             },
           });
@@ -97,15 +100,16 @@ export function CommunityGroupForm({ initialCommunityGroup }: Props) {
 
           match(communityGroupResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update community group.');
             },
             onRight: (data) => {
+              toast.success('Community group updated successfully.');
               router.push(`/community-groups/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting community group form:', error);
+        handleFormError(error, methods, 'Failed to save community group.');
       }
     }
   });

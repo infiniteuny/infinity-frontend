@@ -31,12 +31,8 @@ export function FacultyToolbar({ facultyId, ref, methods }: OneOf<[ViewProps, Fo
         mode="view"
         canEdit={['update-faculty'].some((p) => userPermissions.has(p))}
         editHref={`/faculties/${facultyId}/edit`}
-        editAriaLabel="Edit faculty"
         canDelete={userPermissions.has('delete-faculty')}
-        deleteAriaLabel={'Delete faculty'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this faculty? This action cannot be undone.'
-        }
+        entityName="faculty"
         onDelete={() => deleteFaculty.execute(facultyId)}
         deleteRedirectHref={'/faculties'}
       />

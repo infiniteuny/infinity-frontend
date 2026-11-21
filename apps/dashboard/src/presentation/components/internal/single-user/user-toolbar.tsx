@@ -34,10 +34,9 @@ export function UserToolbar({ user, ref, methods }: OneOf<[ViewProps, FormProps]
           (userPermissions.has('update-own-user') && parsedUser.id === session?.user.id)
         }
         editHref={`/users/${parsedUser.id}/edit`}
-        editAriaLabel="Edit user"
+        entityName="user"
+        entityDisplayName={parsedUser.name}
         canDelete={userPermissions.has('delete-user') && parsedUser.id !== session?.user.id}
-        deleteAriaLabel={'Delete user'}
-        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedUser.name || 'this user'}? This action cannot be undone.`}
         onDelete={() => deleteUser.execute(parsedUser.id)}
         deleteRedirectHref={'/users'}
       />

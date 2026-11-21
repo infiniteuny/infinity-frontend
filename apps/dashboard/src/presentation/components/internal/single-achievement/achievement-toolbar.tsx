@@ -41,14 +41,13 @@ export function AchievementToolbar({ achievement, ref, methods }: OneOf<[ViewPro
             parsedAchievement.team?.members?.some((member) => member.id === session?.user.id)),
         )}
         editHref={`/achievements/${parsedAchievement.id}/edit`}
-        editAriaLabel="Edit achievement"
+        entityName="achievement"
+        entityDisplayName={parsedAchievement.team?.name}
         canDelete={Boolean(
           userPermissions.has('delete-achievement') ||
           (userPermissions.has('delete-own-achievement') &&
             parsedAchievement.team?.members?.some((member) => member.id === session?.user.id)),
         )}
-        deleteAriaLabel={'Delete achievement'}
-        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedAchievement.team?.name || 'this achievement'}? This action cannot be undone.`}
         onDelete={() => deleteAchievement.execute(parsedAchievement.id)}
         deleteRedirectHref={'/achievements'}
       />

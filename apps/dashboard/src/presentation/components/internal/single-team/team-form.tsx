@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateTeam, UpdateTeam } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CompetitionTeamTypeDto,
   TeamDto,
@@ -68,10 +70,10 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
 
           match(teamResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create team.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Team created successfully.');
               router.push(`/teams/${data.id}`);
             },
           });
@@ -80,17 +82,16 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
 
           match(teamResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update team.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Team updated successfully.');
               router.push(`/teams/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting team form:', error);
+        handleFormError(error, methods, 'Failed to save team.');
       }
     }
   });

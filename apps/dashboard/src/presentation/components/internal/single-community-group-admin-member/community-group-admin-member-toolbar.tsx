@@ -38,12 +38,8 @@ export function CommunityGroupAdminMemberToolbar({
         mode="view"
         canEdit={['update-community-group-admin-member'].some((p) => userPermissions.has(p))}
         editHref={`/community-group-admins/${communityGroupAdminId}/members/${communityGroupAdminMemberId}/edit`}
-        editAriaLabel="Edit community group admin member"
         canDelete={userPermissions.has('delete-community-group-admin-member')}
-        deleteAriaLabel={'Delete community group administrator member'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this member? This action cannot be undone.'
-        }
+        entityName="member"
         onDelete={() => deleteCommunityGroupAdminMember.execute(communityGroupAdminMemberId)}
         deleteRedirectHref={`/community-group-admins/${communityGroupAdminId}/members`}
       />

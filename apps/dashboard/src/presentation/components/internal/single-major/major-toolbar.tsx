@@ -28,12 +28,8 @@ export function MajorToolbar({ majorId, ref, methods }: OneOf<[ViewProps, FormPr
         mode="view"
         canEdit={['update-major'].some((p) => userPermissions.has(p))}
         editHref={`/majors/${majorId}/edit`}
-        editAriaLabel="Edit major"
         canDelete={userPermissions.has('delete-major')}
-        deleteAriaLabel={'Delete major'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this major? This action cannot be undone.'
-        }
+        entityName="major"
         onDelete={() => deleteMajor.execute(majorId)}
         deleteRedirectHref={'/majors'}
       />

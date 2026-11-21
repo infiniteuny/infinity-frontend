@@ -48,14 +48,13 @@ export function FundApplicationToolbar({
             parsedFundApplication.team?.members?.some((member) => member.id === session?.user.id)),
         )}
         editHref={`/fund-applications/${parsedFundApplication.id}/edit`}
-        editAriaLabel="Edit fund application"
+        entityName="fund application"
+        entityDisplayName={parsedFundApplication.team?.name}
         canDelete={Boolean(
           userPermissions.has('delete-fund-application') ||
           (userPermissions.has('delete-own-fund-application') &&
             parsedFundApplication.team?.members?.some((member) => member.id === session?.user.id)),
         )}
-        deleteAriaLabel={'Delete fund application'}
-        deleteConfirmDescription={`Are you sure you want to permanently delete ${parsedFundApplication.team?.name || 'this fund application'}? This action cannot be undone.`}
         onDelete={() => deleteFundApplication.execute(parsedFundApplication.id)}
         deleteRedirectHref={'/fund-applications'}
       />

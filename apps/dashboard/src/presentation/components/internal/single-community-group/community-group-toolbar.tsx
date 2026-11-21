@@ -35,12 +35,8 @@ export function CommunityGroupToolbar({
         mode="view"
         canEdit={['update-community-group'].some((p) => userPermissions.has(p))}
         editHref={`/community-groups/${communityGroupId}/edit`}
-        editAriaLabel="Edit community group"
         canDelete={userPermissions.has('delete-community-group')}
-        deleteAriaLabel={'Delete community group'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this community group? This action cannot be undone.'
-        }
+        entityName="community group"
         onDelete={() => deleteCommunityGroup.execute(communityGroupId)}
         deleteRedirectHref={'/community-groups'}
       />

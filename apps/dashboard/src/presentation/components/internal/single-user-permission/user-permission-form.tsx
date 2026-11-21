@@ -9,6 +9,8 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserPermissionToolbar } from './user-permission-toolbar';
+import { handleFormError } from '@app/presentation/utils';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useRouter } from 'next/navigation';
@@ -51,18 +53,23 @@ export function UserPermissionForm({ user, isProfileForm }: Props) {
       return;
     }
 
-    const result = await createUserPermission.execute(parsedUser.id, data);
+    try {
+      const result = await createUserPermission.execute(parsedUser.id, data);
 
-    match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: () => {
-        router.push(
-          isProfileForm ? `/settings/profile/permissions` : `/users/${parsedUser.id}/permissions`,
-        );
-      },
-    });
+      match(result, {
+        onLeft: (error) => {
+          handleFormError(error, methods, 'Failed to add permission.');
+        },
+        onRight: () => {
+          toast.success('Permission added successfully.');
+          router.push(
+            isProfileForm ? `/settings/profile/permissions` : `/users/${parsedUser.id}/permissions`,
+          );
+        },
+      });
+    } catch (error) {
+      handleFormError(error, methods, 'Failed to add permission.');
+    }
   });
 
   return (

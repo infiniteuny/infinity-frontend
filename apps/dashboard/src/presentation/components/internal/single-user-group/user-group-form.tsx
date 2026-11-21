@@ -9,6 +9,8 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserGroupToolbar } from './user-group-toolbar';
+import { handleFormError } from '@app/presentation/utils';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { useRouter } from 'next/navigation';
@@ -51,16 +53,23 @@ export function UserGroupForm({ user, isProfileForm }: Props) {
       return;
     }
 
-    const result = await createUserGroup.execute(parsedUser.id, data);
+    try {
+      const result = await createUserGroup.execute(parsedUser.id, data);
 
-    match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: () => {
-        router.push(isProfileForm ? `/settings/profile/groups` : `/users/${parsedUser.id}/groups`);
-      },
-    });
+      match(result, {
+        onLeft: (error) => {
+          handleFormError(error, methods, 'Failed to add group.');
+        },
+        onRight: () => {
+          toast.success('Group added successfully.');
+          router.push(
+            isProfileForm ? `/settings/profile/groups` : `/users/${parsedUser.id}/groups`,
+          );
+        },
+      });
+    } catch (error) {
+      handleFormError(error, methods, 'Failed to add group.');
+    }
   });
 
   return (

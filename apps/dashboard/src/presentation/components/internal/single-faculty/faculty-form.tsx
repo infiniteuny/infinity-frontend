@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateFaculty, UpdateFaculty } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { FacultyDto, FacultyMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { FacultyToolbar } from './faculty-toolbar';
 import { useMemo, useRef } from 'react';
@@ -65,9 +67,10 @@ export function FacultyForm({ initialFaculty }: Props) {
 
           match(facultyResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create faculty.');
             },
             onRight: (data) => {
+              toast.success('Faculty created successfully.');
               router.push(`/faculties/${data.id}`);
             },
           });
@@ -76,15 +79,16 @@ export function FacultyForm({ initialFaculty }: Props) {
 
           match(facultyResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update faculty.');
             },
             onRight: (data) => {
+              toast.success('Faculty updated successfully.');
               router.push(`/faculties/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting faculty form:', error);
+        handleFormError(error, methods, 'Failed to save faculty.');
       }
     }
   });

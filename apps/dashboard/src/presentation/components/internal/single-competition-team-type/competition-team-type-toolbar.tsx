@@ -35,12 +35,8 @@ export function CompetitionTeamTypeToolbar({
         mode="view"
         canEdit={['update-competition-team-type'].some((p) => userPermissions.has(p))}
         editHref={`/team-types/${competitionTeamTypeId}/edit`}
-        editAriaLabel="Edit competition team type"
         canDelete={userPermissions.has('delete-competition-team-type')}
-        deleteAriaLabel={'Delete competition team type'}
-        deleteConfirmDescription={
-          'Are you sure you want to permanently delete this competition team type? This action cannot be undone.'
-        }
+        entityName="team type"
         onDelete={() => deleteCompetitionTeamType.execute(competitionTeamTypeId)}
         deleteRedirectHref={'/team-types'}
       />

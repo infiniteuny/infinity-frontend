@@ -6,6 +6,7 @@ import { InitColorSchemeScript } from '@mui/material';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@infiniteuny/infinity-ui';
 import { ReactNode } from 'react';
+import { ToastProvider } from '@app/presentation/components/shared/toast-provider';
 
 type Props = {
   children: ReactNode;
@@ -32,6 +33,7 @@ export default function AuthLayout({ children }: Props) {
           <SkipToContentButton />
           <AuthMain>{children}</AuthMain>
           <AuthFooter />
+          <ToastProvider />
         </MuiSetup>
       </body>
       <GoogleTagManager gtmId={APP.site.gtmId} />

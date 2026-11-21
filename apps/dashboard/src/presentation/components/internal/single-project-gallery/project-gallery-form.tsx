@@ -4,12 +4,14 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateProjectGallery, UpdateProjectGallery } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { ProjectGalleryToolbar } from './project-gallery-toolbar';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -86,10 +88,10 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
 
           match(projectGalleryResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create project gallery.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Project gallery created successfully.');
               router.push(`/project-galleries/${data.id}`);
             },
           });
@@ -98,17 +100,16 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
 
           match(projectGalleryResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update project gallery.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Project gallery updated successfully.');
               router.push(`/project-galleries/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting project gallery form:', error);
+        handleFormError(error, methods, 'Failed to save project gallery.');
       }
     }
   });

@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateTestimonial, UpdateTestimonial } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { TestimonialDto, TestimonialMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { TestimonialToolbar } from './testimonial-toolbar';
 import { useMemo, useRef } from 'react';
@@ -86,10 +88,10 @@ export function TestimonialForm({ initialTestimonial }: Props) {
 
           match(testimonialResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create testimonial.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Testimonial created successfully.');
               router.push(`/testimonials/${data.id}`);
             },
           });
@@ -98,17 +100,16 @@ export function TestimonialForm({ initialTestimonial }: Props) {
 
           match(testimonialResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update testimonial.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('Testimonial updated successfully.');
               router.push(`/testimonials/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting testimonial form:', error);
+        handleFormError(error, methods, 'Failed to save testimonial.');
       }
     }
   });

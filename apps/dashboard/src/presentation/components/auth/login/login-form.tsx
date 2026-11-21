@@ -1,11 +1,13 @@
 'use client';
 
-import { Box, Button, Paper, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { Login } from '@infiniteuny/infinity-application';
 import { LoginRounded } from '@mui/icons-material';
+import { match } from 'effect/Either';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
-import { useMemo } from 'react';
+import { toast } from 'react-toastify';
+import { useMemo, useState } from 'react';
 
 type Props = {
   callbackUrl?: string;
@@ -13,6 +15,30 @@ type Props = {
 
 export function LoginForm({ callbackUrl }: Props) {
   const login = useMemo(() => clientContainer.get<Login>(SYMBOLS.Login), []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleLogin = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const result = await login.execute(callbackUrl);
+      match(result, {
+        onLeft: (error) => {
+          toast.error(error.message || 'Failed to sign in. Please try again.');
+          setIsSubmitting(false);
+        },
+        onRight: () => {},
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : 'Failed to sign in. Please try again.',
+      );
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Paper
@@ -38,11 +64,18 @@ export function LoginForm({ callbackUrl }: Props) {
         <Button
           variant="filled"
           fullWidth
+          disabled={isSubmitting}
           className="mt-4"
-          startIcon={<LoginRounded fontSize="small" />}
-          onClick={() => login.execute(callbackUrl)}
+          startIcon={
+            isSubmitting ? (
+              <CircularProgress size={16} color="inherit" />
+            ) : (
+              <LoginRounded fontSize="small" />
+            )
+          }
+          onClick={handleLogin}
         >
-          Login with INFINITE SSO
+          {isSubmitting ? 'Signing in...' : 'Login with INFINITE SSO'}
         </Button>
       </Box>
     </Paper>

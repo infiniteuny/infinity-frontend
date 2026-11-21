@@ -4,6 +4,7 @@ import { Config } from '@infiniteuny/infinity-domain';
 import { SYMBOLS } from '@config';
 import { Box, Container, Switch, Typography } from '@mui/material';
 import { match } from 'effect/Either';
+import { toast } from 'react-toastify';
 import { useMemo, useState } from 'react';
 
 type Props = {
@@ -24,31 +25,35 @@ export function AllowReregistrationTile({ initialValue }: Props) {
 
     setDisabled(true);
 
-    let result;
-    if (!created) {
-      result = await createConfig.execute({
-        key: key,
-        value: newValue.toString(),
-        type: 'BOOLEAN',
-        isPrivate: true,
+    try {
+      const result = !created
+        ? await createConfig.execute({
+            key: key,
+            value: newValue.toString(),
+            type: 'BOOLEAN',
+            isPrivate: true,
+          })
+        : await updateConfig.execute(key, {
+            value: newValue.toString(),
+          });
+
+      match(result, {
+        onLeft: (error) => {
+          toast.error(error.message || 'Failed to update setting.');
+        },
+        onRight: () => {
+          setCreated(true);
+          setChecked(newValue);
+          toast.success('Setting updated successfully.');
+        },
       });
-    } else {
-      result = await updateConfig.execute(key, {
-        value: newValue.toString(),
-      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message ? error.message : 'Failed to update setting.',
+      );
+    } finally {
+      setDisabled(false);
     }
-
-    match(result, {
-      onLeft: (error) => {
-        console.error('Failed to update config:', error);
-      },
-      onRight: () => {
-        setCreated(true);
-        setChecked(newValue);
-      },
-    });
-
-    setDisabled(false);
   };
 
   return (

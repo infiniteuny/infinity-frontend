@@ -13,6 +13,7 @@ import { redirect } from 'next/navigation';
 import { serverContainer } from '@app/server-injection';
 import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { SYMBOLS } from '@config';
+import { ToastProvider } from '@app/presentation/components/shared/toast-provider';
 
 type Props = {
   children: ReactNode;
@@ -52,6 +53,7 @@ export default async function InternalLayout({ children }: Props) {
             {children}
             <InternalFooter />
           </InternalStoreProvider>
+          <ToastProvider />
         </MuiSetup>
       </body>
       <GoogleTagManager gtmId={APP.site.gtmId} />

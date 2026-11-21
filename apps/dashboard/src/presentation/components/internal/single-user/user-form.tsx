@@ -13,6 +13,7 @@ import {
   UserMapper,
 } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { MembershipForm } from './membership-form';
@@ -20,6 +21,7 @@ import { ProfileToolbar } from '@app/presentation/components/internal/profile';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useUserPermissions } from '@app/presentation/hooks';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -126,7 +128,6 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
     if (formState.isDirty) {
       try {
         if (!user) {
-          // TODO: Add snackbar for loading state
           const userResult = await createUser.execute({
             ...data,
             links: {
@@ -138,10 +139,10 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
 
           match(userResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create user.');
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success('User created successfully.');
               router.push(`/users/${data.id}`);
             },
           });
@@ -157,17 +158,26 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
 
           match(userResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(
+                error,
+                methods,
+                isProfileForm ? 'Failed to update profile.' : 'Failed to update user.',
+              );
             },
             onRight: (data) => {
-              // TODO: Add snackbar for success state
+              toast.success(
+                isProfileForm ? 'Profile updated successfully.' : 'User updated successfully.',
+              );
               router.push(isProfileForm ? `/settings/profile` : `/users/${data.id}`);
             },
           });
         }
       } catch (error) {
-        // TODO: Implement proper error handling and add snackbar for error state
-        console.error('Error submitting user form:', error);
+        handleFormError(
+          error,
+          methods,
+          isProfileForm ? 'Failed to save profile.' : 'Failed to save user.',
+        );
       }
     }
   });

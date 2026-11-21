@@ -4,10 +4,12 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateCompetitionRank, UpdateCompetitionRank } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
+import { handleFormError } from '@app/presentation/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import {
   CompetitionRankDto,
   CompetitionRankMapper,
@@ -70,9 +72,10 @@ export function CompetitionRankForm({ initialCompetitionRank }: Props) {
 
           match(competitionRankResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to create competition rank.');
             },
             onRight: (data) => {
+              toast.success('Competition rank created successfully.');
               router.push(`/competition-ranks/${data.id}`);
             },
           });
@@ -84,15 +87,16 @@ export function CompetitionRankForm({ initialCompetitionRank }: Props) {
 
           match(competitionRankResult, {
             onLeft: (error) => {
-              throw error;
+              handleFormError(error, methods, 'Failed to update competition rank.');
             },
             onRight: (data) => {
+              toast.success('Competition rank updated successfully.');
               router.push(`/competition-ranks/${data.id}`);
             },
           });
         }
       } catch (error) {
-        console.error('Error submitting competition rank form:', error);
+        handleFormError(error, methods, 'Failed to save competition rank.');
       }
     }
   });

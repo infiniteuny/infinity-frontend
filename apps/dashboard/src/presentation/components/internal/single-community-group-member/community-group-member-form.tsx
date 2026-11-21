@@ -8,6 +8,8 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { CommunityGroupMemberToolbar } from './community-group-member-toolbar';
+import { handleFormError } from '@app/presentation/utils';
+import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
@@ -53,16 +55,21 @@ export function CommunityGroupMemberForm({ communityGroup }: Props) {
       return;
     }
 
-    const result = await createCommunityGroupMember.execute(parsedCommunityGroup.id, data);
+    try {
+      const result = await createCommunityGroupMember.execute(parsedCommunityGroup.id, data);
 
-    match(result, {
-      onLeft: (error) => {
-        throw error;
-      },
-      onRight: () => {
-        router.push(`/community-groups/${parsedCommunityGroup.id}/members`);
-      },
-    });
+      match(result, {
+        onLeft: (error) => {
+          handleFormError(error, methods, 'Failed to add member.');
+        },
+        onRight: () => {
+          toast.success('Member added successfully.');
+          router.push(`/community-groups/${parsedCommunityGroup.id}/members`);
+        },
+      });
+    } catch (error) {
+      handleFormError(error, methods, 'Failed to add member.');
+    }
   });
 
   return (

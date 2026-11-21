@@ -22,9 +22,9 @@ export function ProfileToolbar({ userId, ref, methods }: OneOf<[ViewProps, FormP
     return (
       <SingleEntityToolbar
         mode="view"
+        entityName="profile"
         canEdit={['update-own-user'].some((p) => userPermissions.has(p))}
         editHref={`/settings/profile/edit`}
-        editAriaLabel="Edit profile"
       />
     );
   } else if (ref && methods) {

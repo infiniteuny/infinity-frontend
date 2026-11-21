@@ -3,6 +3,7 @@
 import {
   Avatar,
   Button,
+  CircularProgress,
   IconButton,
   List,
   Popover,
@@ -25,7 +26,9 @@ import { ClickableViewTile } from './clickable-view-tile';
 import { useMemo, useState } from 'react';
 import { clientContainer } from '@app/client-injection';
 import { Logout } from '@infiniteuny/infinity-application';
+import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
+import { toast } from 'react-toastify';
 import { useInternalStore } from '@app/presentation/hooks';
 import { useRouter } from 'next/navigation';
 
@@ -62,6 +65,7 @@ export function InternalNavbar({ menus }: Props) {
 
   const session = useInternalStore((s) => s.session);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const open = Boolean(anchorEl);
 
   const currentMode: ThemeMode = mode ?? 'system';
@@ -79,9 +83,29 @@ export function InternalNavbar({ menus }: Props) {
   };
 
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
     setAnchorEl(null);
-    await logout.execute();
-    router.push('/login');
+    try {
+      const result = await logout.execute();
+      match(result, {
+        onLeft: (error) => {
+          toast.error(error.message || 'Failed to log out. Please try again.');
+        },
+        onRight: () => {
+          router.push('/login');
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : 'Failed to log out. Please try again.',
+      );
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -201,12 +225,19 @@ export function InternalNavbar({ menus }: Props) {
         <Button
           variant="tonal"
           fullWidth
+          disabled={isLoggingOut}
           className="mt-4 max-[450px]:mt-auto!"
           size="large"
-          startIcon={<LogoutRounded fontSize="small" />}
+          startIcon={
+            isLoggingOut ? (
+              <CircularProgress size={16} color="inherit" />
+            ) : (
+              <LogoutRounded fontSize="small" />
+            )
+          }
           onClick={handleLogout}
         >
-          Logout
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
         </Button>
         <IconButton
           onClick={handleClose}
