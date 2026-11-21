@@ -92,7 +92,10 @@ serverContainer
   .toConstantValue(infinityApiDataSourceImpl);
 
 // Controllers
-serverContainer.bind<AuthController>(SYMBOLS.AuthController).to(AuthControllerImpl);
+serverContainer
+  .bind<AuthController>(SYMBOLS.AuthController)
+  .to(AuthControllerImpl)
+  .inSingletonScope();
 
 // Repositories
 serverContainer
