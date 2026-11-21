@@ -117,6 +117,7 @@ export function CoreTeamMembersList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof UserSortOptions> = {
+      id: 'id',
       name: 'name',
       username: 'username',
       emailAddress: 'emailAddress',

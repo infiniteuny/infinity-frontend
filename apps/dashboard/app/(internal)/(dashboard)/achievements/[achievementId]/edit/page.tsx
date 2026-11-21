@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           'team',
           'team.members',
           'competition_instance',
+          'competition_rank',
         ]),
     )();
     const achievement = match(achievementResult, {
@@ -121,6 +122,7 @@ export default async function SingleAchievementEditPage({ params }: Props) {
           'team',
           'team.members',
           'competition_instance',
+          'competition_rank',
         ]),
     )();
     const achievement = match(achievementResult, {

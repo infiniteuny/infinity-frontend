@@ -26,7 +26,11 @@ export default async function ProfileCommunityGroupNewPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (['create-own-community-group-member'].some((p) => userPermissions.has(p))) {
+  if (
+    ['create-community-group-member', 'create-own-community-group-member'].some((p) =>
+      userPermissions.has(p),
+    )
+  ) {
     const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
 
     const userResult = await cache(async () => await getUser.execute(session.user.id))();

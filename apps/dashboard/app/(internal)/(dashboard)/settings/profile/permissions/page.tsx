@@ -34,6 +34,13 @@ export default async function ProfilePermissionsPage() {
     },
     onRight: (session) => session,
   });
+  const sessionPermissions = new Set(session.permissions);
+
+  if (
+    !['read-user-permission', 'read-own-user-permission'].some((p) => sessionPermissions.has(p))
+  ) {
+    notFound();
+  }
 
   const userResult = await getUser.execute(session.user.id);
   const user = match(userResult, {

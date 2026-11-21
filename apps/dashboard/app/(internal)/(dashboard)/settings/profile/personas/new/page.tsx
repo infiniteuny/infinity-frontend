@@ -26,7 +26,7 @@ export default async function ProfilePersonaNewPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (['create-own-user-persona'].some((p) => userPermissions.has(p))) {
+  if (['create-user-persona', 'create-own-user-persona'].some((p) => userPermissions.has(p))) {
     const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
 
     const userResult = await cache(async () => await getUser.execute(session.user.id))();

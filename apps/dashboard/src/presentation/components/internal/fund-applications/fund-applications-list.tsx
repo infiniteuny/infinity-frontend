@@ -110,6 +110,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof FundApplicationSortOptions> = {
+      id: 'id',
       competitionBranch: 'competitionBranch',
       status: 'status',
     };

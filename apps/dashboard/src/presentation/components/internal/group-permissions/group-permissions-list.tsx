@@ -112,6 +112,7 @@ export function GroupPermissionsList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof PermissionSortOptions> = {
+      id: 'id',
       name: 'name',
       guardName: 'guardName',
     };

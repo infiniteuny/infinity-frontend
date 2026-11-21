@@ -10,10 +10,12 @@ import { RefObject } from 'react';
 type Props = {
   dataGridApiRef: RefObject<GridApiCommunity | null>;
   teamId: string;
+  leaderId: string;
 };
 
-export function TeamMembersToolbar({ teamId, dataGridApiRef }: Props) {
-  const userPermissions = new Set(useInternalStore((s) => s.session?.permissions ?? []));
+export function TeamMembersToolbar({ teamId, leaderId, dataGridApiRef }: Props) {
+  const session = useInternalStore((s) => s.session);
+  const userPermissions = new Set(session?.permissions ?? []);
 
   return (
     <>
@@ -27,7 +29,9 @@ export function TeamMembersToolbar({ teamId, dataGridApiRef }: Props) {
         >
           <SearchRounded />
         </IconButton>
-        {['create-project-gallery'].some((p) => userPermissions.has(p)) ? (
+        {['create-team-member'].some((p) => userPermissions.has(p)) ||
+        (['create-own-team-member'].some((p) => userPermissions.has(p)) &&
+          leaderId === session?.user.id) ? (
           <Button
             variant="filled"
             className="ml-4"

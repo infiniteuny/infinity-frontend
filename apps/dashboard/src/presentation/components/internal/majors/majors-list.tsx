@@ -98,6 +98,7 @@ export function MajorsList({ initialMajors, initialPaginationOptions }: Props) {
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof MajorSortOptions> = {
+      id: 'id',
       name: 'name',
       code: 'code',
     };

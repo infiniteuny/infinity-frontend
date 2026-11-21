@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (
     ['create-team-member'].some((p) => userPermissions.has(p)) ||
     (['create-own-team-member'].some((p) => userPermissions.has(p)) &&
-      team.members?.some((member) => member.id === session.user.id))
+      team.leaderId === session.user.id)
   ) {
     return {
       title: `Add ${team.name}'s Members`,
@@ -89,7 +89,7 @@ export default async function SingleTeamMemberNewPage({ params }: Props) {
   if (
     ['create-team-member'].some((p) => userPermissions.has(p)) ||
     (['create-own-team-member'].some((p) => userPermissions.has(p)) &&
-      team.members?.some((member) => member.id === session.user.id))
+      team.leaderId === session.user.id)
   ) {
     return (
       <InternalMain

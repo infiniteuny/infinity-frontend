@@ -49,6 +49,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       onRight: (data) => data,
     });
 
+    if (!['update-team'].some((p) => userPermissions.has(p)) && team.leaderId !== session.user.id) {
+      notFound();
+    }
+
     return {
       title: `Edit ${team.name}`,
     };
@@ -88,15 +92,12 @@ export default async function SingleTeamEditPage({ params }: Props) {
       onRight: (data) => data,
     });
 
-    if (
-      !['update-team'].some((p) => userPermissions.has(p)) &&
-      !team?.members?.some((member) => member.id === session.user.id)
-    ) {
+    if (!['update-team'].some((p) => userPermissions.has(p)) && team.leaderId !== session.user.id) {
       notFound();
     }
 
     const teamTypesResult = await getCompetitionTeamTypes.execute(undefined, undefined, {
-      perPage: 10,
+      perPage: 100,
     });
     const [teamTypes] = match(teamTypesResult, {
       onLeft: (error) => {

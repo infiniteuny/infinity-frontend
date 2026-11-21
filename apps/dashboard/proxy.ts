@@ -23,13 +23,22 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
     const origin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
     const safePath = sanitizeCallbackUrl(req.nextUrl.pathname + req.nextUrl.search, origin);
     const callbackUrl = encodeURIComponent(safePath);
+    const response = NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, origin));
 
-    return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, origin));
+    for (const cookie of req.cookies.getAll()) {
+      if (cookie.name.startsWith('auth.') || cookie.name.startsWith('__Secure-auth.')) {
+        response.cookies.delete(cookie.name);
+      }
+    }
+
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!auth|login|_next/static|_next/image|favicon.ico|_health).*)'],
+  matcher: [
+    '/((?!auth(?:/|$)|login(?:/|$)|_next/static|_next/image|assets(?:/|$)|favicon\\.ico|_health(?:/|$)).*)',
+  ],
 };

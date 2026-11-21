@@ -104,6 +104,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof AchievementSortOptions> = {
+      id: 'id',
       competitionBranch: 'competitionBranch',
       status: 'status',
     };
@@ -607,6 +608,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
               competitionBranch: achievement.competitionBranch,
               competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
               competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
+              image: achievement.image,
               status: achievement.status,
               actions: achievement,
             }))}

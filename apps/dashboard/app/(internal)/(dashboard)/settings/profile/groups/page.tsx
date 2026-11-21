@@ -34,6 +34,11 @@ export default async function ProfileGroupsPage() {
     },
     onRight: (session) => session,
   });
+  const userPermissions = new Set(session.permissions);
+
+  if (!['read-user-group', 'read-own-user-group'].some((p) => userPermissions.has(p))) {
+    notFound();
+  }
 
   const userResult = await getUser.execute(session.user.id);
   const user = match(userResult, {

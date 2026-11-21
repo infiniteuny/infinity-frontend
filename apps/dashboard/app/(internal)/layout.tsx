@@ -9,6 +9,7 @@ import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { MuiSetup, SkipToContentButton } from '@infiniteuny/infinity-ui';
 import { ReactNode } from 'react';
+import { redirect } from 'next/navigation';
 import { serverContainer } from '@app/server-injection';
 import { SessionDto, SessionMapper } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
@@ -30,8 +31,8 @@ export default async function InternalLayout({ children }: Props) {
 
   const sessionResult = await getSession.execute();
   const session = match(sessionResult, {
-    onLeft: (error) => {
-      throw error;
+    onLeft: () => {
+      redirect('/login');
     },
     onRight: (session) => session,
   });

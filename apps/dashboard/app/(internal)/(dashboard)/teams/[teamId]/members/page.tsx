@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const teamId = (await params).teamId;
 
   const [teamResult, sessionResult] = await Promise.all([
-    cache(async () => await getTeam.execute(teamId))(),
+    cache(async () => await getTeam.execute(teamId, ['members']))(),
     cache(async () => await getSession.execute())(),
   ]);
 
@@ -72,7 +72,7 @@ export default async function TeamMembersPage({ params }: Props) {
   const teamId = (await params).teamId;
 
   const [teamResult, sessionResult] = await Promise.all([
-    cache(async () => await getTeam.execute(teamId))(),
+    cache(async () => await getTeam.execute(teamId, ['members']))(),
     cache(async () => await getSession.execute())(),
   ]);
 

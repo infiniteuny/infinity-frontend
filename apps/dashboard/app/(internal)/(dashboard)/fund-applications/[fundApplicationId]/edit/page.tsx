@@ -44,7 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const getFundApplication = serverContainer.get<GetFundApplication>(SYMBOLS.GetFundApplication);
 
     const fundApplicationResult = await cache(
-      async () => await getFundApplication.execute(fundApplicationId),
+      async () =>
+        await getFundApplication.execute(fundApplicationId, [
+          'team',
+          'team.members',
+          'competition_instance',
+        ]),
     )();
     const fundApplication = match(fundApplicationResult, {
       onLeft: (error) => {
@@ -97,7 +102,11 @@ export default async function SingleFundApplicationEditPage({ params }: Props) {
 
     const fundApplicationResult = await cache(
       async () =>
-        await getFundApplication.execute(fundApplicationId, ['team', 'competition_instance']),
+        await getFundApplication.execute(fundApplicationId, [
+          'team',
+          'team.members',
+          'competition_instance',
+        ]),
     )();
     const fundApplication = match(fundApplicationResult, {
       onLeft: (error) => {

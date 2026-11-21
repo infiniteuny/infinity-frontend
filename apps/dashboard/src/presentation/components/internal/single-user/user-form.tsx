@@ -135,15 +135,9 @@ export function UserForm({ initialUser, faculties, majors, isProfileForm }: Prop
           const userResult = await updateUser.execute(user.id, {
             ...data,
             links: {
-              ...(data.linkedin || user.links?.linkedin
-                ? { linkedin: data.linkedin || user.links?.linkedin }
-                : {}),
-              ...(data.github || user.links?.github
-                ? { github: data.github || user.links?.github }
-                : {}),
-              ...(data.discord || user.links?.discord
-                ? { discord: data.discord || user.links?.discord }
-                : {}),
+              ...(data.linkedin ? { linkedin: data.linkedin } : {}),
+              ...(data.github ? { github: data.github } : {}),
+              ...(data.discord ? { discord: data.discord } : {}),
             },
           });
 

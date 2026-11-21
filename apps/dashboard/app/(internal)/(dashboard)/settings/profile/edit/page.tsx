@@ -33,7 +33,7 @@ export default async function ProfileEditPage() {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (['update-own-user'].some((p) => userPermissions.has(p))) {
+  if (['update-user', 'update-own-user'].some((p) => userPermissions.has(p))) {
     const getUser = serverContainer.get<GetUser>(SYMBOLS.GetUser);
     const getFaculties = serverContainer.get<GetFaculties>(SYMBOLS.GetFaculties);
     const getMajors = serverContainer.get<GetMajors>(SYMBOLS.GetMajors);

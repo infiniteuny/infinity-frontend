@@ -112,6 +112,7 @@ export function UserPersonasList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof PersonaSortOptions> = {
+      id: 'id',
       name: 'name',
       priority: 'priority',
     };

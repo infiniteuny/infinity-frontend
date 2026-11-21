@@ -124,6 +124,7 @@ export function UserCommunityGroupsList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof CommunityGroupSortOptions> = {
+      id: 'id',
       name: 'name',
       priority: 'priority',
       isActive: 'isActive',

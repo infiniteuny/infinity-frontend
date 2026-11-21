@@ -103,6 +103,7 @@ export function TeamsList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof TeamSortOptions> = {
+      id: 'id',
       name: 'name',
     };
 

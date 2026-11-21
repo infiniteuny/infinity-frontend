@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (teamId !== 'new' && ['read-team', 'read-own-team'].some((p) => userPermissions.has(p))) {
     const getTeam = serverContainer.get<GetTeam>(SYMBOLS.GetTeam);
 
-    const teamResult = await cache(async () => await getTeam.execute(teamId))();
+    const teamResult = await cache(async () => await getTeam.execute(teamId, ['members']))();
     const team = match(teamResult, {
       onLeft: (error) => {
         if (error instanceof NotFoundError) {
@@ -48,6 +48,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       onRight: (data) => data,
     });
+
+    if (
+      !['read-team'].some((p) => userPermissions.has(p)) &&
+      !team.members?.some((member) => member.id === session.user.id)
+    ) {
+      notFound();
+    }
 
     return {
       title: team.name,

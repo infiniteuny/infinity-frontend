@@ -30,7 +30,7 @@ export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]
       <Box className="ml-auto">
         {userPermissions.includes('update-team') ||
         (userPermissions.includes('update-own-team') &&
-          parsedTeam.members?.some((member) => member.id === session?.user.id)) ? (
+          parsedTeam.leaderId === session?.user.id) ? (
           <Button
             variant="filled"
             className="ml-4"

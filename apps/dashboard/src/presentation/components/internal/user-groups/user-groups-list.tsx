@@ -112,6 +112,7 @@ export function UserGroupsList({
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof GroupSortOptions> = {
+      id: 'id',
       name: 'name',
       guardName: 'guardName',
     };

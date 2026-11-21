@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   const userPermissions = new Set(session.permissions);
 
-  if (teamTypeId !== 'new') {
+  if (teamTypeId !== 'new' && ['read-competition-team-type'].some((p) => userPermissions.has(p))) {
     const getCompetitionTeamType = serverContainer.get<GetCompetitionTeamType>(
       SYMBOLS.GetCompetitionTeamType,
     );

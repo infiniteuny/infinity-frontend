@@ -113,6 +113,7 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
     if (model.length === 0) return undefined;
 
     const fieldMap: Record<string, keyof UserSortOptions> = {
+      id: 'id',
       name: 'name',
       username: 'username',
       emailAddress: 'emailAddress',
@@ -366,7 +367,11 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
   return (
     <>
       <SectionHeader title={`${parsedTeam.name}'s Members`} backUrl={`/teams/${parsedTeam.id}`}>
-        <TeamMembersToolbar teamId={parsedTeam.id} dataGridApiRef={dataGridApiRef} />
+        <TeamMembersToolbar
+          teamId={parsedTeam.id}
+          leaderId={parsedTeam.leaderId}
+          dataGridApiRef={dataGridApiRef}
+        />
       </SectionHeader>
       <AlertDialog
         open={openDeleteDialog}
@@ -572,7 +577,8 @@ export function TeamMembersList({ initialTeamMembers, initialPaginationOptions, 
                     />
                     {['delete-team-member'].some((p) => userPermissions.has(p)) ||
                     (['delete-own-team-member'].some((p) => userPermissions.has(p)) &&
-                      params.row.actions.id === userSession?.user?.id) ? (
+                      (params.row.actions.id === userSession?.user?.id ||
+                        parsedTeam.leaderId === userSession?.user?.id)) ? (
                       <GridActionsCellItem
                         key="delete"
                         showInMenu
