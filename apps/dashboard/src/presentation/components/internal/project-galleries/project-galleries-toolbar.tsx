@@ -1,44 +1,21 @@
 'use client';
 
-import Link from 'next/link';
-import { AddRounded, SearchRounded } from '@mui/icons-material';
-import { Box, Button, IconButton } from '@mui/material';
+import { DataGridApiRef, EntityListToolbar } from '@app/presentation/components/internal/shared';
 import { useUserPermissions } from '@app/presentation/hooks';
-import { GridApiCommunity } from '@mui/x-data-grid/internals';
-import { RefObject } from 'react';
 
 type Props = {
-  dataGridApiRef: RefObject<GridApiCommunity | null>;
+  dataGridApiRef: DataGridApiRef;
 };
 
 export function ProjectGalleriesToolbar({ dataGridApiRef }: Props) {
   const userPermissions = useUserPermissions();
 
   return (
-    <>
-      <Box className="ml-auto">
-        <IconButton
-          className="ml-4"
-          aria-label="Search"
-          onClick={() => {
-            dataGridApiRef.current?.showFilterPanel();
-          }}
-        >
-          <SearchRounded />
-        </IconButton>
-        {['create-project-gallery'].some((p) => userPermissions.has(p)) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Add project gallery"
-            LinkComponent={Link}
-            href="/project-galleries/new"
-            startIcon={<AddRounded />}
-          >
-            Add
-          </Button>
-        ) : null}
-      </Box>
-    </>
+    <EntityListToolbar
+      dataGridApiRef={dataGridApiRef}
+      canCreate={['create-project-gallery'].some((p) => userPermissions.has(p))}
+      createHref="/project-galleries/new"
+      createAriaLabel="Add project gallery"
+    />
   );
 }

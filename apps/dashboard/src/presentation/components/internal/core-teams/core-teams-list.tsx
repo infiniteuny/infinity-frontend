@@ -9,17 +9,11 @@ import {
 } from '@app/presentation/components/internal/shared';
 import { Box, NoSsr } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
-import {
-  CoreTeam,
-  CoreTeamFilterOptions,
-  CoreTeamSortOptions,
-  PaginationOptions,
-} from '@infiniteuny/infinity-domain';
+import { CoreTeam, CoreTeamFilterOptions, CoreTeamSortOptions } from '@infiniteuny/infinity-domain';
 import {
   CoreTeamDto,
   CoreTeamMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
@@ -28,19 +22,15 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCoreTeam, GetCoreTeams } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { CoreTeamsToolbar } from './core-teams-toolbar';
 
@@ -86,47 +76,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedCoreTeamId, setSelectedCoreTeamId] = useState<string | null>(null);
-  const [selectedCoreTeamYear, setSelectedCoreTeamYear] = useState<string | null>(null);
-
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CoreTeam[]>(() =>
-    initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialCoreTeams.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
   const convertSortModelToDomain = (model: GridSortModel): CoreTeamSortOptions | undefined => {
     if (model.length === 0) return undefined;
     const fieldMap: Record<string, keyof CoreTeamSortOptions> = {
@@ -161,99 +110,39 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedCoreTeamYear,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<CoreTeam>({
+    initialRows: () => initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain),
+    initialRowCount: initialCoreTeams.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      try {
-        const result = await getCoreTeams.execute(filterOptions, sortOptions, {
-          perPage: paginationModel.pageSize,
-          cursor,
-        });
-        if (cancelled) return;
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getCoreTeams]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+      return getCoreTeams.execute(filterOptions, sortOptions, {
+        perPage: pageSize,
+        cursor,
+      });
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
+    deleteRow: (id) => deleteCoreTeam.execute(id),
+    entityLabel: 'core teams',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -261,41 +150,6 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     },
     [router],
   );
-
-  const handleDeleteClick = useCallback((coreTeamId: string, coreTeamYear?: string) => {
-    setSelectedCoreTeamId(coreTeamId);
-    setSelectedCoreTeamYear(coreTeamYear || null);
-    setOpenDeleteDialog(true);
-  }, []);
-
-  const handleDeleteAccept = async () => {
-    if (!selectedCoreTeamId) {
-      console.error('No core team selected for deletion');
-      return;
-    }
-    const result = await deleteCoreTeam.execute(selectedCoreTeamId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedCoreTeamId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete core team:', error);
-      },
-    });
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedCoreTeamId(null);
-      setSelectedCoreTeamYear(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedCoreTeamId(null);
-      setSelectedCoreTeamYear(null);
-    }, 1000);
-  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -390,6 +244,7 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCoreTeamYear || 'this core team'}? This action cannot be undone.`}
         acceptText="Delete"

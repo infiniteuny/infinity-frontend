@@ -1,14 +1,10 @@
 'use client';
 
-import Link from 'next/link';
-import { AddRounded, SearchRounded } from '@mui/icons-material';
-import { Box, Button, IconButton } from '@mui/material';
+import { DataGridApiRef, EntityListToolbar } from '@app/presentation/components/internal/shared';
 import { useUserPermissions } from '@app/presentation/hooks';
-import { GridApiCommunity } from '@mui/x-data-grid/internals';
-import { RefObject } from 'react';
 
 type Props = {
-  dataGridApiRef: RefObject<GridApiCommunity | null>;
+  dataGridApiRef: DataGridApiRef;
   userId: string;
   isProfileView?: boolean;
 };
@@ -17,34 +13,13 @@ export function UserPermissionsToolbar({ userId, isProfileView, dataGridApiRef }
   const userPermissions = useUserPermissions();
 
   return (
-    <>
-      <Box className="ml-auto">
-        <IconButton
-          className="ml-4"
-          aria-label="Search"
-          onClick={() => {
-            dataGridApiRef.current?.showFilterPanel();
-          }}
-        >
-          <SearchRounded />
-        </IconButton>
-        {['create-user-permission'].some((p) => userPermissions.has(p)) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Add user permission"
-            LinkComponent={Link}
-            href={
-              isProfileView
-                ? '/settings/profile/permissions/new'
-                : `/users/${userId}/permissions/new`
-            }
-            startIcon={<AddRounded />}
-          >
-            Add
-          </Button>
-        ) : null}
-      </Box>
-    </>
+    <EntityListToolbar
+      dataGridApiRef={dataGridApiRef}
+      canCreate={['create-user-permission'].some((p) => userPermissions.has(p))}
+      createHref={
+        isProfileView ? '/settings/profile/permissions/new' : `/users/${userId}/permissions/new`
+      }
+      createAriaLabel="Add user permission"
+    />
   );
 }

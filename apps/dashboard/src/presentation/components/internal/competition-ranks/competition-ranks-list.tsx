@@ -13,13 +13,11 @@ import {
   CompetitionRank,
   CompetitionRankFilterOptions,
   CompetitionRankSortOptions,
-  PaginationOptions,
 } from '@infiniteuny/infinity-domain';
 import {
   CompetitionRankDto,
   CompetitionRankMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
@@ -28,19 +26,15 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionRank, GetCompetitionRanks } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { CompetitionRanksToolbar } from './competition-ranks-toolbar';
 
@@ -88,47 +82,6 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CompetitionRank[]>(() =>
-    initialCompetitionRanks.map(CompetitionRankMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialCompetitionRanks.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedRankId, setSelectedrankId] = useState<string | null>(null);
-  const [selectedRankName, setSelectedrankName] = useState<string | null>(null);
-
   const convertSortModelToDomain = (
     model: GridSortModel,
   ): CompetitionRankSortOptions | undefined => {
@@ -165,99 +118,44 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedRankName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<CompetitionRank>({
+    initialRows: () => initialCompetitionRanks.map(CompetitionRankMapper.fromDtoToDomain),
+    initialRowCount: initialCompetitionRanks.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      try {
-        const result = await getCompetitionRanks.execute(filterOptions, sortOptions, {
-          perPage: paginationModel.pageSize,
+      return getCompetitionRanks.execute(
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
           cursor,
-        });
-        if (cancelled) return;
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionRanks]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+        },
+        abortSignal,
+      );
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
+    deleteRow: (id) => deleteCompetitionRank.execute(id),
+    entityLabel: 'competition ranks',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -265,41 +163,6 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
     },
     [router],
   );
-
-  const handleDeleteClick = useCallback((rankId: string, rankName?: string) => {
-    setSelectedrankId(rankId);
-    setSelectedrankName(rankName || null);
-    setOpenDeleteDialog(true);
-  }, []);
-
-  const handleDeleteAccept = async () => {
-    if (!selectedRankId) {
-      console.error('No rank selected for deletion');
-      return;
-    }
-    const result = await deleteCompetitionRank.execute(selectedRankId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedRankId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete rank:', error);
-      },
-    });
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedrankId(null);
-      setSelectedrankName(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedrankId(null);
-      setSelectedrankName(null);
-    }, 1000);
-  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -391,6 +254,7 @@ export function CompetitionRanksList({ initialCompetitionRanks, initialPaginatio
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedRankName || 'this rank'}? This action cannot be undone.`}
         acceptText="Delete"

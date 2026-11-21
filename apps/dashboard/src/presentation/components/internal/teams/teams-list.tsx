@@ -18,31 +18,17 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteTeam, GetTeams } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
-import { match } from 'effect/Either';
-import {
-  PaginationOptions,
-  Team,
-  TeamFilterOptions,
-  TeamSortOptions,
-} from '@infiniteuny/infinity-domain';
-import {
-  PaginationOptionsDto,
-  PaginationOptionsMapper,
-  TeamDto,
-  TeamMapper,
-} from '@infiniteuny/infinity-infrastructure';
+import { Team, TeamFilterOptions, TeamSortOptions } from '@infiniteuny/infinity-domain';
+import { PaginationOptionsDto, TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
-import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useInternalStore, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { TeamsToolbar } from './teams-toolbar';
 
@@ -89,45 +75,6 @@ export function TeamsList({
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
-
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<Team[]>(() => initialTeams.map(TeamMapper.fromDtoToDomain));
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialTeams.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const [selectedTeamName, setSelectedTeamName] = useState<string | null>(null);
 
   const convertSortModelToDomain = (model: GridSortModel): TeamSortOptions | undefined => {
     if (model.length === 0) return undefined;
@@ -179,149 +126,42 @@ export function TeamsList({
     [defaultTeamTypeIdFilter],
   );
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedTeamName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<Team>({
+    initialRows: () => initialTeams.map(TeamMapper.fromDtoToDomain),
+    initialRowCount: initialTeams.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-
-      try {
-        const result = await getTeams.execute(
-          ['leader', 'members', 'team_type'],
-          filterOptions,
-          sortOptions,
-          { perPage: paginationModel.pageSize, cursor },
-        );
-
-        if (cancelled) return;
-
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getTeams, convertFilterModelToDomain]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+      return getTeams.execute(
+        ['leader', 'members', 'team_type'],
+        filterOptions,
+        sortOptions,
+        { perPage: pageSize, cursor },
+        abortSignal,
+      );
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
-
-  const handleDeleteClick = useCallback((teamId: string, teamName?: string) => {
-    setSelectedTeamId(teamId);
-    setSelectedTeamName(teamName || null);
-    setOpenDeleteDialog(true);
-  }, []);
-
-  const handleDeleteAccept = async () => {
-    if (!selectedTeamId) {
-      console.error('No team selected for deletion');
-
-      return;
-    }
-
-    const result = await deleteTeam.execute(selectedTeamId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedTeamId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete team:', error);
-      },
-    });
-
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedTeamId(null);
-      setSelectedTeamName(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedTeamId(null);
-      setSelectedTeamName(null);
-    }, 1000);
-  };
+    deleteRow: (id) => deleteTeam.execute(id),
+    entityLabel: 'teams',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -465,6 +305,7 @@ export function TeamsList({
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedTeamName || 'this team'}? This action cannot be undone.`}
         acceptText="Delete"

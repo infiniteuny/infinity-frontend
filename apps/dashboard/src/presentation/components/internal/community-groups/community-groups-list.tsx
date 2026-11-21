@@ -14,13 +14,11 @@ import {
   CommunityGroup,
   CommunityGroupFilterOptions,
   CommunityGroupSortOptions,
-  PaginationOptions,
 } from '@infiniteuny/infinity-domain';
 import {
   CommunityGroupDto,
   CommunityGroupMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
@@ -29,19 +27,15 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCommunityGroup, GetCommunityGroups } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { CommunityGroupsToolbar } from './community-groups-toolbar';
 
@@ -81,46 +75,6 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
   );
   const router = useRouter();
   const userPermissions = useUserPermissions();
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CommunityGroup[]>(() =>
-    initialCommunityGroups.map(CommunityGroupMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialCommunityGroups.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedCommunityGroupId, setSelectedCommunityGroupId] = useState<string | null>(null);
-  const [selectedCommunityGroupName, setSelectedCommunityGroupName] = useState<string | null>(null);
-
   const convertSortModelToDomain = (
     model: GridSortModel,
   ): CommunityGroupSortOptions | undefined => {
@@ -151,118 +105,44 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
     return Object.keys(f).length > 0 ? f : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedCommunityGroupName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<CommunityGroup>({
+    initialRows: () => initialCommunityGroups.map(CommunityGroupMapper.fromDtoToDomain),
+    initialRowCount: initialCommunityGroups.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+      getCommunityGroups.execute(
+        convertFilterModelToDomain(filterModel),
+        convertSortModelToDomain(sortModel),
+        { perPage: pageSize, cursor },
+      ),
+    deleteRow: (id) => deleteCommunityGroup.execute(id),
+    entityLabel: 'community groups',
+  });
 
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-    (async () => {
-      setIsLoading(true);
-      try {
-        const result = await getCommunityGroups.execute(
-          convertFilterModelToDomain(filterModel),
-          convertSortModelToDomain(sortModel),
-          { perPage: paginationModel.pageSize, cursor },
-        );
-        if (cancelled) return;
-        match(result, {
-          onRight: ([newRows, next]) => {
-            const h = Boolean(next.nextCursor);
-            setRows(newRows);
-            setRowCount(h ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length);
-            setPaginationMeta({ hasNextPage: h });
-            setPaginationOptions(next);
-          },
-          onLeft: (e) => {
-            throw e;
-          },
-        });
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getCommunityGroups]);
-
-  const handlePaginationModelChange = useCallback(
-    (m: GridPaginationModel) => {
-      const sz = m.pageSize !== paginationModel.pageSize;
-      const n = sz ? { ...m, page: 0 } : m;
-      let c: string | undefined;
-      if (sz) c = undefined;
-      else if (n.page > paginationModel.page && paginationOptions.nextCursor)
-        c = paginationOptions.nextCursor;
-      else if (n.page < paginationModel.page && paginationOptions.previousCursor)
-        c = paginationOptions.previousCursor;
-      else c = paginationOptions.cursor;
-      setCursor(c);
-      setPaginationModel(n);
-    },
-    [paginationModel, paginationOptions],
-  );
-  const handleSortModelChange = useCallback((m: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
-    setSortModel(m);
-  }, []);
-  const handleFilterModelChange = useCallback((m: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((p) => ({ page: 0, pageSize: p.pageSize }));
-    setFilterModel(m);
-  }, []);
   const handleRowClick = useCallback(
     (p: GridRowParams) => {
       router.push(`/community-groups/${p.row.id}`);
     },
     [router],
   );
-  const handleDeleteClick = useCallback((id: string, name?: string) => {
-    setSelectedCommunityGroupId(id);
-    setSelectedCommunityGroupName(name || null);
-    setOpenDeleteDialog(true);
-  }, []);
-  const handleDeleteAccept = async () => {
-    if (!selectedCommunityGroupId) return;
-    const r = await deleteCommunityGroup.execute(selectedCommunityGroupId);
-    match(r, {
-      onRight: () => {
-        setRows((p) => p.filter((x) => x.id !== selectedCommunityGroupId));
-      },
-      onLeft: (e) => {
-        console.error('Failed to delete community group:', e);
-      },
-    });
-    setOpenDeleteDialog(false);
-    setTimeout(() => {
-      setSelectedCommunityGroupId(null);
-      setSelectedCommunityGroupName(null);
-    }, 1000);
-  };
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(() => {
-      setSelectedCommunityGroupId(null);
-      setSelectedCommunityGroupName(null);
-    }, 1000);
-  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -365,6 +245,7 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedCommunityGroupName || 'this community group'}? This action cannot be undone.`}
         acceptText="Delete"

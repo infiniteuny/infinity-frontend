@@ -8,9 +8,16 @@ type Props = {
   subtitle: string | number;
   icon?: ReactNode;
   position?: 'top' | 'middle' | 'bottom' | 'single';
+  suppressSubtitleHydrationWarning?: boolean;
 };
 
-export function ViewTile({ title, subtitle, icon, position = 'single' }: Props) {
+export function ViewTile({
+  title,
+  subtitle,
+  icon,
+  position = 'single',
+  suppressSubtitleHydrationWarning,
+}: Props) {
   let roundedClass;
   switch (position) {
     case 'top':
@@ -39,7 +46,11 @@ export function ViewTile({ title, subtitle, icon, position = 'single' }: Props) 
         <Typography variant="body1" component="p" className="font-medium">
           {title}
         </Typography>
-        <Typography variant="body2" component="p">
+        <Typography
+          variant="body2"
+          component="p"
+          suppressHydrationWarning={suppressSubtitleHydrationWarning}
+        >
           {subtitle}
         </Typography>
       </Box>

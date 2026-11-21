@@ -1,115 +1,38 @@
 'use client';
 
 import { clientContainer } from '@app/client-injection';
-import { Autocomplete, TextField } from '@mui/material';
+import { EntityAutocompleteFilterInput } from './entity-autocomplete-filter-input';
 import { GetMajor, GetMajors } from '@infiniteuny/infinity-application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
-import { match } from 'effect/Either';
-import { SYMBOLS } from '@config';
 import { Major } from '@infiniteuny/infinity-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SYMBOLS } from '@config';
+import { useCallback, useMemo } from 'react';
 
-export function MajorFilterInput({ item, applyValue }: GridFilterInputValueProps) {
-  const getMajors = useMemo(() => clientContainer.get<GetMajors>(SYMBOLS.GetMajors), []);
-  const getMajor = useMemo(() => clientContainer.get<GetMajor>(SYMBOLS.GetMajor), []);
+const getOptionLabel = (option: Major) => `${option.degree?.name ?? ''} - ${option.name}`;
 
-  const [inputValue, setInputValue] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [options, setOptions] = useState<Major[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+export function MajorFilterInput(props: GridFilterInputValueProps) {
+  const getMany = useMemo(() => clientContainer.get<GetMajors>(SYMBOLS.GetMajors), []);
+  const getById = useMemo(() => clientContainer.get<GetMajor>(SYMBOLS.GetMajor), []);
 
-  useEffect(() => {
-    if (!item.value) return;
+  const fetchById = useCallback(
+    (id: string, signal: AbortSignal) => getById.execute(id, ['degree'], signal),
+    [getById],
+  );
 
-    let active = true;
-
-    (async () => {
-      const result = await getMajor.execute(String(item.value), ['degree']);
-
-      if (!active) return;
-
-      match(result, {
-        onLeft: () => {},
-        onRight: (major) => {
-          setOptions([major]);
-          setInputValue(`${major.degree?.name ?? ''} - ${major.name}`);
-        },
-      });
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [getMajor, item.value]);
-
-  useEffect(() => {
-    let active = true;
-    const query = searchQuery.trim();
-
-    if (query.length < 1) {
-      return () => {
-        active = false;
-      };
-    }
-
-    const timeoutId = setTimeout(async () => {
-      setIsLoading(true);
-
-      const majorsResult = await getMajors.execute(['degree'], { name: query }, undefined, {
-        perPage: 10,
-      });
-
-      if (!active) return;
-
-      match(majorsResult, {
-        onLeft: () => {
-          setOptions([]);
-        },
-        onRight: ([majors]) => {
-          setOptions(majors);
-        },
-      });
-
-      setIsLoading(false);
-    }, 300);
-
-    return () => {
-      active = false;
-      clearTimeout(timeoutId);
-    };
-  }, [getMajors, searchQuery]);
-
-  const handleInputChange = useCallback((_: unknown, value: string) => {
-    setInputValue(value);
-    setSearchQuery(value);
-  }, []);
-
-  const handleChange = useCallback(
-    (_: unknown, major: Major | null) => {
-      if (major) {
-        setInputValue(`${major.degree?.name ?? ''} - ${major.name}`);
-        setSearchQuery('');
-      }
-      applyValue({ ...item, value: major?.id ?? '' });
-    },
-    [applyValue, item],
+  const search = useCallback(
+    (query: string, signal: AbortSignal) =>
+      getMany.execute(['degree'], { name: query }, undefined, { perPage: 10 }, signal),
+    [getMany],
   );
 
   return (
-    <Autocomplete
-      options={options}
-      value={options.find((major) => major.id === item.value) ?? null}
-      onChange={handleChange}
-      inputValue={inputValue}
-      onInputChange={handleInputChange}
-      getOptionLabel={(option) => `${option.degree?.name ?? ''} - ${option.name}`}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isLoading}
-      noOptionsText={searchQuery ? 'No majors found' : 'Type to search major'}
-      filterOptions={(opts) => opts}
-      renderInput={(params) => (
-        <TextField {...params} label="Value" fullWidth margin="none" size="small" />
-      )}
+    <EntityAutocompleteFilterInput
+      {...props}
+      fetchById={fetchById}
+      search={search}
+      getOptionLabel={getOptionLabel}
+      emptyText="Type to search major"
+      noOptionsText="No majors found"
     />
   );
 }

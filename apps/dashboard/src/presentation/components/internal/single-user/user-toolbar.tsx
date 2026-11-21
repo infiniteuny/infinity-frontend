@@ -1,14 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import { Box, Button } from '@mui/material';
-import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure';
 import { UserInput } from './user-form';
-import { useRouter } from 'next/navigation';
 import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
+import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
 
 type ViewProps = {
   user: UserDto;
@@ -20,55 +17,35 @@ type FormProps = {
 };
 
 export function UserToolbar({ user, ref, methods }: OneOf<[ViewProps, FormProps]>) {
-  const router = useRouter();
   const session = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
   const parsedUser = useMemo(() => (user ? UserMapper.fromDtoToDomain(user) : undefined), [user]);
 
   if (user && parsedUser) {
     return (
-      <Box className="ml-auto">
-        {userPermissions.has('update-user') ||
-        (userPermissions.has('update-own-user') && parsedUser.id === session?.user.id) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Edit user"
-            LinkComponent={Link}
-            href={`/users/${parsedUser.id}/edit`}
-            startIcon={<EditRounded />}
-          >
-            Edit
-          </Button>
-        ) : null}
-      </Box>
+      <SingleEntityToolbar
+        mode="view"
+        canEdit={
+          userPermissions.has('update-user') ||
+          (userPermissions.has('update-own-user') && parsedUser.id === session?.user.id)
+        }
+        editHref={`/users/${parsedUser.id}/edit`}
+        editAriaLabel="Edit user"
+      />
     );
   } else if (ref && methods) {
     const {
       formState: { isDirty, isSubmitting },
     } = methods;
+
     return (
-      <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
-        <Button
-          variant="text"
-          className="ml-4"
-          aria-label="Cancel"
-          disabled={isSubmitting}
-          onClick={() => router.back()}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Save user"
-          startIcon={<SaveRounded />}
-          disabled={!isDirty || isSubmitting}
-          onClick={() => ref.current?.requestSubmit()}
-        >
-          Save
-        </Button>
-      </Box>
+      <SingleEntityToolbar
+        mode="form"
+        formRef={ref}
+        isDirty={isDirty}
+        isSubmitting={isSubmitting}
+        saveAriaLabel="Save user"
+      />
     );
   } else {
     return null;

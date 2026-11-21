@@ -1,14 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import { Box, Button } from '@mui/material';
 import { TeamDto, TeamMapper } from '@infiniteuny/infinity-infrastructure';
 import { TeamInput } from './team-form';
-import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
+import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
 
 type ViewProps = {
   team: TeamDto;
@@ -20,55 +17,35 @@ type FormProps = {
 };
 
 export function TeamToolbar({ team, ref, methods }: OneOf<[ViewProps, FormProps]>) {
-  const router = useRouter();
   const session = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
   const parsedTeam = useMemo(() => (team ? TeamMapper.fromDtoToDomain(team) : undefined), [team]);
 
   if (team && parsedTeam) {
     return (
-      <Box className="ml-auto">
-        {userPermissions.has('update-team') ||
-        (userPermissions.has('update-own-team') && parsedTeam.leaderId === session?.user.id) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Edit team"
-            LinkComponent={Link}
-            href={`/teams/${parsedTeam.id}/edit`}
-            startIcon={<EditRounded />}
-          >
-            Edit
-          </Button>
-        ) : null}
-      </Box>
+      <SingleEntityToolbar
+        mode="view"
+        canEdit={
+          userPermissions.has('update-team') ||
+          (userPermissions.has('update-own-team') && parsedTeam.leaderId === session?.user.id)
+        }
+        editHref={`/teams/${parsedTeam.id}/edit`}
+        editAriaLabel="Edit team"
+      />
     );
   } else if (ref && methods) {
     const {
       formState: { isDirty, isSubmitting },
     } = methods;
+
     return (
-      <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
-        <Button
-          variant="text"
-          className="ml-4"
-          aria-label="Cancel"
-          disabled={isSubmitting}
-          onClick={() => router.back()}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Save team"
-          startIcon={<SaveRounded />}
-          disabled={!isDirty || isSubmitting}
-          onClick={() => ref.current?.requestSubmit()}
-        >
-          Save
-        </Button>
-      </Box>
+      <SingleEntityToolbar
+        mode="form"
+        formRef={ref}
+        isDirty={isDirty}
+        isSubmitting={isSubmitting}
+        saveAriaLabel="Save team"
+      />
     );
   } else {
     return null;

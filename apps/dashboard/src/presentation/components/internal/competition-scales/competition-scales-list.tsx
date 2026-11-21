@@ -13,13 +13,11 @@ import {
   CompetitionScale,
   CompetitionScaleFilterOptions,
   CompetitionScaleSortOptions,
-  PaginationOptions,
 } from '@infiniteuny/infinity-domain';
 import {
   CompetitionScaleDto,
   CompetitionScaleMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import {
   DataGrid,
@@ -28,19 +26,15 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteCompetitionScale, GetCompetitionScales } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { CompetitionScalesToolbar } from './competition-scales-toolbar';
 
@@ -91,47 +85,6 @@ export function CompetitionScalesList({
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<CompetitionScale[]>(() =>
-    initialCompetitionScales.map(CompetitionScaleMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialCompetitionScales.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedScaleId, setSelectedscaleId] = useState<string | null>(null);
-  const [selectedScaleName, setSelectedscaleName] = useState<string | null>(null);
-
   const convertSortModelToDomain = (
     model: GridSortModel,
   ): CompetitionScaleSortOptions | undefined => {
@@ -168,99 +121,44 @@ export function CompetitionScalesList({
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedScaleName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<CompetitionScale>({
+    initialRows: () => initialCompetitionScales.map(CompetitionScaleMapper.fromDtoToDomain),
+    initialRowCount: initialCompetitionScales.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      try {
-        const result = await getCompetitionScales.execute(filterOptions, sortOptions, {
-          perPage: paginationModel.pageSize,
+      return getCompetitionScales.execute(
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
           cursor,
-        });
-        if (cancelled) return;
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getCompetitionScales]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+        },
+        abortSignal,
+      );
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
+    deleteRow: (id) => deleteCompetitionScale.execute(id),
+    entityLabel: 'competition scales',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -268,41 +166,6 @@ export function CompetitionScalesList({
     },
     [router],
   );
-
-  const handleDeleteClick = useCallback((scaleId: string, scaleName?: string) => {
-    setSelectedscaleId(scaleId);
-    setSelectedscaleName(scaleName || null);
-    setOpenDeleteDialog(true);
-  }, []);
-
-  const handleDeleteAccept = async () => {
-    if (!selectedScaleId) {
-      console.error('No scale selected for deletion');
-      return;
-    }
-    const result = await deleteCompetitionScale.execute(selectedScaleId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedScaleId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete scale:', error);
-      },
-    });
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedscaleId(null);
-      setSelectedscaleName(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedscaleId(null);
-      setSelectedscaleName(null);
-    }, 1000);
-  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -394,6 +257,7 @@ export function CompetitionScalesList({
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedScaleName || 'this scale'}? This action cannot be undone.`}
         acceptText="Delete"

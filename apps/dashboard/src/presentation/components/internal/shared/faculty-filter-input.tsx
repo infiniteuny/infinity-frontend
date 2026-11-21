@@ -1,115 +1,38 @@
 'use client';
 
 import { clientContainer } from '@app/client-injection';
-import { Autocomplete, TextField } from '@mui/material';
+import { EntityAutocompleteFilterInput } from './entity-autocomplete-filter-input';
 import { GetFaculties, GetFaculty } from '@infiniteuny/infinity-application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
-import { match } from 'effect/Either';
-import { SYMBOLS } from '@config';
 import { Faculty } from '@infiniteuny/infinity-domain';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SYMBOLS } from '@config';
+import { useCallback, useMemo } from 'react';
 
-export function FacultyFilterInput({ item, applyValue }: GridFilterInputValueProps) {
-  const getFaculties = useMemo(() => clientContainer.get<GetFaculties>(SYMBOLS.GetFaculties), []);
-  const getFaculty = useMemo(() => clientContainer.get<GetFaculty>(SYMBOLS.GetFaculty), []);
+const getOptionLabel = (option: Faculty) => option.name;
 
-  const [inputValue, setInputValue] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [options, setOptions] = useState<Faculty[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+export function FacultyFilterInput(props: GridFilterInputValueProps) {
+  const getMany = useMemo(() => clientContainer.get<GetFaculties>(SYMBOLS.GetFaculties), []);
+  const getById = useMemo(() => clientContainer.get<GetFaculty>(SYMBOLS.GetFaculty), []);
 
-  useEffect(() => {
-    if (!item.value) return;
+  const fetchById = useCallback(
+    (id: string, signal: AbortSignal) => getById.execute(id, signal),
+    [getById],
+  );
 
-    let active = true;
-
-    (async () => {
-      const result = await getFaculty.execute(String(item.value));
-
-      if (!active) return;
-
-      match(result, {
-        onLeft: () => {},
-        onRight: (faculty) => {
-          setOptions([faculty]);
-          setInputValue(faculty.name);
-        },
-      });
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [getFaculty, item.value]);
-
-  useEffect(() => {
-    let active = true;
-    const query = searchQuery.trim();
-
-    if (query.length < 1) {
-      return () => {
-        active = false;
-      };
-    }
-
-    const timeoutId = setTimeout(async () => {
-      setIsLoading(true);
-
-      const facultiesResult = await getFaculties.execute({ name: query }, undefined, {
-        perPage: 10,
-      });
-
-      if (!active) return;
-
-      match(facultiesResult, {
-        onLeft: () => {
-          setOptions([]);
-        },
-        onRight: ([faculties]) => {
-          setOptions(faculties);
-        },
-      });
-
-      setIsLoading(false);
-    }, 300);
-
-    return () => {
-      active = false;
-      clearTimeout(timeoutId);
-    };
-  }, [getFaculties, searchQuery]);
-
-  const handleInputChange = useCallback((_: unknown, value: string) => {
-    setInputValue(value);
-    setSearchQuery(value);
-  }, []);
-
-  const handleChange = useCallback(
-    (_: unknown, faculty: Faculty | null) => {
-      if (faculty) {
-        setInputValue(faculty.name);
-        setSearchQuery('');
-      }
-      applyValue({ ...item, value: faculty?.id ?? '' });
-    },
-    [applyValue, item],
+  const search = useCallback(
+    (query: string, signal: AbortSignal) =>
+      getMany.execute({ name: query }, undefined, { perPage: 10 }, signal),
+    [getMany],
   );
 
   return (
-    <Autocomplete
-      options={options}
-      value={options.find((faculty) => faculty.id === item.value) ?? null}
-      onChange={handleChange}
-      inputValue={inputValue}
-      onInputChange={handleInputChange}
-      getOptionLabel={(option) => option.name}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      loading={isLoading}
-      noOptionsText={searchQuery ? 'No faculties found' : 'Type to search faculty'}
-      filterOptions={(opts) => opts}
-      renderInput={(params) => (
-        <TextField {...params} label="Value" fullWidth margin="none" size="small" />
-      )}
+    <EntityAutocompleteFilterInput
+      {...props}
+      fetchById={fetchById}
+      search={search}
+      getOptionLabel={getOptionLabel}
+      emptyText="Type to search faculty"
+      noOptionsText="No faculties found"
     />
   );
 }

@@ -16,18 +16,14 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteGroupPermission, GetGroupPermissions } from '@infiniteuny/infinity-application';
 import { DeleteRounded, VisibilityRounded } from '@mui/icons-material';
 import {
   GroupPermission,
-  PaginationOptions,
   PermissionFilterOptions,
   PermissionSortOptions,
 } from '@infiniteuny/infinity-domain';
@@ -37,12 +33,10 @@ import {
   GroupPermissionDto,
   GroupPermissionMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
-import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { GroupPermissionsToolbar } from './group-permissions-toolbar';
 
@@ -96,49 +90,6 @@ export function GroupPermissionsList({
   const router = useRouter();
   const userPermissions = useUserPermissions();
 
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<GroupPermission[]>(() =>
-    initialGroupPermissions.map(GroupPermissionMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialGroupPermissions.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedGroupPermissionId, setSelectedGroupPermissionId] = useState<string | null>(null);
-  const [selectedGroupPermissionName, setSelectedGroupPermissionName] = useState<string | null>(
-    null,
-  );
-
   const convertSortModelToDomain = (model: GridSortModel): PermissionSortOptions | undefined => {
     if (model.length === 0) return undefined;
 
@@ -179,114 +130,45 @@ export function GroupPermissionsList({
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedGroupPermissionName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<GroupPermission>({
+    initialRows: () => initialGroupPermissions.map(GroupPermissionMapper.fromDtoToDomain),
+    initialRowCount: initialGroupPermissions.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-
-      try {
-        const result = await getGroupPermissions.execute(
-          parsedGroup.id,
-          filterOptions,
-          sortOptions,
-          {
-            perPage: paginationModel.pageSize,
-            cursor,
-          },
-        );
-
-        if (cancelled) return;
-
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getGroupPermissions, parsedGroup.id]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+      return getGroupPermissions.execute(
+        parsedGroup.id,
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
+    deleteRow: (id) => deleteGroupPermission.execute(id),
+    entityLabel: 'group permissions',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -294,47 +176,6 @@ export function GroupPermissionsList({
     },
     [router],
   );
-
-  const handleDeleteClick = useCallback(
-    (groupPermissionId: string, groupPermissionName?: string) => {
-      setSelectedGroupPermissionId(groupPermissionId);
-      setSelectedGroupPermissionName(groupPermissionName || null);
-      setOpenDeleteDialog(true);
-    },
-    [],
-  );
-
-  const handleDeleteAccept = async () => {
-    if (!selectedGroupPermissionId) {
-      console.error('No group permission selected for deletion');
-
-      return;
-    }
-
-    const result = await deleteGroupPermission.execute(selectedGroupPermissionId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedGroupPermissionId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete group permission:', error);
-      },
-    });
-
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedGroupPermissionId(null);
-      setSelectedGroupPermissionName(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedGroupPermissionId(null);
-      setSelectedGroupPermissionName(null);
-    }, 1000);
-  };
 
   const columns = useMemo<GridColDef[]>(
     () => [
@@ -421,6 +262,7 @@ export function GroupPermissionsList({
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedGroupPermissionName || 'this permission'}? This action cannot be undone.`}
         acceptText="Delete"

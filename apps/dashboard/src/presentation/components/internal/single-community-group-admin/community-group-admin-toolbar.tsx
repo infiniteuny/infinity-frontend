@@ -1,13 +1,10 @@
 'use client';
 
-import Link from 'next/link';
-import { Box, Button } from '@mui/material';
 import { CommunityGroupAdminInput } from './community-group-admin-form';
-import { EditRounded, SaveRounded } from '@mui/icons-material';
 import { RefObject } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { useUserPermissions } from '@app/presentation/hooks';
+import { SingleEntityToolbar } from '@app/presentation/components/internal/shared';
 
 type ViewProps = {
   communityGroupAdminId: string;
@@ -23,52 +20,30 @@ export function CommunityGroupAdminToolbar({
   ref,
   methods,
 }: OneOf<[ViewProps, FormProps]>) {
-  const router = useRouter();
   const userPermissions = useUserPermissions();
 
   if (communityGroupAdminId) {
     return (
-      <Box className="ml-auto">
-        {['update-community-group-admin'].some((p) => userPermissions.has(p)) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Edit community group administrator"
-            LinkComponent={Link}
-            href={`/community-group-admins/${communityGroupAdminId}/edit`}
-            startIcon={<EditRounded />}
-          >
-            Edit
-          </Button>
-        ) : null}
-      </Box>
+      <SingleEntityToolbar
+        mode="view"
+        canEdit={['update-community-group-admin'].some((p) => userPermissions.has(p))}
+        editHref={`/community-group-admins/${communityGroupAdminId}/edit`}
+        editAriaLabel="Edit community group administrator"
+      />
     );
   } else if (ref && methods) {
     const {
       formState: { isDirty, isSubmitting },
     } = methods;
+
     return (
-      <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
-        <Button
-          variant="text"
-          className="ml-4"
-          aria-label="Cancel"
-          disabled={isSubmitting}
-          onClick={() => router.back()}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="filled"
-          className="ml-4"
-          aria-label="Save community group administrator"
-          startIcon={<SaveRounded />}
-          disabled={!isDirty || isSubmitting}
-          onClick={() => ref.current?.requestSubmit()}
-        >
-          Save
-        </Button>
-      </Box>
+      <SingleEntityToolbar
+        mode="form"
+        formRef={ref}
+        isDirty={isDirty}
+        isSubmitting={isSubmitting}
+        saveAriaLabel="Save community group administrator"
+      />
     );
   } else {
     return null;

@@ -19,12 +19,9 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridFilterModel,
-  GridPaginationMeta,
-  GridPaginationModel,
   GridRowParams,
   GridSlots,
   GridSortModel,
-  useGridApiRef,
 } from '@mui/x-data-grid';
 import { DeleteFundApplication, GetFundApplications } from '@infiniteuny/infinity-application';
 import { DeleteRounded, EditRounded, VisibilityRounded } from '@mui/icons-material';
@@ -32,19 +29,16 @@ import {
   FundApplication,
   FundApplicationFilterOptions,
   FundApplicationSortOptions,
-  PaginationOptions,
   User,
 } from '@infiniteuny/infinity-domain';
 import {
   FundApplicationDto,
   FundApplicationMapper,
   PaginationOptionsDto,
-  PaginationOptionsMapper,
 } from '@infiniteuny/infinity-infrastructure';
 import { SYMBOLS } from '@config';
-import { match } from 'effect/Either';
-import { useInternalStore, useUserPermissions } from '@app/presentation/hooks';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCursorDataGrid, useInternalStore, useUserPermissions } from '@app/presentation/hooks';
+import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { FundApplicationsToolbar } from './fund-applications-toolbar';
 
@@ -92,49 +86,6 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
   const router = useRouter();
   const userSession = useInternalStore((s) => s.session);
   const userPermissions = useUserPermissions();
-
-  const [initPaginationOptions] = useState(() =>
-    PaginationOptionsMapper.fromDtoToDomain(initialPaginationOptions),
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<FundApplication[]>(() =>
-    initialFundApplications.map(FundApplicationMapper.fromDtoToDomain),
-  );
-  const [rowCount, setRowCount] = useState<number>(
-    initPaginationOptions.nextCursor ? -1 : initialFundApplications.length,
-  );
-  const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: initPaginationOptions.previousCursor ? 1 : 0,
-    pageSize: initPaginationOptions.perPage || 25,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([]);
-  const [paginationMeta, setPaginationMeta] = useState<GridPaginationMeta>({
-    hasNextPage: Boolean(initPaginationOptions.nextCursor),
-  });
-  const [paginationOptions, setPaginationOptions] =
-    useState<Pick<PaginationOptions, 'cursor' | 'nextCursor' | 'previousCursor'>>(
-      initPaginationOptions,
-    );
-  const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const isInitialMount = useRef(true);
-  const lastFetchedStateRef = useRef<string>(
-    JSON.stringify({
-      filters: [],
-      sort: [],
-      pagination: {
-        page: initPaginationOptions.previousCursor ? 1 : 0,
-        pageSize: initPaginationOptions.perPage || 25,
-      },
-    }),
-  );
-  const dataGridApiRef = useGridApiRef();
-
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedFundApplicationId, setSelectedFundApplicationId] = useState<string | null>(null);
-  const [selectedFundApplicationName, setSelectedFundApplicationName] = useState<string | null>(
-    null,
-  );
 
   const convertSortModelToDomain = (
     model: GridSortModel,
@@ -198,152 +149,42 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
     return Object.keys(filterOptions).length > 0 ? filterOptions : undefined;
   };
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    const stateString = JSON.stringify({
-      filters: filterModel.items
-        .filter((item) => item.value != null && item.value !== '')
-        .map((item) => ({ field: item.field, value: item.value })),
-      sort: sortModel,
-      pagination: paginationModel,
-    });
-
-    if (stateString === lastFetchedStateRef.current) {
-      return;
-    } else {
-      lastFetchedStateRef.current = stateString;
-    }
-
-    let cancelled = false;
-
-    (async () => {
-      setIsLoading(true);
+  const {
+    rows,
+    rowCount,
+    isLoading,
+    filterModel,
+    paginationModel,
+    sortModel,
+    paginationMeta,
+    dataGridApiRef,
+    handlePaginationModelChange,
+    handleSortModelChange,
+    handleFilterModelChange,
+    openDeleteDialog,
+    selectedName: selectedFundApplicationName,
+    handleDeleteClick,
+    handleDeleteAccept,
+    handleDeleteCancel,
+    handleDeleteDialogExited,
+  } = useCursorDataGrid<FundApplication>({
+    initialRows: () => initialFundApplications.map(FundApplicationMapper.fromDtoToDomain),
+    initialRowCount: initialFundApplications.length,
+    initialPaginationOptions,
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-
-      try {
-        const result = await getFundApplications.execute(
-          ['team', 'team.members', 'competition_instance', 'competition_scale'],
-          filterOptions,
-          sortOptions,
-          { perPage: paginationModel.pageSize, cursor },
-        );
-
-        if (cancelled) return;
-
-        match(result, {
-          onRight: ([newRows, nextPaginationOptions]) => {
-            const hasNextPage = Boolean(nextPaginationOptions.nextCursor);
-
-            setRows(newRows);
-            setRowCount(
-              hasNextPage ? -1 : paginationModel.page * paginationModel.pageSize + newRows.length,
-            );
-            setPaginationMeta({ hasNextPage });
-            setPaginationOptions(nextPaginationOptions);
-          },
-          onLeft: (error) => {
-            throw error;
-          },
-        });
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [paginationModel, sortModel, filterModel, cursor, getFundApplications]);
-
-  const handlePaginationModelChange = useCallback(
-    (newPaginationModel: GridPaginationModel) => {
-      const isPageSizeChanged = newPaginationModel.pageSize !== paginationModel.pageSize;
-      const normalizedPaginationModel = isPageSizeChanged
-        ? { ...newPaginationModel, page: 0 }
-        : newPaginationModel;
-
-      let nextCursor: string | undefined;
-      if (isPageSizeChanged) {
-        nextCursor = undefined;
-      } else if (
-        normalizedPaginationModel.page > paginationModel.page &&
-        paginationOptions.nextCursor
-      ) {
-        nextCursor = paginationOptions.nextCursor;
-      } else if (
-        normalizedPaginationModel.page < paginationModel.page &&
-        paginationOptions.previousCursor
-      ) {
-        nextCursor = paginationOptions.previousCursor;
-      } else {
-        nextCursor = paginationOptions.cursor;
-      }
-
-      setCursor(nextCursor);
-      setPaginationModel(normalizedPaginationModel);
+      return getFundApplications.execute(
+        ['team', 'team.members', 'competition_instance', 'competition_scale'],
+        filterOptions,
+        sortOptions,
+        { perPage: pageSize, cursor },
+        abortSignal,
+      );
     },
-    [paginationModel, paginationOptions],
-  );
-
-  const handleSortModelChange = useCallback((newSortModel: GridSortModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setSortModel(newSortModel);
-  }, []);
-
-  const handleFilterModelChange = useCallback((newFilterModel: GridFilterModel) => {
-    setCursor(undefined);
-    setPaginationModel((prev) => ({ page: 0, pageSize: prev.pageSize }));
-    setFilterModel(newFilterModel);
-  }, []);
-
-  const handleDeleteClick = useCallback(
-    (fundApplicationId: string, fundApplicationName?: string) => {
-      setSelectedFundApplicationId(fundApplicationId);
-      setSelectedFundApplicationName(fundApplicationName || null);
-      setOpenDeleteDialog(true);
-    },
-    [],
-  );
-
-  const handleDeleteAccept = async () => {
-    if (!selectedFundApplicationId) {
-      console.error('No fund application selected for deletion');
-
-      return;
-    }
-
-    const result = await deleteFundApplication.execute(selectedFundApplicationId);
-    match(result, {
-      onRight: () => {
-        setRows((prevRows) => prevRows.filter((row) => row.id !== selectedFundApplicationId));
-      },
-      onLeft: (error) => {
-        console.error('Failed to delete fund application:', error);
-      },
-    });
-
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedFundApplicationId(null);
-      setSelectedFundApplicationName(null);
-    }, 1000);
-  };
-
-  const handleDeleteCancel = () => {
-    setOpenDeleteDialog(false);
-    setTimeout(function () {
-      setSelectedFundApplicationId(null);
-      setSelectedFundApplicationName(null);
-    }, 1000);
-  };
+    deleteRow: (id) => deleteFundApplication.execute(id),
+    entityLabel: 'fund applications',
+  });
 
   const handleRowClick = useCallback(
     (params: GridRowParams) => {
@@ -564,6 +405,7 @@ export function FundApplicationsList({ initialFundApplications, initialPaginatio
         open={openDeleteDialog}
         onAccept={handleDeleteAccept}
         onCancel={handleDeleteCancel}
+        onExited={handleDeleteDialogExited}
         title="Permanently delete?"
         description={`Are you sure you want to permanently delete ${selectedFundApplicationName || 'this fund application'}? This action cannot be undone.`}
         acceptText="Delete"

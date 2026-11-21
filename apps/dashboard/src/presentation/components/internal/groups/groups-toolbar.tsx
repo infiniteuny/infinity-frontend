@@ -1,44 +1,21 @@
 'use client';
 
-import Link from 'next/link';
-import { AddRounded, SearchRounded } from '@mui/icons-material';
-import { Box, Button, IconButton } from '@mui/material';
+import { DataGridApiRef, EntityListToolbar } from '@app/presentation/components/internal/shared';
 import { useUserPermissions } from '@app/presentation/hooks';
-import { GridApiCommunity } from '@mui/x-data-grid/internals';
-import { RefObject } from 'react';
 
 type Props = {
-  dataGridApiRef: RefObject<GridApiCommunity | null>;
+  dataGridApiRef: DataGridApiRef;
 };
 
 export function GroupsToolbar({ dataGridApiRef }: Props) {
   const userPermissions = useUserPermissions();
 
   return (
-    <>
-      <Box className="ml-auto">
-        <IconButton
-          className="ml-4"
-          aria-label="Search"
-          onClick={() => {
-            dataGridApiRef.current?.showFilterPanel();
-          }}
-        >
-          <SearchRounded />
-        </IconButton>
-        {['create-group'].some((p) => userPermissions.has(p)) ? (
-          <Button
-            variant="filled"
-            className="ml-4"
-            aria-label="Add group"
-            LinkComponent={Link}
-            href="/groups/new"
-            startIcon={<AddRounded />}
-          >
-            Add
-          </Button>
-        ) : null}
-      </Box>
-    </>
+    <EntityListToolbar
+      dataGridApiRef={dataGridApiRef}
+      canCreate={['create-group'].some((p) => userPermissions.has(p))}
+      createHref="/groups/new"
+      createAriaLabel="Add group"
+    />
   );
 }

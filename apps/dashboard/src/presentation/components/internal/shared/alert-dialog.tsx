@@ -13,6 +13,7 @@ type Props = {
   open: boolean;
   onAccept: () => void;
   onCancel: () => void;
+  onExited?: () => void;
   title: string;
   description?: string;
   acceptText?: string;
@@ -23,6 +24,7 @@ export function AlertDialog({
   open,
   onAccept,
   onCancel,
+  onExited,
   title,
   description,
   acceptText,
@@ -37,6 +39,9 @@ export function AlertDialog({
       slotProps={{
         paper: {
           className: 'rounded-2xl',
+        },
+        transition: {
+          onExited,
         },
       }}
     >

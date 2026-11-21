@@ -2,66 +2,32 @@
 
 import { clientContainer } from '@app/client-injection';
 import { CompetitionRank } from '@infiniteuny/infinity-domain';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { EntitySelectFilterInput } from './entity-select-filter-input';
 import { GetCompetitionRanks } from '@infiniteuny/infinity-application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
-import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
-export function CompetitionRankFilterInput({ item, applyValue }: GridFilterInputValueProps) {
-  const [competitionRanks, setCompetitionRanks] = useState<CompetitionRank[]>([]);
-  const [loading, setLoading] = useState(true);
+const getOptionLabel = (option: CompetitionRank) => option.name;
 
-  useEffect(() => {
-    const fetchCompetitionRanks = async () => {
-      const getCompetitionRanks = clientContainer.get<GetCompetitionRanks>(
-        SYMBOLS.GetCompetitionRanks,
-      );
+export function CompetitionRankFilterInput(props: GridFilterInputValueProps) {
+  const getOptions = useMemo(
+    () => clientContainer.get<GetCompetitionRanks>(SYMBOLS.GetCompetitionRanks),
+    [],
+  );
 
-      const result = await getCompetitionRanks.execute(undefined, undefined, {
-        perPage: 50,
-      });
-
-      const data = match(result, {
-        onLeft: (error) => {
-          console.error('Failed to fetch competition ranks:', error);
-          return [];
-        },
-        onRight: (data) => data[0],
-      });
-
-      setCompetitionRanks(data);
-      setLoading(false);
-    };
-
-    fetchCompetitionRanks();
-  }, []);
-
-  const handleFilterChange = (event: SelectChangeEvent) => {
-    applyValue({ ...item, value: event.target.value });
-  };
+  const fetchOptions = useCallback(
+    (signal: AbortSignal) => getOptions.execute(undefined, undefined, { perPage: 100 }, signal),
+    [getOptions],
+  );
 
   return (
-    <FormControl fullWidth margin="none" disabled={loading}>
-      <InputLabel size="small" id="competitionRankFilter-label">
-        Value
-      </InputLabel>
-      <Select
-        label="Value"
-        labelId="competitionRankFilter-label"
-        size="small"
-        fullWidth
-        value={item.value || ''}
-        onChange={handleFilterChange}
-        disabled={loading}
-      >
-        {competitionRanks.map((rank) => (
-          <MenuItem key={rank.id} value={rank.id}>
-            {rank.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <EntitySelectFilterInput
+      {...props}
+      labelId="competitionRankFilter-label"
+      fetchOptions={fetchOptions}
+      getOptionLabel={getOptionLabel}
+      errorContext="competition ranks"
+    />
   );
 }

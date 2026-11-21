@@ -2,66 +2,32 @@
 
 import { clientContainer } from '@app/client-injection';
 import { CompetitionTimeRange } from '@infiniteuny/infinity-domain';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { EntitySelectFilterInput } from './entity-select-filter-input';
 import { GetCompetitionTimeRanges } from '@infiniteuny/infinity-application';
 import { GridFilterInputValueProps } from '@mui/x-data-grid';
-import { match } from 'effect/Either';
 import { SYMBOLS } from '@config';
-import { useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
-export function CompetitionTimeRangeFilterInput({ item, applyValue }: GridFilterInputValueProps) {
-  const [competitionTimeRanges, setCompetitionTimeRanges] = useState<CompetitionTimeRange[]>([]);
-  const [loading, setLoading] = useState(true);
+const getOptionLabel = (option: CompetitionTimeRange) => option.name;
 
-  useEffect(() => {
-    const fetchCompetitionTimeRanges = async () => {
-      const getCompetitionTimeRanges = clientContainer.get<GetCompetitionTimeRanges>(
-        SYMBOLS.GetCompetitionTimeRanges,
-      );
+export function CompetitionTimeRangeFilterInput(props: GridFilterInputValueProps) {
+  const getOptions = useMemo(
+    () => clientContainer.get<GetCompetitionTimeRanges>(SYMBOLS.GetCompetitionTimeRanges),
+    [],
+  );
 
-      const result = await getCompetitionTimeRanges.execute(undefined, undefined, {
-        perPage: 50,
-      });
-
-      const data = match(result, {
-        onLeft: (error) => {
-          console.error('Failed to fetch competition time ranges:', error);
-          return [];
-        },
-        onRight: (data) => data[0],
-      });
-
-      setCompetitionTimeRanges(data);
-      setLoading(false);
-    };
-
-    fetchCompetitionTimeRanges();
-  }, []);
-
-  const handleFilterChange = (event: SelectChangeEvent) => {
-    applyValue({ ...item, value: event.target.value });
-  };
+  const fetchOptions = useCallback(
+    (signal: AbortSignal) => getOptions.execute(undefined, undefined, { perPage: 100 }, signal),
+    [getOptions],
+  );
 
   return (
-    <FormControl fullWidth margin="none" disabled={loading}>
-      <InputLabel size="small" id="competitionTimeRangeFilter-label">
-        Value
-      </InputLabel>
-      <Select
-        label="Value"
-        labelId="competitionTimeRangeFilter-label"
-        size="small"
-        fullWidth
-        value={item.value || ''}
-        onChange={handleFilterChange}
-        disabled={loading}
-      >
-        {competitionTimeRanges.map((timeRange) => (
-          <MenuItem key={timeRange.id} value={timeRange.id}>
-            {timeRange.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <EntitySelectFilterInput
+      {...props}
+      labelId="competitionTimeRangeFilter-label"
+      fetchOptions={fetchOptions}
+      getOptionLabel={getOptionLabel}
+      errorContext="competition time ranges"
+    />
   );
 }
