@@ -10,64 +10,42 @@ import {
   ValidationError,
 } from '@infiniteuny/infinity-domain';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
 export function handleAxiosError(error: unknown): Error {
-  if (error instanceof AxiosError && (error as AxiosError).response) {
-    let resultError: HttpError;
+  if (error instanceof AxiosError && error.response) {
+    const responseData = isRecord(error.response.data) ? error.response.data : undefined;
+    const message =
+      typeof responseData?.message === 'string' && responseData.message.length > 0
+        ? responseData.message
+        : error.message;
+    const data = responseData?.data;
 
-    switch ((error as AxiosError).response?.status) {
+    switch (error.response.status) {
       case 400:
-        resultError = new BadRequestError(
-          error.response?.data.message ?? error.message,
-          error.response?.data.data,
-        );
-        break;
+        return new BadRequestError(message, data);
       case 401:
-        resultError = new UnauthorizedError(
-          error.response?.data.message ?? error.message,
-          error.response?.data.data,
-        );
-        break;
+        return new UnauthorizedError(message, data);
       case 403:
-        resultError = new ForbiddenError(
-          error.response?.data.message ?? error.message,
-          error.response?.data.data,
-        );
-        break;
+        return new ForbiddenError(message, data);
       case 404:
-        resultError = new NotFoundError(
-          error.response?.data.message ?? error.message,
-          error.response?.data.data,
-        );
-        break;
-      case 422:
-        if (error.response?.data.data.details) {
-          resultError = new ValidationError(
-            error.response?.data.message ?? error.message,
-            error.response?.data.data.details,
-          );
-        } else {
-          resultError = new UnprocessableContentError(
-            error.response?.data.message ?? error.message,
-            error.response?.data.data,
-          );
+        return new NotFoundError(message, data);
+      case 422: {
+        const details = isRecord(data) && isRecord(data.details) ? data.details : undefined;
+        if (details) {
+          return new ValidationError(message, details as Record<string, string[]>);
         }
-        break;
-      case 500:
-        resultError = new InternalServerError(
-          error.response?.data.message ?? error.message,
-          error.response?.data.data,
-        );
-        break;
-      default:
-        return new HttpError(
-          error.response?.data.message ?? error.message,
-          error.response?.status ?? 500,
-          error.response?.data.data,
-        );
-    }
 
-    return resultError;
-  } else {
-    return error as Error;
+        return new UnprocessableContentError(message, data);
+      }
+      case 500:
+        return new InternalServerError(message, data);
+      default:
+        return new HttpError(message, error.response.status ?? 500, data);
+    }
   }
+
+  return error instanceof Error ? error : new Error(String(error));
 }
