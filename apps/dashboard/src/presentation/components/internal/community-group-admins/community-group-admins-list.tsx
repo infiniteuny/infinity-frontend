@@ -131,11 +131,12 @@ export function CommunityGroupAdminsList({
     initialRows: () => initialCommunityGroupAdmins.map(CommunityGroupAdminMapper.fromDtoToDomain),
     initialRowCount: initialCommunityGroupAdmins.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) =>
       getCommunityGroupAdmins.execute(
         convertFilterModelToDomain(filterModel),
         convertSortModelToDomain(sortModel),
         { perPage: pageSize, cursor },
+        abortSignal,
       ),
     deleteRow: (id) => deleteCommunityGroupAdmin.execute(id),
     entityLabel: 'community group admins',

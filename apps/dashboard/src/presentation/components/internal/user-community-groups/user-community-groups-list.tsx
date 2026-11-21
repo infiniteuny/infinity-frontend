@@ -168,13 +168,19 @@ export function UserCommunityGroupsList({
     initialRows: () => initialUserCommunityGroups.map(UserCommunityGroupMapper.fromDtoToDomain),
     initialRowCount: initialUserCommunityGroups.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      return getUserCommunityGroups.execute(parsedUser.id, filterOptions, sortOptions, {
-        perPage: pageSize,
-        cursor,
-      });
+      return getUserCommunityGroups.execute(
+        parsedUser.id,
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
     deleteRow: (id, currentRows) => {
       const selectedRow = currentRows.find((row) => row.id === id);

@@ -111,11 +111,12 @@ export function PersonasList({ initialPersonas, initialPaginationOptions }: Prop
     initialRows: () => initialPersonas.map(PersonaMapper.fromDtoToDomain),
     initialRowCount: initialPersonas.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) =>
       getPersonas.execute(
         convertFilterModelToDomain(filterModel),
         convertSortModelToDomain(sortModel),
         { perPage: pageSize, cursor },
+        abortSignal,
       ),
     deleteRow: (id) => deletePersona.execute(id),
     entityLabel: 'personas',

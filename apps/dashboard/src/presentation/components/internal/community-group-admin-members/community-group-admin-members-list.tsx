@@ -240,7 +240,7 @@ export function CommunityGroupAdminMembersList({
       initialCommunityGroupAdminMembers.map(CommunityGroupAdminMemberMapper.fromDtoToDomain),
     initialRowCount: initialCommunityGroupAdminMembers.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
       return getCommunityGroupAdminMembers.execute(
@@ -249,6 +249,7 @@ export function CommunityGroupAdminMembersList({
         filterOptions,
         sortOptions,
         { perPage: pageSize, cursor },
+        abortSignal,
       );
     },
     deleteRow: (id) => deleteCommunityGroupAdminMember.execute(id),

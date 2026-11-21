@@ -184,7 +184,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
     initialRows: () => initialAchievements.map(AchievementMapper.fromDtoToDomain),
     initialRowCount: initialAchievements.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
       return getAchievements.execute(
@@ -200,6 +200,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         filterOptions,
         sortOptions,
         { perPage: pageSize, cursor },
+        abortSignal,
       );
     },
     deleteRow: (id) => deleteAchievement.execute(id),

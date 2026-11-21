@@ -209,7 +209,7 @@ export function CompetitionInstancesList({
     initialRows: () => initialCompetitionInstances.map(CompetitionInstanceMapper.fromDtoToDomain),
     initialRowCount: initialCompetitionInstances.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
       return getCompetitionInstances.execute(
@@ -217,6 +217,7 @@ export function CompetitionInstancesList({
         filterOptions,
         sortOptions,
         { perPage: pageSize, cursor },
+        abortSignal,
       );
     },
     deleteRow: (id) => deleteCompetitionInstance.execute(id),

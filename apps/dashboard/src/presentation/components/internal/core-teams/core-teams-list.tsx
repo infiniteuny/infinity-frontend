@@ -133,13 +133,18 @@ export function CoreTeamsList({ initialCoreTeams, initialPaginationOptions }: Pr
     initialRows: () => initialCoreTeams.map(CoreTeamMapper.fromDtoToDomain),
     initialRowCount: initialCoreTeams.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      return getCoreTeams.execute(filterOptions, sortOptions, {
-        perPage: pageSize,
-        cursor,
-      });
+      return getCoreTeams.execute(
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
     deleteRow: (id) => deleteCoreTeam.execute(id),
     entityLabel: 'core teams',

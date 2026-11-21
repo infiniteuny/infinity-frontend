@@ -137,13 +137,18 @@ export function CompetitionsList({ initialCompetitions, initialPaginationOptions
     initialRows: () => initialCompetitions.map(CompetitionMapper.fromDtoToDomain),
     initialRowCount: initialCompetitions.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      return getCompetitions.execute(filterOptions, sortOptions, {
-        perPage: pageSize,
-        cursor,
-      });
+      return getCompetitions.execute(
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
     deleteRow: (id) => deleteCompetition.execute(id),
     entityLabel: 'competitions',

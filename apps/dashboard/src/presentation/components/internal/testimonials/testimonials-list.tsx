@@ -124,11 +124,12 @@ export function TestimonialsList({ initialTestimonials, initialPaginationOptions
     initialRows: () => initialTestimonials.map(TestimonialMapper.fromDtoToDomain),
     initialRowCount: initialTestimonials.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) =>
       getTestimonials.execute(
         convertFilterModelToDomain(filterModel),
         convertSortModelToDomain(sortModel),
         { perPage: pageSize, cursor },
+        abortSignal,
       ),
     deleteRow: (id) => deleteTestimonial.execute(id),
     entityLabel: 'testimonials',

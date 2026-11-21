@@ -155,13 +155,19 @@ export function UserPermissionsList({
     initialRows: () => initialUserPermissions.map(UserPermissionMapper.fromDtoToDomain),
     initialRowCount: initialUserPermissions.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      return getUserPermissions.execute(parsedUser.id, filterOptions, sortOptions, {
-        perPage: pageSize,
-        cursor,
-      });
+      return getUserPermissions.execute(
+        parsedUser.id,
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
     deleteRow: (id) => deleteUserPermission.execute(id),
     entityLabel: 'user permissions',

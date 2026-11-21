@@ -160,13 +160,19 @@ export function UserPersonasList({
     initialRows: () => initialUserPersonas.map(UserPersonaMapper.fromDtoToDomain),
     initialRowCount: initialUserPersonas.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
-      return getUserPersonas.execute(parsedUser.id, filterOptions, sortOptions, {
-        perPage: pageSize,
-        cursor,
-      });
+      return getUserPersonas.execute(
+        parsedUser.id,
+        filterOptions,
+        sortOptions,
+        {
+          perPage: pageSize,
+          cursor,
+        },
+        abortSignal,
+      );
     },
     deleteRow: (id) => deleteUserPersona.execute(id),
     entityLabel: 'user personas',

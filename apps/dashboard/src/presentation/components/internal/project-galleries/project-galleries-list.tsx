@@ -121,11 +121,12 @@ export function ProjectGalleriesList({ initialProjectGalleries, initialPaginatio
     initialRows: () => initialProjectGalleries.map(ProjectGalleryMapper.fromDtoToDomain),
     initialRowCount: initialProjectGalleries.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) =>
       getProjectGalleries.execute(
         convertFilterModelToDomain(filterModel),
         convertSortModelToDomain(sortModel),
         { perPage: pageSize, cursor },
+        abortSignal,
       ),
     deleteRow: (id) => deleteProjectGallery.execute(id),
     entityLabel: 'project galleries',

@@ -128,11 +128,12 @@ export function CommunityGroupsList({ initialCommunityGroups, initialPaginationO
     initialRows: () => initialCommunityGroups.map(CommunityGroupMapper.fromDtoToDomain),
     initialRowCount: initialCommunityGroups.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) =>
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) =>
       getCommunityGroups.execute(
         convertFilterModelToDomain(filterModel),
         convertSortModelToDomain(sortModel),
         { perPage: pageSize, cursor },
+        abortSignal,
       ),
     deleteRow: (id) => deleteCommunityGroup.execute(id),
     entityLabel: 'community groups',

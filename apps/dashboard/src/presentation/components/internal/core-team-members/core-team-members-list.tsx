@@ -232,7 +232,7 @@ export function CoreTeamMembersList({
     initialRows: () => initialCoreTeamMembers.map(CoreTeamMemberMapper.fromDtoToDomain),
     initialRowCount: initialCoreTeamMembers.length,
     initialPaginationOptions,
-    fetchPage: ({ filterModel, sortModel, pageSize, cursor }) => {
+    fetchPage: ({ filterModel, sortModel, pageSize, cursor, abortSignal }) => {
       const sortOptions = convertSortModelToDomain(sortModel);
       const filterOptions = convertFilterModelToDomain(filterModel);
       return getCoreTeamMembers.execute(
@@ -241,6 +241,7 @@ export function CoreTeamMembersList({
         filterOptions,
         sortOptions,
         { perPage: pageSize, cursor },
+        abortSignal,
       );
     },
     deleteRow: (id) => deleteCoreTeamMember.execute(id),
