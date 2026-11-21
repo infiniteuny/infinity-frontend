@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { NotFoundError } from '@infiniteuny/infinity-domain';
 import { InternalMain, SectionHeader } from '@app/presentation/components/internal/shared';
 import { serverContainer } from '@app/server-injection';
-import { SYMBOLS } from '@config';
+import { APP, SYMBOLS } from '@config';
 import {
   TeamDto,
   TeamMapper,
@@ -149,7 +149,9 @@ export default async function SingleTeamPage({ params }: Props) {
       >
         <TeamForm
           teamTypes={
-            teamTypes.map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
+            teamTypes
+              .filter((teamType) => teamType.id !== APP.internal.individualTeamTypeId)
+              .map(CompetitionTeamTypeMapper.fromDomainToDto) as CompetitionTeamTypeDto[]
           }
         />
       </InternalMain>
