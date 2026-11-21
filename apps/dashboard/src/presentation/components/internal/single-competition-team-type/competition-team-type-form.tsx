@@ -52,7 +52,8 @@ export function CompetitionTeamTypeForm({ initialCompetitionTeamType }: Props) {
     resolver: zodResolver(competitionTeamTypeInputSchema) as Resolver<CompetitionTeamTypeInput>,
     defaultValues: competitionTeamType
       ? {
-          ...competitionTeamType,
+          name: competitionTeamType.name,
+          weight: competitionTeamType.weight,
         }
       : {
           name: '',

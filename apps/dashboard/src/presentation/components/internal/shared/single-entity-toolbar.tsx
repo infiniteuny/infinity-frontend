@@ -37,6 +37,7 @@ export function SingleEntityToolbar(props: Props) {
   const router = useRouter();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [openDiscardDialog, setOpenDiscardDialog] = useState(false);
 
   const handleDeleteAccept = async () => {
     if (props.mode !== 'view' || !props.onDelete || isDeleting) {
@@ -122,26 +123,47 @@ export function SingleEntityToolbar(props: Props) {
   }
 
   return (
-    <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
-      <Button
-        variant="text"
-        className="ml-4"
-        aria-label="Cancel"
-        disabled={props.isSubmitting}
-        onClick={() => router.back()}
-      >
-        Cancel
-      </Button>
-      <Button
-        variant="filled"
-        className="ml-4"
-        aria-label={props.saveAriaLabel}
-        startIcon={<SaveRounded />}
-        disabled={!props.isDirty || props.isSubmitting}
-        onClick={() => props.formRef.current?.requestSubmit()}
-      >
-        {props.saveLabel ?? 'Save'}
-      </Button>
-    </Box>
+    <>
+      <AlertDialog
+        open={openDiscardDialog}
+        onAccept={() => {
+          setOpenDiscardDialog(false);
+          router.back();
+        }}
+        onCancel={() => setOpenDiscardDialog(false)}
+        confirmColor="error"
+        title="Discard changes?"
+        description="You have unsaved changes. Are you sure you want to leave without saving?"
+        acceptText="Discard"
+        cancelText="Keep editing"
+      />
+      <Box className="ml-auto flex flex-wrap-reverse justify-end gap-y-2">
+        <Button
+          variant="text"
+          className="ml-4"
+          aria-label="Cancel"
+          disabled={props.isSubmitting}
+          onClick={() => {
+            if (props.isDirty) {
+              setOpenDiscardDialog(true);
+            } else {
+              router.back();
+            }
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="filled"
+          className="ml-4"
+          aria-label={props.saveAriaLabel}
+          startIcon={<SaveRounded />}
+          disabled={!props.isDirty || props.isSubmitting}
+          onClick={() => props.formRef.current?.requestSubmit()}
+        >
+          {props.saveLabel ?? 'Save'}
+        </Button>
+      </Box>
+    </>
   );
 }

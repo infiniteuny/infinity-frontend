@@ -48,7 +48,10 @@ export function MajorForm({ initialMajor, degrees, faculties }: Props) {
     resolver: zodResolver(majorInputSchema) as Resolver<MajorInput>,
     defaultValues: major
       ? {
-          ...major,
+          code: major.code,
+          name: major.name,
+          degreeId: major.degreeId,
+          facultyId: major.facultyId,
         }
       : {
           code: '',

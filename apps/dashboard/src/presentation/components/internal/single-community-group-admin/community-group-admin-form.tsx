@@ -62,7 +62,8 @@ export function CommunityGroupAdminForm({ initialCommunityGroupAdmin }: Props) {
     resolver: zodResolver(communityGroupAdminInputSchema) as Resolver<CommunityGroupAdminInput>,
     defaultValues: communityGroupAdmin
       ? {
-          ...communityGroupAdmin,
+          year: communityGroupAdmin.year,
+          isActive: communityGroupAdmin.isActive,
           _new: false,
           _initial: communityGroupAdmin.isActive,
         }

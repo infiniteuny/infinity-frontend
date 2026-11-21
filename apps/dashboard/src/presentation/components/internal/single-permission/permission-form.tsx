@@ -45,7 +45,8 @@ export function PermissionForm({ initialPermission }: Props) {
     resolver: zodResolver(permissionInputSchema) as Resolver<PermissionInput>,
     defaultValues: permission
       ? {
-          ...permission,
+          name: permission.name,
+          guardName: permission.guardName,
         }
       : {
           name: '',

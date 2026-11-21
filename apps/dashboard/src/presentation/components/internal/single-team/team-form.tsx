@@ -45,7 +45,9 @@ export function TeamForm({ initialTeam, teamTypes }: Props) {
     resolver: zodResolver(teamInputSchema) as Resolver<TeamInput>,
     defaultValues: team
       ? {
-          ...team,
+          name: team.name,
+          leaderId: team.leaderId,
+          teamTypeId: team.teamTypeId,
         }
       : {
           name: '',

@@ -31,26 +31,32 @@ const fundApplicationInputSchema = z
     competitionBranch: z.string().min(1, 'Competition branch must not be empty'),
     competitionStartDate: z.date('Start date must be a valid date'),
     competitionEndDate: z.date('End date must be a valid date'),
-    letterOfAcceptance: z.union([
-      z
-        .file('Letter of Acceptance must not be empty')
-        .mime(['application/pdf'], 'Letter of acceptance must be a PDF file')
-        .max(20480000, 'Letter of acceptance must be less than or equal to 20MB'),
-      z.string(),
-    ]),
-    proposal: z.union([
-      z
-        .file('Proposal must not be empty')
-        .mime(
-          [
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          ],
-          'Proposal must be a DOC or DOCX file',
-        )
-        .max(20480000, 'Proposal must be less than or equal to 20MB'),
-      z.string(),
-    ]),
+    letterOfAcceptance: z.union(
+      [
+        z
+          .file('Letter of Acceptance must not be empty')
+          .mime(['application/pdf'], 'Letter of acceptance must be a PDF file')
+          .max(20480000, 'Letter of acceptance must be less than or equal to 20MB'),
+        z.string().min(1, 'Letter of Acceptance must not be empty'),
+      ],
+      { error: 'Letter of Acceptance must not be empty' },
+    ),
+    proposal: z.union(
+      [
+        z
+          .file('Proposal must not be empty')
+          .mime(
+            [
+              'application/msword',
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ],
+            'Proposal must be a DOC or DOCX file',
+          )
+          .max(20480000, 'Proposal must be less than or equal to 20MB'),
+        z.string().min(1, 'Proposal must not be empty'),
+      ],
+      { error: 'Proposal must not be empty' },
+    ),
     status: z.enum(
       ['PENDING', 'REJECTED', 'ACCEPTED'] as const,
       'Status must be one of pending, rejected, or accepted',
@@ -105,7 +111,15 @@ export function FundApplicationForm({ initialFundApplication, competitionScales 
     resolver: zodResolver(fundApplicationInputSchema) as Resolver<FundApplicationInput>,
     defaultValues: fundApplication
       ? {
-          ...fundApplication,
+          teamId: fundApplication.teamId,
+          competitionInstanceId: fundApplication.competitionInstanceId,
+          competitionScaleId: fundApplication.competitionScaleId,
+          competitionBranch: fundApplication.competitionBranch,
+          competitionStartDate: fundApplication.competitionStartDate,
+          competitionEndDate: fundApplication.competitionEndDate,
+          letterOfAcceptance: fundApplication.letterOfAcceptance,
+          proposal: fundApplication.proposal,
+          status: fundApplication.status,
         }
       : {
           teamId: '',

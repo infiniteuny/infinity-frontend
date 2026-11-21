@@ -38,7 +38,8 @@ export function DegreeForm({ initialDegree }: Props) {
     resolver: zodResolver(degreeInputSchema) as Resolver<DegreeInput>,
     defaultValues: degree
       ? {
-          ...degree,
+          code: degree.code,
+          name: degree.name,
         }
       : {
           code: '',

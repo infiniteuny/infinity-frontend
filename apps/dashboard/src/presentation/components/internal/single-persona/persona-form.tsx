@@ -19,13 +19,16 @@ const personaInputSchema = z.object({
   name: z.string().min(1, 'Name must not be empty'),
   priority: z.number('Priority must be a number').min(0, 'Priority must be non-negative'),
   description: z.string().min(1, 'Description must not be empty'),
-  logo: z.union([
-    z
-      .file('Logo must not be empty')
-      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
-      .max(5120 * 1024, 'Logo must be less than 5MB'),
-    z.string(),
-  ]),
+  logo: z.union(
+    [
+      z
+        .file('Logo must not be empty')
+        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
+        .max(5120 * 1024, 'Logo must be less than 5MB'),
+      z.string().min(1, 'Logo must not be empty'),
+    ],
+    { error: 'Logo must not be empty' },
+  ),
 });
 
 export type PersonaInput = z.infer<typeof personaInputSchema>;
@@ -53,7 +56,10 @@ export function PersonaForm({ initialPersona }: Props) {
     resolver: zodResolver(personaInputSchema) as Resolver<PersonaInput>,
     defaultValues: persona
       ? {
-          ...persona,
+          name: persona.name,
+          priority: persona.priority,
+          description: persona.description,
+          logo: persona.logo,
         }
       : {
           name: '',

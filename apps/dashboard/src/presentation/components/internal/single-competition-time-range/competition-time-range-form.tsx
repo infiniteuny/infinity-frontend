@@ -52,7 +52,8 @@ export function CompetitionTimeRangeForm({ initialCompetitionTimeRange }: Props)
     resolver: zodResolver(competitionTimeRangeInputSchema) as Resolver<CompetitionTimeRangeInput>,
     defaultValues: competitionTimeRange
       ? {
-          ...competitionTimeRange,
+          name: competitionTimeRange.name,
+          weight: competitionTimeRange.weight,
         }
       : {
           name: '',

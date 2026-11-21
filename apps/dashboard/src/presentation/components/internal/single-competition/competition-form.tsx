@@ -49,7 +49,8 @@ export function CompetitionForm({ initialCompetition }: Props) {
     resolver: zodResolver(competitionInputSchema) as Resolver<CompetitionInput>,
     defaultValues: competition
       ? {
-          ...competition,
+          name: competition.name,
+          shortname: competition.shortname,
         }
       : {
           name: '',

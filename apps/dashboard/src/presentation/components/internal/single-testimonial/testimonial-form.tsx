@@ -18,13 +18,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const testimonialInputSchema = z.object({
   name: z.string().min(1, 'Name must not be empty'),
   position: z.string().min(1, 'Position must not be empty'),
-  photo: z.union([
-    z
-      .file('Photo must not be empty')
-      .max(5120 * 1024, 'Photo must be less than 5MB')
-      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file'),
-    z.string(),
-  ]),
+  photo: z.union(
+    [
+      z
+        .file('Photo must not be empty')
+        .max(5120 * 1024, 'Photo must be less than 5MB')
+        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file'),
+      z.string().min(1, 'Photo must not be empty'),
+    ],
+    { error: 'Photo must not be empty' },
+  ),
   content: z.string().min(1, 'Content must not be empty'),
 });
 
@@ -55,7 +58,10 @@ export function TestimonialForm({ initialTestimonial }: Props) {
     resolver: zodResolver(testimonialInputSchema) as Resolver<TestimonialInput>,
     defaultValues: testimonial
       ? {
-          ...testimonial,
+          name: testimonial.name,
+          position: testimonial.position,
+          photo: testimonial.photo,
+          content: testimonial.content,
         }
       : {
           name: '',

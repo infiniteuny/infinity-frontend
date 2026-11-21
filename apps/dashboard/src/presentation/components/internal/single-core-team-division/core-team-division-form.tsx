@@ -49,7 +49,8 @@ export function CoreTeamDivisionForm({ initialCoreTeamDivision }: Props) {
     resolver: zodResolver(coreTeamDivisionInputSchema) as Resolver<CoreTeamDivisionInput>,
     defaultValues: coreTeamDivision
       ? {
-          ...coreTeamDivision,
+          name: coreTeamDivision.name,
+          priority: coreTeamDivision.priority,
         }
       : {
           name: '',

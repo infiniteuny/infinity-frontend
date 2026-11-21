@@ -49,7 +49,8 @@ export function CompetitionScaleForm({ initialCompetitionScale }: Props) {
     resolver: zodResolver(competitionScaleInputSchema) as Resolver<CompetitionScaleInput>,
     defaultValues: competitionScale
       ? {
-          ...competitionScale,
+          name: competitionScale.name,
+          weight: competitionScale.weight,
         }
       : {
           name: '',

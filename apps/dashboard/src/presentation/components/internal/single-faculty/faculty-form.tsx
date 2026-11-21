@@ -44,7 +44,8 @@ export function FacultyForm({ initialFaculty }: Props) {
     resolver: zodResolver(facultyInputSchema) as Resolver<FacultyInput>,
     defaultValues: faculty
       ? {
-          ...faculty,
+          code: faculty.code,
+          name: faculty.name,
         }
       : {
           code: '',

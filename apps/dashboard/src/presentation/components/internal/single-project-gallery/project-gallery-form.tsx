@@ -19,13 +19,16 @@ const projectGalleryInputSchema = z.object({
   title: z.string().min(1, 'Title must not be empty'),
   description: z.string().min(1, 'Description must not be empty'),
   url: z.url({ protocol: /^https$/, error: 'URL must be a valid HTTPS URL' }),
-  image: z.union([
-    z
-      .file('Image must not be empty')
-      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Image must be a PNG, JPEG, or WebP file')
-      .max(5120 * 1024, 'Image must be less than 5MB'),
-    z.string(),
-  ]),
+  image: z.union(
+    [
+      z
+        .file('Image must not be empty')
+        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Image must be a PNG, JPEG, or WebP file')
+        .max(5120 * 1024, 'Image must be less than 5MB'),
+      z.string().min(1, 'Image must not be empty'),
+    ],
+    { error: 'Image must not be empty' },
+  ),
 });
 
 export type ProjectGalleryInput = z.infer<typeof projectGalleryInputSchema>;
@@ -55,7 +58,10 @@ export function ProjectGalleryForm({ initialProjectGallery }: Props) {
     resolver: zodResolver(projectGalleryInputSchema) as Resolver<ProjectGalleryInput>,
     defaultValues: projectGallery
       ? {
-          ...projectGallery,
+          title: projectGallery.title,
+          description: projectGallery.description,
+          url: projectGallery.url,
+          image: projectGallery.image,
         }
       : {
           title: '',

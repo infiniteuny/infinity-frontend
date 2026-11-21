@@ -199,6 +199,7 @@ export function GeneralForm({
               previewType="image"
               previewAlt="Selected animation preview"
               currentFileLabel="Current animation"
+              nullable
             />
           </Grid>
         </Grid>

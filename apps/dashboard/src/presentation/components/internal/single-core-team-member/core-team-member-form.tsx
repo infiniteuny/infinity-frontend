@@ -24,13 +24,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const coreTeamMemberInputSchema = z.object({
   userId: z.uuidv7('User must be selected'),
   coreTeamDivisionId: z.uuidv7('Division must be selected'),
-  photo: z.union([
-    z
-      .file('Photo must not be empty')
-      .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file')
-      .max(5120 * 1024, 'Photo must be less than 5MB'),
-    z.string(),
-  ]),
+  photo: z.union(
+    [
+      z
+        .file('Photo must not be empty')
+        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Photo must be a PNG, JPEG, or WebP file')
+        .max(5120 * 1024, 'Photo must be less than 5MB'),
+      z.string().min(1, 'Photo must not be empty'),
+    ],
+    { error: 'Photo must not be empty' },
+  ),
   animation: z
     .union([
       z
@@ -40,7 +43,7 @@ const coreTeamMemberInputSchema = z.object({
           'Animation must be a GIF, APNG, or WebP file',
         )
         .max(5120 * 1024, 'Animation must be less than 5MB'),
-      z.string(),
+      z.string().min(1, 'Animation must not be empty'),
     ])
     .nullable(),
 });

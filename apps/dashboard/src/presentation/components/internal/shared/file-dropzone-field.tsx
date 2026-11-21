@@ -29,6 +29,7 @@ type Props<TFieldValues extends FieldValues, TName extends Path<TFieldValues>> =
   previewTitle?: string;
   previewAlt?: string;
   currentFileLabel?: string;
+  nullable?: boolean;
 };
 
 export function FileDropzoneField<
@@ -47,6 +48,7 @@ export function FileDropzoneField<
   previewTitle,
   previewAlt,
   currentFileLabel,
+  nullable = false,
 }: Props<TFieldValues, TName>) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -281,7 +283,7 @@ export function FileDropzoneField<
                         if (inputRef.current) {
                           inputRef.current.value = '';
                         }
-                        onChange(null);
+                        onChange(nullable ? null : undefined);
                       }}
                     >
                       <DeleteRounded />

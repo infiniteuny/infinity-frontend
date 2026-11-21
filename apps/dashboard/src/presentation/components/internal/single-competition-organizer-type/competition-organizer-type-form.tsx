@@ -56,7 +56,8 @@ export function CompetitionOrganizerTypeForm({ initialCompetitionOrganizerType }
     ) as Resolver<CompetitionOrganizerTypeInput>,
     defaultValues: competitionOrganizerType
       ? {
-          ...competitionOrganizerType,
+          name: competitionOrganizerType.name,
+          weight: competitionOrganizerType.weight,
         }
       : {
           name: '',

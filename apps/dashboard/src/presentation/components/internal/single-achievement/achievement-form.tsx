@@ -38,13 +38,19 @@ const achievementInputSchema = z
     competitionStartDate: z.date('Competition start date must be a valid date'),
     competitionEndDate: z.date('Competition end date must be a valid date'),
     description: z.string().min(1, 'Description must not be empty'),
-    image: z.union([
-      z
-        .file('Image must not be empty')
-        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Image must be a PNG, JPEG, or WebP file')
-        .max(5120 * 1024, 'Image must be less than 5MB'),
-      z.string(),
-    ]),
+    image: z.union(
+      [
+        z
+          .file('Image must not be empty')
+          .mime(
+            ['image/png', 'image/jpeg', 'image/webp'],
+            'Image must be a PNG, JPEG, or WebP file',
+          )
+          .max(5120 * 1024, 'Image must be less than 5MB'),
+        z.string().min(1, 'Image must not be empty'),
+      ],
+      { error: 'Image must not be empty' },
+    ),
     status: z.enum(
       ['PENDING', 'REJECTED', 'ACCEPTED'] as const,
       'Status must be one of pending, rejected, or accepted',
@@ -108,7 +114,18 @@ export function AchievementForm({
     resolver: zodResolver(achievementInputSchema) as Resolver<AchievementInput>,
     defaultValues: achievement
       ? {
-          ...achievement,
+          teamId: achievement.teamId,
+          competitionInstanceId: achievement.competitionInstanceId,
+          competitionScaleId: achievement.competitionScaleId,
+          competitionTimeRangeId: achievement.competitionTimeRangeId,
+          competitionOutputId: achievement.competitionOutputId,
+          competitionRankId: achievement.competitionRankId,
+          competitionBranch: achievement.competitionBranch,
+          competitionStartDate: achievement.competitionStartDate,
+          competitionEndDate: achievement.competitionEndDate,
+          description: achievement.description,
+          image: achievement.image,
+          status: achievement.status,
         }
       : {
           teamId: '',

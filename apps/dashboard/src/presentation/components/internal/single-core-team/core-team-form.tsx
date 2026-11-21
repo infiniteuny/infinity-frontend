@@ -54,7 +54,8 @@ export function CoreTeamForm({ initialCoreTeam }: Props) {
     resolver: zodResolver(coreTeamInputSchema) as Resolver<CoreTeamInput>,
     defaultValues: coreTeam
       ? {
-          ...coreTeam,
+          year: coreTeam.year,
+          isActive: coreTeam.isActive,
           _new: false,
           _initial: coreTeam.isActive,
         }

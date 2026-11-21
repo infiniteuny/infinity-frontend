@@ -37,13 +37,16 @@ const competitionInstanceInputSchema = z
     url: z.union([z.url('URL must be a valid URL'), z.literal('').nullable()]),
     organizer: z.string().min(1, 'Organizer must not be empty'),
     organizerTypeId: z.uuidv7('Organizer type must be selected'),
-    logo: z.union([
-      z
-        .file('Logo must not be empty')
-        .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
-        .max(5120 * 1024, 'Logo must be less than 5MB'),
-      z.string(),
-    ]),
+    logo: z.union(
+      [
+        z
+          .file('Logo must not be empty')
+          .mime(['image/png', 'image/jpeg', 'image/webp'], 'Logo must be a PNG, JPEG, or WebP file')
+          .max(5120 * 1024, 'Logo must be less than 5MB'),
+        z.string().min(1, 'Logo must not be empty'),
+      ],
+      { error: 'Logo must not be empty' },
+    ),
     startDate: z.date('Start date must be a valid date'),
     endDate: z.date('End date must be a valid date'),
     location: z.string().min(1, 'Location must not be empty'),
@@ -88,7 +91,17 @@ export function CompetitionInstanceForm({
     resolver: zodResolver(competitionInstanceInputSchema) as Resolver<CompetitionInstanceInput>,
     defaultValues: competitionInstance
       ? {
-          ...competitionInstance,
+          competitionId: competitionInstance.competitionId,
+          name: competitionInstance.name,
+          shortname: competitionInstance.shortname,
+          description: competitionInstance.description,
+          url: competitionInstance.url,
+          organizer: competitionInstance.organizer,
+          organizerTypeId: competitionInstance.organizerTypeId,
+          logo: competitionInstance.logo,
+          startDate: competitionInstance.startDate,
+          endDate: competitionInstance.endDate,
+          location: competitionInstance.location,
         }
       : {
           competitionId: '',

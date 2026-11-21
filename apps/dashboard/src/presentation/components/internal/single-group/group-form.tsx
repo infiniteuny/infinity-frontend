@@ -39,7 +39,8 @@ export function GroupForm({ initialGroup }: Props) {
     resolver: zodResolver(groupInputSchema) as Resolver<GroupInput>,
     defaultValues: group
       ? {
-          ...group,
+          name: group.name,
+          guardName: group.guardName,
         }
       : {
           name: '',
