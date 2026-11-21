@@ -283,6 +283,30 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         filterOperators: [StringOperators.contains],
       },
       {
+        field: 'competitionRank',
+        headerName: 'Rank',
+        flex: 1,
+        minWidth: 170,
+        filterable: true,
+        sortable: false,
+        filterOperators: [
+          {
+            label: 'is',
+            value: 'is',
+            getApplyFilterFn: (filterItem) => {
+              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
+                return null;
+              }
+
+              return (value) => {
+                return value === filterItem.value;
+              };
+            },
+            InputComponent: CompetitionRankFilterInput,
+          },
+        ],
+      },
+      {
         field: 'competitionScale',
         headerName: 'Scale',
         flex: 1,
@@ -303,30 +327,6 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
               };
             },
             InputComponent: CompetitionScaleFilterInput,
-          },
-        ],
-      },
-      {
-        field: 'competitionTimeRange',
-        headerName: 'Time Range',
-        flex: 1,
-        minWidth: 170,
-        filterable: true,
-        sortable: false,
-        filterOperators: [
-          {
-            label: 'is',
-            value: 'is',
-            getApplyFilterFn: (filterItem) => {
-              if (!filterItem.field || !filterItem.value || !filterItem.operator) {
-                return null;
-              }
-
-              return (value) => {
-                return value === filterItem.value;
-              };
-            },
-            InputComponent: CompetitionTimeRangeFilterInput,
           },
         ],
       },
@@ -355,8 +355,8 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         ],
       },
       {
-        field: 'competitionRank',
-        headerName: 'Rank',
+        field: 'competitionTimeRange',
+        headerName: 'Time Range',
         flex: 1,
         minWidth: 170,
         filterable: true,
@@ -374,7 +374,7 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
                 return value === filterItem.value;
               };
             },
-            InputComponent: CompetitionRankFilterInput,
+            InputComponent: CompetitionTimeRangeFilterInput,
           },
         ],
       },
@@ -463,11 +463,11 @@ export function AchievementsList({ initialAchievements, initialPaginationOptions
         id: achievement.id,
         team: achievement.team?.name || 'N/A',
         competition: achievement.competitionInstance?.name || 'N/A',
-        competitionScale: achievement.competitionScale?.name || 'N/A',
-        competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
-        competitionOutput: achievement.competitionOutput?.name || 'N/A',
-        competitionRank: achievement.competitionRank?.name || 'N/A',
         competitionBranch: achievement.competitionBranch,
+        competitionRank: achievement.competitionRank?.name || 'N/A',
+        competitionScale: achievement.competitionScale?.name || 'N/A',
+        competitionOutput: achievement.competitionOutput?.name || 'N/A',
+        competitionTimeRange: achievement.competitionTimeRange?.name || 'N/A',
         competitionStartDate: achievement.competitionStartDate.toLocaleDateString(),
         competitionEndDate: achievement.competitionEndDate.toLocaleDateString(),
         status: achievement.status,
