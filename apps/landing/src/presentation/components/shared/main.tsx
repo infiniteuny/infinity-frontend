@@ -12,7 +12,7 @@ export function Main({ children }: Props) {
     <Container
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
-      className="flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col px-4 pb-4"
+      className="flex h-full min-h-[calc(100vh-4rem)] w-full flex-col px-4 pt-18.5 pb-4"
     >
       <Box
         id="content"

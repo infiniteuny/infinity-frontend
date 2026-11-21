@@ -18,6 +18,7 @@ export function InternalHeader() {
   return (
     <AppBar
       component="header"
+      position="fixed"
       sx={[
         (theme) => ({
           background: theme.vars?.palette.surfaceContainer.main,
@@ -26,7 +27,7 @@ export function InternalHeader() {
           }),
         }),
       ]}
-      className="sticky flex h-18.5 w-full flex-row items-center p-4 shadow-none transition-none lg:pl-0"
+      className="fixed top-0 right-0 left-0 flex h-18.5 w-full flex-row items-center p-4 shadow-none transition-none lg:pl-0"
     >
       <IconButton
         aria-label="Toggle Sidebar"

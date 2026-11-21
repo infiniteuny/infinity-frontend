@@ -15,7 +15,7 @@ export function InternalMainContainer({ children }: Props) {
     <Container
       maxWidth={false}
       sx={{ bgcolor: 'surfaceContainer.main' }}
-      className={`flex h-full min-h-[calc(100vh-8.625rem)] w-full flex-col overflow-auto pr-4 ${
+      className={`flex h-full min-h-[calc(100vh-4rem)] w-full flex-col overflow-auto pt-18.5 pr-4 ${
         sidebarExtended ? 'lg:pl-65' : 'lg:pl-20'
       }`}
     >

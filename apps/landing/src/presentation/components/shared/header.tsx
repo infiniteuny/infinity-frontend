@@ -35,6 +35,7 @@ export function Header({ session }: Props) {
   return (
     <AppBar
       component="header"
+      position="fixed"
       sx={[
         (theme) => ({
           background: theme.vars?.palette.surfaceContainer.main,
@@ -43,7 +44,7 @@ export function Header({ session }: Props) {
           }),
         }),
       ]}
-      className="sticky flex h-18.5 w-full flex-row items-center shadow-none transition-none"
+      className="fixed top-0 right-0 left-0 flex h-18.5 w-full flex-row items-center shadow-none transition-none"
     >
       <Toolbar className="flex w-full flex-row items-center justify-between px-4 sm:px-6">
         <IconButton
