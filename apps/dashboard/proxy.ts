@@ -2,6 +2,7 @@ import { GetSession, Logout } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
 import { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { sanitizeCallbackUrl } from '@infiniteuny/infinity-utils';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 
@@ -20,8 +21,8 @@ export default async function proxy(req: NextRequest): Promise<Response | undefi
     await logout.execute(req);
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
-    const sanitizedUrl = new URL(req.nextUrl.pathname + req.nextUrl.search, origin);
-    const callbackUrl = encodeURIComponent(sanitizedUrl.toString());
+    const safePath = sanitizeCallbackUrl(req.nextUrl.pathname + req.nextUrl.search, origin);
+    const callbackUrl = encodeURIComponent(safePath);
 
     return NextResponse.redirect(new URL(`/login?callback_url=${callbackUrl}`, origin));
   }

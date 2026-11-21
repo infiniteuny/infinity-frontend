@@ -3,6 +3,7 @@ import { LoginForm } from '@app/presentation/components/auth/login';
 import { match } from 'effect/Either';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { sanitizeCallbackUrl } from '@infiniteuny/infinity-utils';
 import { serverContainer } from '@app/server-injection';
 import { SYMBOLS } from '@config';
 
@@ -18,7 +19,10 @@ type Props = {
 
 export default async function LoginPage({ searchParams }: Props) {
   const getSession = serverContainer.get<GetSession>(SYMBOLS.GetSession);
-  const callbackUrl = (await searchParams).callback_url;
+  const rawCallbackUrl = (await searchParams).callback_url;
+  const callbackUrl = rawCallbackUrl
+    ? sanitizeCallbackUrl(rawCallbackUrl, process.env.NEXT_PUBLIC_APP_URL)
+    : undefined;
   const sessionResult = await getSession.execute();
 
   return match(sessionResult, {
