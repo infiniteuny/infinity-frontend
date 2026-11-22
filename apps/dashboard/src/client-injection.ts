@@ -172,6 +172,7 @@ import {
   GetUserPersonas,
   GetPersonas,
   GetProjectGalleries,
+  GetSession,
   GetSidebarExtendedState,
   GetTeam,
   GetTeams,
@@ -394,6 +395,7 @@ clientContainer.bind<GetMajors>(SYMBOLS.GetMajors).to(GetMajors);
 clientContainer.bind<GetPermissions>(SYMBOLS.GetPermissions).to(GetPermissions);
 clientContainer.bind<GetPersonas>(SYMBOLS.GetPersonas).to(GetPersonas);
 clientContainer.bind<GetProjectGalleries>(SYMBOLS.GetProjectGalleries).to(GetProjectGalleries);
+clientContainer.bind<GetSession>(SYMBOLS.GetSession).to(GetSession);
 clientContainer
   .bind<GetSidebarExtendedState>(SYMBOLS.GetSidebarExtendedState)
   .to(GetSidebarExtendedState);

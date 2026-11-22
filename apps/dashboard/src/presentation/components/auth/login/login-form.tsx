@@ -2,13 +2,16 @@
 
 import { Box, Button, CircularProgress, Paper, Typography } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
+import { GetSession, Login } from '@infiniteuny/infinity-application';
 import { InfiniteTextLogo } from '@infiniteuny/infinity-ui';
-import { Login } from '@infiniteuny/infinity-application';
+import { isRight, match } from 'effect/Either';
 import { LoginRounded } from '@mui/icons-material';
-import { match } from 'effect/Either';
 import { SYMBOLS } from '@infiniteuny/infinity-domain';
 import { toast } from 'react-toastify';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+let inFlightSilentSso: Promise<boolean> | null = null;
 
 type Props = {
   callbackUrl?: string;
@@ -16,7 +19,48 @@ type Props = {
 
 export function LoginForm({ callbackUrl }: Props) {
   const login = useMemo(() => clientContainer.get<Login>(SYMBOLS.Login), []);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const getSession = useMemo(() => clientContainer.get<GetSession>(SYMBOLS.GetSession), []);
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const runSilentSso = async (): Promise<boolean> => {
+      try {
+        const loginResult = await login.execute(undefined, true);
+        if (!isRight(loginResult)) {
+          return false;
+        }
+
+        const sessionResult = await getSession.execute();
+        return isRight(sessionResult);
+      } catch {
+        return false;
+      }
+    };
+
+    if (!inFlightSilentSso) {
+      inFlightSilentSso = runSilentSso().finally(() => {
+        inFlightSilentSso = null;
+      });
+    }
+
+    void inFlightSilentSso.then((isAuthenticated) => {
+      if (cancelled) return;
+
+      if (isAuthenticated) {
+        router.replace(callbackUrl || '/');
+        router.refresh();
+      } else {
+        setIsSubmitting(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [callbackUrl, getSession, login, router]);
 
   const handleLogin = async () => {
     if (isSubmitting) return;
