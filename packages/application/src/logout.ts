@@ -7,7 +7,7 @@ import { UseCase } from './use-case';
 export type LogoutAchievementParams = [request?: Request];
 
 @injectable()
-export class Logout implements UseCase<Promise<Either<void, Error>>> {
+export class Logout implements UseCase<Promise<Either<string | undefined, Error>>> {
   private readonly authRepository: AuthRepository;
 
   public constructor(
@@ -17,7 +17,7 @@ export class Logout implements UseCase<Promise<Either<void, Error>>> {
     this.authRepository = authRepository;
   }
 
-  public async execute(request?: Request): Promise<Either<void, Error>> {
+  public async execute(request?: Request): Promise<Either<string | undefined, Error>> {
     return this.authRepository.signOut(request);
   }
 }

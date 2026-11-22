@@ -92,9 +92,12 @@ export function InternalNavbar({ menus }: Props) {
       match(result, {
         onLeft: (error) => {
           toast.error(error.message || 'Failed to log out. Please try again.');
+          setIsLoggingOut(false);
         },
-        onRight: () => {
-          router.push('/login');
+        onRight: (redirectUrl) => {
+          if (!redirectUrl) {
+            router.push('/login');
+          }
         },
       });
     } catch (error) {
@@ -103,7 +106,6 @@ export function InternalNavbar({ menus }: Props) {
           ? error.message
           : 'Failed to log out. Please try again.',
       );
-    } finally {
       setIsLoggingOut(false);
     }
   };

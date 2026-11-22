@@ -102,7 +102,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  public async signOut(request?: Request): Promise<Either<void, Error>> {
+  public async signOut(request?: Request): Promise<Either<string | undefined, Error>> {
     try {
       if (this.isServer) {
         let headers: HeadersInit;
@@ -113,14 +113,19 @@ export class AuthRepositoryImpl implements AuthRepository {
           const { headers: headersFunc } = await import('next/headers.js');
           headers = await headersFunc();
         }
-        await (this.authDataSource as AuthServerDataSource).api.signOut({
+        const data = await (this.authDataSource as AuthServerDataSource).api.signOut({
           headers,
         });
-      } else {
-        await (this.authDataSource as AuthClientDataSource).signOut();
-      }
 
-      return right(undefined);
+        return right(data?.redirect ? data.url : undefined);
+      } else {
+        const { data, error } = await (this.authDataSource as AuthClientDataSource).signOut();
+        if (error) {
+          return left(new Error(error.message || 'Failed to sign out'));
+        }
+
+        return right(data?.redirect ? data.url : undefined);
+      }
     } catch (error) {
       return left(error instanceof Error ? error : new Error(String(error)));
     }

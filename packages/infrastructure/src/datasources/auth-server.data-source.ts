@@ -1,5 +1,6 @@
 import { APIError } from 'better-auth';
 import { betterAuth, BetterAuthOptions } from 'better-auth/minimal';
+import { createAuthMiddleware } from 'better-auth/api';
 import { customSession, genericOAuth } from 'better-auth/plugins';
 import { getAccountCookie } from 'better-auth/cookies';
 import { GetUsersWithToken, GetUserPermissionsWithToken } from '@infiniteuny/infinity-application';
@@ -217,22 +218,55 @@ export const authServerDataSourceImpl = (
       }, additionalOptions),
       nextCookies(),
     ],
-    databaseHooks: {
-      account: {
-        create: {
-          before: async (account) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { idToken, ...data } = account;
+    hooks: {
+      after: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== '/sign-out') return;
 
-            return {
-              data: {
-                idToken: undefined,
-                ...data,
-              },
-            };
-          },
-        },
-      },
+        const returned = ctx.context.returned as
+          { success?: boolean; url?: string; redirect?: boolean } | undefined;
+
+        if (!returned?.success || returned.url) return;
+
+        const account = await getAccountCookie(ctx);
+        const provider = account
+          ? ctx.context.socialProviders.find((p) => p.id === account.providerId)
+          : undefined;
+
+        if (!provider?.createEndSessionURL) return;
+
+        try {
+          const body = ctx.body as
+            { callbackURL?: string; disableRedirect?: boolean; state?: string } | undefined;
+          const postLogoutRedirectURI = body?.callbackURL
+            ? new URL(body.callbackURL, ctx.context.baseURL).toString()
+            : undefined;
+
+          const url = await provider.createEndSessionURL({
+            idToken: account?.idToken,
+            postLogoutRedirectURI,
+            state: body?.state,
+          });
+
+          if (!url) return;
+
+          const shouldRedirect = !body?.disableRedirect;
+          if (shouldRedirect) {
+            ctx.setHeader('Location', url.toString());
+          }
+
+          return ctx.json({
+            success: true,
+            url: url.toString(),
+            redirect: shouldRedirect,
+          });
+        } catch (error) {
+          ctx.context.logger.error(
+            `Failed to create logout URL for provider "${account?.providerId}"`,
+            error,
+          );
+          return;
+        }
+      }),
     },
     disabledPaths: [
       '/error',
