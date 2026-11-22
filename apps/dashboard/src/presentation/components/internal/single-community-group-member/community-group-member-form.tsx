@@ -8,7 +8,7 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { CommunityGroupMemberToolbar } from './community-group-member-toolbar';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';

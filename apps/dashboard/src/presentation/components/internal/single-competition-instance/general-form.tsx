@@ -26,6 +26,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { GetCompetitions } from '@infiniteuny/infinity-application';
 import { match } from 'effect/Either';
+import { RichTextField } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -132,17 +133,14 @@ export function GeneralForm({
             />
           </Grid>
           <Grid size={12}>
-            <TextField
-              {...register('description')}
+            <RichTextField
+              name="description"
+              control={control}
               id="description"
               label="Description"
-              fullWidth
-              margin="none"
-              multiline
-              minRows={4}
-              helperText={errors.description?.message}
-              error={!!errors.description}
-              disabled={isSubmitting}
+              placeholder="Write competition description..."
+              isSubmitting={isSubmitting}
+              errorMessage={errors.description?.message}
             />
           </Grid>
           <Grid size={12}>

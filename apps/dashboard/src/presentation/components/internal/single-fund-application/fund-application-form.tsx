@@ -13,7 +13,7 @@ import {
 } from '@infiniteuny/infinity-infrastructure/dtos';
 import { FundApplicationToolbar } from './fund-application-toolbar';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { Resolver, useForm } from 'react-hook-form';

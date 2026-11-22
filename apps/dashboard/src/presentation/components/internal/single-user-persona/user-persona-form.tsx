@@ -9,7 +9,7 @@ import { Resolver, useForm } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';
 import { SYMBOLS } from '@config';
 import { UserPersonaToolbar } from './user-persona-toolbar';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { toast } from 'react-toastify';
 import { useMemo, useRef } from 'react';
 import { UserDto, UserMapper } from '@infiniteuny/infinity-infrastructure/dtos';

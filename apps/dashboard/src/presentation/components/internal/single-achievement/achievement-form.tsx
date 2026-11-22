@@ -16,7 +16,7 @@ import { clientContainer } from '@app/client-injection';
 import { CreateAchievement, UpdateAchievement } from '@infiniteuny/infinity-application';
 import { DocumentsForm } from './documents-form';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { SectionHeader } from '@app/presentation/components/internal/shared';

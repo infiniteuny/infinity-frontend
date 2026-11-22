@@ -5,7 +5,7 @@ import { clientContainer } from '@app/client-injection';
 import { CreateGroup, UpdateGroup } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
 import { GroupDto, GroupMapper } from '@infiniteuny/infinity-infrastructure/dtos';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';

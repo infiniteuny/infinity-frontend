@@ -13,7 +13,7 @@ import {
   UserMapper,
 } from '@infiniteuny/infinity-infrastructure/dtos';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { match } from 'effect/Either';
 import { MembershipForm } from './membership-form';

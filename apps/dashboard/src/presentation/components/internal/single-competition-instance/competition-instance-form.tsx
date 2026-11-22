@@ -8,7 +8,8 @@ import {
   UpdateCompetitionInstance,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
+import { hasRichTextContent } from '@infiniteuny/infinity-utils';
 import { AttachmentForm } from './attachment-form';
 import { match } from 'effect/Either';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -35,7 +36,10 @@ const competitionInstanceInputSchema = z
       z.string().min(2, 'Shortname must be at least 2 characters'),
       z.literal('').nullable(),
     ]),
-    description: z.string().min(1, 'Description must not be empty'),
+    description: z
+      .string()
+      .min(1, 'Description must not be empty')
+      .refine(hasRichTextContent, 'Description must not be empty'),
     url: z.union([z.url('URL must be a valid URL'), z.literal('').nullable()]),
     organizer: z.string().min(1, 'Organizer must not be empty'),
     organizerTypeId: z.uuidv7('Organizer type must be selected'),

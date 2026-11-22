@@ -7,7 +7,7 @@ import {
   UpdateCompetitionOrganizerType,
 } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { match } from 'effect/Either';
 import { Resolver, useForm, useWatch } from 'react-hook-form';
 import { SectionHeader } from '@app/presentation/components/internal/shared';

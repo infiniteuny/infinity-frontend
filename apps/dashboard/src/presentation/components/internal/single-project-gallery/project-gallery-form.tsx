@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { clientContainer } from '@app/client-injection';
 import { CreateProjectGallery, UpdateProjectGallery } from '@infiniteuny/infinity-application';
 import { GeneralForm } from './general-form';
-import { handleFormError } from '@app/presentation/utils';
+import { handleFormError } from '@app/utils';
 import { match } from 'effect/Either';
 import { ProjectGalleryDto, ProjectGalleryMapper } from '@infiniteuny/infinity-infrastructure/dtos';
 import { ProjectGalleryToolbar } from './project-gallery-toolbar';

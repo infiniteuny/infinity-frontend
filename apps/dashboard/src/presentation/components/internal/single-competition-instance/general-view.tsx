@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Toolbar, Typography } from '@mui/material';
 import { CompetitionInstance } from '@infiniteuny/infinity-domain';
-import { ViewTile } from '@app/presentation/components/internal/shared';
+import { RichTextViewer, ViewTile } from '@app/presentation/components/internal/shared';
 import { DateTime } from 'luxon';
 
 type Props = {
@@ -32,7 +32,7 @@ export function GeneralView({ competitionInstance }: Props) {
           <Grid size={12}>
             <ViewTile
               title="Description"
-              subtitle={competitionInstance.description}
+              subtitle={<RichTextViewer value={competitionInstance.description} />}
               position="middle"
             />
           </Grid>
